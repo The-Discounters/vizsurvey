@@ -9,7 +9,6 @@ import Survey from "./components/Survey";
 import { QueryParam } from "./components/QueryParam";
 import { selectAllQuestions, writeAnswers } from "./features/questionSlice";
 import { ViewType } from "./features/ViewType";
-//import { selectCurrentTreatment } from "./features/questionSlice";
 import { selectCurrentQuestion } from "./features/questionSlice";
 import { Footer } from "./footer";
 
@@ -36,7 +35,6 @@ export default App;
 
 var handle = undefined;
 const Home = () => {
-  //const QandA = useSelector(selectCurrentTreatment);
   const QandA = useSelector(selectCurrentQuestion);
   console.log(QandA);
   handle = useFullScreenHandle();
@@ -91,8 +89,8 @@ const Home = () => {
             </a>
           </p>
           <p>
-            <a id="getQuestionSet" href="vizsurvey?treatment_id=1">
-              relative treatment_id=1
+            <a id="getQuestionSet" href="vizsurvey?treatment_id=2">
+              relative treatment_id=4
             </a>
           </p>
           <p>
