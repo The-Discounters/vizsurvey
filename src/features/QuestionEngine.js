@@ -11,6 +11,8 @@ export class QuestionEngine {
   constructor() {}
 
   currentTreatment(state) {
+    //console.log("currentQuestionIdx", state.currentQuestionIdx);
+    //console.log("state.questions", state.questions);
     return state.questions[state.currentQuestionIdx];
   }
 
@@ -62,6 +64,8 @@ export class QuestionEngine {
   startSurvey(state) {
     state.currentQuestionIdx = 0;
     const treatment = this.currentTreatment(state);
+    console.log("treatment", treatment);
+    if (treatment === undefined) return;
     state.highup =
       treatment.variableAmount === VariableType.laterAmount
         ? treatment.amountEarlier

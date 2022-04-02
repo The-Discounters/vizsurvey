@@ -8,10 +8,14 @@ export class FileIOAdapter {
   constructor() {}
 
   fetchQuestions = async (treatmentId) => {
+    //console.log("fetching treatement id", treatmentId);
     treatmentId = +treatmentId;
     const questions = csvParse(TREATMENTS_CSV, (e) => {
+      //console.log("e", e);
+      //console.log("fromCSVRow(e)", fromCSVRow(e));
       return fromCSVRow(e);
     }).filter((d) => d.treatmentId === treatmentId);
+    //console.log("questions", questions);
     return questions;
   };
 

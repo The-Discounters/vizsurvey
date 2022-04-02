@@ -9,7 +9,8 @@ import Survey from "./components/Survey";
 import { QueryParam } from "./components/QueryParam";
 import { selectAllQuestions, writeAnswers } from "./features/questionSlice";
 import { ViewType } from "./features/ViewType";
-import { selectCurrentTreatment } from "./features/questionSlice";
+//import { selectCurrentTreatment } from "./features/questionSlice";
+import { selectCurrentQuestion } from "./features/questionSlice";
 import { Footer } from "./footer";
 
 const App = () => {
@@ -35,45 +36,47 @@ export default App;
 
 var handle = undefined;
 const Home = () => {
-  const QandA = useSelector(selectCurrentTreatment);
+  //const QandA = useSelector(selectCurrentTreatment);
+  const QandA = useSelector(selectCurrentQuestion);
+  console.log(QandA);
   handle = useFullScreenHandle();
   return (
     <div id="home-text">
       <p>
-        {QandA === undefined ? (
-          <div>
+        {QandA === undefined || QandA === null ? (
+          <span>
             Cannot display <b>common</b> instructions since a treatment has not
             been selected. Please select a treatment
-          </div>
+          </span>
         ) : (
-          <div>
+          <span>
             You will be presented with two choices about receiving money, one
             earlier and one later in time.
-          </div>
+          </span>
         )}
-        {QandA === undefined ? (
-          <div>
+        {QandA === undefined || QandA === null ? (
+          <span>
             Cannot display <b>specific</b> instructions since a treatment has
             not been selected. Please select a treatment
-          </div>
-        ) : QandA.question.viewType === ViewType.barchart ? (
-          <div>
+          </span>
+        ) : QandA.viewType === ViewType.barchart ? (
+          <span>
             Click on the bar that represents the amount that you would like to
             receive.
-          </div>
-        ) : QandA.question.viewType === ViewType.word ? (
-          <div>
+          </span>
+        ) : QandA.viewType === ViewType.word ? (
+          <span>
             Click on the radio button that contains the amount you would like to
             receive.
-          </div>
+          </span>
         ) : (
-          <div>
+          <span>
             Click on the day that contains the amount that you would like to
             receive.
-          </div>
+          </span>
         )}
       </p>
-      {QandA === undefined ? (
+      {QandA === undefined || QandA === null ? (
         <div>
           <p>
             Cannot display <b>Start Survey button</b> since a treatment has not
@@ -88,8 +91,8 @@ const Home = () => {
             </a>
           </p>
           <p>
-            <a id="getQuestionSet" href="vizsurvey?treatment_id=2">
-              relative treatment_id=4
+            <a id="getQuestionSet" href="vizsurvey?treatment_id=1">
+              relative treatment_id=1
             </a>
           </p>
           <p>
