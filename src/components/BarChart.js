@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React from "react";
 import { Redirect } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
@@ -25,24 +26,18 @@ import {
   answer,
 } from "../features/questionSlice";
 
-function BarChart(props) {
+function BarChart() {
   const dispatch = useDispatch();
   const q = useSelector(selectCurrentQuestion);
   const status = useSelector(fetchStatus);
 
-  const barWidth = 15;
+  //macbook screen size 3072 × 1920
 
-  const height = q.verticalPixels;
-  const width = q.horizontalPixels;
-  const margin = {
-    top: props.top_margin,
-    right: props.right_margin,
-    bottom: props.bottom_margin,
-    left: props.left_margin,
-  };
+  const ppi = window.devicePixelRatio >= 2 ? 132 : 96;
+  const totalWidthIn = q.leftMarginWidthIn + q.graphWidthIn;
+  const totalHeightIn = q.bottomMarginHeightIn + q.graphHeightIn;
 
-  const totalHeight = height + parseInt(margin.top) + parseInt(margin.bottom);
-  const totalWidth = width + parseInt(margin.left) + parseInt(margin.right);
+  const barWidth = 0.1 * ppi; // 0.1 in
 
   const xTickValues = Array.from(Array(q.maxTime + 1).keys());
   const data = xTickValues.map((d) => {
@@ -56,154 +51,167 @@ function BarChart(props) {
   });
 
   const result = (
-    <Container fluid>
-      <Row>
-        <Col>
-          <svg
-            width={`${totalWidth}`}
-            height={`${totalHeight}`}
-            ref={useD3(
-              (svg) => {
-                var chart = svg
-                  .selectAll(".plot-area")
-                  .data([null])
-                  .join("g")
-                  .attr("class", "plot-area")
-                  .attr("transform", `translate(${margin.left},${margin.top})`);
+    // <Container fluid>
+    //   <Row>
+    //     <Col>
+    <svg
+      //         var innerHtml = `<svg viewBox="0 0 3.5 3.5" width="462" height="462"  preserveAspectRatio="xMinYMin meet">`;
+      id="test-svg"
+      viewBox={`0 0 ${totalWidthIn} ${totalHeightIn}`}
+      width={`${totalWidthIn * ppi}`}
+      height={`${totalHeightIn * ppi}`}
+      preserveAspectRatio="xMinYMin meet"
+      style={{ flexGrow: 0, minWidth: 0 }}
+      // ref={useD3(
+      //   (svg) => {
+      //     var chart = svg
+      //       .selectAll(".plot-area")
+      //       .data([null])
+      //       .join("g")
+      //       .attr("class", "plot-area")
+      //       .attr("transform", `translate(${0},${0})`);
 
-                const x = scaleLinear()
-                  .domain([0, q.maxTime])
-                  .range([0, width]);
+      //     const x = scaleLinear()
+      //       .domain([0, q.maxTime])
+      //       .range([0, width]);
 
-                const yRange = [0, q.maxAmount];
-                const y = scaleLinear().domain(yRange).range([height, 0]);
+      //     const yRange = [0, q.maxAmount];
+      //     const y = scaleLinear().domain(yRange).range([height, 0]);
 
-                chart
-                  .selectAll(".x-axis")
-                  .data([null])
-                  .join("g")
-                  .attr("transform", `translate(0,${height})`)
-                  .attr("class", "x-axis")
-                  .call(
-                    axisBottom(x)
-                      .tickValues(xTickValues)
-                      .tickFormat(format(",.0f"))
-                  );
+      //     chart
+      //       .selectAll(".x-axis")
+      //       .data([null])
+      //       .join("g")
+      //       .attr("transform", `translate(0,${height})`)
+      //       .attr("class", "x-axis")
+      //       .call(
+      //         axisBottom(x)
+      //           .tickValues(xTickValues)
+      //           .tickFormat(format(",.0f"))
+      //       );
 
-                const yTickValues = range(yRange[0], yRange[1], yRange[1] / 5);
-                yTickValues.push(yRange[1]);
+      //     const yTickValues = range(yRange[0], yRange[1], yRange[1] / 5);
+      //     yTickValues.push(yRange[1]);
 
-                chart
-                  .selectAll(".y-axis")
-                  .data([null])
-                  .join("g")
-                  .attr("class", "y-axis")
-                  //.attr("transform", `translate(${margin.left},${margin.bottom})`)
-                  .call(
-                    //axisLeft(y).tickValues(yTickValues).tickFormat(d3.format("$,.2f"))
-                    axisLeft(y)
-                      .tickValues(yTickValues)
-                      .tickFormat(format("$,.0f"))
-                  );
+      //     chart
+      //       .selectAll(".y-axis")
+      //       .data([null])
+      //       .join("g")
+      //       .attr("class", "y-axis")
+      //       //.attr("transform", `translate(${margin.left},${margin.bottom})`)
+      //       .call(
+      //         //axisLeft(y).tickValues(yTickValues).tickFormat(d3.format("$,.2f"))
+      //         axisLeft(y)
+      //           .tickValues(yTickValues)
+      //           .tickFormat(format("$,.0f"))
+      //       );
 
-                // const yLabelG = svg
-                //   .select("#y-axis-label")
-                //   .data([1])
-                //   .join("g")
-                //   .attr("transform", "rotate(-90)");
+      //     // const yLabelG = svg
+      //     //   .select("#y-axis-label")
+      //     //   .data([1])
+      //     //   .join("g")
+      //     //   .attr("transform", "rotate(-90)");
 
-                // .data(nullData)
-                // .join("text")
-                // .attr("id", "y-axis-label")
-                // .attr("text-anchor", "middle")
-                // .attr("x", -innerHeight / 2)
-                // .attr("y", -margin.left)
+      //     // .data(nullData)
+      //     // .join("text")
+      //     // .attr("id", "y-axis-label")
+      //     // .attr("text-anchor", "middle")
+      //     // .attr("x", -innerHeight / 2)
+      //     // .attr("y", -margin.left)
 
-                // .text("Amount in USD");
+      //     // .text("Amount in USD");
 
-                chart
-                  .selectAll(".bar")
-                  .data(data)
-                  .join("rect")
-                  .attr("fill", "steelblue")
-                  .attr("class", "bar")
-                  .attr("x", (d) => x(d.time) - barWidth / 2)
-                  .attr("width", barWidth)
-                  .attr("y", (d) => y(d.amount))
-                  .attr("id", (d) => {
-                    return "id" + d.time;
-                  })
-                  .on("click", (d) => {
-                    if (q.interaction === InteractionType.titration) {
-                      if (d.target.__data__.amount === q.amountEarlier) {
-                        dispatch(
-                          answer({
-                            choice: ChoiceType.earlier,
-                            choiceTimestamp: DateTime.now(),
-                          })
-                        );
-                      } else {
-                        dispatch(
-                          answer({
-                            choice: ChoiceType.later,
-                            choiceTimestamp: DateTime.now(),
-                          })
-                        );
-                      }
-                    }
-                  })
-                  .attr("height", (d) => y(0) - y(d.amount));
-                var dragHandler = drag().on("drag", function (d) {
-                  if (q.interaction === InteractionType.drag) {
-                    select(this)
-                      .attr("y", d.y)
-                      .attr("height", y(0) - d.y);
-                  }
-                });
-                dragHandler(chart.selectAll(".bar"));
-              },
-              [q]
-            )}
-          ></svg>
-        </Col>
-      </Row>
-      <Row>
-        <Col>
-          {q.interaction === InteractionType.drag ? (
-            <Formik
-              initialValues={{ choice: ChoiceType.Unitialized }}
-              validate={() => {
-                let errors = {};
-                return errors;
-              }}
-              onSubmit={(values, { setSubmitting, resetForm }) => {
-                console.log("submitting");
-                setTimeout(() => {
-                  dispatch(
-                    answer({
-                      choice: ChoiceType.earlier,
-                      choiceTimestamp: DateTime.now(),
-                    })
-                  );
-                  setSubmitting(false);
-                  resetForm();
-                }, 400);
-              }}
-            >
-              {({ isSubmitting }) => (
-                <Form>
-                  <Button type="submit" disabled={isSubmitting}>
-                    Submit
-                  </Button>
-                </Form>
-              )}
-            </Formik>
-          ) : (
-            ""
-          )}
-        </Col>
-      </Row>
-    </Container>
+      //     chart
+      //       .selectAll(".bar")
+      //       .data(data)
+      //       .join("rect")
+      //       .attr("fill", "steelblue")
+      //       .attr("class", "bar")
+      //       .attr("x", (d) => x(d.time) - barWidth / 2)
+      //       .attr("width", barWidth)
+      //       .attr("y", (d) => y(d.amount))
+      //       .attr("id", (d) => {
+      //         return "id" + d.time;
+      //       })
+      //       .on("click", (d) => {
+      //         if (q.interaction === InteractionType.titration) {
+      //           if (d.target.__data__.amount === q.amountEarlier) {
+      //             dispatch(
+      //               answer({
+      //                 choice: ChoiceType.earlier,
+      //                 choiceTimestamp: DateTime.now(),
+      //               })
+      //             );
+      //           } else {
+      //             dispatch(
+      //               answer({
+      //                 choice: ChoiceType.later,
+      //                 choiceTimestamp: DateTime.now(),
+      //               })
+      //             );
+      //           }
+      //         }
+      //       })
+      //       .attr("height", (d) => y(0) - y(d.amount));
+      //     var dragHandler = drag().on("drag", function (d) {
+      //       if (q.interaction === InteractionType.drag) {
+      //         select(this)
+      //           .attr("y", d.y)
+      //           .attr("height", y(0) - d.y);
+      //       }
+      //     });
+      //     dragHandler(chart.selectAll(".bar"));
+      //   },
+      //   [q]
+      // )}
+    >
+      <rect
+        x="0.5"
+        y="0.5"
+        width="3"
+        height="3"
+        style={{ stroke: "black", fill: "none", strokeWidth: "0.05" }}
+      />
+    </svg>
+    //     </Col>
+    //   </Row>
+    //   <Row>
+    //     <Col>
+    //       {q.interaction === InteractionType.drag ? (
+    //         <Formik
+    //           initialValues={{ choice: ChoiceType.Unitialized }}
+    //           validate={() => {
+    //             let errors = {};
+    //             return errors;
+    //           }}
+    //           onSubmit={(values, { setSubmitting, resetForm }) => {
+    //             console.log("submitting");
+    //             setTimeout(() => {
+    //               dispatch(
+    //                 answer({
+    //                   choice: ChoiceType.earlier,
+    //                   choiceTimestamp: DateTime.now(),
+    //                 })
+    //               );
+    //               setSubmitting(false);
+    //               resetForm();
+    //             }, 400);
+    //           }}
+    //         >
+    //           {({ isSubmitting }) => (
+    //             <Form>
+    //               <Button type="submit" disabled={isSubmitting}>
+    //                 Submit
+    //               </Button>
+    //             </Form>
+    //           )}
+    //         </Formik>
+    //       ) : (
+    //         ""
+    //       )}
+    //     </Col>
+    //   </Row>
+    // </Container>
   );
 
   if (status === StatusType.Complete) {

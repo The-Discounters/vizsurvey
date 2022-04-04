@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Testing drawing SVG</title>
+  </head>
+  <body>
+    <div id="svg1"></div>
+    <div id="svg2"></div>
+    <script>
+        const availHeight = screen.availHeight; //q.verticalPixels;
+        const availWidth = screen.availWidth; //q.horizontalPixels;
+        const width = screen.width;
+        const height = screen.height;
+        const devicePxRatio = window.devicePixelRatio;
+
+        // mac is 3072 × 1920 resolution
+        // logical resolution = physical resolution / device pixel ratio
+        // for my mac = 3072 / 2 x 1920 / 2 = 1536 x 960
+
+        // 100px/3.5in * 3in
+
+       // CVG thinks the resolution is at 96 dpi
+        // It is really at 132 dpi
+        // 132 - 96 = 36 ppi more than what 
+        // So our scale factor is 96 * scale = 132 => scale = 1.375
+        const scale = 132 / 96;
+        const ppi = devicePxRatio >= 2 ? 96 : 132;
+
+
+        var innerHtml = `<svg viewBox="0 0 3.5 3.5" width="462" height="462"  preserveAspectRatio="xMinYMin meet">`;
+        innerHtml = innerHtml + `<rect x="0.25" y="0.25" width="3" height="3" style="stroke:black; stroke-width:0.05; fill:none"/>`;
+        innerHtml = innerHtml + '</svg>';
+        document.getElementById("svg1").innerHTML = innerHtml;
+      </script>
+  </body>
+</html>
