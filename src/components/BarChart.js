@@ -143,7 +143,10 @@ function BarChart(props) {
                     return "id" + d.time;
                   })
                   .on("click", (d) => {
-                    if (q.interaction === InteractionType.titration) {
+                    if (
+                      q.interaction === InteractionType.titration ||
+                      q.interaction !== InteractionType.drag
+                    ) {
                       if (d.target.__data__.amount === q.amountEarlier) {
                         dispatch(
                           answer({
