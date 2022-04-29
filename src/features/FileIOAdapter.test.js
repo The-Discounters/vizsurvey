@@ -47,7 +47,7 @@ describe("FileIOAdapter tests", () => {
     expect(questions[0].widthIn).toBe(4);
     expect(questions[0].heightIn).toBe(4);
     expect(questions[0].comment).toBe(
-      "Worded MEL question with no interaction and Read 2001 example values."
+      "Worded with no interaction and Read 2001 example values."
     );
     questions = await io.fetchQuestions(3);
     expect(questions.length).toBe(3);
@@ -73,7 +73,7 @@ describe("FileIOAdapter tests", () => {
     expect(questions[0].widthIn).toBe(8);
     expect(questions[0].heightIn).toBe(8);
     expect(questions[0].comment).toBe(
-      "Calendar MEL question with barchart and no interaction month view."
+      "Calendar month view with barchart and no interaction."
     );
   });
 

@@ -174,6 +174,9 @@ function Calendar() {
                   tableWidthIn: monthTdSquareSizeIn,
                   showYear: false,
                   showAmountOnBar: false,
+                  numIconCol: 5,
+                  numIconRow: 5,
+                  iconSize: 3,
                   dragCallback: (amount) => {
                     dragAmount = amount;
                   },

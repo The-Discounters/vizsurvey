@@ -37,6 +37,9 @@ function Calendar() {
               tableWidthIn: q.widthIn,
               showYear: true,
               showAmountOnBar: true,
+              numIconCol: 10,
+              numIconRow: 10,
+              iconSize: 3,
               dragCallback: (amount) => {
                 dragAmount = amount;
               },
