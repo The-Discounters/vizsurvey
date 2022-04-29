@@ -161,3 +161,7 @@ https://codepen.io/basiacoulter/pen/xGweXz
 
 https://benclinkinbeard.com/d3tips/building-a-calendar-with-d3/?utm_content=bufferc1664&utm_medium=social&utm_source=twitter.com&utm_campaign=buffer
 https://codepen.io/bclinkinbeard/pen/MEZxMe
+
+### I modeled the icon chart code on this post
+
+https://lvngd.com/blog/building-pictogram-grids-d3js/

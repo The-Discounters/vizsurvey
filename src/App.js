@@ -234,6 +234,15 @@ const Home = () => {
                 }
               </Link>
             </p>
+            <p>
+              <Link id="18" to="/vizsurvey/instructions?treatment_id=18">
+                {
+                  allTreatments.filter(
+                    (d) => d.treatmentId === 18 && d.position === 1
+                  )[0].comment
+                }
+              </Link>
+            </p>
           </p>
         )}
       </div>
