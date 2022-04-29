@@ -150,7 +150,7 @@ function BarChart() {
               .attr("id", (d) => {
                 return "id" + d.time;
               })
-              .attr("fill", "steelblue")
+              .attr("fill", "black")
               .attr("class", "bar")
               .attr("x", (d) => x(d.time) - barWidth / 2)
               .attr("y", (d) => y(d.amount))

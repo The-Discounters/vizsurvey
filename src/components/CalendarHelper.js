@@ -198,7 +198,7 @@ export const drawCalendar = ({
       .attr("style", "text-align: center")
       .append("g")
       .attr("transform", `translate(${iconSize},${iconSize})`);
-    g.selectAll(`.${idPrefix}-circle`)
+    g.selectAll(`.${idPrefix}-icon`)
       .data(iconAmtData, (d) => d)
       .join(
         (enter) => {
@@ -229,10 +229,19 @@ export const drawCalendar = ({
             );
         },
         (update) => {
-          update.select(`.${idPrefix}-circle`).attr("fill", (d) => {
-            const color = d < dayAndAmount.amount ? "black" : "lightgrey";
-            return color;
-          });
+          update
+            .select(`.${idPrefix}-icon`)
+            .attr("fill", (d) => {
+              const color = d < dayAndAmount.amount ? "black" : "lightgrey";
+              return color;
+            })
+            .attr(
+              "style",
+              (d) =>
+                `pointer-events: none; stroke: ${
+                  d < dayAndAmount.amount ? "black" : "darkgrey"
+                };`
+            );
         },
         (exit) => exit.remove()
       );
