@@ -223,7 +223,9 @@ export const drawCalendar = ({
             .attr(
               "style",
               (d) =>
-                `stroke: ${d < dayAndAmount.amount ? "black" : "darkgrey"};`
+                `pointer-events: none; stroke: ${
+                  d < dayAndAmount.amount ? "black" : "darkgrey"
+                };`
             );
         },
         (update) => {
