@@ -23,28 +23,28 @@ export const POST_SURVEY_QUESTIONS = [
   {
     question: {
       textFull:
-        "Suppose you owe £50,000 on a mortgage at an Annual Percentage Rate of 6%. If you didn’t make any payments on this mortgage how much would you owe in total after one year?",
+        "Suppose you owe $50,000 on a mortgage at an Annual Percentage Rate of 6%. If you didn’t make any payments on this mortgage how much would you owe in total after one year?",
       textShort: "50k6p",
     },
     options: [
       {
-        textFull: "Less than £50,000",
+        textFull: "Less than $50,000",
         textShort: "<50k",
       },
       {
-        textFull: "£50,000 – £54,999",
+        textFull: "$50,000 – $54,999",
         textShort: "50kto55k",
       },
       {
-        textFull: "£55,000 – £59,999",
+        textFull: "$55,000 – $59,999",
         textShort: "55kto60k",
       },
       {
-        textFull: "£60,000 – £64,999",
+        textFull: "$60,000 – $64,999",
         textShort: "60kto65k",
       },
       {
-        textFull: "More than £65,000",
+        textFull: "More than $65,000",
         textShort: "65k+",
       },
     ],
@@ -52,20 +52,20 @@ export const POST_SURVEY_QUESTIONS = [
   {
     question: {
       textFull:
-        "Suppose you owe £100,000 on a mortgage at an Annual Percentage Rate of 5%. If you didn’t make any payments on this mortgage how much would you owe in total after five years?",
+        "Suppose you owe $100,000 on a mortgage at an Annual Percentage Rate of 5%. If you didn’t make any payments on this mortgage how much would you owe in total after five years?",
       textShort: "100k5p",
     },
     options: [
       {
-        textFull: "Less than £120,000",
+        textFull: "Less than $120,000",
         textShort: "<120k",
       },
       {
-        textFull: "Between £120,000 and £125,000",
+        textFull: "Between $120,000 and $125,000",
         textShort: "120kto125k",
       },
       {
-        textFull: "More than £125,000",
+        textFull: "More than $125,000",
         textShort: "125k+",
       },
     ],
@@ -73,7 +73,7 @@ export const POST_SURVEY_QUESTIONS = [
   {
     question: {
       textFull:
-        "Suppose you owe £200,000 on a mortgage with at an Annual Percentage Rate of 5%. If you made annual payments of £10,000 per year how long would it take to repay the whole mortgage?",
+        "Suppose you owe $200,000 on a mortgage with at an Annual Percentage Rate of 5%. If you made annual payments of $10,000 per year how long would it take to repay the whole mortgage?",
       textShort: "200k5p",
     },
     options: [

@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import * as d3 from "d3";
 import { select, format, scaleLinear, scaleBand, range, drag } from "d3";
 import { DateTime } from "luxon";
@@ -21,7 +20,6 @@ export const drawCalendar = ({
   showAmountOnBar: showAmountOnBar,
   numIconCol: numIconCol,
   numIconRow: numIconRow,
-  iconSize: iconSize,
   dragCallback: dragCallback,
   dispatchCallback: dispatchCallback,
 }) => {
@@ -65,7 +63,6 @@ export const drawCalendar = ({
 
   const yRange = [0, q.maxAmount];
 
-  const iconIdxRange = range(0, numIconRow * numIconCol);
   const iconAmtInc = q.maxAmount / (numIconRow * numIconCol);
   const iconAmtData = range(0, q.maxAmount, iconAmtInc);
 
@@ -73,6 +70,9 @@ export const drawCalendar = ({
   var yIcon;
   var xIcon;
   var yBar;
+
+  // TODO fix this hack of -4 on square size.
+  const iconSize = (tableSquareSizePx - 4) / numIconRow / 2;
 
   const thead = table
     .selectAll("#month-head")
@@ -220,7 +220,11 @@ export const drawCalendar = ({
               const color = d < dayAndAmount.amount ? "black" : "lightgrey";
               return color;
             })
-            .attr("style", "stroke: black;");
+            .attr(
+              "style",
+              (d) =>
+                `stroke: ${d < dayAndAmount.amount ? "black" : "darkgrey"};`
+            );
         },
         (update) => {
           update.select(`.${idPrefix}-circle`).attr("fill", (d) => {

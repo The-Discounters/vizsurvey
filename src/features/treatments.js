@@ -29,4 +29,7 @@ export const TREATMENTS_CSV = `treatment_id,position,view_type,interaction,varia
 16,1,calendarIcon,none,none,300,,2/1/2022,700,,5/22/2022,1100,,100,100,,,,,10,8,Calendar year view with icon and no interaction.
 16,2,calendarIcon,none,none,500,,3/1/2022,800,,6/12/2022,1100,,100,100,,,,,10,8,Calendar year view with icon and no interaction.
 16,3,calendarIcon,none,none,300,,4/1/2022,1000,,7/15/2022,1100,,100,100,,,,,10,8,Calendar year view with icon and no interaction.
+17,1,calendarIcon,none,none,300,,2/1/2022,700,,2/22/2022,1100,,100,100,,,,,8,8,Calendar month view with icon and no interaction.
+17,2,calendarIcon,none,none,500,,3/1/2022,800,,3/12/2022,1100,,100,100,,,,,8,8,Calendar month view with icon and no interaction.
+17,3,calendarIcon,none,none,300,,4/1/2022,1000,,4/15/2022,1100,,100,100,,,,,8,8,Calendar month view with icon and no interaction.
 `;
