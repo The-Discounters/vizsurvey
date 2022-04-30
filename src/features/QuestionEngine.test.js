@@ -219,7 +219,7 @@ describe("QuestionEngine tests", () => {
 
 export class TestDataFactory {
   static createQuestionLaterTitrate() {
-    return new Question({
+    return Question({
       treatmentId: 1,
       position: 1,
       viewType: ViewType.barchart,
@@ -246,7 +246,7 @@ export class TestDataFactory {
   }
 
   static createInitialAnswerTitrate() {
-    return new Answer({
+    return Answer({
       treatmentId: 1,
       viewType: ViewType.barchart,
       amountEarlier: 500,
@@ -268,7 +268,7 @@ export class TestDataFactory {
   }
 
   static createQuestionNoTitrate() {
-    return new Question({
+    return Question({
       treatmentId: 1,
       position: 1,
       viewType: ViewType.barchart,

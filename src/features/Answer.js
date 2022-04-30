@@ -1,5 +1,34 @@
-export class Answer {
-  constructor({
+export function Answer({
+  treatmentId: treatmentId,
+  position: position,
+  viewType: viewType,
+  interaction: interaction,
+  variableAmount: variableAmount,
+  amountEarlier: amountEarlier,
+  timeEarlier: timeEarlier,
+  dateEarlier: dateEarlier,
+  amountLater: amountLater,
+  timeLater: timeLater,
+  dateLater: dateLater,
+  maxAmount: maxAmount,
+  maxTime: maxTime,
+  verticalPixels: verticalPixels,
+  horizontalPixels: horizontalPixels,
+  leftMarginWidthIn: leftMarginWidthIn,
+  bottomMarginHeightIn: bottomMarginHeightIn,
+  graphWidthIn: graphWidthIn,
+  graphHeightIn: graphHeightIn,
+  widthIn: widthIn,
+  heightIn: heightIn,
+  choice: choice,
+  dragAmount: dragAmount,
+  shownTimestamp: shownTimestamp,
+  choiceTimestamp: choiceTimestamp,
+  highup: highup,
+  lowdown: lowdown,
+  participantCode: participantCode,
+}) {
+  return {
     treatmentId: treatmentId,
     position: position,
     viewType: viewType,
@@ -28,34 +57,5 @@ export class Answer {
     highup: highup,
     lowdown: lowdown,
     participantCode: participantCode,
-  }) {
-    this.treatmentId = treatmentId;
-    this.position = position;
-    this.viewType = viewType;
-    this.interaction = interaction;
-    this.variableAmount = variableAmount;
-    this.amountEarlier = amountEarlier;
-    this.timeEarlier = timeEarlier;
-    this.dateEarlier = dateEarlier;
-    this.amountLater = amountLater;
-    this.timeLater = timeLater;
-    this.dateLater = dateLater;
-    this.maxAmount = maxAmount;
-    this.maxTime = maxTime;
-    this.verticalPixels = verticalPixels;
-    this.horizontalPixels = horizontalPixels;
-    this.leftMarginWidthIn = leftMarginWidthIn;
-    this.bottomMarginHeightIn = bottomMarginHeightIn;
-    this.graphWidthIn = graphWidthIn;
-    this.graphHeightIn = graphHeightIn;
-    this.widthIn = widthIn;
-    this.heightIn = heightIn;
-    this.choice = choice;
-    this.dragAmount = dragAmount;
-    this.shownTimestamp = shownTimestamp;
-    this.choiceTimestamp = choiceTimestamp;
-    this.highup = highup;
-    this.lowdown = lowdown;
-    this.participantCode = participantCode;
-  }
+  };
 }
