@@ -77,7 +77,7 @@ const Home = () => {
         {status === StatusType.Unitialized ? (
           <p>Please wait while all treatments are loaded...</p>
         ) : (
-          <p>
+          <div>
             <a href="https://github.com/pcordone/vizsurvey">Github README.md</a>
             <br></br>
             <a href="https://github.com/pcordone">public website</a>
@@ -250,7 +250,7 @@ const Home = () => {
                 }
               </Link>
             </p>
-          </p>
+          </div>
         )}
       </div>
     );
