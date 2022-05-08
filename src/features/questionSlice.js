@@ -24,7 +24,6 @@ export const questionSlice = createSlice({
     highup: undefined,
     lowdown: undefined,
     status: StatusType.Unitialized,
-    fetchAllTreatmentsStatus: StatusType.Unitialized,
     error: null,
   }, // the initial state of our global data (under name slice)
   reducers: {
@@ -36,14 +35,15 @@ export const questionSlice = createSlice({
       state.treatmentId = action.payload;
       return state;
     },
-    fetchQuestions(state) {
-      state.treatments = io.fetchQuestions(state.treatmentId);
+    loadTreatment(state) {
+      state.treatments = io.loadTreatment(state.treatmentId);
       state.status = StatusType.Fetched;
       return state;
     },
     loadAllTreatments(state) {
       state.allTreatments = io.loadAllTreatments();
-      state.fetchAllTreatmentsStatus = StatusType.Fetched;
+      state.status = StatusType.Fetched;
+      return state;
     },
     startSurvey(state) {
       qe.startSurvey(state);
@@ -81,17 +81,13 @@ export const fetchStatus = (state) => {
   return state.questions.status;
 };
 
-export const fetchAllTreatmentsStatus = (state) => {
-  return state.questions.fetchAllTreatmentsStatus;
-};
-
 export const fetchTreatmentId = (state) => {
   return state.questions.treatmentId;
 };
 
 // Action creators are generated for each case reducer function
 export const {
-  fetchQuestions,
+  loadTreatment,
   loadAllTreatments,
   startSurvey,
   setQuestionShownTimestamp,

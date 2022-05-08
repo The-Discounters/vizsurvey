@@ -9,10 +9,10 @@ import Survey from "./components/Survey";
 import PostSurvey from "./components/PostSurvey";
 import { QueryParam } from "./components/QueryParam";
 import {
-  fetchQuestions,
   loadAllTreatments,
-  fetchAllTreatmentsStatus,
+  loadTreatment,
   fetchAllTreatments,
+  fetchStatus,
   selectAllQuestions,
   startSurvey,
   writeAnswers,
@@ -56,8 +56,15 @@ export default App;
 const Home = () => {
   const treatmentId = useSelector(fetchTreatmentId);
   const dispatch = useDispatch();
-  dispatch(loadAllTreatments());
-  const status = useSelector(fetchAllTreatmentsStatus);
+
+  // eslint-disable-next-line no-undef
+  if (process.env.REACT_APP_ENV !== "production") {
+    if (treatmentId === null) {
+      dispatch(loadAllTreatments());
+    }
+  }
+
+  const status = useSelector(fetchStatus);
   const allTreatments = useSelector(fetchAllTreatments);
 
   function testLinks() {
@@ -252,7 +259,12 @@ const Home = () => {
   return (
     <div id="home-text">
       {treatmentId === null ? (
-        testLinks()
+        // eslint-disable-next-line no-undef
+        process.env.REACT_APP_ENV !== "production" ? (
+          testLinks()
+        ) : (
+          "You were provided a bad survey link.  Please report this error to todo@todo.com"
+        )
       ) : (
         <Redirect to={`/vizsurvey/instructions?treatment_id=${treatmentId}`} />
       )}
@@ -279,7 +291,8 @@ const buttonCenterContentStyle = {
 const Instructions = () => {
   var handle = useFullScreenHandle();
   const dispatch = useDispatch();
-  dispatch(fetchQuestions());
+  const treatmentId = useSelector(fetchTreatmentId);
+  dispatch(loadTreatment(treatmentId));
   const treatment = useSelector(fetchCurrentTreatment);
 
   function surveyButtonClicked() {

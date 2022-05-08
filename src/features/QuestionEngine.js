@@ -87,7 +87,9 @@ export class QuestionEngine {
   }
 
   setLatestAnswerShown(state, action) {
-    this.latestAnswer(state).shownTimestamp = action.payload;
+    if (this.latestAnswer(state).shownTimestamp === null) {
+      this.latestAnswer(state).shownTimestamp = action.payload;
+    }
   }
 
   isLastTreatment(state) {

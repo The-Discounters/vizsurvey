@@ -19,7 +19,7 @@ export class FileIOAdapter {
     return treatments;
   };
 
-  fetchQuestions = (treatmentId) => {
+  loadTreatment = (treatmentId) => {
     treatmentId = +treatmentId;
     const questions = csvParse(TREATMENTS_CSV, (e) => {
       return this.fromCSVRow(e);

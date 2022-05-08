@@ -21,9 +21,9 @@ describe("Enum tests", () => {
 });
 
 describe("FileIOAdapter tests", () => {
-  test("Validate treatment CSV fields are loaded correctly.", async () => {
+  test("Validate loadTreatment loads CSV fields correctly.", async () => {
     const io = new FileIOAdapter();
-    var questions = await io.fetchQuestions(1);
+    var questions = await io.loadTreatment(1);
     expect(questions.length).toBe(3);
     expect(questions[0].treatmentId).toBe(1);
     expect(questions[0].position).toBe(1);
@@ -49,7 +49,7 @@ describe("FileIOAdapter tests", () => {
     expect(questions[0].comment).toBe(
       "Worded with no interaction and Read 2001 example values."
     );
-    questions = await io.fetchQuestions(3);
+    questions = await io.loadTreatment(3);
     expect(questions.length).toBe(3);
     expect(questions[0].treatmentId).toBe(3);
     expect(questions[0].position).toBe(1);
@@ -77,7 +77,13 @@ describe("FileIOAdapter tests", () => {
     );
   });
 
-  test("Validate treatment CSV fields are loaded correctly.", async () => {
+  test("Validate loadAllTreatments loads all treatments correctly.", async () => {
+    const io = new FileIOAdapter();
+    var questions = await io.loadAllTreatments();
+    expect(questions.length).toBe(34);
+  });
+
+  test("Validate answer CSV fields are written correctly.", async () => {
     const answer1 = new Answer({
       treatmentId: 1,
       position: 2,
