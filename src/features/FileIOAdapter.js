@@ -32,7 +32,7 @@ export class FileIOAdapter {
   };
 
   fromCSVRow(row) {
-    return new Question({
+    return Question({
       treatmentId: row.treatment_id ? +row.treatment_id : undefined,
       position: row.position ? +row.position : undefined,
       viewType: row.view_type ? ViewType[row.view_type] : undefined,

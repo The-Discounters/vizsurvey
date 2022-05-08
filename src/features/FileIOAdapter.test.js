@@ -84,7 +84,7 @@ describe("FileIOAdapter tests", () => {
   });
 
   test("Validate answer CSV fields are written correctly.", async () => {
-    const answer1 = new Answer({
+    const answer1 = Answer({
       treatmentId: 1,
       position: 2,
       viewType: ViewType.word,
@@ -113,7 +113,7 @@ describe("FileIOAdapter tests", () => {
       lowdown: 18,
       participantCode: "participant code",
     });
-    const answer2 = new Answer({
+    const answer2 = Answer({
       treatmentId: 13,
       position: 14,
       viewType: ViewType.barchart,

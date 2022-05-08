@@ -35,7 +35,7 @@ export class QuestionEngine {
     highup,
     lowdown
   ) {
-    const answer = new Answer({
+    const answer = Answer({
       treatmentId: treatment.treatmentId,
       position: treatment.position,
       viewType: treatment.viewType,
