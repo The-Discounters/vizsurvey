@@ -97,7 +97,7 @@ export function PostSurvey() {
                 <br />
               </div>
             ))}
-            <Button type="submit" disabled={isSubmitting}>
+            <Button id="submit" type="submit" disabled={isSubmitting}>
               Submit
             </Button>
             <br />
