@@ -44,6 +44,7 @@ const App = () => {
             <Route path="/vizsurvey/post-survey" component={PostSurvey} />
             <Route path="/vizsurvey/thankyou" component={ThankYou} />
             <Route path="/vizsurvey/*" component={Home} />
+            <Route path="/*" component={Home} />
           </Switch>
         </div>
       </BrowserRouter>
