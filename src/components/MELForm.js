@@ -85,7 +85,7 @@ export function MELForm() {
                 <ErrorMessage name="choice" component="div" />
               </span>
             </div>
-            <Button type="submit" disabled={isSubmitting}>
+            <Button id="submit" type="submit" disabled={isSubmitting}>
               Submit
             </Button>
           </Form>

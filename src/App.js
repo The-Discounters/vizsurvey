@@ -1,7 +1,7 @@
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { BrowserRouter, Route, Switch, Link, Redirect } from "react-router-dom";
-import { FullScreen, useFullScreenHandle } from "react-full-screen";
+//import { FullScreen, useFullScreenHandle } from "react-full-screen";
 import { v4 as uuidv4 } from "uuid";
 import { Button } from "react-bootstrap";
 import "./App.css";
@@ -44,6 +44,7 @@ const App = () => {
             <Route path="/vizsurvey/post-survey" component={PostSurvey} />
             <Route path="/vizsurvey/thankyou" component={ThankYou} />
             <Route path="/vizsurvey/*" component={Home} />
+            <Route path="/*" component={Home} />
           </Switch>
         </div>
       </BrowserRouter>
@@ -289,7 +290,7 @@ const buttonCenterContentStyle = {
 };
 
 const Instructions = () => {
-  var handle = useFullScreenHandle();
+  //var handle = useFullScreenHandle();
   const dispatch = useDispatch();
   const treatmentId = useSelector(fetchTreatmentId);
   dispatch(loadTreatment(treatmentId));
@@ -297,7 +298,7 @@ const Instructions = () => {
 
   function surveyButtonClicked() {
     dispatch(startSurvey());
-    handle.enter();
+    //handle.enter();
   }
 
   return (
@@ -343,17 +344,16 @@ const Instructions = () => {
           }
         })()}
       </span>
-      <FullScreen handle={handle}>
-        <Link to="/vizsurvey/survey">
-          <Button
-            size="lg"
-            onClick={surveyButtonClicked}
-            style={buttonCenterContentStyle}
-          >
-            Start Survey
-          </Button>
-        </Link>
-      </FullScreen>
+      <Link to="/vizsurvey/survey">
+        <Button
+          size="lg"
+          onClick={surveyButtonClicked}
+          style={buttonCenterContentStyle}
+          id="start-survey"
+        >
+          Start Survey
+        </Button>
+      </Link>
     </div>
   );
 };
@@ -366,42 +366,39 @@ const ThankYou = () => {
   const io = new FileIOAdapter();
   const csv = io.convertToCSV(answers);
   dispatch(writeAnswers(csv));
-  const handle = useFullScreenHandle();
+  //const handle = useFullScreenHandle();
 
   return (
-    <FullScreen handle={handle}>
-      <div id="home-text" style={divCenterContentStyle}>
-        <p>
-          Your answers have been submitted. Thank you for taking this survey!
-        </p>
-        <p>
-          Your unique ID is:&nbsp;
-          <input type="text" value={uuid} style={{ width: "340px" }} readOnly />
-          &nbsp;
-          <Button
-            size="sm"
-            onClick={() => {
-              navigator.clipboard.writeText(uuid);
-            }}
-          >
-            Copy
-          </Button>
-          . Please go back to Amazon Turk and present this unique ID in the
-          form.
-        </p>
+    //<FullScreen handle={handle}>
+    <div id="home-text" style={divCenterContentStyle}>
+      <p>Your answers have been submitted. Thank you for taking this survey!</p>
+      <p>
+        Your unique ID is:&nbsp;
+        <input type="text" value={uuid} style={{ width: "340px" }} readOnly />
+        &nbsp;
         <Button
-          size="lg"
+          size="sm"
           onClick={() => {
-            handle.enter();
-            setTimeout(() => {
-              handle.exit();
-            }, 400);
+            navigator.clipboard.writeText(uuid);
           }}
-          style={buttonCenterContentStyle}
         >
-          Exit Fullscreen
+          Copy
         </Button>
-      </div>
-    </FullScreen>
+        . Please go back to Amazon Turk and present this unique ID in the form.
+      </p>
+      <Button
+        size="lg"
+        onClick={() => {
+          //handle.enter();
+          setTimeout(() => {
+            //handle.exit();
+          }, 400);
+        }}
+        style={buttonCenterContentStyle}
+      >
+        Exit Fullscreen
+      </Button>
+    </div>
+    //</FullScreen>
   );
 };
