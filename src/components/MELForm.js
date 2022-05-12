@@ -12,6 +12,7 @@ import {
   setQuestionShownTimestamp,
   answer,
 } from "../features/questionSlice";
+import { dateToState } from "../features/ConversionUtil";
 
 export function MELForm() {
   const dispatch = useDispatch();
@@ -55,7 +56,7 @@ export function MELForm() {
             dispatch(
               answer({
                 choice: values.choice,
-                choiceTimestamp: DateTime.local(),
+                choiceTimestamp: dateToState(DateTime.utc()),
               })
             );
             setSubmitting(false);
@@ -96,7 +97,8 @@ export function MELForm() {
   if (status === StatusType.Complete) {
     return <Redirect to="/vizsurvey/post-survey" />;
   } else {
-    dispatch(setQuestionShownTimestamp(Date.now()));
+    // TODO fix this so timezone is UTC
+    dispatch(setQuestionShownTimestamp(dateToState(DateTime.now())));
     return result;
   }
 }

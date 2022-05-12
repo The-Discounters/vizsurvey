@@ -7,6 +7,7 @@ import { Question } from "./Question";
 import { InteractionType } from "./InteractionType";
 import { AmountType } from "./AmountType";
 import { Answer } from "./Answer";
+import { dateToState } from "./ConversionUtil";
 
 describe("QuestionEngine tests", () => {
   test("startSurvey should create a single answer entry for titration question.", () => {
@@ -124,7 +125,7 @@ describe("QuestionEngine tests", () => {
     qe.answerCurrentQuestion(state, {
       payload: {
         choice: ChoiceType.earlier,
-        choiceTimestamp: DateTime.local(),
+        choiceTimestamp: dateToState(DateTime.utc()),
       },
     });
     expect(state.currentQuestionIdx).toBe(0);
@@ -139,7 +140,7 @@ describe("QuestionEngine tests", () => {
     qe.answerCurrentQuestion(state, {
       payload: {
         choice: ChoiceType.later,
-        choiceTimestamp: DateTime.local(),
+        choiceTimestamp: dateToState(DateTime.utc()),
       },
     });
     expect(state.currentQuestionIdx).toBe(0);
@@ -154,7 +155,7 @@ describe("QuestionEngine tests", () => {
     qe.answerCurrentQuestion(state, {
       payload: {
         choice: ChoiceType.later,
-        choiceTimestamp: DateTime.local(),
+        choiceTimestamp: dateToState(DateTime.utc()),
       },
     });
     expect(state.currentQuestionIdx).toBe(0);
@@ -169,7 +170,7 @@ describe("QuestionEngine tests", () => {
     qe.answerCurrentQuestion(state, {
       payload: {
         choice: ChoiceType.earlier,
-        choiceTimestamp: DateTime.local(),
+        choiceTimestamp: dateToState(DateTime.utc()),
       },
     });
     expect(state.currentQuestionIdx).toBe(0);
@@ -184,7 +185,7 @@ describe("QuestionEngine tests", () => {
     qe.answerCurrentQuestion(state, {
       payload: {
         choice: ChoiceType.later,
-        choiceTimestamp: DateTime.local(),
+        choiceTimestamp: dateToState(DateTime.utc()),
       },
     });
     expect(state.currentQuestionIdx).toBe(0);
@@ -202,7 +203,7 @@ describe("QuestionEngine tests", () => {
         // Choice of later seems to make the last value of lowdown work according to the algorithm
         // I derived from the earlier steps in the example.
         choice: ChoiceType.later,
-        choiceTimestamp: DateTime.local(),
+        choiceTimestamp: dateToState(DateTime.utc()),
       },
     });
     expect(state.currentQuestionIdx).toBe(0);

@@ -6,6 +6,7 @@ import { ViewType } from "../features/ViewType";
 import { AmountType } from "../features/AmountType";
 import { ChoiceType } from "../features/ChoiceType";
 import { InteractionType } from "../features/InteractionType";
+import { dateToState } from "../features/ConversionUtil";
 
 var calendarMatrix = require("calendar-matrix");
 
@@ -32,23 +33,23 @@ export const drawCalendar = ({
   const monthDaysAmounts = monthDays.map((week) =>
     week.map((day) => {
       const date =
-        day <= 0 ? null : DateTime.local(monthDate.year, monthDate.month, day);
+        day <= 0 ? null : DateTime.utc(monthDate.year, monthDate.month, day);
       return {
         day: day,
         amount:
           date === null
             ? null
-            : date.equals(q.dateEarlier)
+            : date.toMillis() === q.dateEarlier
             ? q.amountEarlier
-            : date.equals(q.dateLater)
+            : date.toMillis() === q.dateLater
             ? q.amountLater
             : null,
         type:
           date === null
             ? AmountType.none
-            : date.equals(q.dateEarlier)
+            : date.toMillis() === q.dateEarlier
             ? AmountType.earlierAmount
-            : date.equals(q.dateLater)
+            : date.toMillis() === q.dateLater
             ? AmountType.laterAmount
             : AmountType.none,
         date: date,
@@ -310,14 +311,14 @@ export const drawCalendar = ({
                 dispatchCallback(
                   answer({
                     choice: ChoiceType.earlier,
-                    choiceTimestamp: DateTime.local(),
+                    choiceTimestamp: dateToState(DateTime.utc()),
                   })
                 );
               } else if (d.target.__data__.type === AmountType.laterAmount) {
                 dispatchCallback(
                   answer({
                     choice: ChoiceType.later,
-                    choiceTimestamp: DateTime.local(),
+                    choiceTimestamp: dateToState(DateTime.utc()),
                   })
                 );
               }

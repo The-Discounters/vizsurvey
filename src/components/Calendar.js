@@ -15,6 +15,7 @@ import { ChoiceType } from "../features/ChoiceType";
 import { StatusType } from "../features/StatusType";
 import { InteractionType } from "../features/InteractionType";
 import { drawCalendar } from "./CalendarHelper";
+import { dateToState, stateToDate } from "../features/ConversionUtil";
 
 function Calendar() {
   const dispatch = useDispatch();
@@ -33,7 +34,7 @@ function Calendar() {
             drawCalendar({
               table: table,
               question: q,
-              monthDate: q.dateEarlier,
+              monthDate: stateToDate(q.dateEarlier),
               tableWidthIn: q.widthIn,
               showYear: true,
               showAmountOnBar: true,
@@ -63,7 +64,7 @@ function Calendar() {
               dispatch(
                 answer({
                   choice: q.variableAmount,
-                  choiceTimestamp: DateTime.local(),
+                  choiceTimestamp: dateToState(DateTime.utc()),
                   dragAmount: dragAmount.amount,
                 })
               );
@@ -89,7 +90,7 @@ function Calendar() {
   if (status === StatusType.Complete) {
     return <Redirect to="/vizsurvey/post-survey" />;
   } else {
-    dispatch(setQuestionShownTimestamp(Date.now()));
+    dispatch(setQuestionShownTimestamp(dateToState(DateTime.now())));
     return result;
   }
 }

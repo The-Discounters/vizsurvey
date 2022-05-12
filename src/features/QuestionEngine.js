@@ -181,8 +181,7 @@ export class QuestionEngine {
     const { treatment, latestAnswer } =
       this.currentTreatmentAndLatestAnswer(state);
     latestAnswer.choice = action.payload.choice;
-    latestAnswer.choiceTimestamp =
-      action.payload.choiceTimestamp.toFormat(TIMESTAMP_FORMAT);
+    latestAnswer.choiceTimestamp = action.payload.choiceTimestamp;
     latestAnswer.dragAmount = action.payload.dragAmount;
     if (
       treatment.interaction === InteractionType.none ||

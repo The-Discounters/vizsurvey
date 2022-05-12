@@ -6,9 +6,10 @@ import CalendarYear from "./CalendarYear";
 import { useSelector } from "react-redux";
 import { ViewType } from "../features/ViewType";
 import { selectCurrentQuestion } from "../features/questionSlice";
+import { stateToDate } from "../features/ConversionUtil";
 
 export function Survey() {
-  const question = useSelector(selectCurrentQuestion);
+  const q = useSelector(selectCurrentQuestion);
 
   // Got from https://stackoverflow.com/questions/31217268/center-div-on-the-middle-of-screen
   const divCenterContentStyle = {
@@ -19,14 +20,16 @@ export function Survey() {
     transform: "translate(-50%, -50%)",
   };
 
-  const monthsApart = question.dateLater
-    ? question.dateLater.diff(question.dateEarlier, "months").toObject().months
+  const monthsApart = q.dateLater
+    ? stateToDate(q.dateLater)
+        .diff(stateToDate(q.dateEarlier), "months")
+        .toObject().months
     : null;
 
   return (
     <div style={divCenterContentStyle}>
       {(() => {
-        switch (question.viewType) {
+        switch (q.viewType) {
           case ViewType.barchart:
             return <BarChart />;
           case ViewType.word:

@@ -1,11 +1,11 @@
 import { csvParse } from "d3";
 // import { Octokit } from "octokit";
-import { DateTime } from "luxon";
 import { TREATMENTS_CSV } from "./treatments";
 import { Question } from "./Question";
 import { ViewType } from "./ViewType";
 import { InteractionType } from "./InteractionType";
 import { AmountType } from "./AmountType";
+import { stringToDate, dateToState, stateToDate } from "./ConversionUtil";
 
 export class FileIOAdapter {
   constructor() {}
@@ -45,12 +45,12 @@ export class FileIOAdapter {
       amountEarlier: row.amount_earlier ? +row.amount_earlier : undefined,
       timeEarlier: row.time_earlier ? +row.time_earlier : undefined,
       dateEarlier: row.date_earlier
-        ? DateTime.fromFormat(row.date_earlier, "M/d/yyyy")
+        ? dateToState(stringToDate(row.date_earlier))
         : undefined,
       amountLater: row.amount_later ? +row.amount_later : undefined,
       timeLater: row.time_later ? +row.time_later : undefined,
       dateLater: row.date_later
-        ? DateTime.fromFormat(row.date_later, "M/d/yyyy")
+        ? dateToState(stringToDate(row.date_later))
         : undefined,
       maxAmount: row.max_amount ? +row.max_amount : undefined,
       maxTime: row.max_time ? +row.max_time : undefined,
@@ -78,7 +78,21 @@ export class FileIOAdapter {
     ];
     const rows = answers.map(
       (a) =>
-        `${a.treatmentId},${a.position},${a.viewType},${a.interaction},${a.variableAmount},${a.amountEarlier},${a.timeEarlier},${a.dateEarlier},${a.amountLater},${a.timeLater},${a.dateLater},${a.maxAmount},${a.maxTime},${a.verticalPixels},${a.horizontalPixels},${a.leftMarginWidthIn},${a.bottomMarginHeightIn},${a.graphWidthIn},${a.graphHeightIn},${a.widthIn},${a.heightIn},${a.choice},${a.shownTimestamp},${a.choiceTimestamp},${a.highup},${a.lowdown},${a.participantCode}`
+        `${a.treatmentId},${a.position},${a.viewType},${a.interaction},${
+          a.variableAmount
+        },${a.amountEarlier},${a.timeEarlier},${
+          a.dateEarlier ? stateToDate(a.dateEarlier) : ""
+        },${a.amountLater},${a.timeLater},${
+          a.dateLater ? stateToDate(a.dateLater) : ""
+        },${a.maxAmount},${a.maxTime},${a.verticalPixels},${
+          a.horizontalPixels
+        },${a.leftMarginWidthIn},${a.bottomMarginHeightIn},${a.graphWidthIn},${
+          a.graphHeightIn
+        },${a.widthIn},${a.heightIn},${a.choice},${
+          a.shownTimestamp ? stateToDate(a.shownTimestamp) : ""
+        },${a.choiceTimestamp ? stateToDate(a.choiceTimestamp) : ""},${
+          a.highup
+        },${a.lowdown},${a.participantCode}`
     );
     return header.concat(rows).join("\n");
   }
@@ -95,7 +109,7 @@ export class FileIOAdapter {
     // // eslint-disable-next-line no-undef
     // const gistAnswerId = process.env.REACT_APP_GIST_ANSWER_ID;
     // const url = `PATCH /gists/${gistAnswerId}`;
-    // const now = DateTime.local().toFormat("yyyy-MM-dd-H-mm-ss-SSS-ZZZZ");
+    // const now = DateTime.utc().toFormat("yyyy-MM-dd-H-mm-ss-SSS-ZZZZ");
     // const files = {};
     // answersCSV = `${answersCSV}`;
     // files[`answers-subject-${state.questions.participant_id}-${now}.csv`] = {
