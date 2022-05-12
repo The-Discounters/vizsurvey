@@ -41,11 +41,10 @@ export function PostSurvey() {
         }}
         onSubmit={(values, { setSubmitting, resetForm }) => {
           setTimeout(() => {
-            console.log(values);
             /*dispatch(
               answer({
                 choice: values.choice,
-                choiceTimestamp: DateTime.local(),
+                choiceTimestamp: dateToState(DateTime.utc()),
               })
             );*/
             setSubmitting(false);

@@ -72,6 +72,7 @@
     "eslint-plugin-react": "^7.25.1",
     "flow-bin": "^0.158.0",
     "gh-pages": "^3.2.3",
+    "jest-watch-typeahead": "^0.6.5",
     "prettier": "^2.3.2",
     "redux-immutable-state-invariant": "^2.1.0",
     "webpack": "^4.44.2",

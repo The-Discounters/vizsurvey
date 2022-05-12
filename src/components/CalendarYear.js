@@ -18,6 +18,7 @@ import { ChoiceType } from "../features/ChoiceType";
 import { StatusType } from "../features/StatusType";
 import { InteractionType } from "../features/InteractionType";
 import { drawCalendar } from "./CalendarHelper";
+import { stateToDate, dateToState } from "../features/ConversionUtil";
 
 function Calendar() {
   const dispatch = useDispatch();
@@ -27,68 +28,68 @@ function Calendar() {
   const monthsMatrix = [
     [
       {
-        firstOfMonth: DateTime.local(q.dateEarlier.year, 1, 1),
-        hasEarlierDate: q.dateEarlier.month === 1,
-        hasLaterDate: q.dateLater.month === 1,
+        firstOfMonth: DateTime.utc(stateToDate(q.dateEarlier).year, 1, 1),
+        hasEarlierDate: stateToDate(q.dateEarlier).month === 1,
+        hasLaterDate: stateToDate(q.dateLater).month === 1,
       },
       {
-        firstOfMonth: DateTime.local(q.dateEarlier.year, 2, 1),
-        hasEarlierDate: q.dateEarlier.month === 2,
-        hasLaterDate: q.dateLater.month === 2,
+        firstOfMonth: DateTime.utc(stateToDate(q.dateEarlier).year, 2, 1),
+        hasEarlierDate: stateToDate(q.dateEarlier).month === 2,
+        hasLaterDate: stateToDate(q.dateLater).month === 2,
       },
       {
-        firstOfMonth: DateTime.local(q.dateEarlier.year, 3, 1),
-        hasEarlierDate: q.dateEarlier.month === 3,
-        hasLaterDate: q.dateLater.month === 3,
+        firstOfMonth: DateTime.utc(stateToDate(q.dateEarlier).year, 3, 1),
+        hasEarlierDate: stateToDate(q.dateEarlier).month === 3,
+        hasLaterDate: stateToDate(q.dateLater).month === 3,
       },
       {
-        firstOfMonth: DateTime.local(q.dateEarlier.year, 4, 1),
-        hasEarlierDate: q.dateEarlier.month === 4,
-        hasLaterDate: q.dateLater.month === 4,
-      },
-    ],
-    [
-      {
-        firstOfMonth: DateTime.local(q.dateEarlier.year, 5, 1),
-        hasEarlierDate: q.dateEarlier.month === 5,
-        hasLaterDate: q.dateLater.month === 5,
-      },
-      {
-        firstOfMonth: DateTime.local(q.dateEarlier.year, 6, 1),
-        hasEarlierDate: q.dateEarlier.month === 6,
-        hasLaterDate: q.dateLater.month === 6,
-      },
-      {
-        firstOfMonth: DateTime.local(q.dateEarlier.year, 7, 1),
-        hasEarlierDate: q.dateEarlier.month === 7,
-        hasLaterDate: q.dateLater.month === 7,
-      },
-      {
-        firstOfMonth: DateTime.local(q.dateEarlier.year, 8, 1),
-        hasEarlierDate: q.dateEarlier.month === 8,
-        hasLaterDate: q.dateLater.month === 8,
+        firstOfMonth: DateTime.utc(stateToDate(q.dateEarlier).year, 4, 1),
+        hasEarlierDate: stateToDate(q.dateEarlier).month === 4,
+        hasLaterDate: stateToDate(q.dateLater).month === 4,
       },
     ],
     [
       {
-        firstOfMonth: DateTime.local(q.dateEarlier.year, 9, 1),
-        hasEarlierDate: q.dateEarlier.month === 9,
-        hasLaterDate: q.dateLater.month === 9,
+        firstOfMonth: DateTime.utc(stateToDate(q.dateEarlier).year, 5, 1),
+        hasEarlierDate: stateToDate(q.dateEarlier).month === 5,
+        hasLaterDate: stateToDate(q.dateLater).month === 5,
       },
       {
-        firstOfMonth: DateTime.local(q.dateEarlier.year, 10, 1),
-        hasEarlierDate: q.dateEarlier.month === 10,
-        hasLaterDate: q.dateLater.month === 10,
+        firstOfMonth: DateTime.utc(stateToDate(q.dateEarlier).year, 6, 1),
+        hasEarlierDate: stateToDate(q.dateEarlier).month === 6,
+        hasLaterDate: stateToDate(q.dateLater).month === 6,
       },
       {
-        firstOfMonth: DateTime.local(q.dateEarlier.year, 11, 1),
-        hasEarlierDate: q.dateEarlier.month === 11,
-        hasLaterDate: q.dateLater.month === 11,
+        firstOfMonth: DateTime.utc(stateToDate(q.dateEarlier).year, 7, 1),
+        hasEarlierDate: stateToDate(q.dateEarlier).month === 7,
+        hasLaterDate: stateToDate(q.dateLater).month === 7,
       },
       {
-        firstOfMonth: DateTime.local(q.dateEarlier.year, 12, 1),
-        hasEarlierDate: q.dateEarlier.month === 12,
-        hasLaterDate: q.dateLater.month === 12,
+        firstOfMonth: DateTime.utc(stateToDate(q.dateEarlier).year, 8, 1),
+        hasEarlierDate: stateToDate(q.dateEarlier).month === 8,
+        hasLaterDate: stateToDate(q.dateLater).month === 8,
+      },
+    ],
+    [
+      {
+        firstOfMonth: DateTime.utc(stateToDate(q.dateEarlier).year, 9, 1),
+        hasEarlierDate: stateToDate(q.dateEarlier).month === 9,
+        hasLaterDate: stateToDate(q.dateLater).month === 9,
+      },
+      {
+        firstOfMonth: DateTime.utc(stateToDate(q.dateEarlier).year, 10, 1),
+        hasEarlierDate: stateToDate(q.dateEarlier).month === 10,
+        hasLaterDate: stateToDate(q.dateLater).month === 10,
+      },
+      {
+        firstOfMonth: DateTime.utc(stateToDate(q.dateEarlier).year, 11, 1),
+        hasEarlierDate: stateToDate(q.dateEarlier).month === 11,
+        hasLaterDate: stateToDate(q.dateLater).month === 11,
+      },
+      {
+        firstOfMonth: DateTime.utc(stateToDate(q.dateEarlier).year, 12, 1),
+        hasEarlierDate: stateToDate(q.dateEarlier).month === 12,
+        hasLaterDate: stateToDate(q.dateLater).month === 12,
       },
     ],
   ];
@@ -201,7 +202,7 @@ function Calendar() {
               dispatch(
                 answer({
                   choice: ChoiceType.earlier,
-                  choiceTimestamp: DateTime.local(),
+                  choiceTimestamp: dateToState(DateTime.utc()),
                 })
               );
               setSubmitting(false);
@@ -226,7 +227,7 @@ function Calendar() {
   if (status === StatusType.Complete) {
     return <Redirect to="/vizsurvey/thankyou" />;
   } else {
-    dispatch(setQuestionShownTimestamp(Date.now()));
+    dispatch(setQuestionShownTimestamp(dateToState(DateTime.now())));
     return result;
   }
 }

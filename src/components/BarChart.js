@@ -24,6 +24,7 @@ import {
   setQuestionShownTimestamp,
   answer,
 } from "../features/questionSlice";
+import { dateToState } from "../features/ConversionUtil";
 
 function BarChart() {
   const dispatch = useDispatch();
@@ -54,12 +55,6 @@ function BarChart() {
 
   // SVG thinks the resolution is 96 ppi when macbook is 132 ppi so we need to adjust by device pixel ratio
   const pixelRatioScale = window.devicePixelRatio >= 2 ? 132 / 96 : 1;
-
-  console.log(`${totalWidthUC},${totalHeightUC},${pixelRatioScale}`);
-  console.log(
-    `${leftMarginWidthIn},${bottomMarginHeightIn},${barAreaWidthIn},${barAreaHeightIn}`
-  );
-  console.log(`${totalSVGWidthIn},${totalSVGHeightIn}`);
 
   const xTickValues = Array.from(Array(q.maxTime + 1).keys());
   const data = xTickValues.map((d) => {
@@ -165,14 +160,14 @@ function BarChart() {
                     dispatch(
                       answer({
                         choice: ChoiceType.earlier,
-                        choiceTimestamp: DateTime.local(),
+                        choiceTimestamp: dateToState(DateTime.utc()),
                       })
                     );
                   } else if (d.target.__data__.amount === q.amountLater) {
                     dispatch(
                       answer({
                         choice: ChoiceType.later,
-                        choiceTimestamp: DateTime.local(),
+                        choiceTimestamp: dateToState(DateTime.utc()),
                       })
                     );
                   }
@@ -205,7 +200,7 @@ function BarChart() {
               dispatch(
                 answer({
                   choice: ChoiceType.earlier,
-                  choiceTimestamp: DateTime.local(),
+                  choiceTimestamp: dateToState(DateTime.utc()),
                 })
               );
               setSubmitting(false);
@@ -230,7 +225,7 @@ function BarChart() {
   if (status === StatusType.Complete) {
     return <Redirect to="/vizsurvey/post-survey" />;
   } else {
-    dispatch(setQuestionShownTimestamp(Date.now()));
+    dispatch(setQuestionShownTimestamp(dateToState(DateTime.now())));
     return result;
   }
 }
