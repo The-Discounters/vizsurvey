@@ -83,10 +83,14 @@ describe("FileIOAdapter tests", () => {
       variableAmount: AmountType.earlierAmount,
       amountEarlier: 3,
       timeEarlier: 4,
-      dateEarlier: DateTime.fromFormat("1/1/2001", "M/d/yyyy", {zone: "utc"}).toMillis(),
+      dateEarlier: DateTime.fromFormat("1/1/2001", "M/d/yyyy", {
+        zone: "utc",
+      }).toMillis(),
       amountLater: 5,
       timeLater: 6,
-      dateLater: DateTime.fromFormat("1/2/2001", "M/d/yyyy", {zone: "utc"}).toMillis(),
+      dateLater: DateTime.fromFormat("1/2/2001", "M/d/yyyy", {
+        zone: "utc",
+      }).toMillis(),
       maxAmount: 7,
       maxTime: 8,
       verticalPixels: 9,
@@ -98,8 +102,12 @@ describe("FileIOAdapter tests", () => {
       widthIn: 15,
       heightIn: 16,
       choice: ChoiceType.earlier,
-      shownTimestamp: DateTime.fromFormat("1/3/2001", "M/d/yyyy", {zone: "utc"}).toMillis(),
-      choiceTimestamp: DateTime.fromFormat("1/4/2001", "M/d/yyyy", {zone: "utc"}).toMillis(),
+      shownTimestamp: DateTime.fromFormat("1/3/2001", "M/d/yyyy", {
+        zone: "utc",
+      }).toMillis(),
+      choiceTimestamp: DateTime.fromFormat("1/4/2001", "M/d/yyyy", {
+        zone: "utc",
+      }).toMillis(),
       highup: 17,
       lowdown: 18,
       participantCode: "participant code",
@@ -112,10 +120,14 @@ describe("FileIOAdapter tests", () => {
       variableAmount: AmountType.earlierAmount,
       amountEarlier: 15,
       timeEarlier: 16,
-      dateEarlier: DateTime.utc(2001, 1, 2, 1, 1, 1, 1, {zone: "utc"}).toMillis(),
+      dateEarlier: DateTime.utc(2001, 1, 2, 1, 1, 1, 1, {
+        zone: "utc",
+      }).toMillis(),
       amountLater: 17,
       timeLater: 18,
-      dateLater: DateTime.utc(2001, 1, 2, 2, 1, 1, 1, {zone: "utc"}).toMillis(),
+      dateLater: DateTime.utc(2001, 1, 2, 2, 1, 1, 1, {
+        zone: "utc",
+      }).toMillis(),
       maxAmount: 19,
       maxTime: 20,
       verticalPixels: 21,
@@ -127,14 +139,20 @@ describe("FileIOAdapter tests", () => {
       widthIn: 27,
       heightIn: 28,
       choice: ChoiceType.later,
-      shownTimestamp: DateTime.utc(2001, 1, 2, 3, 1, 1, 1, {zone: "utc"}).toMillis(),
-      choiceTimestamp: DateTime.utc(2001, 1, 2, 4, 1, 1, 1, {zone: "utc"}).toMillis(),
+      shownTimestamp: DateTime.utc(2001, 1, 2, 3, 1, 1, 1, {
+        zone: "utc",
+      }).toMillis(),
+      choiceTimestamp: DateTime.utc(2001, 1, 2, 4, 1, 1, 1, {
+        zone: "utc",
+      }).toMillis(),
       highup: 29,
       lowdown: 30,
       participantCode: "participant code 2",
     });
     const answers = [answer1, answer2];
-    expect(DateTime.fromMillis(answers[0].dateEarlier, {zone: "utc"}).year).toBe(2001);
+    expect(
+      DateTime.fromMillis(answers[0].dateEarlier, { zone: "utc" }).year
+    ).toBe(2001);
     const io = new FileIOAdapter();
     const result = io.convertToCSV(answers);
     console.log(result);
