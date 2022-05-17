@@ -1,7 +1,8 @@
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { BrowserRouter, Route, Switch, Link, Redirect } from "react-router-dom";
+import { BrowserRouter, Route, Switch, Link } from "react-router-dom";
 //import { FullScreen, useFullScreenHandle } from "react-full-screen";
+import Container from "@material-ui/core/Container";
 import { v4 as uuidv4 } from "uuid";
 import { Button } from "react-bootstrap";
 import "./App.css";
@@ -16,25 +17,34 @@ import {
   selectAllQuestions,
   startSurvey,
   writeAnswers,
-  setParticipant,
+  setParticipantId,
+  fetchTreatmentId,
+  fetchParticipantId,
+  fetchSessionId,
+  fetchCurrentTreatment,
 } from "./features/questionSlice";
 import { ViewType } from "./features/ViewType";
 import { InteractionType } from "./features/InteractionType";
 import { FileIOAdapter } from "./features/FileIOAdapter";
-import {
-  fetchTreatmentId,
-  fetchCurrentTreatment,
-} from "./features/questionSlice";
 import { StatusType } from "./features/StatusType";
+import { Consent } from "./components/Consent";
 
 const App = () => {
   return (
     <div>
       <BrowserRouter>
-        <div className="App">
+        <Container>
           <QueryParam />
           <Switch>
-            <Route exact path="/vizsurvey" component={Home} />
+            {
+              // eslint-disable-next-line no-undef
+              process.env.REACT_APP_ENV !== "production" ? (
+                <Route exact path="/vizsurvey/dev" component={DevHome} />
+              ) : (
+                ""
+              )
+            }
+            <Route exact path="/vizsurvey" component={Consent} />
             <Route
               exact
               path={"/vizsurvey/instructions"}
@@ -43,10 +53,10 @@ const App = () => {
             <Route path="/vizsurvey/survey" component={Survey} />
             <Route path="/vizsurvey/post-survey" component={PostSurvey} />
             <Route path="/vizsurvey/thankyou" component={ThankYou} />
-            <Route path="/vizsurvey/*" component={Home} />
-            <Route path="/*" component={Home} />
+            <Route path="/vizsurvey/*" component={Consent} />
+            <Route path="/*" component={Consent} />
           </Switch>
-        </div>
+        </Container>
       </BrowserRouter>
     </div>
   );
@@ -54,15 +64,14 @@ const App = () => {
 
 export default App;
 
-const Home = () => {
+const DevHome = () => {
   const treatmentId = useSelector(fetchTreatmentId);
+  const participantId = useSelector(fetchParticipantId);
+  const sessionId = useSelector(fetchSessionId);
   const dispatch = useDispatch();
 
-  // eslint-disable-next-line no-undef
-  if (process.env.REACT_APP_ENV !== "production") {
-    if (treatmentId === null) {
-      dispatch(loadAllTreatments());
-    }
+  if (treatmentId === null) {
+    dispatch(loadAllTreatments());
   }
 
   const status = useSelector(fetchStatus);
@@ -83,6 +92,14 @@ const Home = () => {
             <br></br>
             <a href="https://github.com/pcordone">public website</a>
             <br></br>
+            <a href="https://release.d2ptxb5fbsc082.amplifyapp.com/">
+              Dev URL Treatment List
+            </a>
+            <p>
+              The prolific url is:
+              https://release.d2ptxb5fbsc082.amplifyapp.com/vizsurvey/instructions?participant_id=&#123;&#123;%PROLIFIC_PID%&#125;&#125;&treatment_id=&#123;&#123;%STUDY_ID%&#125;&#125;&session_id=&#123;&#123;%SESSION_ID%&#125;&#125;
+              ?PROLIFIC_PID=&#123;&#123;%PROLIFIC_PID%&#125;&#125;&STUDY_ID=&#123;&#123;%STUDY_ID%&#125;&#125;&SESSION_ID=&#123;&#123;%SESSION_ID%&#125;&#125;
+            </p>
             <p>
               Click a link below to launch one of the experiments. The
               experimental parameters are not setup yet and are configurable
@@ -259,16 +276,9 @@ const Home = () => {
 
   return (
     <div id="home-text">
-      {treatmentId === null ? (
-        // eslint-disable-next-line no-undef
-        process.env.REACT_APP_ENV !== "production" ? (
-          testLinks()
-        ) : (
-          "You were provided a bad survey link.  Please report this error to todo@todo.com"
-        )
-      ) : (
-        <Redirect to={`/vizsurvey/instructions?treatment_id=${treatmentId}`} />
-      )}
+      {treatmentId === null || participantId === null || sessionId === null
+        ? testLinks()
+        : "You were provided a bad survey link.  Please report this error to todo@todo.com"}
     </div>
   );
 };
@@ -361,7 +371,7 @@ const Instructions = () => {
 const uuid = uuidv4();
 const ThankYou = () => {
   const dispatch = useDispatch();
-  dispatch(setParticipant(uuid));
+  dispatch(setParticipantId(uuid));
   const answers = useSelector(selectAllQuestions);
   const io = new FileIOAdapter();
   const csv = io.convertToCSV(answers);

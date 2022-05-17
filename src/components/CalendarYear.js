@@ -20,7 +20,7 @@ import { InteractionType } from "../features/InteractionType";
 import { drawCalendar } from "./CalendarHelper";
 import { stateToDate, dateToState } from "../features/ConversionUtil";
 
-function Calendar() {
+export function Calendar() {
   const dispatch = useDispatch();
   const q = useSelector(selectCurrentQuestion);
   const status = useSelector(fetchStatus);

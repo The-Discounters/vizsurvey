@@ -18,6 +18,14 @@ export const questionSlice = createSlice({
     allTreatments: null,
     treatmentId: null,
     participantId: null,
+    sessionId: null,
+    countryOfResidence: null,
+    firstLanguage: null,
+    secondLanguage: null,
+    vizFamiliarity: null,
+    age: null,
+    gender: null,
+    profession: null,
     treatments: [],
     answers: [],
     currentQuestionIdx: 0,
@@ -27,13 +35,26 @@ export const questionSlice = createSlice({
     error: null,
   }, // the initial state of our global data (under name slice)
   reducers: {
-    setParticipant(state, action) {
+    setParticipantId(state, action) {
       state.participantId = action.payload;
       return state;
     },
     setTreatmentId(state, action) {
       state.treatmentId = action.payload;
       return state;
+    },
+    setSessionId(state, action) {
+      state.sessionId = action.payload;
+      return state;
+    },
+    setDemographic(state, action) {
+      state.countryOfResidence = action.payload.countryOfResidence;
+      state.firstLanguage = action.payload.firstLanguage;
+      state.secondLanguage = action.payload.secondLanguage;
+      state.vizFamiliarity = action.payload.vizFamiliarity;
+      state.age = action.payload.age;
+      state.gender = action.payload.gender;
+      state.profession = action.payload.profession;
     },
     loadTreatment(state) {
       state.treatments = io.loadTreatment(state.treatmentId);
@@ -85,6 +106,14 @@ export const fetchTreatmentId = (state) => {
   return state.questions.treatmentId;
 };
 
+export const fetchParticipantId = (state) => {
+  return state.questions.participantId;
+};
+
+export const fetchSessionId = (state) => {
+  return state.questions.sessionId;
+};
+
 // Action creators are generated for each case reducer function
 export const {
   loadTreatment,
@@ -92,8 +121,10 @@ export const {
   startSurvey,
   setQuestionShownTimestamp,
   answer,
-  setParticipant,
+  setParticipantId,
   setTreatmentId,
+  setSessionId,
+  setDemographic,
 } = questionSlice.actions;
 
 export default questionSlice.reducer;
