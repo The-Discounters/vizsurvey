@@ -39,8 +39,8 @@ export function Consent() {
   const [secondLanguage, setSecondLanguage] = React.useState("");
   const [visFamiliarity, setVisFamiliarity] = React.useState("");
   const [age, setAge] = React.useState("");
-  const [profession, setProfession] = React.useState("");
   const [gender, setGender] = React.useState("");
+  const [profession, setProfession] = React.useState("");
 
   const checkEnableSubmit = () => {
     if (
@@ -49,8 +49,8 @@ export function Consent() {
       secondLanguage.length > 1 &&
       visFamiliarity.length > 0 &&
       age.length > 1 &&
-      profession.length > 0 &&
-      gender.length > 0
+      gender.length > 0 &&
+      profession.length > 0
     ) {
       setDisableSubmit(false);
     } else {
@@ -342,8 +342,8 @@ export function Consent() {
                     secondLanguage: secondLanguage,
                     visFamiliarity: visFamiliarity,
                     age: age,
-                    profession: profession,
                     gender: gender,
+                    profession: profession,
                   })
                 );
               }}
