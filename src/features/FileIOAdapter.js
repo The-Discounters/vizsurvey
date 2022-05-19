@@ -136,7 +136,7 @@ export class FileIOAdapter {
     console.log(data.uuid);
     console.log(JSON.stringify(state));
     const fileName = "answers-" + data.uuid + ".csv";
-    if (process.env.AWS_ENABLED) {
+    if (process.env.REACT_APP_AWS_ENABLED) {
       uploadFile(fileName, data.csv);
     } else {
       console.log("AWS DISABLED");

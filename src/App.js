@@ -355,7 +355,7 @@ const Instructions = () => {
           }
         })()}
       </span>
-      {process.env.FULLSCREEN === "enabled" ? (
+      {process.env.REACT_APP_FULLSCREEN === "enabled" ? (
         <FullScreen handle={handle}>${startSurveyLink}</FullScreen>
       ) : (
         startSurveyLink
