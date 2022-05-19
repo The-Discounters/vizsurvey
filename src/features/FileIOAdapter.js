@@ -7,6 +7,39 @@ import { InteractionType } from "./InteractionType";
 import { AmountType } from "./AmountType";
 import { stringToDate, dateToState, stateToDate } from "./ConversionUtil";
 
+import AWS from "aws-sdk";
+
+const S3_BUCKET = process.env.REACT_APP_S3_BUCKET;
+const REGION = process.env.REACT_APP_REGION;
+
+AWS.config.update({
+  accessKeyId: process.env.REACT_APP_accessKeyId,
+  secretAccessKey: process.env.REACT_APP_secretAccessKey,
+});
+
+const myBucket = new AWS.S3({
+  params: { Bucket: S3_BUCKET },
+  region: REGION,
+});
+
+const uploadFile = (name, data) => {
+  const params = {
+    ACL: "public-read",
+    Body: data,
+    Bucket: S3_BUCKET,
+    Key: name,
+  };
+
+  myBucket
+    .putObject(params)
+    .on("httpUploadProgress", (evt) => {
+      console.log(Math.round((evt.loaded / evt.total) * 100));
+    })
+    .send((err) => {
+      if (err) console.log(err);
+    });
+};
+
 export class FileIOAdapter {
   constructor() {}
 
@@ -97,10 +130,18 @@ export class FileIOAdapter {
     return header.concat(rows).join("\n");
   }
 
-  writeAnswers = async (answersCSV, { getState }) => {
+  writeAnswers = async (data, { getState }) => {
     const state = getState();
-    console.log(answersCSV);
+    console.log(data.csv);
+    console.log(data.uuid);
     console.log(JSON.stringify(state));
+    const fileName = "answers-" + data.uuid + ".csv";
+    if (process.env.AWS_ENABLED) {
+      uploadFile(fileName, data.csv);
+    } else {
+      console.log("AWS DISABLED");
+      console.log(fileName);
+    }
     // const octokit = new Octokit({
     //   userAgent: "thesis_answers/v1.0",
     //   // eslint-disable-next-line no-undef

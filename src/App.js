@@ -371,7 +371,7 @@ const ThankYou = () => {
   const answers = useSelector(selectAllQuestions);
   const io = new FileIOAdapter();
   const csv = io.convertToCSV(answers);
-  dispatch(writeAnswers(csv));
+  dispatch(writeAnswers({ csv: csv, uuid: uuid }));
   const handle = useFullScreenHandle();
 
   return (

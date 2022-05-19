@@ -8,6 +8,7 @@
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^11.2.7",
     "@testing-library/user-event": "^12.8.3",
+    "aws-sdk": "^2.1135.0",
     "axios": "^0.21.4",
     "bootstrap": "^5.1.0",
     "calendar-matrix": "^1.0.0",
@@ -31,7 +32,6 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "start-auto": "export REACT_APP_GIST_QUESTION_URL=https://localhost:3002/test.txt && react-scripts start",
     "build": "react-scripts build",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d build",
@@ -39,7 +39,7 @@
     "kill": "kill -9 $(ps | grep -e 'node\\|npm' | sed -e 's/^\\([0-9]*\\).*/\\1/')",
     "cypress-open": "./node_modules/.bin/cypress open",
     "cypress-run": "./node_modules/.bin/cypress run --spec cypress/integration/vizsurvey.spec.js --browser chrome",
-    "cypress-auto": "npm run start-auto & cd test && npm start & npm run cypress-run && npm run kill",
+    "cypress-auto": "npm run start & npm run cypress-run && npm run kill",
     "format": "./node_modules/prettier/bin-prettier.js --write '**/*.js'",
     "eject": "react-scripts eject"
   },
