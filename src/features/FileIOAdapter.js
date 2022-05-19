@@ -130,17 +130,18 @@ export class FileIOAdapter {
     return header.concat(rows).join("\n");
   }
 
-  writeAnswers = async (data, { getState }) => {
-    const state = getState();
-    console.log(data.csv);
-    console.log(data.uuid);
-    console.log(JSON.stringify(state));
+  writeAnswers = async (data) => {
+    console.log("uuid: " + data.uuid);
+    console.log("csv: " + data.csv);
+
     const fileName = "answers-" + data.uuid + ".csv";
+    console.log("fileName: " + fileName);
+
     if (process.env.REACT_APP_AWS_ENABLED) {
+      console.log("AWS ENABLED");
       uploadFile(fileName, data.csv);
     } else {
       console.log("AWS DISABLED");
-      console.log(fileName);
     }
   };
 }
