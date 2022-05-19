@@ -14,6 +14,7 @@ import {
   fetchAllTreatments,
   fetchStatus,
   selectAllQuestions,
+  selectAllPostSurveyAnswers,
   startSurvey,
   writeAnswers,
   setParticipant,
@@ -369,9 +370,12 @@ const ThankYou = () => {
   const dispatch = useDispatch();
   dispatch(setParticipant(uuid));
   const answers = useSelector(selectAllQuestions);
+  const postSurveyAnswers = useSelector(selectAllPostSurveyAnswers);
   const io = new FileIOAdapter();
   const csv = io.convertToCSV(answers);
-  dispatch(writeAnswers({ csv: csv, uuid: uuid }));
+  dispatch(
+    writeAnswers({ csv: csv, uuid: uuid, postSurveyAnswers: postSurveyAnswers })
+  );
   const handle = useFullScreenHandle();
 
   return (

@@ -3,6 +3,8 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import { ChoiceType } from "../features/ChoiceType";
 import { POST_SURVEY_QUESTIONS } from "../features/postsurveyquestions";
 import { useHistory } from "react-router-dom";
+import { answerPostSurvey } from "../features/questionSlice";
+import { useDispatch } from "react-redux";
 
 const divCenterContentStyle1 = {
   position: "absolute",
@@ -13,7 +15,7 @@ const divCenterContentStyle1 = {
 };
 
 export function PostSurvey() {
-  //const dispatch = useDispatch();
+  const dispatch = useDispatch();
 
   const history = useHistory();
   const routeChange = () => {
@@ -41,12 +43,7 @@ export function PostSurvey() {
         }}
         onSubmit={(values, { setSubmitting, resetForm }) => {
           setTimeout(() => {
-            /*dispatch(
-              answer({
-                choice: values.choice,
-                choiceTimestamp: dateToState(DateTime.utc()),
-              })
-            );*/
+            dispatch(answerPostSurvey(values));
             setSubmitting(false);
             resetForm();
             routeChange();
