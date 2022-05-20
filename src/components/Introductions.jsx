@@ -1,15 +1,14 @@
 import React from "react";
 import { Button, Grid, Typography } from "@material-ui/core";
 import { useSelector, useDispatch } from "react-redux";
-import "./App.css";
-import { ViewType } from "./features/ViewType";
-import { InteractionType } from "./features/InteractionType";
+import "../App.css";
+import { ViewType } from "../features/ViewType";
 import {
   loadTreatment,
   startSurvey,
   fetchTreatmentId,
   fetchCurrentTreatment,
-} from "./features/questionSlice";
+} from "../features/questionSlice";
 
 const styles = {
   root: {
@@ -28,15 +27,23 @@ const Introduction = () => {
   dispatch(loadTreatment(treatmentId));
   const treatment = useSelector(fetchCurrentTreatment);
 
-  function startSurveyButtonClicked(event) {
+  function startSurveyButtonClicked() {
     dispatch(startSurvey());
   }
 
   const vizExplanation = (viewType) => {
     switch (viewType) {
       case ViewType.word:
-        return `Click on the radio button that contains the amount you would like to
-                    receive.`;
+        return (
+          <React.Fragment>
+            <Typography paragraph>
+              You will be presented with the choice of two amounts at two
+              differen times. Select the radio button that corresponds to your
+              choice.
+            </Typography>
+            <img src="test.png" alt="Barchart example"></img>
+          </React.Fragment>
+        );
       case ViewType.barchart:
         return (
           <React.Fragment>
@@ -150,33 +157,7 @@ const Introduction = () => {
               height: 4,
             }}
           />
-          <Typography paragraph>
-            <b>
-              {" "}
-              <span style={{ fontSize: 20 }}>&#8226;</span> Bar chart:{" "}
-            </b>
-            A bar chart can be used to represent the choice of earlier or later
-            amounts at two different times where the height of the bar will
-            represent the amount of money and the position of the bar along the
-            horizontal axis will represent the time of receiving the money.
-            Below is an example bar chart where the amounts offered are $100 at
-            one month from now or $500 six months from now.
-          </Typography>
-          <img
-            style={{ maxHeight: "240px" }}
-            src="test.png"
-            alt="Barchart example"
-          ></img>
-
-          <Typography paragraph>
-            You could also be offered the amounts on specific dates in which
-            case the horizontal axis would represent the date of receiving the
-            money.
-          </Typography>
-          <Typography paragraph>
-            <span style={{ fontSize: 20 }}>&#8226;</span> For this survey, you
-            will click on
-          </Typography>
+          {vizExplanation(treatment.viewType)}
         </Grid>
         <Grid item xs={12}>
           <Button
@@ -185,7 +166,7 @@ const Introduction = () => {
             disableRipple
             disableFocusRipple
             style={styles.button}
-            onClick={(e, p) => startSurveyButtonClicked(e)}
+            onClick={(e) => startSurveyButtonClicked(e)}
           >
             {" "}
             Start{" "}

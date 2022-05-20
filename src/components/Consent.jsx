@@ -6,11 +6,11 @@ import InputLabel from "@material-ui/core/InputLabel";
 import FormHelperText from "@material-ui/core/FormHelperText";
 import FormControl from "@material-ui/core/FormControl";
 import NativeSelect from "@material-ui/core/NativeSelect";
-import { useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import "../App.css";
 import * as countries from "./countries.json";
 import * as allLanguages from "./languages.json";
-import { setDemographic } from "../features/questionSlice";
+import { fetchStatus, setDemographic } from "../features/questionSlice";
 
 const styles = {
   root: { flexGrow: 1, margin: 0 },
@@ -41,6 +41,8 @@ export function Consent() {
   const [age, setAge] = React.useState("");
   const [gender, setGender] = React.useState("");
   const [profession, setProfession] = React.useState("");
+
+  const status = useSelector(fetchStatus);
 
   const checkEnableSubmit = () => {
     if (
@@ -148,7 +150,7 @@ export function Consent() {
     );
   };
 
-  return (
+  const content = (
     <React.Fragment>
       <div>
         <Box height="25%" alignItems="center">

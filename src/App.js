@@ -6,25 +6,21 @@ import Container from "@material-ui/core/Container";
 import { v4 as uuidv4 } from "uuid";
 import { Button } from "react-bootstrap";
 import "./App.css";
+import Introductions from "./components/Introductions";
 import Survey from "./components/Survey";
 import PostSurvey from "./components/PostSurvey";
 import { QueryParam } from "./components/QueryParam";
 import {
   loadAllTreatments,
-  loadTreatment,
   fetchAllTreatments,
   fetchStatus,
   selectAllQuestions,
-  startSurvey,
   writeAnswers,
   setParticipantId,
   fetchTreatmentId,
   fetchParticipantId,
   fetchSessionId,
-  fetchCurrentTreatment,
 } from "./features/questionSlice";
-import { ViewType } from "./features/ViewType";
-import { InteractionType } from "./features/InteractionType";
 import { FileIOAdapter } from "./features/FileIOAdapter";
 import { StatusType } from "./features/StatusType";
 import { Consent } from "./components/Consent";
@@ -48,7 +44,7 @@ const App = () => {
             <Route
               exact
               path={"/vizsurvey/instructions"}
-              component={Instructions}
+              component={Introductions}
             />
             <Route path="/vizsurvey/survey" component={Survey} />
             <Route path="/vizsurvey/post-survey" component={PostSurvey} />
@@ -299,74 +295,75 @@ const buttonCenterContentStyle = {
   transform: "translate(-50%, 0%)",
 };
 
-const Instructions = () => {
-  //var handle = useFullScreenHandle();
-  const dispatch = useDispatch();
-  const treatmentId = useSelector(fetchTreatmentId);
-  dispatch(loadTreatment(treatmentId));
-  const treatment = useSelector(fetchCurrentTreatment);
+// Delete this
+// const Instructions = () => {
+//   //var handle = useFullScreenHandle();
+//   const dispatch = useDispatch();
+//   const treatmentId = useSelector(fetchTreatmentId);
+//   dispatch(loadTreatment(treatmentId));
+//   const treatment = useSelector(fetchCurrentTreatment);
 
-  function surveyButtonClicked() {
-    dispatch(startSurvey());
-    //handle.enter();
-  }
+//   function surveyButtonClicked() {
+//     dispatch(startSurvey());
+//     //handle.enter();
+//   }
 
-  return (
-    <div id="home-text" style={divCenterContentStyle}>
-      <p>
-        You will be presented with a choice between two amounts of money to
-        recieve, one earlier and one later in time.
-      </p>
-      <span>
-        {(() => {
-          switch (treatment.viewType) {
-            case ViewType.word:
-              return `Click on the radio button that contains the amount you would like to
-                    receive.`;
-            case ViewType.barchart:
-              switch (treatment.interaction) {
-                case InteractionType.titration:
-                  return `Click on the bar that represents the amount that you would like to
-                        receive.  For each click, the amounts will be updated. Continue to
-                        click to choose an earlier and later amount.`;
-                case InteractionType.drag:
-                  return `Drag the bar to an amount that makes choosing the earlier option
-                        equal to the later option. Note that these amounts do not have to
-                        be literally equal dollar amounts (e.g. you would rather have $10
-                        today than even $20 a year from now).`;
-                case InteractionType.none:
-                  return `Click on the bar graph that represents the amount that you would
-                        like to choose.`;
-                default:
-                  return `Can not display <b>specific</b> instructions since the interaction 
-                        type was not specified in the experiment setup/`;
-              }
-            case ViewType.calendarBar:
-              return `Click on the day that contains the amount that you would like to
-                    receive.`;
-            case ViewType.calendarWord:
-              return `Provide calendar word instructions`;
-            case ViewType.calendarIcon:
-              return `Provide calendar icon grap instructions`;
-            default:
-              return `Cannot display <b>specific</b> instructions since a treatment has not
-                    been selected. Please select a treatment`;
-          }
-        })()}
-      </span>
-      <Link to="/vizsurvey/survey">
-        <Button
-          size="lg"
-          onClick={surveyButtonClicked}
-          style={buttonCenterContentStyle}
-          id="start-survey"
-        >
-          Start Survey
-        </Button>
-      </Link>
-    </div>
-  );
-};
+//   return (
+//     <div id="home-text" style={divCenterContentStyle}>
+//       <p>
+//         You will be presented with a choice between two amounts of money to
+//         recieve, one earlier and one later in time.
+//       </p>
+//       <span>
+//         {(() => {
+//           switch (treatment.viewType) {
+//             case ViewType.word:
+//               return `Click on the radio button that contains the amount you would like to
+//                     receive.`;
+//             case ViewType.barchart:
+//               switch (treatment.interaction) {
+//                 case InteractionType.titration:
+//                   return `Click on the bar that represents the amount that you would like to
+//                         receive.  For each click, the amounts will be updated. Continue to
+//                         click to choose an earlier and later amount.`;
+//                 case InteractionType.drag:
+//                   return `Drag the bar to an amount that makes choosing the earlier option
+//                         equal to the later option. Note that these amounts do not have to
+//                         be literally equal dollar amounts (e.g. you would rather have $10
+//                         today than even $20 a year from now).`;
+//                 case InteractionType.none:
+//                   return `Click on the bar graph that represents the amount that you would
+//                         like to choose.`;
+//                 default:
+//                   return `Can not display <b>specific</b> instructions since the interaction
+//                         type was not specified in the experiment setup/`;
+//               }
+//             case ViewType.calendarBar:
+//               return `Click on the day that contains the amount that you would like to
+//                     receive.`;
+//             case ViewType.calendarWord:
+//               return `Provide calendar word instructions`;
+//             case ViewType.calendarIcon:
+//               return `Provide calendar icon grap instructions`;
+//             default:
+//               return `Cannot display <b>specific</b> instructions since a treatment has not
+//                     been selected. Please select a treatment`;
+//           }
+//         })()}
+//       </span>
+//       <Link to="/vizsurvey/survey">
+//         <Button
+//           size="lg"
+//           onClick={surveyButtonClicked}
+//           style={buttonCenterContentStyle}
+//           id="start-survey"
+//         >
+//           Start Survey
+//         </Button>
+//       </Link>
+//     </div>
+//   );
+// };
 
 const uuid = uuidv4();
 const ThankYou = () => {

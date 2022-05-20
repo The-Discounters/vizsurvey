@@ -3,6 +3,13 @@ export const StatusType = {
   Fetching: "Fetching",
   Fetched: "Fetched",
   Complete: "Complete",
+  Consent: "Consent",
+  Introduction: "Introduction",
+  InstructionsPart1: "InstructionPart1",
+  Break: "Break",
+  InstructionsPart2: "InstructionsPart2",
+  PostSurveyQuestionaire: "PostSurveyQuestionaire",
+  ThankYou: "ThankYou",
   Error: "Error",
 };
 
