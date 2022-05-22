@@ -1,5 +1,5 @@
 import React from "react";
-import { Redirect } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import {
   axisBottom,
@@ -30,6 +30,7 @@ function BarChart() {
   const dispatch = useDispatch();
   const q = useSelector(selectCurrentQuestion);
   const status = useSelector(fetchStatus);
+  const navigate = useNavigate();
 
   const minScreenRes = Math.min(window.screen.height, window.screen.width);
 
@@ -223,7 +224,7 @@ function BarChart() {
   );
 
   if (status === StatusType.Complete) {
-    return <Redirect to="/vizsurvey/post-survey" />;
+    navigate("/post-survey");
   } else {
     dispatch(setQuestionShownTimestamp(dateToState(DateTime.now())));
     return result;

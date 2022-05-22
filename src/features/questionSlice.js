@@ -26,6 +26,10 @@ export const questionSlice = createSlice({
     age: null,
     gender: null,
     profession: null,
+    introductionShowTimestamp: null,
+    introductionCompletedTimestamp: null,
+    instructionsShowTimestamp: null,
+    instructionsCompletedTimestamp: null,
     treatments: [],
     answers: [],
     currentQuestionIdx: 0,
@@ -55,6 +59,7 @@ export const questionSlice = createSlice({
       state.age = action.payload.age;
       state.gender = action.payload.gender;
       state.profession = action.payload.profession;
+      state.status = StatusType.Introduction;
     },
     loadTreatment(state) {
       state.treatments = io.loadTreatment(state.treatmentId);
@@ -65,6 +70,18 @@ export const questionSlice = createSlice({
       state.allTreatments = io.loadAllTreatments();
       state.status = StatusType.Fetched;
       return state;
+    },
+    introductionShown(state, action) {
+      state.introductionShowTimestamp = action.payload;
+    },
+    introductionCompleted(state, action) {
+      state.introductionCompletedTimestamp = action.payload;
+    },
+    instructionsShown(state, action) {
+      state.instructionsShowTimestamp = action.payload;
+    },
+    instructionsCompleted(state, action) {
+      state.intructionsCompletedTimestamp = action.payload;
     },
     startSurvey(state) {
       qe.startSurvey(state);
@@ -125,6 +142,10 @@ export const {
   setTreatmentId,
   setSessionId,
   setDemographic,
+  instructionsShown,
+  instructionsCompleted,
+  introductionShown,
+  introductionCompleted,
 } = questionSlice.actions;
 
 export default questionSlice.reducer;

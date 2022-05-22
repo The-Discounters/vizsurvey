@@ -1,12 +1,13 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Button, Grid, Typography } from "@material-ui/core";
 import { useSelector, useDispatch } from "react-redux";
+import { DateTime } from "luxon";
 import "../App.css";
 import { ViewType } from "../features/ViewType";
+import { dateToState } from "../features/ConversionUtil";
 import {
-  loadTreatment,
-  startSurvey,
-  fetchTreatmentId,
+  introductionShown,
+  introductionCompleted,
   fetchCurrentTreatment,
 } from "../features/questionSlice";
 
@@ -23,12 +24,14 @@ const styles = {
 
 const Introduction = () => {
   const dispatch = useDispatch();
-  const treatmentId = useSelector(fetchTreatmentId);
-  dispatch(loadTreatment(treatmentId));
   const treatment = useSelector(fetchCurrentTreatment);
 
-  function startSurveyButtonClicked() {
-    dispatch(startSurvey());
+  useEffect(() => {
+    dispatch(introductionShown(dateToState(DateTime.utc())));
+  }, []);
+
+  function buttonClicked() {
+    dispatch(introductionCompleted(dateToState(DateTime.utc())));
   }
 
   const vizExplanation = (viewType) => {
@@ -166,7 +169,7 @@ const Introduction = () => {
             disableRipple
             disableFocusRipple
             style={styles.button}
-            onClick={(e) => startSurveyButtonClicked(e)}
+            onClick={(e) => buttonClicked(e)}
           >
             {" "}
             Start{" "}

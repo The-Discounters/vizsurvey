@@ -1,5 +1,5 @@
 import { useDispatch } from "react-redux";
-import { useLocation } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import {
   setTreatmentId,
   setSessionId,
@@ -8,13 +8,12 @@ import {
 
 export function QueryParam() {
   const dispatch = useDispatch();
-  const search = useLocation().search;
-  const searchParam = new URLSearchParams(search);
-  const treatmentId = searchParam.get("treatment_id");
+  const [searchParams] = useSearchParams();
+  const treatmentId = searchParams.get("treatment_id");
   dispatch(setTreatmentId(treatmentId));
-  const sessionId = searchParam.get("session_id");
+  const sessionId = searchParams.get("session_id");
   dispatch(setSessionId(sessionId));
-  const participantId = searchParam.get("participant_id");
+  const participantId = searchParams.get("participant_id");
   dispatch(setParticipantId(participantId));
 
   return "";

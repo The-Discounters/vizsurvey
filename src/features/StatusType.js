@@ -4,12 +4,11 @@ export const StatusType = {
   Fetched: "Fetched",
   Complete: "Complete",
   Consent: "Consent",
-  Introduction: "Introduction",
-  InstructionsPart1: "InstructionPart1",
-  Break: "Break",
-  InstructionsPart2: "InstructionsPart2",
-  PostSurveyQuestionaire: "PostSurveyQuestionaire",
-  ThankYou: "ThankYou",
+  Introduction: "introduction",
+  Instructions: "instruction",
+  Survey: "survey",
+  Questionaire: "questionaire",
+  ThankYou: "thankyou",
   Error: "Error",
 };
 

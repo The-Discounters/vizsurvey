@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { Redirect } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { select } from "d3";
 import * as d3 from "d3";
 import { Formik, Form } from "formik";
@@ -24,6 +24,7 @@ export function Calendar() {
   const dispatch = useDispatch();
   const q = useSelector(selectCurrentQuestion);
   const status = useSelector(fetchStatus);
+  const navigate = useNavigate();
 
   const monthsMatrix = [
     [
@@ -225,7 +226,7 @@ export function Calendar() {
   );
 
   if (status === StatusType.Complete) {
-    return <Redirect to="/vizsurvey/thankyou" />;
+    navigate("/thankyou");
   } else {
     dispatch(setQuestionShownTimestamp(dateToState(DateTime.now())));
     return result;

@@ -1,7 +1,9 @@
 /* eslint-disable no-unused-vars */
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import { Grid, TextField, Button, Box, Typography } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
+import { ThemeProvider } from "@material-ui/styles";
+import { createTheme, makeStyles } from "@material-ui/core/styles";
 import InputLabel from "@material-ui/core/InputLabel";
 import FormHelperText from "@material-ui/core/FormHelperText";
 import FormControl from "@material-ui/core/FormControl";
@@ -19,6 +21,12 @@ const styles = {
   textField: { marginLeft: 10, marginRight: 10, width: 200 },
   label: { margin: 0 },
 };
+
+const theme = createTheme({
+  typography: {
+    htmlFontSize: 11,
+  },
+});
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
@@ -43,6 +51,7 @@ export function Consent() {
   const [profession, setProfession] = React.useState("");
 
   const status = useSelector(fetchStatus);
+  const navigate = useNavigate();
 
   const checkEnableSubmit = () => {
     if (
@@ -150,214 +159,232 @@ export function Consent() {
     );
   };
 
-  const content = (
-    <React.Fragment>
-      <div>
-        <Box height="25%" alignItems="center">
-          <img
-            style={{ maxHeight: "240px" }}
-            src="money-on-calendar.png"
-            alt="$100 bills on calendar"
-          ></img>
-        </Box>
-        <Grid container style={styles.root} justifyContent="center">
-          <Grid item xs={12}>
-            <Typography variant="h5">
-              <i> Money earlier or later?</i> -{" "}
-              <b>Does visualization influence your choice? </b>
-              <br />
-            </Typography>
-            <hr
-              style={{
-                color: "#ea3433",
-                backgroundColor: "#ea3433",
-                height: 4,
-              }}
-            />
-            <Typography>
-              We are often faced with decisions in life to choose between two
-              options of different value at different times where a sooner
-              option is of less value than the later one. For example if I were
-              to offer you $100 dollars now vs $300 dollars three months from
-              now which would you choose?
-            </Typography>
-            <Typography paragraph>
-              <br />
-              <i>
-                {" "}
-                <u>
-                  Before you proceed, please read the following consent form
-                  carefully:{" "}
-                </u>{" "}
-              </i>
-            </Typography>
-            <div
-              className="overflow-auto"
-              style={{
-                padding: 10,
-                marginBottom: 25,
-                maxWidth: "95%",
-                maxHeight: "300px",
-              }}
-              id="consent-section"
-            >
-              <ConsentTextEn />
-            </div>
-
-            <Typography paragraph>
-              By clicking &ldquo;Next&ldquo;, you agree to participate. Before
-              we begin, please enter your:
-            </Typography>
-          </Grid>
-          <Grid item xs={12}>
-            <FormControl required style={{ maxWidth: 200, marginRight: 20 }}>
-              <InputLabel htmlFor="country-select-helper">
-                Country of residence
-              </InputLabel>
-              <NativeSelect
-                value={country}
-                onChange={(event, c, sc, scs) => {
-                  handleFieldChange(event, setCountry);
-                }}
-                inputProps={{
-                  name: "country-of-origin",
-                  id: "country-select-helper",
-                }}
-              >
-                <option> </option>
-                {countries.default.map((option) => (
-                  <option key={option.alpha3} value={option.alpha3}>
-                    {option.name}
-                  </option>
-                ))}
-              </NativeSelect>
-              <FormHelperText>The country you are living in now</FormHelperText>
-            </FormControl>
-            <FormControl required style={{ maxWidth: 200, marginRight: 20 }}>
-              <InputLabel htmlFor="first-language-select-helper">
-                First language
-              </InputLabel>
-              <NativeSelect
-                value={firstLanguage}
-                onChange={(event, c, sc, scs) => {
-                  handleFieldChange(event, setFirstLanguage);
-                }}
-                inputProps={{
-                  name: "first-language",
-                  id: "first-language-select-helper",
-                }}
-              >
-                <option> </option>
-                {languages.map((option) => (
-                  <option key={option.alpha3} value={option.alpha3}>
-                    {option["en"]}
-                  </option>
-                ))}
-              </NativeSelect>
-              <FormHelperText>The language you use the most.</FormHelperText>
-            </FormControl>
-            <FormControl required style={{ maxWidth: 200, marginRight: 20 }}>
-              <InputLabel htmlFor="second-language-select-helper">
-                Second language
-              </InputLabel>
-              <NativeSelect
-                value={secondLanguage}
-                onChange={(event, c, sc, scs) => {
-                  handleFieldChange(event, setSecondLanguage);
-                }}
-                inputProps={{
-                  name: "second-language",
-                  id: "second-language-select-helper",
-                }}
-              >
-                <option> </option>
-                {languages.map((option) => (
-                  <option key={option.alpha3} value={option.alpha3}>
-                    {option["en"]}
-                  </option>
-                ))}
-              </NativeSelect>
-              <FormHelperText>
-                The second language you use the most.
-              </FormHelperText>
-            </FormControl>
-            <FormControl required style={{ maxWidth: 200, marginRight: 20 }}>
-              <NativeSelect
-                value={visFamiliarity}
-                onChange={(event, c, sc, scs) => {
-                  handleFieldChange(event, setVisFamiliarity);
-                }}
-                name="familiarity-with-viz"
-                className={classes.selectEmpty}
-                inputProps={{ "aria-label": "Datavis experience" }}
-              >
-                <option> </option>
-                {vizFamiliarityLevel.map((option) => (
-                  <option key={option.id} value={option.id}>
-                    {option["name"]}
-                  </option>
-                ))}
-              </NativeSelect>
-              <FormHelperText>
-                Your experience with data visualizations and charts
-              </FormHelperText>
-            </FormControl>
-          </Grid>
-          <Grid item xs={12} style={{ margin: 0 }}>
-            <TextField
-              required
-              label="Age"
-              type="number"
-              onChange={(event, c, sc, scs) => {
-                handleFieldChange(event, setAge);
-              }}
-            />
-            <label style={{ marginRight: 20 }}> </label>
-            <TextField
-              required
-              label="Gender"
-              onChange={(event, c, sc, scs) => {
-                handleFieldChange(event, setGender);
-              }}
-            />
-            <label style={{ marginLeft: 25 }}> </label>
-            <TextField
-              required
-              label="Current Profession"
-              onChange={(event, c, sc, scs) => {
-                handleFieldChange(event, setProfession);
-              }}
-            />
-          </Grid>
-          <Grid item xs={12} style={{ margin: 0 }}>
-            <Button
-              variant="contained"
-              color="secondary"
-              disableRipple
-              disableFocusRipple
-              style={styles.button}
-              onClick={(e) => {
-                dispatch(
-                  setDemographic({
-                    country: country,
-                    firstLanguage: firstLanguage,
-                    secondLanguage: secondLanguage,
-                    visFamiliarity: visFamiliarity,
-                    age: age,
-                    gender: gender,
-                    profession: profession,
-                  })
-                );
-              }}
-              disabled={disableSubmit}
-            >
+  return (
+    <div>
+      <Box height="25%" alignItems="center">
+        <img
+          style={{ maxHeight: "240px" }}
+          src="money-on-calendar.png"
+          alt="$100 bills on calendar"
+        ></img>
+      </Box>
+      <Grid container style={styles.root} justifyContent="center">
+        <Grid item xs={12}>
+          <Typography variant="h5">
+            <i> Money earlier or later?</i> -{" "}
+            <b>Does visualization influence your choice? </b>
+            <br />
+          </Typography>
+          <hr
+            style={{
+              color: "#ea3433",
+              backgroundColor: "#ea3433",
+              height: 4,
+            }}
+          />
+          <Typography>
+            We are often faced with decisions in life to choose between two
+            options of different value at different times where a sooner option
+            is of less value than the later one. For example if I were to offer
+            you $100 dollars now vs $300 dollars three months from now which
+            would you choose?
+          </Typography>
+          <Typography paragraph>
+            <br />
+            <i>
               {" "}
-              Next{" "}
-            </Button>
-          </Grid>
+              <u>
+                Before you proceed, please read the following consent form
+                carefully:{" "}
+              </u>{" "}
+            </i>
+          </Typography>
+          <div
+            className="overflow-auto"
+            style={{
+              padding: 10,
+              marginBottom: 25,
+              maxWidth: "95%",
+              maxHeight: "300px",
+            }}
+            id="consent-section"
+          >
+            <ConsentTextEn />
+          </div>
+
+          <Typography paragraph>
+            By clicking &ldquo;Next&ldquo;, you agree to participate. Before we
+            begin, please enter your:
+          </Typography>
         </Grid>
-      </div>
-    </React.Fragment>
+        <Grid item xs={12}>
+          <FormControl
+            className={classes.formControl}
+            required
+            style={{ maxWidth: 200, marginRight: 20 }}
+          >
+            <InputLabel htmlFor="country-select-helper">
+              Country of residence
+            </InputLabel>
+            <NativeSelect
+              value={country}
+              onChange={(event, c, sc, scs) => {
+                handleFieldChange(event, setCountry);
+              }}
+              inputProps={{
+                name: "country-of-origin",
+                id: "country-select-helper",
+              }}
+            >
+              <option> </option>
+              {countries.default.map((option) => (
+                <option key={option.alpha3} value={option.alpha3}>
+                  {option.name}
+                </option>
+              ))}
+            </NativeSelect>
+            <FormHelperText>The country you are living in now</FormHelperText>
+          </FormControl>
+          <FormControl
+            className={classes.formControl}
+            required
+            style={{ maxWidth: 200, marginRight: 20 }}
+          >
+            <InputLabel htmlFor="first-language-select-helper">
+              First language
+            </InputLabel>
+            <NativeSelect
+              value={firstLanguage}
+              onChange={(event, c, sc, scs) => {
+                handleFieldChange(event, setFirstLanguage);
+              }}
+              inputProps={{
+                name: "first-language",
+                id: "first-language-select-helper",
+              }}
+            >
+              <option> </option>
+              {languages.map((option) => (
+                <option key={option.alpha3} value={option.alpha3}>
+                  {option["en"]}
+                </option>
+              ))}
+            </NativeSelect>
+            <FormHelperText>The language you use the most.</FormHelperText>
+          </FormControl>
+          <FormControl
+            className={classes.formControl}
+            required
+            style={{ maxWidth: 200, marginRight: 20 }}
+          >
+            <InputLabel htmlFor="second-language-select-helper">
+              Second language
+            </InputLabel>
+            <NativeSelect
+              value={secondLanguage}
+              onChange={(event, c, sc, scs) => {
+                handleFieldChange(event, setSecondLanguage);
+              }}
+              inputProps={{
+                name: "second-language",
+                id: "second-language-select-helper",
+              }}
+            >
+              <option> </option>
+              {languages.map((option) => (
+                <option key={option.alpha3} value={option.alpha3}>
+                  {option["en"]}
+                </option>
+              ))}
+            </NativeSelect>
+            <FormHelperText>
+              The second language you use the most.
+            </FormHelperText>
+          </FormControl>
+          <FormControl
+            className={classes.formControl}
+            required
+            style={{ maxWidth: 200, marginRight: 20 }}
+          >
+            <NativeSelect
+              value={visFamiliarity}
+              onChange={(event, c, sc, scs) => {
+                handleFieldChange(event, setVisFamiliarity);
+              }}
+              name="familiarity-with-viz"
+              className={classes.selectEmpty}
+              inputProps={{ "aria-label": "Datavis experience" }}
+            >
+              <option> </option>
+              {vizFamiliarityLevel.map((option) => (
+                <option key={option.id} value={option.id}>
+                  {option["name"]}
+                </option>
+              ))}
+            </NativeSelect>
+            <FormHelperText>
+              Your experience with data visualizations and charts
+            </FormHelperText>
+          </FormControl>
+        </Grid>
+        <Grid item xs={12} style={{ margin: 0 }}>
+          <TextField
+            required
+            className={classes.formControl}
+            label="Age"
+            type="number"
+            onChange={(event, c, sc, scs) => {
+              handleFieldChange(event, setAge);
+            }}
+          />
+          <label style={{ marginRight: 20 }}> </label>
+          <TextField
+            required
+            className={classes.formControl}
+            label="Gender"
+            onChange={(event, c, sc, scs) => {
+              handleFieldChange(event, setGender);
+            }}
+          />
+          <label style={{ marginLeft: 25 }}> </label>
+          <TextField
+            required
+            className={classes.formControl}
+            label="Current Profession"
+            onChange={(event, c, sc, scs) => {
+              handleFieldChange(event, setProfession);
+            }}
+          />
+        </Grid>
+        <Grid item xs={12} style={{ margin: 0 }}>
+          <Button
+            variant="contained"
+            color="secondary"
+            disableRipple
+            disableFocusRipple
+            style={styles.button}
+            onClick={(e) => {
+              dispatch(
+                setDemographic({
+                  country: country,
+                  firstLanguage: firstLanguage,
+                  secondLanguage: secondLanguage,
+                  visFamiliarity: visFamiliarity,
+                  age: age,
+                  gender: gender,
+                  profession: profession,
+                })
+              );
+              navigate(status);
+            }}
+            disabled={disableSubmit}
+          >
+            {" "}
+            Next{" "}
+          </Button>
+        </Grid>
+      </Grid>
+    </div>
   );
 }
 
