@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { BrowserRouter, Route, Routes, Link } from "react-router-dom";
 //import { FullScreen, useFullScreenHandle } from "react-full-screen";
@@ -10,7 +10,6 @@ import Introduction from "./components/Introduction";
 import Instructions from "./components/Instructions";
 import Survey from "./components/Survey";
 import PostSurvey from "./components/PostSurvey";
-import { QueryParam } from "./components/QueryParam";
 import {
   loadAllTreatments,
   fetchAllTreatments,
@@ -18,9 +17,7 @@ import {
   selectAllQuestions,
   writeAnswers,
   setParticipantId,
-  fetchTreatmentId,
-  fetchParticipantId,
-  fetchSessionId,
+  clearState,
 } from "./features/questionSlice";
 import { FileIOAdapter } from "./features/FileIOAdapter";
 import { StatusType } from "./features/StatusType";
@@ -31,22 +28,21 @@ const App = () => {
     <div>
       <BrowserRouter>
         <Container>
-          <QueryParam />
           <Routes>
             {
               // eslint-disable-next-line no-undef
               process.env.REACT_APP_ENV !== "production" ? (
-                <Route path="/dev" component={DevHome} />
+                <Route path="/dev" element={<DevHome />} />
               ) : (
                 ""
               )
             }
             <Route path="/" element={<Consent />} />
-            <Route path={StatusType.Introduction} element={<Introduction />} />
-            <Route path={StatusType.Instruction} element={<Instructions />} />
-            <Route path={StatusType.Survey} element={<Survey />} />
-            <Route path={StatusType.Questionaire} element={<PostSurvey />} />
-            <Route path={StatusType.ThankYou} element={<ThankYou />} />
+            <Route path={"introduction"} element={<Introduction />} />
+            <Route path={"instruction"} element={<Instructions />} />
+            <Route path={"survey"} element={<Survey />} />
+            <Route path={"questionaire"} element={<PostSurvey />} />
+            <Route path={"thankyou"} element={<ThankYou />} />
             <Route path="*" element={<Consent />} />
           </Routes>
         </Container>
@@ -58,14 +54,15 @@ const App = () => {
 export default App;
 
 const DevHome = () => {
-  const treatmentId = useSelector(fetchTreatmentId);
-  const participantId = useSelector(fetchParticipantId);
-  const sessionId = useSelector(fetchSessionId);
   const dispatch = useDispatch();
 
-  if (treatmentId === null) {
+  useEffect(() => {
     dispatch(loadAllTreatments());
-  }
+  }, []);
+
+  // if (treatmentId === null) {
+  //   dispatch(loadAllTreatments());
+  // }
 
   const status = useSelector(fetchStatus);
   const allTreatments = useSelector(fetchAllTreatments);
@@ -102,7 +99,13 @@ const DevHome = () => {
               type of stimulus is like.
             </p>
             <p>
-              <Link id="1" to="/instructions?treatment_id=1">
+              <Link
+                id="1"
+                to="/?participant_id=1&treatment_id=1&session_id=1"
+                onClick={() => {
+                  dispatch(clearState());
+                }}
+              >
                 {
                   allTreatments.filter(
                     (d) => d.treatmentId === 1 && d.position === 1
@@ -111,7 +114,13 @@ const DevHome = () => {
               </Link>
             </p>
             <p>
-              <Link id="2" to="/instructions?treatment_id=2">
+              <Link
+                id="2"
+                to="/?participant_id=1&treatment_id=2&session_id=1"
+                onClick={() => {
+                  dispatch(clearState());
+                }}
+              >
                 {
                   allTreatments.filter(
                     (d) => d.treatmentId === 2 && d.position === 1
@@ -120,7 +129,13 @@ const DevHome = () => {
               </Link>
             </p>
             <p>
-              <Link id="3" to="/instructions?treatment_id=3">
+              <Link
+                id="3"
+                to="/?participant_id=1&treatment_id=3&session_id=1"
+                onClick={() => {
+                  dispatch(clearState());
+                }}
+              >
                 {
                   allTreatments.filter(
                     (d) => d.treatmentId === 3 && d.position === 1
@@ -129,7 +144,13 @@ const DevHome = () => {
               </Link>
             </p>
             <p>
-              <Link id="4" to="/instructions?treatment_id=4">
+              <Link
+                id="4"
+                to="/?participant_id=1&treatment_id=4"
+                onClick={() => {
+                  dispatch(clearState());
+                }}
+              >
                 {
                   allTreatments.filter(
                     (d) => d.treatmentId === 4 && d.position === 1
@@ -138,7 +159,13 @@ const DevHome = () => {
               </Link>
             </p>
             <p>
-              <Link id="5" to="/instructions?treatment_id=5">
+              <Link
+                id="5"
+                to="/?participant_id=1&treatment_id=5&session_id=1"
+                onClick={() => {
+                  dispatch(clearState());
+                }}
+              >
                 {
                   allTreatments.filter(
                     (d) => d.treatmentId === 5 && d.position === 1
@@ -147,7 +174,13 @@ const DevHome = () => {
               </Link>
             </p>
             <p>
-              <Link id="6" to="/instructions?treatment_id=6">
+              <Link
+                id="6"
+                to="/?participant_id=1&treatment_id=6&session_id=1"
+                onClick={() => {
+                  dispatch(clearState());
+                }}
+              >
                 {
                   allTreatments.filter(
                     (d) => d.treatmentId === 6 && d.position === 1
@@ -156,7 +189,13 @@ const DevHome = () => {
               </Link>
             </p>
             <p>
-              <Link id="7" to="/instructions?treatment_id=7">
+              <Link
+                id="7"
+                to="/?participant_id=1&treatment_id=7&session_id=1"
+                onClick={() => {
+                  dispatch(clearState());
+                }}
+              >
                 {
                   allTreatments.filter(
                     (d) => d.treatmentId === 7 && d.position === 1
@@ -165,7 +204,13 @@ const DevHome = () => {
               </Link>
             </p>
             <p>
-              <Link id="8" to="/instructions?treatment_id=8">
+              <Link
+                id="8"
+                to="/?participant_id=1&treatment_id=8&session_id=1"
+                onClick={() => {
+                  dispatch(clearState());
+                }}
+              >
                 {
                   allTreatments.filter(
                     (d) => d.treatmentId === 8 && d.position === 1
@@ -174,7 +219,13 @@ const DevHome = () => {
               </Link>
             </p>
             <p>
-              <Link id="9" to="/instructions?treatment_id=9">
+              <Link
+                id="9"
+                to="/?participant_id=1&treatment_id=9&session_id=1"
+                onClick={() => {
+                  dispatch(clearState());
+                }}
+              >
                 {
                   allTreatments.filter(
                     (d) => d.treatmentId === 9 && d.position === 1
@@ -183,7 +234,13 @@ const DevHome = () => {
               </Link>
             </p>
             <p>
-              <Link id="10" to="/instructions?treatment_id=10">
+              <Link
+                id="10"
+                to="/?participant_id=1&treatment_id=10&session_id=1"
+                onClick={() => {
+                  dispatch(clearState());
+                }}
+              >
                 {
                   allTreatments.filter(
                     (d) => d.treatmentId === 10 && d.position === 1
@@ -192,7 +249,13 @@ const DevHome = () => {
               </Link>
             </p>
             <p>
-              <Link id="11" to="/instructions?treatment_id=11">
+              <Link
+                id="11"
+                to="/?participant_id=1&treatment_id=11&session_id=1"
+                onClick={() => {
+                  dispatch(clearState());
+                }}
+              >
                 {
                   allTreatments.filter(
                     (d) => d.treatmentId === 11 && d.position === 1
@@ -201,7 +264,10 @@ const DevHome = () => {
               </Link>
             </p>
             <p>
-              <Link id="12" to="/instructions?treatment_id=12">
+              <Link
+                id="12"
+                to="/?participant_id=1&treatment_id=12&session_id=1"
+              >
                 {
                   allTreatments.filter(
                     (d) => d.treatmentId === 12 && d.position === 1
@@ -210,7 +276,10 @@ const DevHome = () => {
               </Link>
             </p>
             <p>
-              <Link id="13" to="/instructions?treatment_id=13">
+              <Link
+                id="13"
+                to="/?participant_id=1&treatment_id=13&session_id=1"
+              >
                 {
                   allTreatments.filter(
                     (d) => d.treatmentId === 13 && d.position === 1
@@ -219,7 +288,10 @@ const DevHome = () => {
               </Link>
             </p>
             <p>
-              <Link id="14" to="/instructions?treatment_id=14">
+              <Link
+                id="14"
+                to="/?participant_id=1&treatment_id=14&session_id=1"
+              >
                 {
                   allTreatments.filter(
                     (d) => d.treatmentId === 14 && d.position === 1
@@ -228,7 +300,10 @@ const DevHome = () => {
               </Link>
             </p>
             <p>
-              <Link id="15" to="/instructions?treatment_id=15">
+              <Link
+                id="15"
+                to="/?participant_id=1&treatment_id=15&session_id=1"
+              >
                 {
                   allTreatments.filter(
                     (d) => d.treatmentId === 15 && d.position === 1
@@ -237,7 +312,10 @@ const DevHome = () => {
               </Link>
             </p>
             <p>
-              <Link id="16" to="/instructions?treatment_id=16">
+              <Link
+                id="16"
+                to="/?participant_id=1&treatment_id=16&session_id=1"
+              >
                 {
                   allTreatments.filter(
                     (d) => d.treatmentId === 16 && d.position === 1
@@ -246,7 +324,10 @@ const DevHome = () => {
               </Link>
             </p>
             <p>
-              <Link id="17" to="/instructions?treatment_id=17">
+              <Link
+                id="17"
+                to="/?participant_id=1&treatment_id=17&session_id=1"
+              >
                 {
                   allTreatments.filter(
                     (d) => d.treatmentId === 17 && d.position === 1
@@ -255,7 +336,10 @@ const DevHome = () => {
               </Link>
             </p>
             <p>
-              <Link id="18" to="/instructions?treatment_id=18">
+              <Link
+                id="18"
+                to="/?participant_id=1&treatment_id=18&session_id=1"
+              >
                 {
                   allTreatments.filter(
                     (d) => d.treatmentId === 18 && d.position === 1
@@ -269,13 +353,7 @@ const DevHome = () => {
     );
   }
 
-  return (
-    <div id="home-text">
-      {treatmentId === null || participantId === null || sessionId === null
-        ? testLinks()
-        : "You were provided a bad survey link.  Please report this error to todo@todo.com"}
-    </div>
-  );
+  return <div id="home-text">{testLinks()}</div>;
 };
 
 const divCenterContentStyle = {

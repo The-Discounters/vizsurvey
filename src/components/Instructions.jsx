@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button, Grid, Typography } from "@material-ui/core";
 import { useSelector, useDispatch } from "react-redux";
 import { DateTime } from "luxon";
@@ -30,9 +31,7 @@ const Instructions = () => {
     dispatch(instructionsShown(dateToState(DateTime.utc())));
   }, []);
 
-  function buttonClicked() {
-    dispatch(instructionsCompleted(dateToState(DateTime.utc())));
-  }
+  const navigate = useNavigate();
 
   const vizExplanation = (viewType) => {
     switch (viewType) {
@@ -111,7 +110,10 @@ const Instructions = () => {
             disableRipple
             disableFocusRipple
             style={styles.button}
-            onClick={(e) => buttonClicked(e)}
+            onClick={() => {
+              dispatch(instructionsCompleted(dateToState(DateTime.utc())));
+              navigate("/survey");
+            }}
           >
             {" "}
             Start{" "}

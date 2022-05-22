@@ -26,6 +26,7 @@ export const questionSlice = createSlice({
     age: null,
     gender: null,
     profession: null,
+    consentShownTimestamp: null,
     introductionShowTimestamp: null,
     introductionCompletedTimestamp: null,
     instructionsShowTimestamp: null,
@@ -71,6 +72,9 @@ export const questionSlice = createSlice({
       state.status = StatusType.Fetched;
       return state;
     },
+    consentShown(state, action) {
+      state.consentShownTimestamp = action.payload;
+    },
     introductionShown(state, action) {
       state.introductionShowTimestamp = action.payload;
     },
@@ -94,6 +98,31 @@ export const questionSlice = createSlice({
     // we define our actions on the slice of global store data here.
     answer(state, action) {
       qe.answerCurrentQuestion(state, action);
+    },
+    clearState(state) {
+      state.allTreatments = null;
+      state.treatmentId = null;
+      state.articipantId = null;
+      state.sessionId = null;
+      state.countryOfResidence = null;
+      state.firstLanguage = null;
+      state.secondLanguage = null;
+      state.vizFamiliarity = null;
+      state.age = null;
+      state.gender = null;
+      state.profession = null;
+      state.consentShownTimestamp = null;
+      state.introductionShowTimestamp = null;
+      state.introductionCompletedTimestamp = null;
+      state.instructionsShowTimestamp = null;
+      state.instructionsCompletedTimestamp = null;
+      state.treatments = [];
+      state.answers = [];
+      state.currentQuestionIdx = 0;
+      state.highup = undefined;
+      state.lowdown = undefined;
+      state.status = StatusType.Unitialized;
+      state.error = null;
     },
   },
 });
@@ -141,11 +170,13 @@ export const {
   setParticipantId,
   setTreatmentId,
   setSessionId,
+  consentShown,
   setDemographic,
   instructionsShown,
   instructionsCompleted,
   introductionShown,
   introductionCompleted,
+  clearState,
 } = questionSlice.actions;
 
 export default questionSlice.reducer;

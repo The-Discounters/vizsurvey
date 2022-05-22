@@ -1,9 +1,9 @@
 /* eslint-disable no-unused-vars */
-import React from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { DateTime } from "luxon";
 import { Grid, TextField, Button, Box, Typography } from "@material-ui/core";
-import { ThemeProvider } from "@material-ui/styles";
-import { createTheme, makeStyles } from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
 import InputLabel from "@material-ui/core/InputLabel";
 import FormHelperText from "@material-ui/core/FormHelperText";
 import FormControl from "@material-ui/core/FormControl";
@@ -12,7 +12,19 @@ import { useSelector, useDispatch } from "react-redux";
 import "../App.css";
 import * as countries from "./countries.json";
 import * as allLanguages from "./languages.json";
-import { fetchStatus, setDemographic } from "../features/questionSlice";
+import { dateToState } from "../features/ConversionUtil";
+import {
+  setTreatmentId,
+  setSessionId,
+  setParticipantId,
+  loadTreatment,
+  fetchStatus,
+  consentShown,
+  setDemographic,
+} from "../features/questionSlice";
+
+import { useSearchParams } from "react-router-dom";
+import { StatusType } from "../features/StatusType";
 
 const styles = {
   root: { flexGrow: 1, margin: 0 },
@@ -22,24 +34,34 @@ const styles = {
   label: { margin: 0 },
 };
 
-const theme = createTheme({
-  typography: {
-    htmlFontSize: 11,
-  },
-});
-
-const useStyles = makeStyles((theme) => ({
-  formControl: {
-    margin: theme.spacing(1),
-    minWidth: 120,
-  },
-  selectEmpty: {
-    marginTop: theme.spacing(2),
-  },
-}));
-
 export function Consent() {
   const dispatch = useDispatch();
+  const status = useSelector(fetchStatus);
+
+  useEffect(() => {
+    dispatch(consentShown(dateToState(DateTime.utc())));
+  }, []);
+
+  if (status === StatusType.Unitialized) {
+    const [searchParams] = useSearchParams();
+    const treatmentId = searchParams.get("treatment_id");
+    dispatch(setTreatmentId(treatmentId));
+    const sessionId = searchParams.get("session_id");
+    dispatch(setSessionId(sessionId));
+    const participantId = searchParams.get("participant_id");
+    dispatch(setParticipantId(participantId));
+    dispatch(loadTreatment());
+  }
+
+  const useStyles = makeStyles((theme) => ({
+    formControl: {
+      margin: theme.spacing(1),
+      minWidth: 120,
+    },
+    selectEmpty: {
+      marginTop: theme.spacing(2),
+    },
+  }));
   const classes = useStyles();
   const [disableSubmit, setDisableSubmit] = React.useState(true);
   const [country, setCountry] = React.useState("");
@@ -50,7 +72,6 @@ export function Consent() {
   const [gender, setGender] = React.useState("");
   const [profession, setProfession] = React.useState("");
 
-  const status = useSelector(fetchStatus);
   const navigate = useNavigate();
 
   const checkEnableSubmit = () => {
@@ -228,7 +249,7 @@ export function Consent() {
             </InputLabel>
             <NativeSelect
               value={country}
-              onChange={(event, c, sc, scs) => {
+              onChange={(event) => {
                 handleFieldChange(event, setCountry);
               }}
               inputProps={{
@@ -255,7 +276,7 @@ export function Consent() {
             </InputLabel>
             <NativeSelect
               value={firstLanguage}
-              onChange={(event, c, sc, scs) => {
+              onChange={(event) => {
                 handleFieldChange(event, setFirstLanguage);
               }}
               inputProps={{
@@ -282,7 +303,7 @@ export function Consent() {
             </InputLabel>
             <NativeSelect
               value={secondLanguage}
-              onChange={(event, c, sc, scs) => {
+              onChange={(event) => {
                 handleFieldChange(event, setSecondLanguage);
               }}
               inputProps={{
@@ -308,7 +329,7 @@ export function Consent() {
           >
             <NativeSelect
               value={visFamiliarity}
-              onChange={(event, c, sc, scs) => {
+              onChange={(event) => {
                 handleFieldChange(event, setVisFamiliarity);
               }}
               name="familiarity-with-viz"
@@ -333,7 +354,7 @@ export function Consent() {
             className={classes.formControl}
             label="Age"
             type="number"
-            onChange={(event, c, sc, scs) => {
+            onChange={(event) => {
               handleFieldChange(event, setAge);
             }}
           />
@@ -342,7 +363,7 @@ export function Consent() {
             required
             className={classes.formControl}
             label="Gender"
-            onChange={(event, c, sc, scs) => {
+            onChange={(event) => {
               handleFieldChange(event, setGender);
             }}
           />
@@ -351,7 +372,7 @@ export function Consent() {
             required
             className={classes.formControl}
             label="Current Profession"
-            onChange={(event, c, sc, scs) => {
+            onChange={(event) => {
               handleFieldChange(event, setProfession);
             }}
           />
@@ -363,7 +384,7 @@ export function Consent() {
             disableRipple
             disableFocusRipple
             style={styles.button}
-            onClick={(e) => {
+            onClick={() => {
               dispatch(
                 setDemographic({
                   country: country,
@@ -375,7 +396,7 @@ export function Consent() {
                   profession: profession,
                 })
               );
-              navigate(status);
+              navigate("/introduction");
             }}
             disabled={disableSubmit}
           >

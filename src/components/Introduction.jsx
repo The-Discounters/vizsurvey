@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button, Grid, Typography } from "@material-ui/core";
 import { useSelector, useDispatch } from "react-redux";
 import { DateTime } from "luxon";
@@ -9,6 +10,7 @@ import {
   introductionShown,
   introductionCompleted,
   fetchCurrentTreatment,
+  startSurvey,
 } from "../features/questionSlice";
 
 const styles = {
@@ -30,9 +32,7 @@ const Introduction = () => {
     dispatch(introductionShown(dateToState(DateTime.utc())));
   }, []);
 
-  function buttonClicked() {
-    dispatch(introductionCompleted(dateToState(DateTime.utc())));
-  }
+  const navigate = useNavigate();
 
   const vizExplanation = (viewType) => {
     switch (viewType) {
@@ -169,7 +169,11 @@ const Introduction = () => {
             disableRipple
             disableFocusRipple
             style={styles.button}
-            onClick={(e) => buttonClicked(e)}
+            onClick={() => {
+              dispatch(introductionCompleted(dateToState(DateTime.utc())));
+              dispatch(startSurvey());
+              navigate("/instruction");
+            }}
           >
             {" "}
             Start{" "}
