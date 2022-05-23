@@ -20,12 +20,6 @@ export function Survey() {
     transform: "translate(-50%, -50%)",
   };
 
-  const monthsApart = q.dateLater
-    ? stateToDate(q.dateLater)
-        .diff(stateToDate(q.dateEarlier), "months")
-        .toObject().months
-    : null;
-
   return (
     <div style={divCenterContentStyle}>
       {(() => {
@@ -37,7 +31,11 @@ export function Survey() {
           case ViewType.calendarBar:
           case ViewType.calendarIcon:
           case ViewType.calendarWord:
-            if (monthsApart <= 1) {
+            if (
+              stateToDate(q.dateLater)
+                .diff(stateToDate(q.dateEarlier), "months")
+                .toObject().months <= 1
+            ) {
               return <Calendar />;
             }
             return <CalendarYear />;

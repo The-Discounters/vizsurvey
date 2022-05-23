@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { Redirect } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { select } from "d3";
 import * as d3 from "d3";
 import { Formik, Form } from "formik";
@@ -20,10 +20,11 @@ import { InteractionType } from "../features/InteractionType";
 import { drawCalendar } from "./CalendarHelper";
 import { stateToDate, dateToState } from "../features/ConversionUtil";
 
-function Calendar() {
+export function Calendar() {
   const dispatch = useDispatch();
   const q = useSelector(selectCurrentQuestion);
   const status = useSelector(fetchStatus);
+  const navigate = useNavigate();
 
   const monthsMatrix = [
     [
@@ -224,12 +225,12 @@ function Calendar() {
     </div>
   );
 
-  if (status === StatusType.Complete) {
-    return <Redirect to="/vizsurvey/thankyou" />;
+  if (status === StatusType.Questionaire) {
+    navigate("/questionaire");
   } else {
-    dispatch(setQuestionShownTimestamp(dateToState(DateTime.now())));
-    return result;
+    dispatch(setQuestionShownTimestamp(dateToState(DateTime.utc())));
   }
+  return result;
 }
 
 export default Calendar;

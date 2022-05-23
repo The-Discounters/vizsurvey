@@ -111,7 +111,7 @@ describe("QuestionEngine tests", () => {
       currentQuestionIdx: 0,
       highup: 500,
       lowdown: undefined,
-      status: "Unitialized",
+      status: StatusType.Unitialized,
       error: null,
     };
 
@@ -129,7 +129,7 @@ describe("QuestionEngine tests", () => {
       },
     });
     expect(state.currentQuestionIdx).toBe(0);
-    expect(state.status).toBe("Unitialized");
+    expect(state.status).toBe(StatusType.Unitialized);
     expect(state.error).toBeNull();
     expect(state.highup).toBe(1000);
     expect(state.lowdown).toBeUndefined();
@@ -144,7 +144,7 @@ describe("QuestionEngine tests", () => {
       },
     });
     expect(state.currentQuestionIdx).toBe(0);
-    expect(state.status).toBe("Unitialized");
+    expect(state.status).toBe(StatusType.Unitialized);
     expect(state.error).toBeNull();
     expect(state.highup).toBe(1000);
     expect(state.lowdown).toBe(1250);
@@ -159,7 +159,7 @@ describe("QuestionEngine tests", () => {
       },
     });
     expect(state.currentQuestionIdx).toBe(0);
-    expect(state.status).toBe("Unitialized");
+    expect(state.status).toBe(StatusType.Unitialized);
     expect(state.error).toBeNull();
     expect(state.highup).toBe(1000);
     expect(state.lowdown).toBe(1120);
@@ -174,7 +174,7 @@ describe("QuestionEngine tests", () => {
       },
     });
     expect(state.currentQuestionIdx).toBe(0);
-    expect(state.status).toBe("Unitialized");
+    expect(state.status).toBe(StatusType.Unitialized);
     expect(state.error).toBeNull();
     expect(state.highup).toBe(1060);
     expect(state.lowdown).toBe(1120);
@@ -189,7 +189,7 @@ describe("QuestionEngine tests", () => {
       },
     });
     expect(state.currentQuestionIdx).toBe(0);
-    expect(state.status).toBe("Unitialized");
+    expect(state.status).toBe(StatusType.Unitialized);
     expect(state.error).toBeNull();
     expect(state.highup).toBe(1060);
     expect(state.lowdown).toBe(1090);
@@ -207,7 +207,7 @@ describe("QuestionEngine tests", () => {
       },
     });
     expect(state.currentQuestionIdx).toBe(0);
-    expect(state.status).toBe("Complete");
+    expect(state.status).toBe(StatusType.Complete);
     expect(state.error).toBeNull();
     expect(state.highup).toBe(1060);
     expect(state.lowdown).toBe(1070);
