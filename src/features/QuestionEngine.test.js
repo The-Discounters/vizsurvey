@@ -129,7 +129,7 @@ describe("QuestionEngine tests", () => {
       },
     });
     expect(state.currentQuestionIdx).toBe(0);
-    expect(state.status).toBe(StatusType.Unitialized);
+    expect(state.status).toBe(StatusType.Instructions);
     expect(state.error).toBeNull();
     expect(state.highup).toBe(1000);
     expect(state.lowdown).toBeUndefined();
@@ -144,7 +144,7 @@ describe("QuestionEngine tests", () => {
       },
     });
     expect(state.currentQuestionIdx).toBe(0);
-    expect(state.status).toBe(StatusType.Unitialized);
+    expect(state.status).toBe(StatusType.Instructions);
     expect(state.error).toBeNull();
     expect(state.highup).toBe(1000);
     expect(state.lowdown).toBe(1250);
@@ -159,7 +159,7 @@ describe("QuestionEngine tests", () => {
       },
     });
     expect(state.currentQuestionIdx).toBe(0);
-    expect(state.status).toBe(StatusType.Unitialized);
+    expect(state.status).toBe(StatusType.Instructions);
     expect(state.error).toBeNull();
     expect(state.highup).toBe(1000);
     expect(state.lowdown).toBe(1120);
@@ -174,7 +174,7 @@ describe("QuestionEngine tests", () => {
       },
     });
     expect(state.currentQuestionIdx).toBe(0);
-    expect(state.status).toBe(StatusType.Unitialized);
+    expect(state.status).toBe(StatusType.Instructions);
     expect(state.error).toBeNull();
     expect(state.highup).toBe(1060);
     expect(state.lowdown).toBe(1120);
@@ -189,7 +189,7 @@ describe("QuestionEngine tests", () => {
       },
     });
     expect(state.currentQuestionIdx).toBe(0);
-    expect(state.status).toBe(StatusType.Unitialized);
+    expect(state.status).toBe(StatusType.Instructions);
     expect(state.error).toBeNull();
     expect(state.highup).toBe(1060);
     expect(state.lowdown).toBe(1090);
@@ -207,14 +207,14 @@ describe("QuestionEngine tests", () => {
       },
     });
     expect(state.currentQuestionIdx).toBe(0);
-    expect(state.status).toBe(StatusType.Complete);
+    expect(state.status).toBe(StatusType.Questionaire);
     expect(state.error).toBeNull();
     expect(state.highup).toBe(1060);
     expect(state.lowdown).toBe(1070);
     expect(state.answers.length).toBe(6);
     expect(state.answers[state.answers.length - 1].amountEarlier).toBe(500);
     expect(state.answers[state.answers.length - 1].amountLater).toBe(1070);
-    expect(state.status).toBe(StatusType.Complete);
+    expect(state.status).toBe(StatusType.Questionaire);
   });
 });
 
