@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { BrowserRouter, Route, Routes, Link } from "react-router-dom";
 //import { FullScreen, useFullScreenHandle } from "react-full-screen";
 import Container from "@material-ui/core/Container";
+import { FullScreen, useFullScreenHandle } from "react-full-screen";
 import { v4 as uuidv4 } from "uuid";
 import { Button } from "react-bootstrap";
 import "./App.css";
@@ -380,39 +381,42 @@ const ThankYou = () => {
   const io = new FileIOAdapter();
   const csv = io.convertToCSV(answers);
   dispatch(writeAnswers(csv));
-  //const handle = useFullScreenHandle();
+  const handle = useFullScreenHandle();
 
   return (
-    //<FullScreen handle={handle}>
-    <div id="home-text" style={divCenterContentStyle}>
-      <p>Your answers have been submitted. Thank you for taking this survey!</p>
-      <p>
-        Your unique ID is:&nbsp;
-        <input type="text" value={uuid} style={{ width: "340px" }} readOnly />
-        &nbsp;
+    <FullScreen handle={handle}>
+      <div id="home-text" style={divCenterContentStyle}>
+        <p>
+          Your answers have been submitted. Thank you for taking this survey!
+        </p>
+        <p>
+          Your unique ID is:&nbsp;
+          <input type="text" value={uuid} style={{ width: "340px" }} readOnly />
+          &nbsp;
+          <Button
+            size="sm"
+            onClick={() => {
+              navigator.clipboard.writeText(uuid);
+            }}
+          >
+            Copy
+          </Button>
+          . Please go back to Amazon Turk and present this unique ID in the
+          form.
+        </p>
         <Button
-          size="sm"
+          size="lg"
           onClick={() => {
-            navigator.clipboard.writeText(uuid);
+            handle.enter();
+            setTimeout(() => {
+              handle.exit();
+            }, 400);
           }}
+          style={buttonCenterContentStyle}
         >
-          Copy
+          Exit Fullscreen
         </Button>
-        . Please go back to Amazon Turk and present this unique ID in the form.
-      </p>
-      <Button
-        size="lg"
-        onClick={() => {
-          //handle.enter();
-          setTimeout(() => {
-            //handle.exit();
-          }, 400);
-        }}
-        style={buttonCenterContentStyle}
-      >
-        Exit Fullscreen
-      </Button>
-    </div>
-    //</FullScreen>
+      </div>
+    </FullScreen>
   );
 };
