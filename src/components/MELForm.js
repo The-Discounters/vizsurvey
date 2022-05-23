@@ -95,13 +95,12 @@ export function MELForm() {
     </div>
   );
 
-  if (status === StatusType.Complete) {
-    navigate("/post-survey");
+  if (status === StatusType.Questionaire) {
+    navigate("/questionaire");
   } else {
-    // TODO fix this so timezone is UTC
-    dispatch(setQuestionShownTimestamp(dateToState(DateTime.now())));
-    return result;
+    dispatch(setQuestionShownTimestamp(dateToState(DateTime.utc())));
   }
+  return result;
 }
 
 export default MELForm;

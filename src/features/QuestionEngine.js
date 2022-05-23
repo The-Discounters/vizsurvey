@@ -84,6 +84,7 @@ export class QuestionEngine {
       state.highup,
       state.lowdown
     );
+    state.status = StatusType.Instructions;
   }
 
   setLatestAnswerShown(state, action) {
@@ -98,7 +99,7 @@ export class QuestionEngine {
 
   incNextQuestion(state) {
     if (this.isLastTreatment(state)) {
-      state.status = StatusType.Complete;
+      state.status = StatusType.Questionaire;
     } else {
       state.currentQuestionIdx += 1;
       const treatment = this.currentTreatment(state);

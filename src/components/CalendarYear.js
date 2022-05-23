@@ -225,12 +225,12 @@ export function Calendar() {
     </div>
   );
 
-  if (status === StatusType.Complete) {
-    navigate("/thankyou");
+  if (status === StatusType.Questionaire) {
+    navigate("/questionaire");
   } else {
-    dispatch(setQuestionShownTimestamp(dateToState(DateTime.now())));
-    return result;
+    dispatch(setQuestionShownTimestamp(dateToState(DateTime.utc())));
   }
+  return result;
 }
 
 export default Calendar;
