@@ -31,6 +31,7 @@ export const questionSlice = createSlice({
     introductionCompletedTimestamp: null,
     instructionsShowTimestamp: null,
     instructionsCompletedTimestamp: null,
+    postSurveyQuestionsShownTimestamp: null,
     treatments: [],
     answers: [],
     currentQuestionIdx: 0,
@@ -100,6 +101,9 @@ export const questionSlice = createSlice({
     answer(state, action) {
       qe.answerCurrentQuestion(state, action);
     },
+    postSurveyQuestionsShown(state, action) {
+      state.postSurveyQuestionsShownTimestamp = action.payload;
+    },
     clearState(state) {
       state.allTreatments = null;
       state.treatmentId = null;
@@ -117,6 +121,7 @@ export const questionSlice = createSlice({
       state.introductionCompletedTimestamp = null;
       state.instructionsShowTimestamp = null;
       state.instructionsCompletedTimestamp = null;
+      state.postSurveyQuestionsShownTimestamp = null;
       state.treatments = [];
       state.answers = [];
       state.currentQuestionIdx = 0;
@@ -177,6 +182,7 @@ export const {
   instructionsCompleted,
   introductionShown,
   introductionCompleted,
+  postSurveyQuestionsShown,
   clearState,
 } = questionSlice.actions;
 
