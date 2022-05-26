@@ -9,10 +9,7 @@ import { useSelector } from "react-redux";
 import { v4 as uuidv4 } from "uuid";
 import { setParticipant } from "../features/questionSlice";
 
-import {
-  selectAllQuestions,
-  writeAnswers,
-} from "../features/questionSlice";
+import { selectAllQuestions, writeAnswers } from "../features/questionSlice";
 import { FileIOAdapter } from "../features/FileIOAdapter";
 
 const divCenterContentStyle1 = {
