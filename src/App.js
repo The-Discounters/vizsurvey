@@ -2,7 +2,7 @@ import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { BrowserRouter, Route, Switch, Link, Redirect } from "react-router-dom";
 import { FullScreen, useFullScreenHandle } from "react-full-screen";
-import { v4 as uuidv4 } from "uuid";
+//import { v4 as uuidv4 } from "uuid";
 import { Button } from "react-bootstrap";
 import "./App.css";
 import Survey from "./components/Survey";
@@ -13,15 +13,15 @@ import {
   loadTreatment,
   fetchAllTreatments,
   fetchStatus,
-  selectAllQuestions,
-  selectAllPostSurveyAnswers,
+  //selectAllQuestions,
+  //selectAllPostSurveyAnswers,
   startSurvey,
-  writeAnswers,
-  setParticipant,
+  //writeAnswers,
+  getParticipant,
 } from "./features/questionSlice";
 import { ViewType } from "./features/ViewType";
 import { InteractionType } from "./features/InteractionType";
-import { FileIOAdapter } from "./features/FileIOAdapter";
+//import { FileIOAdapter } from "./features/FileIOAdapter";
 import {
   fetchTreatmentId,
   fetchCurrentTreatment,
@@ -365,17 +365,21 @@ const Instructions = () => {
   );
 };
 
-const uuid = uuidv4();
 const ThankYou = () => {
-  const dispatch = useDispatch();
-  dispatch(setParticipant(uuid));
-  const answers = useSelector(selectAllQuestions);
-  const postSurveyAnswers = useSelector(selectAllPostSurveyAnswers);
-  const io = new FileIOAdapter();
-  const csv = io.convertToCSV(answers);
+  //const dispatch = useDispatch();
+  // const answers = useSelector(selectAllQuestions);
+  const uuid = useSelector(getParticipant);
+  // const io = new FileIOAdapter();
+  // const csv = io.convertToCSV(answers);
+  /*
   dispatch(
-    writeAnswers({ csv: csv, uuid: uuid, postSurveyAnswers: postSurveyAnswers })
+    writeAnswers({
+      csv: csv,
+      uuid: uuid,
+      postSurveyAnswers: postSurveyAnswers,
+    })
   );
+*/
   const handle = useFullScreenHandle();
 
   return (
@@ -386,7 +390,13 @@ const ThankYou = () => {
         </p>
         <p>
           Your unique ID is:&nbsp;
-          <input type="text" value={uuid} style={{ width: "340px" }} readOnly />
+          <input
+            id="uuid"
+            type="text"
+            value={uuid}
+            style={{ width: "340px" }}
+            readOnly
+          />
           &nbsp;
           <Button
             size="sm"

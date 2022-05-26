@@ -73,6 +73,10 @@ export const selectAllPostSurveyAnswers = (state) => {
   return state.questions.postSurveyAnswers;
 };
 
+export const getParticipant = (state) => {
+  return state.questions.participantId;
+};
+
 export const fetchCurrentTreatment = (state) => {
   const result = qe.currentTreatment(state.questions);
   return result;

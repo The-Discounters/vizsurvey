@@ -5,6 +5,16 @@ import { POST_SURVEY_QUESTIONS } from "../features/postsurveyquestions";
 import { useHistory } from "react-router-dom";
 import { answerPostSurvey } from "../features/questionSlice";
 import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
+import { v4 as uuidv4 } from "uuid";
+import { setParticipant } from "../features/questionSlice";
+
+import {
+  selectAllQuestions,
+  //selectAllPostSurveyAnswers,
+  writeAnswers,
+} from "../features/questionSlice";
+import { FileIOAdapter } from "../features/FileIOAdapter";
 
 const divCenterContentStyle1 = {
   position: "absolute",
@@ -14,8 +24,10 @@ const divCenterContentStyle1 = {
   transform: "translate(-50%, 0%)",
 };
 
+const uuid = uuidv4();
 export function PostSurvey() {
   const dispatch = useDispatch();
+  dispatch(setParticipant(uuid));
 
   const history = useHistory();
   const routeChange = () => {
@@ -23,6 +35,9 @@ export function PostSurvey() {
     history.push(path);
   };
 
+  const answers = useSelector(selectAllQuestions);
+  const io = new FileIOAdapter();
+  const csv = io.convertToCSV(answers);
   const questions = POST_SURVEY_QUESTIONS;
   return (
     <div id="home-text" style={divCenterContentStyle1}>
@@ -46,6 +61,13 @@ export function PostSurvey() {
             dispatch(answerPostSurvey(values));
             setSubmitting(false);
             resetForm();
+            dispatch(
+              writeAnswers({
+                csv: csv,
+                uuid: uuid,
+                postSurveyAnswers: values,
+              })
+            );
             routeChange();
           }, 400);
         }}
