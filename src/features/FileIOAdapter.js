@@ -22,6 +22,17 @@ const myBucket = new AWS.S3({
   region: REGION,
 });
 
+const uploadFileOffline = (name, data) => {
+  const requestOptions = {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ name: name, data: data }),
+  };
+  fetch("http://localhost:3001/test", requestOptions)
+    .then((response) => response.json())
+    .then((data) => console.log(data));
+};
+
 const uploadFile = (name, data) => {
   const params = {
     ACL: "public-read",
@@ -147,25 +158,8 @@ export class FileIOAdapter {
       uploadFile(fileNamePostSurveyAnswers, postSurveyAnswersStr);
     } else {
       console.log("AWS DISABLED");
-      const requestOptions = {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name: fileNameAnswers, data: data.csv }),
-      };
-      fetch("http://localhost:3001/test", requestOptions)
-        .then((response) => response.json())
-        .then((data) => console.log(data));
-      const requestOptions1 = {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: fileNamePostSurveyAnswers,
-          data: postSurveyAnswersStr,
-        }),
-      };
-      fetch("http://localhost:3001/test", requestOptions1)
-        .then((response) => response.json())
-        .then((data) => console.log(data));
+      uploadFileOffline(fileNameAnswers, data.csv);
+      uploadFileOffline(fileNamePostSurveyAnswers, postSurveyAnswersStr);
     }
   };
 }
