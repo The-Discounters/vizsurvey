@@ -11,7 +11,6 @@ import { setParticipant } from "../features/questionSlice";
 
 import {
   selectAllQuestions,
-  //selectAllPostSurveyAnswers,
   writeAnswers,
 } from "../features/questionSlice";
 import { FileIOAdapter } from "../features/FileIOAdapter";
