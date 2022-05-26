@@ -2,7 +2,6 @@ import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { BrowserRouter, Route, Switch, Link, Redirect } from "react-router-dom";
 import { FullScreen, useFullScreenHandle } from "react-full-screen";
-//import { v4 as uuidv4 } from "uuid";
 import { Button } from "react-bootstrap";
 import "./App.css";
 import Survey from "./components/Survey";
@@ -13,15 +12,11 @@ import {
   loadTreatment,
   fetchAllTreatments,
   fetchStatus,
-  //selectAllQuestions,
-  //selectAllPostSurveyAnswers,
   startSurvey,
-  //writeAnswers,
   getParticipant,
 } from "./features/questionSlice";
 import { ViewType } from "./features/ViewType";
 import { InteractionType } from "./features/InteractionType";
-//import { FileIOAdapter } from "./features/FileIOAdapter";
 import {
   fetchTreatmentId,
   fetchCurrentTreatment,
@@ -366,20 +361,7 @@ const Instructions = () => {
 };
 
 const ThankYou = () => {
-  //const dispatch = useDispatch();
-  // const answers = useSelector(selectAllQuestions);
   const uuid = useSelector(getParticipant);
-  // const io = new FileIOAdapter();
-  // const csv = io.convertToCSV(answers);
-  /*
-  dispatch(
-    writeAnswers({
-      csv: csv,
-      uuid: uuid,
-      postSurveyAnswers: postSurveyAnswers,
-    })
-  );
-*/
   const handle = useFullScreenHandle();
 
   return (
