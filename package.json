@@ -39,7 +39,7 @@
     "kill": "kill -9 $(ps | grep -e 'node\\|npm' | sed -e 's/^\\([0-9]*\\).*/\\1/')",
     "cypress-open": "./node_modules/.bin/cypress open",
     "cypress-run": "./node_modules/.bin/cypress run --spec cypress/integration/vizsurvey.spec.js --browser chrome",
-    "cypress-auto": "npm run start & npm run cypress-run && npm run kill",
+    "cypress-auto": "npm run start & cd test && npm start & npm run cypress-run && npm run kill",
     "format": "./node_modules/prettier/bin-prettier.js --write '**/*.js'",
     "eject": "react-scripts eject"
   },
