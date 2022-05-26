@@ -1,26 +1,19 @@
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { BrowserRouter, Route, Routes, Link } from "react-router-dom";
-//import { FullScreen, useFullScreenHandle } from "react-full-screen";
 import Container from "@material-ui/core/Container";
-import { FullScreen, useFullScreenHandle } from "react-full-screen";
-import { v4 as uuidv4 } from "uuid";
-import { Button } from "react-bootstrap";
 import "./App.css";
 import Introduction from "./components/Introduction";
 import Instructions from "./components/Instructions";
 import Survey from "./components/Survey";
 import PostSurvey from "./components/PostSurvey";
+import ThankYou from "./components/ThankYou";
 import {
   loadAllTreatments,
   fetchAllTreatments,
   fetchStatus,
-  selectAllQuestions,
-  writeAnswers,
-  setParticipantId,
   clearState,
 } from "./features/questionSlice";
-import { FileIOAdapter } from "./features/FileIOAdapter";
 import { StatusType } from "./features/StatusType";
 import { Consent } from "./components/Consent";
 
@@ -355,68 +348,4 @@ const DevHome = () => {
   }
 
   return <div id="home-text">{testLinks()}</div>;
-};
-
-const divCenterContentStyle = {
-  position: "absolute",
-  top: "50%",
-  left: "50%",
-  width: "500px",
-  marginRight: "-50%",
-  transform: "translate(-50%, -50%)",
-};
-
-const buttonCenterContentStyle = {
-  position: "absolute",
-  left: "50%",
-  marginRight: "-50%",
-  transform: "translate(-50%, 0%)",
-};
-
-const uuid = uuidv4();
-const ThankYou = () => {
-  const dispatch = useDispatch();
-  dispatch(setParticipantId(uuid));
-  const answers = useSelector(selectAllQuestions);
-  const io = new FileIOAdapter();
-  const csv = io.convertToCSV(answers);
-  dispatch(writeAnswers(csv));
-  const handle = useFullScreenHandle();
-
-  return (
-    <FullScreen handle={handle}>
-      <div id="home-text" style={divCenterContentStyle}>
-        <p>
-          Your answers have been submitted. Thank you for taking this survey!
-        </p>
-        <p>
-          Your unique ID is:&nbsp;
-          <input type="text" value={uuid} style={{ width: "340px" }} readOnly />
-          &nbsp;
-          <Button
-            size="sm"
-            onClick={() => {
-              navigator.clipboard.writeText(uuid);
-            }}
-          >
-            Copy
-          </Button>
-          . Please go back to Amazon Turk and present this unique ID in the
-          form.
-        </p>
-        <Button
-          size="lg"
-          onClick={() => {
-            handle.enter();
-            setTimeout(() => {
-              handle.exit();
-            }, 400);
-          }}
-          style={buttonCenterContentStyle}
-        >
-          Exit Fullscreen
-        </Button>
-      </div>
-    </FullScreen>
-  );
 };
