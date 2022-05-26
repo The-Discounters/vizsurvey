@@ -20,7 +20,6 @@ export const questionSlice = createSlice({
     participantId: null,
     treatments: [],
     answers: [],
-    postSurveyAnswers: null,
     currentQuestionIdx: 0,
     highup: undefined,
     lowdown: undefined,
@@ -58,19 +57,11 @@ export const questionSlice = createSlice({
     answer(state, action) {
       qe.answerCurrentQuestion(state, action);
     },
-    answerPostSurvey(state, action) {
-      state.postSurveyAnswers = action.payload;
-      return state;
-    },
   },
 });
 
 export const selectAllQuestions = (state) => {
   return qe.allQuestions(state.questions);
-};
-
-export const selectAllPostSurveyAnswers = (state) => {
-  return state.questions.postSurveyAnswers;
 };
 
 export const getParticipant = (state) => {
@@ -105,7 +96,6 @@ export const {
   startSurvey,
   setQuestionShownTimestamp,
   answer,
-  answerPostSurvey,
   setParticipant,
   setTreatmentId,
 } = questionSlice.actions;

@@ -3,9 +3,7 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import { ChoiceType } from "../features/ChoiceType";
 import { POST_SURVEY_QUESTIONS } from "../features/postsurveyquestions";
 import { useHistory } from "react-router-dom";
-import { answerPostSurvey } from "../features/questionSlice";
-import { useDispatch } from "react-redux";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { v4 as uuidv4 } from "uuid";
 import { setParticipant } from "../features/questionSlice";
 
@@ -54,7 +52,6 @@ export function PostSurvey() {
         }}
         onSubmit={(values, { setSubmitting, resetForm }) => {
           setTimeout(() => {
-            dispatch(answerPostSurvey(values));
             setSubmitting(false);
             resetForm();
             dispatch(
