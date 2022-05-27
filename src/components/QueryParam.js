@@ -1,12 +1,21 @@
 import { useDispatch } from "react-redux";
-import { useLocation } from "react-router-dom";
-import { setTreatmentId } from "../features/questionSlice";
+import { useSearchParams } from "react-router-dom";
+import {
+  setTreatmentId,
+  setSessionId,
+  setParticipantId,
+} from "../features/questionSlice";
 
 export function QueryParam() {
   const dispatch = useDispatch();
-  const search = useLocation().search;
-  const treatmentId = new URLSearchParams(search).get("treatment_id");
+  const [searchParams] = useSearchParams();
+  const treatmentId = searchParams.get("treatment_id");
   dispatch(setTreatmentId(treatmentId));
+  const sessionId = searchParams.get("session_id");
+  dispatch(setSessionId(sessionId));
+  const participantId = searchParams.get("participant_id");
+  dispatch(setParticipantId(participantId));
+
   return "";
 }
 

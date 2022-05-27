@@ -1,5 +1,5 @@
 import React from "react";
-import { Redirect } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { DateTime } from "luxon";
 import { Formik, Form, Field, ErrorMessage } from "formik";
@@ -18,6 +18,7 @@ export function MELForm() {
   const dispatch = useDispatch();
   const q = useSelector(selectCurrentQuestion);
   const status = useSelector(fetchStatus);
+  const navigate = useNavigate();
 
   const dpi = window.devicePixelRatio >= 2 ? 132 : 96;
 
@@ -94,13 +95,12 @@ export function MELForm() {
     </div>
   );
 
-  if (status === StatusType.Complete) {
-    return <Redirect to="/vizsurvey/post-survey" />;
+  if (status === StatusType.Questionaire) {
+    navigate("/questionaire");
   } else {
-    // TODO fix this so timezone is UTC
-    dispatch(setQuestionShownTimestamp(dateToState(DateTime.now())));
-    return result;
+    dispatch(setQuestionShownTimestamp(dateToState(DateTime.utc())));
   }
+  return result;
 }
 
 export default MELForm;

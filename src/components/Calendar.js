@@ -1,6 +1,6 @@
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { Redirect } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Formik, Form } from "formik";
 import { Button } from "react-bootstrap";
 import { DateTime } from "luxon";
@@ -17,10 +17,11 @@ import { InteractionType } from "../features/InteractionType";
 import { drawCalendar } from "./CalendarHelper";
 import { dateToState, stateToDate } from "../features/ConversionUtil";
 
-function Calendar() {
+export function Calendar() {
   const dispatch = useDispatch();
   const q = useSelector(selectCurrentQuestion);
   const status = useSelector(fetchStatus);
+  const navigate = useNavigate();
 
   var dragAmount = null;
 
@@ -87,12 +88,12 @@ function Calendar() {
     </div>
   );
 
-  if (status === StatusType.Complete) {
-    return <Redirect to="/vizsurvey/post-survey" />;
+  if (status === StatusType.Questionaire) {
+    navigate("/questionaire");
   } else {
-    dispatch(setQuestionShownTimestamp(dateToState(DateTime.now())));
-    return result;
+    dispatch(setQuestionShownTimestamp(dateToState(DateTime.utc())));
   }
+  return result;
 }
 
 export default Calendar;

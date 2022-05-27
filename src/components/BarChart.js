@@ -1,5 +1,5 @@
 import React from "react";
-import { Redirect } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import {
   axisBottom,
@@ -30,11 +30,10 @@ function BarChart() {
   const dispatch = useDispatch();
   const q = useSelector(selectCurrentQuestion);
   const status = useSelector(fetchStatus);
+  const navigate = useNavigate();
 
   const minScreenRes = Math.min(window.screen.height, window.screen.width);
 
-  const totalWidthUC = minScreenRes; //q.horizontalPixels; // may want to get rid of this configuation and just make it 100
-  const totalHeightUC = minScreenRes; //q.verticalPixels; // may want to get rid of this configuation and just make it 100
   const leftMarginWidthIn = q.leftMarginWidthIn;
   const bottomMarginHeightIn = q.bottomMarginHeightIn;
   const barAreaWidthIn = q.graphWidthIn;
@@ -43,15 +42,15 @@ function BarChart() {
   const totalSVGWidthIn = leftMarginWidthIn + barAreaWidthIn;
   const totalSVGHeightIn = bottomMarginHeightIn + barAreaHeightIn;
 
-  const scaleHorizUCPerIn = totalWidthUC / totalSVGWidthIn;
-  const scaleVertUCPerIn = totalHeightUC / totalSVGHeightIn;
+  const scaleHorizUCPerIn = minScreenRes / totalSVGWidthIn;
+  const scaleVertUCPerIn = minScreenRes / totalSVGHeightIn;
 
   const leftOffSetUC = scaleHorizUCPerIn * leftMarginWidthIn;
   const bottomOffSetUC = scaleVertUCPerIn * bottomMarginHeightIn;
-  const barAreaWidthUC = totalWidthUC - leftOffSetUC;
-  const barAreaHeightUC = totalHeightUC - bottomOffSetUC;
+  const barAreaWidthUC = minScreenRes - leftOffSetUC;
+  const barAreaHeightUC = minScreenRes - bottomOffSetUC;
 
-  const barWidth = 0.15 * scaleHorizUCPerIn; // bars are 0.1 inch wide
+  const barWidth = 0.5 * scaleHorizUCPerIn; // bars are 0.1 inch wide
 
   // SVG thinks the resolution is 96 ppi when macbook is 132 ppi so we need to adjust by device pixel ratio
   const pixelRatioScale = window.devicePixelRatio >= 2 ? 132 / 96 : 1;
@@ -80,7 +79,7 @@ function BarChart() {
       <svg
         width={`${totalSVGWidthIn * pixelRatioScale}in`}
         height={`${totalSVGHeightIn * pixelRatioScale}in`}
-        viewBox={`0 0 ${totalWidthUC} ${totalHeightUC}`}
+        viewBox={`0 0 ${minScreenRes} ${minScreenRes}`}
         ref={useD3(
           (svg) => {
             var chart = svg
@@ -102,7 +101,9 @@ function BarChart() {
               .join("g")
               .attr(
                 "transform",
-                `translate(${leftOffSetUC},${barAreaHeightUC})`
+                `translate(${leftOffSetUC / 2},${
+                  barAreaHeightUC + bottomOffSetUC / 2
+                })`
               )
               .attr("class", "x-axis")
               .call(
@@ -117,26 +118,47 @@ function BarChart() {
               .data([null])
               .join("g")
               .attr("class", "y-axis")
-              .attr("transform", `translate(${leftOffSetUC},0)`)
+              .attr(
+                "transform",
+                `translate(${leftOffSetUC / 2},${bottomOffSetUC / 2})`
+              )
               .call(
                 //axisLeft(y).tickValues(yTickValues).tickFormat(d3.format("$,.2f"))
                 axisLeft(y).tickValues(yTickValues).tickFormat(format("$,.0f"))
               );
 
-            // const yLabelG = svg
-            //   .select("#y-axis-label")
-            //   .data([1])
-            //   .join("g")
-            //   .attr("transform", "rotate(-90)");
+            svg
+              .selectAll(".y-axis-label")
+              .data([null])
+              .join("g")
+              .attr("transform", "rotate(-90)")
+              .attr("class", "y-axis-label")
+              .selectAll(".y-axis-text")
+              .data([null])
+              .join("text")
+              .attr("class", "y-axis-text")
+              .attr("text-anchor", "middle")
+              .attr("dominant-baseline", "hanging")
+              .attr("x", -barAreaHeightUC / 2)
+              .attr("y", 0)
+              .text("Amount in USD");
 
-            // .data(nullData)
-            // .join("text")
-            // .attr("id", "y-axis-label")
-            // .attr("text-anchor", "middle")
-            // .attr("x", -innerHeight / 2)
-            // .attr("y", -margin.left)
-
-            // .text("Amount in USD");
+            svg
+              .selectAll(".x-axis-label")
+              .data([null])
+              .join("g")
+              .attr("class", "x-axis-label")
+              .selectAll(".x-axis-text")
+              .data([null])
+              .join("text")
+              .attr("class", "x-axis-text")
+              .attr("text-anchor", "middle")
+              .attr("dominant-baseline", "bottom")
+              //.attr("x", -barAreaWidthUC / 2)
+              .attr("x", barAreaWidthUC / 2)
+              .attr("y", minScreenRes)
+              //.attr("y", 100)
+              .text("Delay in Months");
 
             chart
               .selectAll(".bar")
@@ -145,10 +167,14 @@ function BarChart() {
               .attr("id", (d) => {
                 return "id" + d.time;
               })
-              .attr("fill", "black")
+              .attr("fill", "steelblue")
               .attr("class", "bar")
               .attr("x", (d) => x(d.time) - barWidth / 2)
               .attr("y", (d) => y(d.amount))
+              .attr(
+                "transform",
+                `translate(${leftOffSetUC / 2},${bottomOffSetUC / 2})`
+              )
               .attr("width", barWidth)
               .attr("height", (d) => y(0) - y(d.amount))
               .on("click", (d) => {
@@ -222,12 +248,12 @@ function BarChart() {
     </div>
   );
 
-  if (status === StatusType.Complete) {
-    return <Redirect to="/vizsurvey/post-survey" />;
+  if (status === StatusType.Questionaire) {
+    navigate("/questionaire");
   } else {
-    dispatch(setQuestionShownTimestamp(dateToState(DateTime.now())));
-    return result;
+    dispatch(setQuestionShownTimestamp(dateToState(DateTime.utc())));
   }
+  return result;
 }
 
 export default BarChart;

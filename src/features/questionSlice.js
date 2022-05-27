@@ -18,6 +18,21 @@ export const questionSlice = createSlice({
     allTreatments: null,
     treatmentId: null,
     participantId: null,
+    sessionId: null,
+    countryOfResidence: null,
+    firstLanguage: null,
+    secondLanguage: null,
+    vizFamiliarity: null,
+    age: null,
+    gender: null,
+    profession: null,
+    consentShownTimestamp: null,
+    introductionShowTimestamp: null,
+    introductionCompletedTimestamp: null,
+    instructionsShowTimestamp: null,
+    instructionsCompletedTimestamp: null,
+    postSurveyQuestionsShownTimestamp: null,
+    thankYouShownTimestamp: null,
     treatments: [],
     answers: [],
     currentQuestionIdx: 0,
@@ -27,13 +42,27 @@ export const questionSlice = createSlice({
     error: null,
   }, // the initial state of our global data (under name slice)
   reducers: {
-    setParticipant(state, action) {
+    setParticipantId(state, action) {
       state.participantId = action.payload;
       return state;
     },
     setTreatmentId(state, action) {
       state.treatmentId = action.payload;
       return state;
+    },
+    setSessionId(state, action) {
+      state.sessionId = action.payload;
+      return state;
+    },
+    setDemographic(state, action) {
+      state.countryOfResidence = action.payload.countryOfResidence;
+      state.firstLanguage = action.payload.firstLanguage;
+      state.secondLanguage = action.payload.secondLanguage;
+      state.vizFamiliarity = action.payload.vizFamiliarity;
+      state.age = action.payload.age;
+      state.gender = action.payload.gender;
+      state.profession = action.payload.profession;
+      state.status = StatusType.Introduction;
     },
     loadTreatment(state) {
       state.treatments = io.loadTreatment(state.treatmentId);
@@ -44,6 +73,22 @@ export const questionSlice = createSlice({
       state.allTreatments = io.loadAllTreatments();
       state.status = StatusType.Fetched;
       return state;
+    },
+    consentShown(state, action) {
+      state.consentShownTimestamp = action.payload;
+    },
+    introductionShown(state, action) {
+      state.introductionShowTimestamp = action.payload;
+    },
+    introductionCompleted(state, action) {
+      state.introductionCompletedTimestamp = action.payload;
+    },
+    instructionsShown(state, action) {
+      state.instructionsShowTimestamp = action.payload;
+    },
+    instructionsCompleted(state, action) {
+      state.intructionsCompletedTimestamp = action.payload;
+      state.status = StatusType.Survey;
     },
     startSurvey(state) {
       qe.startSurvey(state);
@@ -56,6 +101,39 @@ export const questionSlice = createSlice({
     // we define our actions on the slice of global store data here.
     answer(state, action) {
       qe.answerCurrentQuestion(state, action);
+    },
+    postSurveyQuestionsShown(state, action) {
+      state.postSurveyQuestionsShownTimestamp = action.payload;
+    },
+    thankYouShownTimestamp(state, action) {
+      state.thankYouShownTimestamp = action.payload;
+    },
+    clearState(state) {
+      state.allTreatments = null;
+      state.treatmentId = null;
+      state.articipantId = null;
+      state.sessionId = null;
+      state.countryOfResidence = null;
+      state.firstLanguage = null;
+      state.secondLanguage = null;
+      state.vizFamiliarity = null;
+      state.age = null;
+      state.gender = null;
+      state.profession = null;
+      state.consentShownTimestamp = null;
+      state.introductionShowTimestamp = null;
+      state.introductionCompletedTimestamp = null;
+      state.instructionsShowTimestamp = null;
+      state.instructionsCompletedTimestamp = null;
+      state.postSurveyQuestionsShownTimestamp = null;
+      state.thankYouShownTimestamp = null;
+      state.treatments = [];
+      state.answers = [];
+      state.currentQuestionIdx = 0;
+      state.highup = undefined;
+      state.lowdown = undefined;
+      state.status = StatusType.Unitialized;
+      state.error = null;
     },
   },
 });
@@ -85,6 +163,14 @@ export const fetchTreatmentId = (state) => {
   return state.questions.treatmentId;
 };
 
+export const fetchParticipantId = (state) => {
+  return state.questions.participantId;
+};
+
+export const fetchSessionId = (state) => {
+  return state.questions.sessionId;
+};
+
 // Action creators are generated for each case reducer function
 export const {
   loadTreatment,
@@ -92,8 +178,18 @@ export const {
   startSurvey,
   setQuestionShownTimestamp,
   answer,
-  setParticipant,
+  setParticipantId,
   setTreatmentId,
+  setSessionId,
+  consentShown,
+  setDemographic,
+  instructionsShown,
+  instructionsCompleted,
+  introductionShown,
+  introductionCompleted,
+  postSurveyQuestionsShown,
+  thankYouShownTimestamp,
+  clearState,
 } = questionSlice.actions;
 
 export default questionSlice.reducer;
