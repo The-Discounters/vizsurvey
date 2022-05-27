@@ -34,8 +34,6 @@ function BarChart() {
 
   const minScreenRes = Math.min(window.screen.height, window.screen.width);
 
-  const totalWidthUC = minScreenRes; //q.horizontalPixels; // may want to get rid of this configuation and just make it 100
-  const totalHeightUC = minScreenRes; //q.verticalPixels; // may want to get rid of this configuation and just make it 100
   const leftMarginWidthIn = q.leftMarginWidthIn;
   const bottomMarginHeightIn = q.bottomMarginHeightIn;
   const barAreaWidthIn = q.graphWidthIn;
@@ -44,15 +42,15 @@ function BarChart() {
   const totalSVGWidthIn = leftMarginWidthIn + barAreaWidthIn;
   const totalSVGHeightIn = bottomMarginHeightIn + barAreaHeightIn;
 
-  const scaleHorizUCPerIn = totalWidthUC / totalSVGWidthIn;
-  const scaleVertUCPerIn = totalHeightUC / totalSVGHeightIn;
+  const scaleHorizUCPerIn = minScreenRes / totalSVGWidthIn;
+  const scaleVertUCPerIn = minScreenRes / totalSVGHeightIn;
 
   const leftOffSetUC = scaleHorizUCPerIn * leftMarginWidthIn;
   const bottomOffSetUC = scaleVertUCPerIn * bottomMarginHeightIn;
-  const barAreaWidthUC = totalWidthUC - leftOffSetUC;
-  const barAreaHeightUC = totalHeightUC - bottomOffSetUC;
+  const barAreaWidthUC = minScreenRes - leftOffSetUC;
+  const barAreaHeightUC = minScreenRes - bottomOffSetUC;
 
-  const barWidth = 0.15 * scaleHorizUCPerIn; // bars are 0.1 inch wide
+  const barWidth = 0.5 * scaleHorizUCPerIn; // bars are 0.1 inch wide
 
   // SVG thinks the resolution is 96 ppi when macbook is 132 ppi so we need to adjust by device pixel ratio
   const pixelRatioScale = window.devicePixelRatio >= 2 ? 132 / 96 : 1;
@@ -81,7 +79,7 @@ function BarChart() {
       <svg
         width={`${totalSVGWidthIn * pixelRatioScale}in`}
         height={`${totalSVGHeightIn * pixelRatioScale}in`}
-        viewBox={`0 0 ${totalWidthUC} ${totalHeightUC}`}
+        viewBox={`0 0 ${minScreenRes} ${minScreenRes}`}
         ref={useD3(
           (svg) => {
             var chart = svg
@@ -103,7 +101,9 @@ function BarChart() {
               .join("g")
               .attr(
                 "transform",
-                `translate(${leftOffSetUC},${barAreaHeightUC})`
+                `translate(${leftOffSetUC / 2},${
+                  barAreaHeightUC + bottomOffSetUC / 2
+                })`
               )
               .attr("class", "x-axis")
               .call(
@@ -118,7 +118,10 @@ function BarChart() {
               .data([null])
               .join("g")
               .attr("class", "y-axis")
-              .attr("transform", `translate(${leftOffSetUC},0)`)
+              .attr(
+                "transform",
+                `translate(${leftOffSetUC / 2},${bottomOffSetUC / 2})`
+              )
               .call(
                 //axisLeft(y).tickValues(yTickValues).tickFormat(d3.format("$,.2f"))
                 axisLeft(y).tickValues(yTickValues).tickFormat(format("$,.0f"))
@@ -146,10 +149,14 @@ function BarChart() {
               .attr("id", (d) => {
                 return "id" + d.time;
               })
-              .attr("fill", "black")
+              .attr("fill", "steelblue")
               .attr("class", "bar")
               .attr("x", (d) => x(d.time) - barWidth / 2)
               .attr("y", (d) => y(d.amount))
+              .attr(
+                "transform",
+                `translate(${leftOffSetUC / 2},${bottomOffSetUC / 2})`
+              )
               .attr("width", barWidth)
               .attr("height", (d) => y(0) - y(d.amount))
               .on("click", (d) => {
