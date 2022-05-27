@@ -2,9 +2,9 @@ export const TREATMENTS_CSV = `treatment_id,position,view_type,interaction,varia
 1,1,word,none,none,500,2,,1000,5,,,10,,,,,,,4,4,Worded with no interaction and Read 2001 example values.
 1,2,word,none,none,50,2,,300,7,,,10,,,,,,,8,8,Worded with no interaction and Read 2001 example values.
 1,3,word,none,none,250,2,,1000,3,,,10,,,,,,,8,8,Worded with no interaction and Read 2001 example values.
-2,1,barchart,none,none,300,2,,700,5,,1100,10,100,100,0.5,0.5,8,8,8.5,8.5,Barchart MEL question with no interaction.
-2,2,barchart,none,none,500,2,,800,7,,1100,15,100,100,0.5,0.5,8,8,8.5,8.5,Barchart with no interaction.
-2,3,barchart,none,none,300,2,,1000,7,,1100,15,100,100,0.5,0.5,4,4,4.5,4.5,Barchart with no interaction.
+2,1,barchart,none,none,300,2,,700,5,,1100,10,100,100,1,1,7,7,8.5,8.5,Barchart MEL question with no interaction.
+2,2,barchart,none,none,500,2,,800,7,,1100,15,100,100,1,1,7,7,8.5,8.5,Barchart with no interaction.
+2,3,barchart,none,none,300,2,,1000,7,,1100,15,100,100,1,1,3.5,3.5,4.5,4.5,Barchart with no interaction.
 3,1,calendarBar,none,none,300,,2/1/2022,700,,2/22/2022,1100,,100,100,,,,,8,8,Calendar month view with barchart and no interaction.
 3,2,calendarBar,none,none,500,,3/1/2022,800,,3/12/2022,1100,,100,100,,,,,8,8,Calendar month view with barchart and no interaction.
 3,3,calendarBar,none,none,300,,4/1/2022,1000,,4/15/2022,1100,,100,100,,,,,8,8,Calendar month view with barchart and no interaction.
@@ -33,4 +33,6 @@ export const TREATMENTS_CSV = `treatment_id,position,view_type,interaction,varia
 17,2,calendarIcon,none,none,500,,3/1/2022,800,,3/12/2022,1100,,100,100,,,,,8,8,Calendar month view with icon and no interaction.
 17,3,calendarIcon,none,none,300,,4/1/2022,1000,,4/15/2022,1100,,100,100,,,,,8,8,Calendar month view with icon and no interaction.
 18,1,calendarIcon,titration,laterAmount,300,,2/1/2022,700,,2/22/2022,1100,,100,100,,,,,8,8,Calendar month view with icon and titration interaction.
+18,2,calendarIcon,titration,laterAmount,500,,3/1/2022,800,,3/12/2022,1100,,100,100,,,,,8,8,Calendar month view with icon and titration interaction.
+18,3,calendarIcon,titration,laterAmount,300,,4/1/2022,1000,,4/15/2022,1100,,100,100,,,,,8,8,Calendar month view with icon and titration interaction.
 `;

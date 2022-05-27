@@ -127,20 +127,38 @@ function BarChart() {
                 axisLeft(y).tickValues(yTickValues).tickFormat(format("$,.0f"))
               );
 
-            // const yLabelG = svg
-            //   .select("#y-axis-label")
-            //   .data([1])
-            //   .join("g")
-            //   .attr("transform", "rotate(-90)");
+            svg
+              .selectAll(".y-axis-label")
+              .data([null])
+              .join("g")
+              .attr("transform", "rotate(-90)")
+              .attr("class", "y-axis-label")
+              .selectAll(".y-axis-text")
+              .data([null])
+              .join("text")
+              .attr("class", "y-axis-text")
+              .attr("text-anchor", "middle")
+              .attr("dominant-baseline", "hanging")
+              .attr("x", -barAreaHeightUC / 2)
+              .attr("y", 0)
+              .text("Amount in USD");
 
-            // .data(nullData)
-            // .join("text")
-            // .attr("id", "y-axis-label")
-            // .attr("text-anchor", "middle")
-            // .attr("x", -innerHeight / 2)
-            // .attr("y", -margin.left)
-
-            // .text("Amount in USD");
+            svg
+              .selectAll(".x-axis-label")
+              .data([null])
+              .join("g")
+              .attr("class", "x-axis-label")
+              .selectAll(".x-axis-text")
+              .data([null])
+              .join("text")
+              .attr("class", "x-axis-text")
+              .attr("text-anchor", "middle")
+              .attr("dominant-baseline", "bottom")
+              //.attr("x", -barAreaWidthUC / 2)
+              .attr("x", barAreaWidthUC / 2)
+              .attr("y", minScreenRes)
+              //.attr("y", 100)
+              .text("Delay in Months");
 
             chart
               .selectAll(".bar")

@@ -130,21 +130,7 @@ const Introduction = () => {
           </React.Fragment>
         );
       default:
-        return (
-          <React.Fragment>
-            <Typography paragraph>
-              You have been provided an invalid survey link. Please click
-              <a
-                href={`mailto:pncordone@wpi.edu?subject=!!!Invlaid survey link!!!t&body=${encodeURIComponent(
-                  "TODO put in invalid survey email text."
-                )}`}
-              >
-                here
-              </a>
-              to send an email to the administrator reporting this error.
-            </Typography>
-          </React.Fragment>
-        );
+        return <React.Fragment>{navigate("/invalidlink")}</React.Fragment>;
     }
   };
 

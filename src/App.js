@@ -1,13 +1,14 @@
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { BrowserRouter, Route, Routes, Link } from "react-router-dom";
-import Container from "@material-ui/core/Container";
+import { Container } from "@material-ui/core";
 import "./App.css";
 import Introduction from "./components/Introduction";
 import Instructions from "./components/Instructions";
 import Survey from "./components/Survey";
 import PostSurvey from "./components/PostSurvey";
 import ThankYou from "./components/ThankYou";
+import InvalidSurveyLink from "./components/InvalidSurveyLink";
 import {
   loadAllTreatments,
   fetchAllTreatments,
@@ -37,15 +38,14 @@ const App = () => {
             <Route path={"survey"} element={<Survey />} />
             <Route path={"questionaire"} element={<PostSurvey />} />
             <Route path={"thankyou"} element={<ThankYou />} />
-            <Route path="*" element={<Consent />} />
+            <Route path={"invalidlink"} element={<InvalidSurveyLink />} />
+            <Route path="*" element={<InvalidSurveyLink />} />
           </Routes>
         </Container>
       </BrowserRouter>
     </div>
   );
 };
-
-export default App;
 
 const DevHome = () => {
   const dispatch = useDispatch();
@@ -349,3 +349,5 @@ const DevHome = () => {
 
   return <div id="home-text">{testLinks()}</div>;
 };
+
+export default App;
