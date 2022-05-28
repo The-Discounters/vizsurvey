@@ -11,7 +11,6 @@ import NativeSelect from "@material-ui/core/NativeSelect";
 import { useSelector, useDispatch } from "react-redux";
 import "../App.css";
 import * as countries from "./countries.json";
-import * as allLanguages from "./languages.json";
 import { dateToState } from "../features/ConversionUtil";
 import {
   setTreatmentId,
@@ -77,8 +76,6 @@ export function Consent() {
   const checkEnableSubmit = () => {
     if (
       country.length > 1 &&
-      firstLanguage.length > 1 &&
-      secondLanguage.length > 1 &&
       visFamiliarity.length > 0 &&
       age.length > 1 &&
       gender.length > 0 &&
@@ -112,12 +109,6 @@ export function Consent() {
       value: 7,
     },
   ];
-
-  const languages = allLanguages.default
-    .filter(function (value) {
-      return value["en"];
-    })
-    .sort((a, b) => (a["en"] > b["en"] ? 1 : -1));
 
   const ConsentTextEn = () => {
     return (
@@ -192,8 +183,7 @@ export function Consent() {
       <Grid container style={styles.root} justifyContent="center">
         <Grid item xs={12}>
           <Typography variant="h5">
-            <i> Money earlier or later?</i> -{" "}
-            <b>Does visualization influence your choice? </b>
+            <i>Receiving Money</i> - <b>How to Visualize It</b>
             <br />
           </Typography>
           <hr
@@ -265,62 +255,6 @@ export function Consent() {
               ))}
             </NativeSelect>
             <FormHelperText>The country you are living in now</FormHelperText>
-          </FormControl>
-          <FormControl
-            className={classes.formControl}
-            required
-            style={{ maxWidth: 200, marginRight: 20 }}
-          >
-            <InputLabel htmlFor="first-language-select-helper">
-              First language
-            </InputLabel>
-            <NativeSelect
-              value={firstLanguage}
-              onChange={(event) => {
-                handleFieldChange(event, setFirstLanguage);
-              }}
-              inputProps={{
-                name: "first-language",
-                id: "first-language-select-helper",
-              }}
-            >
-              <option> </option>
-              {languages.map((option) => (
-                <option key={option.alpha3} value={option.alpha3}>
-                  {option["en"]}
-                </option>
-              ))}
-            </NativeSelect>
-            <FormHelperText>The language you use the most.</FormHelperText>
-          </FormControl>
-          <FormControl
-            className={classes.formControl}
-            required
-            style={{ maxWidth: 200, marginRight: 20 }}
-          >
-            <InputLabel htmlFor="second-language-select-helper">
-              Second language
-            </InputLabel>
-            <NativeSelect
-              value={secondLanguage}
-              onChange={(event) => {
-                handleFieldChange(event, setSecondLanguage);
-              }}
-              inputProps={{
-                name: "second-language",
-                id: "second-language-select-helper",
-              }}
-            >
-              <option> </option>
-              {languages.map((option) => (
-                <option key={option.alpha3} value={option.alpha3}>
-                  {option["en"]}
-                </option>
-              ))}
-            </NativeSelect>
-            <FormHelperText>
-              The second language you use the most.
-            </FormHelperText>
           </FormControl>
           <FormControl
             className={classes.formControl}
