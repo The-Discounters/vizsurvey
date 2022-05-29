@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { BrowserRouter, Route, Routes, Link } from "react-router-dom";
-import { Container } from "@material-ui/core";
+import { Container, Grid, Typography } from "@material-ui/core";
 import "./App.css";
 import Introduction from "./components/Introduction";
 import Instructions from "./components/Instructions";
@@ -18,31 +18,87 @@ import {
 import { StatusType } from "./features/StatusType";
 import { Consent } from "./components/Consent";
 
+const styles = {
+  root: {
+    flexGrow: 1, // flex:1, padding: 5,height: "100%", width: "100%"
+    margin: 20,
+  },
+  button: { marginTop: 10, marginBottom: 10 },
+  container: { display: "flex", flexWrap: "wrap" },
+  textField: { marginLeft: 10, marginRight: 10, width: 200 },
+  label: { margin: 0 },
+};
+
+class ErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { error: null, errorInfo: null };
+  }
+
+  componentDidCatch(error, errorInfo) {
+    // Catch errors in any components below and re-render with error message
+    this.setState({
+      error: error,
+      errorInfo: errorInfo,
+    });
+    // You can also log error messages to an error reporting service here
+  }
+
+  render() {
+    if (this.state.errorInfo) {
+      // Error path
+      return (
+        <Grid container style={styles.root}>
+          <Grid item xs={12}>
+            <Typography variant="h4">Something went wrong.</Typography>
+            <hr
+              style={{
+                color: "#ea3433",
+                backgroundColor: "#ea3433",
+                height: 4,
+              }}
+            />
+            <details style={{ whiteSpace: "pre-wrap" }}>
+              {this.state.error && this.state.error.toString()}
+              <br />
+              {this.state.errorInfo.componentStack}
+            </details>{" "}
+          </Grid>
+        </Grid>
+      );
+    }
+    // Normally, just render children
+    return this.props.children;
+  }
+}
+
 const App = () => {
   return (
     <div>
-      <BrowserRouter>
-        <Container>
-          <Routes>
-            {
-              // eslint-disable-next-line no-undef
-              process.env.REACT_APP_ENV !== "production" ? (
-                <Route path="/dev" element={<DevHome />} />
-              ) : (
-                ""
-              )
-            }
-            <Route path="/" element={<Consent />} />
-            <Route path={"introduction"} element={<Introduction />} />
-            <Route path={"instruction"} element={<Instructions />} />
-            <Route path={"survey"} element={<Survey />} />
-            <Route path={"questionaire"} element={<PostSurvey />} />
-            <Route path={"thankyou"} element={<ThankYou />} />
-            <Route path={"invalidlink"} element={<InvalidSurveyLink />} />
-            <Route path="*" element={<InvalidSurveyLink />} />
-          </Routes>
-        </Container>
-      </BrowserRouter>
+      <ErrorBoundary>
+        <BrowserRouter>
+          <Container>
+            <Routes>
+              {
+                // eslint-disable-next-line no-undef
+                process.env.REACT_APP_ENV !== "production" ? (
+                  <Route path="/dev" element={<DevHome />} />
+                ) : (
+                  ""
+                )
+              }
+              <Route path="/" element={<Consent />} />
+              <Route path={"introduction"} element={<Introduction />} />
+              <Route path={"instruction"} element={<Instructions />} />
+              <Route path={"survey"} element={<Survey />} />
+              <Route path={"questionaire"} element={<PostSurvey />} />
+              <Route path={"thankyou"} element={<ThankYou />} />
+              <Route path={"invalidlink"} element={<InvalidSurveyLink />} />
+              <Route path="*" element={<InvalidSurveyLink />} />
+            </Routes>
+          </Container>
+        </BrowserRouter>
+      </ErrorBoundary>
     </div>
   );
 };
