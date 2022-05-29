@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { BrowserRouter, Route, Routes, Link } from "react-router-dom";
-import { Container, Grid, Typography } from "@material-ui/core";
+import { Container } from "@material-ui/core";
 import "./App.css";
 import Introduction from "./components/Introduction";
 import Instructions from "./components/Instructions";
@@ -17,17 +17,6 @@ import {
 } from "./features/questionSlice";
 import { StatusType } from "./features/StatusType";
 import { Consent } from "./components/Consent";
-
-const styles = {
-  root: {
-    flexGrow: 1, // flex:1, padding: 5,height: "100%", width: "100%"
-    margin: 20,
-  },
-  button: { marginTop: 10, marginBottom: 10 },
-  container: { display: "flex", flexWrap: "wrap" },
-  textField: { marginLeft: 10, marginRight: 10, width: 200 },
-  label: { margin: 0 },
-};
 
 class ErrorBoundary extends React.Component {
   constructor(props) {
@@ -47,25 +36,7 @@ class ErrorBoundary extends React.Component {
   render() {
     if (this.state.errorInfo) {
       // Error path
-      return (
-        <Grid container style={styles.root}>
-          <Grid item xs={12}>
-            <Typography variant="h4">Something went wrong.</Typography>
-            <hr
-              style={{
-                color: "#ea3433",
-                backgroundColor: "#ea3433",
-                height: 4,
-              }}
-            />
-            <details style={{ whiteSpace: "pre-wrap" }}>
-              {this.state.error && this.state.error.toString()}
-              <br />
-              {this.state.errorInfo.componentStack}
-            </details>{" "}
-          </Grid>
-        </Grid>
-      );
+      return <InvalidSurveyLink />;
     }
     // Normally, just render children
     return this.props.children;
