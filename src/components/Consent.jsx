@@ -50,7 +50,7 @@ export function Consent() {
     dispatch(setSessionId(sessionId));
     const participantId = searchParams.get("participant_id");
     dispatch(setParticipantId(participantId));
-    dispatch(loadTreatment());
+    if (treatmentId && sessionId && participantId) dispatch(loadTreatment());
   }
 
   const useStyles = makeStyles((theme) => ({
@@ -76,12 +76,19 @@ export function Consent() {
 
   const checkEnableSubmit = () => {
     if (
+      country &&
       country.length > 1 &&
+      firstLanguage &&
       firstLanguage.length > 1 &&
+      secondLanguage &&
       secondLanguage.length > 1 &&
+      visFamiliarity &&
       visFamiliarity.length > 0 &&
+      age &&
       age.length > 1 &&
+      gender &&
       gender.length > 0 &&
+      profession &&
       profession.length > 0
     ) {
       setDisableSubmit(false);
