@@ -55,23 +55,37 @@ function BarChart() {
   // SVG thinks the resolution is 96 ppi when macbook is 132 ppi so we need to adjust by device pixel ratio
   const pixelRatioScale = window.devicePixelRatio >= 2 ? 132 / 96 : 1;
 
+  const TickType = {
+    major: "major",
+    minor: "minor",
+  };
+
   const xTickValues = Array.from(Array(q.maxTime + 1).keys());
-  const data = xTickValues.map((d) => {
+  const data = xTickValues.flatMap((d) => {
+    const majorTick = {
+      type: TickType.major,
+      time: d,
+    };
     if (d === q.timeEarlier) {
-      return {
-        time: d,
-        amount: q.amountEarlier,
-        barType: AmountType.earlierAmount,
-      };
+      majorTick["amount"] = q.amountEarlier;
+      majorTick["barType"] = AmountType.earlierAmount;
     } else if (d === q.timeLater) {
-      return {
-        time: d,
-        amount: q.amountLater,
-        barType: AmountType.laterAmount,
-      };
+      majorTick["amount"] = q.amountLater;
+      majorTick["barType"] = AmountType.laterAmount;
     } else {
-      return { time: d, amount: 0, barType: AmountType.none };
+      majorTick["amount"] = 0;
+      majorTick["barType"] = AmountType.none;
     }
+    const minorTicks = [1, 2, 3, 4].map((e) => {
+      return {
+        type: TickType.minor,
+        time: d + e,
+        amount: 0,
+        barType: AmountType.none,
+      };
+    });
+    const result = majorTick.concat(minorTicks);
+    return result;
   });
 
   const result = (
