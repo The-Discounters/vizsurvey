@@ -7,6 +7,50 @@ import { InteractionType } from "./InteractionType";
 import { AmountType } from "./AmountType";
 import { stringToDate, dateToState, stateToDate } from "./ConversionUtil";
 
+import AWS from "aws-sdk";
+
+const S3_BUCKET = process.env.REACT_APP_S3_BUCKET;
+const REGION = process.env.REACT_APP_REGION;
+
+AWS.config.update({
+  accessKeyId: process.env.REACT_APP_accessKeyId,
+  secretAccessKey: process.env.REACT_APP_secretAccessKey,
+});
+
+const myBucket = new AWS.S3({
+  params: { Bucket: S3_BUCKET },
+  region: REGION,
+});
+
+const uploadFileOffline = (name, data) => {
+  const requestOptions = {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ name: name, data: data }),
+  };
+  fetch("http://localhost:3001/test", requestOptions)
+    .then((response) => response.json())
+    .then((data) => console.log(data));
+};
+
+const uploadFile = (name, data) => {
+  const params = {
+    ACL: "public-read",
+    Body: data,
+    Bucket: S3_BUCKET,
+    Key: name,
+  };
+
+  myBucket
+    .putObject(params)
+    .on("httpUploadProgress", (evt) => {
+      console.log(Math.round((evt.loaded / evt.total) * 100));
+    })
+    .send((err) => {
+      if (err) console.log(err);
+    });
+};
+
 export class FileIOAdapter {
   constructor() {}
 
@@ -97,34 +141,25 @@ export class FileIOAdapter {
     return header.concat(rows).join("\n");
   }
 
-  writeAnswers = async (answersCSV, { getState }) => {
-    const state = getState();
-    console.log(answersCSV);
-    console.log(JSON.stringify(state));
-    // const octokit = new Octokit({
-    //   userAgent: "thesis_answers/v1.0",
-    //   // eslint-disable-next-line no-undef
-    //   auth: atob(process.env.REACT_APP_AUTH_TOKEN),
-    // });
-    // // eslint-disable-next-line no-undef
-    // const gistAnswerId = process.env.REACT_APP_GIST_ANSWER_ID;
-    // const url = `PATCH /gists/${gistAnswerId}`;
-    // const now = DateTime.utc().toFormat("yyyy-MM-dd-H-mm-ss-SSS-ZZZZ");
-    // const files = {};
-    // answersCSV = `${answersCSV}`;
-    // files[`answers-subject-${state.questions.participant_id}-${now}.csv`] = {
-    //   content: answersCSV,
-    // };
-    // const description = `Answer results for participant ${state.questions.participant_id} at ${now}`;
-    // console.log("submitting answers for " + description);
-    // const payloadObj = {
-    //   gist_id: gistAnswerId,
-    //   description: description,
-    //   files: files,
-    // };
-    // const response = await octokit.request(url, payloadObj);
+  writeAnswers = async (data) => {
+    console.log("uuid: " + data.uuid);
+    console.log("csv: " + data.csv);
+    let postSurveyAnswersStr = JSON.stringify(data.postSurveyAnswers, null, 2);
+    console.log("postSurveyAnswers: " + postSurveyAnswersStr);
 
-    // const status = response.status;
-    // console.log("answers submitted with status of " + status);
+    const fileNameAnswers = "answers-" + data.uuid + ".csv";
+    const fileNamePostSurveyAnswers =
+      "post-survey-answers-" + data.uuid + ".json";
+    console.log("fileNameAnswers: " + fileNameAnswers);
+
+    if (process.env.REACT_APP_AWS_ENABLED) {
+      console.log("AWS ENABLED");
+      uploadFile(fileNameAnswers, data.csv);
+      uploadFile(fileNamePostSurveyAnswers, postSurveyAnswersStr);
+    } else {
+      console.log("AWS DISABLED");
+      uploadFileOffline(fileNameAnswers, data.csv);
+      uploadFileOffline(fileNamePostSurveyAnswers, postSurveyAnswersStr);
+    }
   };
 }

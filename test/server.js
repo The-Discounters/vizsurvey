@@ -19,6 +19,7 @@ app.use(
 );
 
 app.use(express.static("public"));
+app.use(express.json());
 
 app.get("/", (req, res) => {
   res.send(
@@ -27,6 +28,20 @@ app.get("/", (req, res) => {
       ", HTTPS: " +
       portHTTPS
   );
+});
+
+app.post("/test", (req, res) => {
+  console.log("Got body:", JSON.stringify(req.body, null, 2));
+  var dir = "public/";
+
+  if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir);
+  }
+  fs.writeFile(dir + req.body.name, req.body.data, function (err) {
+    if (err) throw err;
+    console.log("File is created successfully.");
+  });
+  res.send(JSON.stringify({ test: 123 }, null, 2));
 });
 
 const serverHTTP = http.createServer(app);
