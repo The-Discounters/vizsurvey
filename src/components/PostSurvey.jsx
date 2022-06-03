@@ -1,7 +1,8 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { DateTime } from "luxon";
+import { FileIOAdapter } from "../features/FileIOAdapter";
 import {
   Grid,
   Button,
@@ -13,7 +14,12 @@ import {
   RadioGroup,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import { postSurveyQuestionsShown } from "../features/questionSlice";
+import {
+  getParticipant,
+  postSurveyQuestionsShown,
+  selectAllQuestions,
+  writeAnswers,
+} from "../features/questionSlice";
 import { dateToState } from "../features/ConversionUtil";
 
 const styles = {
@@ -68,6 +74,10 @@ export function PostSurvey() {
     checkEnableSubmit();
   };
 
+  const participantId = useSelector(getParticipant);
+  const answers = useSelector(selectAllQuestions);
+  const io = new FileIOAdapter();
+  const csv = io.convertToCSV(answers);
   return (
     <div>
       <Grid container style={styles.root} justifyContent="center">
@@ -281,7 +291,18 @@ export function PostSurvey() {
             disableFocusRipple
             style={styles.button}
             onClick={() => {
-              // dispatch goes here
+              dispatch(
+                writeAnswers({
+                  csv: csv,
+                  participantId: participantId,
+                  postSurveyAnswers: {
+                    q15vs30: q15vs30,
+                    q50k6p: q50k6p,
+                    q100k5p: q100k5p,
+                    q200k5p: q200k5p,
+                  },
+                })
+              );
               navigate("/thankyou");
             }}
             disabled={disableSubmit}
