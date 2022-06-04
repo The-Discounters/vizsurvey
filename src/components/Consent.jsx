@@ -64,8 +64,6 @@ export function Consent() {
   const classes = useStyles();
   const [disableSubmit, setDisableSubmit] = React.useState(true);
   const [country, setCountry] = React.useState("");
-  const [firstLanguage, setFirstLanguage] = React.useState("");
-  const [secondLanguage, setSecondLanguage] = React.useState("");
   const [visFamiliarity, setVisFamiliarity] = React.useState("");
   const [age, setAge] = React.useState("");
   const [gender, setGender] = React.useState("");
@@ -327,8 +325,6 @@ export function Consent() {
               dispatch(
                 setDemographic({
                   country: country,
-                  firstLanguage: firstLanguage,
-                  secondLanguage: secondLanguage,
                   visFamiliarity: visFamiliarity,
                   age: age,
                   gender: gender,
