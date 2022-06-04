@@ -53,7 +53,7 @@ const App = () => {
               {
                 // eslint-disable-next-line no-undef
                 process.env.REACT_APP_ENV !== "production" ? (
-                  <Route path="/dev" element={<DevHome />} />
+                  <Route path="dev" element={<DevHome />} />
                 ) : (
                   ""
                 )

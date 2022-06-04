@@ -122,6 +122,7 @@ function BarChart() {
                 "transform",
                 `translate(${leftOffSetUC / 2},${bottomOffSetUC / 2})`
               )
+              .style("font-size", "12px")
               .call(
                 //axisLeft(y).tickValues(yTickValues).tickFormat(d3.format("$,.2f"))
                 axisLeft(y).tickValues(yTickValues).tickFormat(format("$,.0f"))
@@ -133,6 +134,7 @@ function BarChart() {
               .join("g")
               .attr("transform", "rotate(-90)")
               .attr("class", "y-axis-label")
+              .style("font-size", "1.25em")
               .selectAll(".y-axis-text")
               .data([null])
               .join("text")
@@ -141,13 +143,14 @@ function BarChart() {
               .attr("dominant-baseline", "hanging")
               .attr("x", -barAreaHeightUC / 2)
               .attr("y", 0)
-              .text("Amount in USD");
+              .text("$ in USD");
 
             svg
               .selectAll(".x-axis-label")
               .data([null])
               .join("g")
               .attr("class", "x-axis-label")
+              .style("font-size", "1.25em")
               .selectAll(".x-axis-text")
               .data([null])
               .join("text")
