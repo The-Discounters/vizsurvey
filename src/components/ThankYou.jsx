@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { useFullScreenHandle } from "react-full-screen";
 import { DateTime } from "luxon";
 import { Grid, Typography } from "@material-ui/core";
 import { thankYouShownTimestamp } from "../features/questionSlice";
@@ -21,9 +20,6 @@ const ThankYou = () => {
   useEffect(() => {
     dispatch(thankYouShownTimestamp(dateToState(DateTime.utc())));
   }, []);
-
-  const handle = useFullScreenHandle();
-  handle.exit();
 
   const dispatch = useDispatch();
 
