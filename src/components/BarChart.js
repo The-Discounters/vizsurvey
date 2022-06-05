@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
@@ -60,33 +61,34 @@ function BarChart() {
     minor: "minor",
   };
 
-  const xTickValues = Array.from(Array(q.maxTime + 1).keys());
-  const data = xTickValues.flatMap((d) => {
-    const majorTick = {
-      type: TickType.major,
-      time: d,
-    };
-    if (d === q.timeEarlier) {
-      majorTick["amount"] = q.amountEarlier;
-      majorTick["barType"] = AmountType.earlierAmount;
-    } else if (d === q.timeLater) {
-      majorTick["amount"] = q.amountLater;
-      majorTick["barType"] = AmountType.laterAmount;
-    } else {
-      majorTick["amount"] = 0;
-      majorTick["barType"] = AmountType.none;
-    }
-    const minorTicks = [1, 2, 3, 4].map((e) => {
+  const data = Array.from(Array(q.maxTime * 4 + 1).keys()).map((d) => {
+    const isMajor = d % 4 === 0;
+    const delay = d / 4;
+    if (isMajor && delay === q.timeEarlier) {
       return {
-        type: TickType.minor,
-        time: d + e,
+        type: TickType.major,
+        time: delay,
+        amount: q.amountEarlier,
+        barType: AmountType.earlierAmount,
+      };
+    } else if (isMajor && delay === q.timeLater) {
+      return {
+        type: TickType.major,
+        time: delay,
+        amount: q.amountLater,
+        barType: AmountType.laterAmount,
+      };
+    } else {
+      return {
+        type: isMajor ? TickType.major : TickType.minor,
+        time: delay,
         amount: 0,
         barType: AmountType.none,
       };
-    });
-    const result = majorTick.concat(minorTicks);
-    return result;
+    }
   });
+
+  const xTickValues = data.map((d) => d.time);
 
   const result = (
     <div>
@@ -109,7 +111,7 @@ function BarChart() {
             const yRange = [0, q.maxAmount];
             const y = scaleLinear().domain(yRange).range([barAreaHeightUC, 0]);
 
-            chart
+            const xAxis = chart
               .selectAll(".x-axis")
               .data([null])
               .join("g")
@@ -121,8 +123,26 @@ function BarChart() {
               )
               .attr("class", "x-axis")
               .call(
-                axisBottom(x).tickValues(xTickValues).tickFormat(format(",.0f"))
+                axisBottom(x)
+                  .tickValues(xTickValues)
+                  .tickFormat(function (d, i) {
+                    const entry = data[i];
+                    return entry.type === TickType.major ? entry.time : "";
+                  })
               );
+            x;
+            // Add the class 'minor' to all minor ticks
+            const ticks = xAxis
+              .selectAll("g")
+              .filter(function (d, i) {
+                return data[i].type === TickType.major;
+              })
+              .style("stroke-width", "3px");
+            //.classed("minor", "true");
+            // .attr(
+            //   "style",
+            //   "stroke: #777; stroke-width: 1px; stroke-dasharray: 6,4"
+            // );
 
             const yTickValues = range(yRange[0], yRange[1], yRange[1] / 5);
             yTickValues.push(yRange[1]);
@@ -167,7 +187,7 @@ function BarChart() {
               .join("text")
               .attr("class", "x-axis-text")
               .attr("text-anchor", "middle")
-              .attr("dominant-baseline", "bottom")
+              //.attr("dominant-baseline", "bottom")
               //.attr("x", -barAreaWidthUC / 2)
               .attr("x", barAreaWidthUC / 2)
               .attr("y", minScreenRes)
