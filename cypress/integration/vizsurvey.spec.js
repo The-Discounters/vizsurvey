@@ -1,7 +1,7 @@
 /// <reference types="cypress" />
 
 describe("vizsurvey", () => {
-  it("survey", async () => {
+  it("survey", () => {
     cy.viewport(1200, 700);
     cy.visit(
       "http://localhost:3000/?treatment_id=1&session_id=1&participant_id=1"
@@ -62,5 +62,21 @@ describe("vizsurvey", () => {
           }
         );
       });
+  });
+  it("survey invalid", () => {
+    cy.viewport(1200, 700);
+    cy.visit(
+      "http://localhost:3000/?treatment_id=100&session_id=1&participant_id=1"
+    );
+    cy.wait(150);
+    cy.get("#country-select-helper").select("United States of America");
+    cy.get("[name=familiarity-with-viz]").select("3");
+    cy.get("#Age").type("26");
+    cy.get("#Gender").type("Male");
+    cy.get("#Current-Profession").type("Software Developer");
+    cy.get("button").contains("Next").click();
+    cy.get("p")
+      .contains("You have been provided an invalid survey link")
+      .should("exist");
   });
 });
