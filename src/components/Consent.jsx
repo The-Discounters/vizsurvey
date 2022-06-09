@@ -41,15 +41,27 @@ export function Consent() {
     dispatch(consentShown(dateToState(DateTime.utc())));
   }, []);
 
-  if (status === StatusType.Unitialized) {
-    const [searchParams] = useSearchParams();
-    const treatmentId = searchParams.get("treatment_id");
-    dispatch(setTreatmentId(treatmentId));
-    const sessionId = searchParams.get("session_id");
-    dispatch(setSessionId(sessionId));
-    const participantId = searchParams.get("participant_id");
-    dispatch(setParticipantId(participantId));
-    if (treatmentId && sessionId && participantId) dispatch(loadTreatment());
+  const rand = () => {
+    return Math.floor(Math.random() * 10);
+  };
+
+  const [searchParams, setSearchParams] = useSearchParams();
+  const treatmentId = searchParams.get("treatment_id");
+  const sessionId = searchParams.get("session_id");
+  const participantId = searchParams.get("participant_id");
+  if (treatmentId && sessionId && participantId) {
+    if (status === StatusType.Unitialized) {
+      dispatch(setTreatmentId(treatmentId));
+      dispatch(setSessionId(sessionId));
+      dispatch(setParticipantId(participantId));
+      dispatch(loadTreatment());
+    }
+  } else {
+    setSearchParams({
+      treatment_id: rand() + 1,
+      session_id: rand(),
+      participant_id: rand(),
+    });
   }
 
   const useStyles = makeStyles((theme) => ({
