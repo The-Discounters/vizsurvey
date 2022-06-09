@@ -79,4 +79,23 @@ describe("vizsurvey", () => {
       .contains("You have been provided an invalid survey link")
       .should("exist");
   });
+  it("survey random", () => {
+    for( let i = 0; i < 10; i++) {
+    cy.viewport(1200, 700);
+    cy.visit(
+      "http://localhost:3000/"
+    );
+    cy.wait(150);
+    cy.get("#country-select-helper").select("United States of America");
+    cy.get("[name=familiarity-with-viz]").select("3");
+    cy.get("#Age").type("26");
+    cy.get("#Gender").type("Male");
+    cy.get("#Current-Profession").type("Software Developer");
+    cy.get("button").contains("Next").click();
+    cy.get("button").contains("Start")
+      .should("exist");
+    cy.get("button").contains("Start")
+      .should("exist");
+    }
+  });
 });
