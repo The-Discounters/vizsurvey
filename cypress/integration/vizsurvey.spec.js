@@ -91,6 +91,29 @@ describe("vizsurvey", () => {
       "2,3,barchart,none,none,300,2,,1000,7",
     ]);
   });
+  it("calendar", () => {
+    cy.viewport(1200, 700);
+    cy.visit(
+      "http://localhost:3000/?treatment_id=3&session_id=1&participant_id=1"
+    );
+    cy.wait(150);
+    cy.get("#country-select-helper").select("United States of America");
+    cy.get("[name=familiarity-with-viz]").select("3");
+    cy.get("#Age").type("26");
+    cy.get("#Gender").type("Male");
+    cy.get("#Current-Profession").type("Software Developer");
+    cy.get("button").contains("Next").click();
+    cy.get("button").contains("Start").click();
+    cy.get("button").contains("Start").click();
+    cy.get("#later-rect").click();
+    cy.get("#later-rect").click();
+    cy.get("#later-rect").click();
+    postsurvey([
+      "3,1,calendarBar,none,none,300,undefined,2022-02-01T00:00:00.000Z,700,undefined,2022-02-22T00:00:00.000Z,1100",
+      "3,2,calendarBar,none,none,500,undefined,2022-03-01T00:00:00.000Z,800,undefined,2022-03-12T00:00:00.000Z,1100",
+      "3,3,calendarBar,none,none,300,undefined,2022-04-01T00:00:00.000Z,1000,undefined,2022-04-15T00:00:00.000Z,1100",
+    ]);
+  });
   it("survey invalid", () => {
     cy.viewport(1200, 700);
     cy.visit(
