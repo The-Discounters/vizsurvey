@@ -38,7 +38,7 @@ export function PostSurvey() {
 
   useEffect(async () => {
     dispatch(postSurveyQuestionsShown(dateToState(DateTime.utc())));
-    handle.exit();
+    if (process.env.REACT_APP_FULLSCREEN === "enabled") handle.exit();
   }, []);
 
   const useStyles = makeStyles((theme) => ({
