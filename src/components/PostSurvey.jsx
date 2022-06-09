@@ -72,9 +72,12 @@ export function PostSurvey() {
     }
   };
 
+  useEffect(async () => {
+    checkEnableSubmit();
+  }, [q15vs30, q50k6p, q100k5p, q200k5p]);
+
   const handleFieldChange = (event, setter) => {
     setter(event.target.value);
-    checkEnableSubmit();
   };
 
   const participantId = useSelector(getParticipant);

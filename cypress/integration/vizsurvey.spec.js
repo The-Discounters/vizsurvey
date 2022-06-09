@@ -26,7 +26,6 @@ describe("vizsurvey", () => {
     cy.get("label").contains("Less than $50,000").click();
     cy.get("label").contains("Less than $120,000").click();
     cy.get("label").contains("Less than 20 years").click();
-    cy.get("label").contains("Between 20 and 30 years").click();
     cy.get("button").contains("Next").click();
     cy.wait(1000);
     cy.get("p")
@@ -57,7 +56,7 @@ describe("vizsurvey", () => {
                 q15vs30: "15+",
                 q50k6p: "<50k",
                 q100k5p: "<120k",
-                q200k5p: "20yto30y",
+                q200k5p: "<20y",
               });
             });
           }
