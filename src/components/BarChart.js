@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
@@ -33,28 +32,45 @@ function BarChart() {
   const status = useSelector(fetchStatus);
   const navigate = useNavigate();
 
-  const minScreenRes = Math.min(window.screen.height, window.screen.width);
+  var totalSVGWidth;
+  var totalSVGHeight;
+  var totalUCWidth;
+  var totalUCHeight;
+  var leftOffSetUC;
+  var bottomOffSetUC;
+  var barAreaWidthUC;
+  var barAreaHeightUC;
+  var barWidth;
 
-  const leftMarginWidthIn = q.leftMarginWidthIn;
-  const bottomMarginHeightIn = q.bottomMarginHeightIn;
-  const barAreaWidthIn = q.graphWidthIn;
-  const barAreaHeightIn = q.graphHeightIn;
+  if (q.horizontalPixels && q.verticalPixels) {
+    totalUCWidth = q.horizontalPixels;
+    totalUCHeight = q.verticalPixels;
+    totalSVGWidth = `${totalUCWidth}px`;
+    totalSVGHeight = `${totalUCHeight}px`;
+    leftOffSetUC = 30;
+    bottomOffSetUC = 30;
+    barAreaWidthUC = q.horizontalPixels - leftOffSetUC;
+    barAreaHeightUC = q.verticalPixels - bottomOffSetUC;
+    barWidth = 20;
+  } else {
+    // SVG thinks the resolution is 96 ppi when macbook is 132 ppi so we need to adjust by device pixel ratio
+    const minScreenRes = Math.min(window.screen.height, window.screen.width);
+    totalUCWidth = minScreenRes;
+    totalUCHeight = minScreenRes;
+    const pixelRatioScale = window.devicePixelRatio >= 2 ? 132 / 96 : 1;
+    const totalSVGWidthIn = q.leftMarginWidthIn + q.graphWidthIn;
+    const totalSVGHeightIn = q.bottomMarginHeightIn + q.graphHeightIn;
+    const scaleHorizUCPerIn = minScreenRes / totalSVGWidthIn;
+    const scaleVertUCPerIn = minScreenRes / totalSVGHeightIn;
 
-  const totalSVGWidthIn = leftMarginWidthIn + barAreaWidthIn;
-  const totalSVGHeightIn = bottomMarginHeightIn + barAreaHeightIn;
-
-  const scaleHorizUCPerIn = minScreenRes / totalSVGWidthIn;
-  const scaleVertUCPerIn = minScreenRes / totalSVGHeightIn;
-
-  const leftOffSetUC = scaleHorizUCPerIn * leftMarginWidthIn;
-  const bottomOffSetUC = scaleVertUCPerIn * bottomMarginHeightIn;
-  const barAreaWidthUC = minScreenRes - leftOffSetUC;
-  const barAreaHeightUC = minScreenRes - bottomOffSetUC;
-
-  const barWidth = 0.5 * scaleHorizUCPerIn; // bars are 0.1 inch wide
-
-  // SVG thinks the resolution is 96 ppi when macbook is 132 ppi so we need to adjust by device pixel ratio
-  const pixelRatioScale = window.devicePixelRatio >= 2 ? 132 / 96 : 1;
+    totalSVGWidth = `${totalSVGWidthIn * pixelRatioScale}in`;
+    totalSVGHeight = `${totalSVGHeightIn * pixelRatioScale}in`;
+    leftOffSetUC = scaleHorizUCPerIn * q.leftMarginWidthIn;
+    bottomOffSetUC = scaleVertUCPerIn * q.bottomMarginHeightIn;
+    barAreaWidthUC = minScreenRes - leftOffSetUC;
+    barAreaHeightUC = minScreenRes - bottomOffSetUC;
+    barWidth = 0.5 * scaleHorizUCPerIn; // bars are 0.1 inch wide
+  }
 
   const TickType = {
     major: "major",
@@ -93,9 +109,9 @@ function BarChart() {
   const result = (
     <div>
       <svg
-        width={`${totalSVGWidthIn * pixelRatioScale}in`}
-        height={`${totalSVGHeightIn * pixelRatioScale}in`}
-        viewBox={`0 0 ${minScreenRes} ${minScreenRes}`}
+        width={totalSVGWidth}
+        height={totalSVGHeight}
+        viewBox={`0 0 ${totalUCWidth} ${totalUCHeight}`}
         ref={useD3(
           (svg) => {
             var chart = svg
@@ -130,9 +146,9 @@ function BarChart() {
                     return entry.type === TickType.major ? entry.time : "";
                   })
               );
-            x;
+
             // Add the class 'minor' to all minor ticks
-            const ticks = xAxis
+            xAxis
               .selectAll("g")
               .filter(function (d, i) {
                 return data[i].type === TickType.major;
@@ -193,7 +209,7 @@ function BarChart() {
               //.attr("dominant-baseline", "bottom")
               //.attr("x", -barAreaWidthUC / 2)
               .attr("x", barAreaWidthUC / 2)
-              .attr("y", minScreenRes)
+              .attr("y", totalUCHeight)
               //.attr("y", 100)
               .text("Delay in Months");
 

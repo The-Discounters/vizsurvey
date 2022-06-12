@@ -368,6 +368,18 @@ const DevHome = () => {
                 }
               </Link>
             </p>
+            <p>
+              <Link
+                id="19"
+                to="/?participant_id=1&treatment_id=19&session_id=1"
+              >
+                {
+                  allTreatments.filter(
+                    (d) => d.treatmentId === 18 && d.position === 1
+                  )[0].comment
+                }
+              </Link>
+            </p>
           </div>
         )}
       </div>
