@@ -298,9 +298,11 @@ export function PostSurvey() {
               disableFocusRipple
               style={styles.button}
               onClick={() => {
-                handle.enter();
+                if (process.env.REACT_APP_FULLSCREEN === "enabled")
+                  handle.enter();
                 setTimeout(() => {
-                  handle.exit();
+                  if (process.env.REACT_APP_FULLSCREEN === "enabled")
+                    handle.exit();
                   dispatch(
                     writeAnswers({
                       csv: csv,

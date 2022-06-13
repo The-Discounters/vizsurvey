@@ -53,16 +53,16 @@ export function Consent() {
     dispatch(setParticipantId(participantId));
     var treatmentId;
     if (process.env.REACT_APP_ENV !== "production") {
-      treatmentId = searchParams.get("treatmentid");
+      treatmentId = searchParams.get("treatment_id");
     }
     if (!treatmentId) {
       treatmentId = rand() + 1;
       setSearchParams({
         treatment_id: treatmentId,
       });
-      dispatch(setTreatmentId(treatmentId));
-      dispatch(loadTreatment());
     }
+    dispatch(setTreatmentId(treatmentId));
+    dispatch(loadTreatment());
   }
 
   const useStyles = makeStyles((theme) => ({
