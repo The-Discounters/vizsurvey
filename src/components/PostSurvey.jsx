@@ -298,19 +298,23 @@ export function PostSurvey() {
               disableFocusRipple
               style={styles.button}
               onClick={() => {
-                dispatch(
-                  writeAnswers({
-                    csv: csv,
-                    participantId: participantId,
-                    postSurveyAnswers: {
-                      q15vs30: q15vs30,
-                      q50k6p: q50k6p,
-                      q100k5p: q100k5p,
-                      q200k5p: q200k5p,
-                    },
-                  })
-                );
-                navigate("/thankyou");
+                handle.enter();
+                setTimeout(() => {
+                  handle.exit();
+                  dispatch(
+                    writeAnswers({
+                      csv: csv,
+                      participantId: participantId,
+                      postSurveyAnswers: {
+                        q15vs30: q15vs30,
+                        q50k6p: q50k6p,
+                        q100k5p: q100k5p,
+                        q200k5p: q200k5p,
+                      },
+                    })
+                  );
+                  navigate("/thankyou");
+                }, 400);
               }}
               disabled={disableSubmit}
             >
