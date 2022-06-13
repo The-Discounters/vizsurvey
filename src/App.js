@@ -50,14 +50,11 @@ const App = () => {
         <BrowserRouter>
           <Container>
             <Routes>
-              {
-                // eslint-disable-next-line no-undef
-                process.env.REACT_APP_ENV !== "production" ? (
-                  <Route path="dev" element={<DevHome />} />
-                ) : (
-                  ""
-                )
-              }
+              {process.env.REACT_APP_ENV !== "production" ? (
+                <Route path="dev" element={<DevHome />} />
+              ) : (
+                ""
+              )}
               <Route path="/" element={<Consent />} />
               <Route path={"introduction"} element={<Introduction />} />
               <Route path={"instruction"} element={<Instructions />} />

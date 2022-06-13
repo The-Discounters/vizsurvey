@@ -52,7 +52,6 @@ export function Consent() {
     const participantId = searchParams.get("participant_id");
     dispatch(setParticipantId(participantId));
     var treatmentId;
-    // eslint-disable-next-line no-undef
     if (process.env.REACT_APP_ENV !== "production") {
       treatmentId = searchParams.get("treatmentid");
     }
