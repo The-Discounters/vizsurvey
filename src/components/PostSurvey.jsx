@@ -38,6 +38,7 @@ export function PostSurvey() {
 
   useEffect(async () => {
     dispatch(postSurveyQuestionsShown(dateToState(DateTime.utc())));
+    if (process.env.REACT_APP_FULLSCREEN === "enabled") handle.exit();
   }, []);
 
   const useStyles = makeStyles((theme) => ({
@@ -71,9 +72,12 @@ export function PostSurvey() {
     }
   };
 
+  useEffect(async () => {
+    checkEnableSubmit();
+  }, [q15vs30, q50k6p, q100k5p, q200k5p]);
+
   const handleFieldChange = (event, setter) => {
     setter(event.target.value);
-    checkEnableSubmit();
   };
 
   const participantId = useSelector(getParticipant);
@@ -294,9 +298,11 @@ export function PostSurvey() {
               disableFocusRipple
               style={styles.button}
               onClick={() => {
-                handle.enter();
+                if (process.env.REACT_APP_FULLSCREEN === "enabled")
+                  handle.enter();
                 setTimeout(() => {
-                  handle.exit();
+                  if (process.env.REACT_APP_FULLSCREEN === "enabled")
+                    handle.exit();
                   dispatch(
                     writeAnswers({
                       csv: csv,

@@ -102,7 +102,8 @@ const Instructions = () => {
               style={styles.button}
               onClick={() => {
                 dispatch(instructionsCompleted(dateToState(DateTime.utc())));
-                handle.enter();
+                if (process.env.REACT_APP_FULLSCREEN === "enabled")
+                  handle.enter();
                 navigate("/survey");
               }}
             >
