@@ -45,23 +45,25 @@ export function Consent() {
     return Math.floor(Math.random() * 10);
   };
 
-  const [searchParams, setSearchParams] = useSearchParams();
-  const treatmentId = searchParams.get("treatment_id");
-  const sessionId = searchParams.get("session_id");
-  const participantId = searchParams.get("participant_id");
-  if (treatmentId && sessionId && participantId) {
-    if (status === StatusType.Unitialized) {
+  if (status === StatusType.Unitialized) {
+    const [searchParams, setSearchParams] = useSearchParams();
+    const sessionId = searchParams.get("session_id");
+    dispatch(setSessionId(sessionId));
+    const participantId = searchParams.get("participant_id");
+    dispatch(setParticipantId(participantId));
+    var treatmentId;
+    // eslint-disable-next-line no-undef
+    if (process.env.REACT_APP_ENV !== "production") {
+      treatmentId = searchParams.get("treatmentid");
+    }
+    if (!treatmentId) {
+      treatmentId = rand() + 1;
+      setSearchParams({
+        treatment_id: treatmentId,
+      });
       dispatch(setTreatmentId(treatmentId));
-      dispatch(setSessionId(sessionId));
-      dispatch(setParticipantId(participantId));
       dispatch(loadTreatment());
     }
-  } else {
-    setSearchParams({
-      treatment_id: rand() + 1,
-      session_id: rand(),
-      participant_id: rand(),
-    });
   }
 
   const useStyles = makeStyles((theme) => ({
