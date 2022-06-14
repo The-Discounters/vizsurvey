@@ -142,6 +142,10 @@ export const selectAllQuestions = (state) => {
   return qe.allQuestions(state.questions);
 };
 
+export const getParticipant = (state) => {
+  return state.questions.participantId;
+};
+
 export const fetchCurrentTreatment = (state) => {
   const result = qe.currentTreatment(state.questions);
   return result;

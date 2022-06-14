@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
@@ -55,24 +56,39 @@ function BarChart() {
   // SVG thinks the resolution is 96 ppi when macbook is 132 ppi so we need to adjust by device pixel ratio
   const pixelRatioScale = window.devicePixelRatio >= 2 ? 132 / 96 : 1;
 
-  const xTickValues = Array.from(Array(q.maxTime + 1).keys());
-  const data = xTickValues.map((d) => {
-    if (d === q.timeEarlier) {
+  const TickType = {
+    major: "major",
+    minor: "minor",
+  };
+
+  const data = Array.from(Array(q.maxTime * 4 + 1).keys()).map((d) => {
+    const isMajor = d % 4 === 0;
+    const delay = d / 4;
+    if (isMajor && delay === q.timeEarlier) {
       return {
-        time: d,
+        type: TickType.major,
+        time: delay,
         amount: q.amountEarlier,
         barType: AmountType.earlierAmount,
       };
-    } else if (d === q.timeLater) {
+    } else if (isMajor && delay === q.timeLater) {
       return {
-        time: d,
+        type: TickType.major,
+        time: delay,
         amount: q.amountLater,
         barType: AmountType.laterAmount,
       };
     } else {
-      return { time: d, amount: 0, barType: AmountType.none };
+      return {
+        type: isMajor ? TickType.major : TickType.minor,
+        time: delay,
+        amount: 0,
+        barType: AmountType.none,
+      };
     }
   });
+
+  const xTickValues = data.map((d) => d.time);
 
   const result = (
     <div>
@@ -95,7 +111,7 @@ function BarChart() {
             const yRange = [0, q.maxAmount];
             const y = scaleLinear().domain(yRange).range([barAreaHeightUC, 0]);
 
-            chart
+            const xAxis = chart
               .selectAll(".x-axis")
               .data([null])
               .join("g")
@@ -107,8 +123,26 @@ function BarChart() {
               )
               .attr("class", "x-axis")
               .call(
-                axisBottom(x).tickValues(xTickValues).tickFormat(format(",.0f"))
+                axisBottom(x)
+                  .tickValues(xTickValues)
+                  .tickFormat(function (d, i) {
+                    const entry = data[i];
+                    return entry.type === TickType.major ? entry.time : "";
+                  })
               );
+            x;
+            // Add the class 'minor' to all minor ticks
+            const ticks = xAxis
+              .selectAll("g")
+              .filter(function (d, i) {
+                return data[i].type === TickType.major;
+              })
+              .style("stroke-width", "3px");
+            //.classed("minor", "true");
+            // .attr(
+            //   "style",
+            //   "stroke: #777; stroke-width: 1px; stroke-dasharray: 6,4"
+            // );
 
             const yTickValues = range(yRange[0], yRange[1], yRange[1] / 5);
             yTickValues.push(yRange[1]);
@@ -122,6 +156,7 @@ function BarChart() {
                 "transform",
                 `translate(${leftOffSetUC / 2},${bottomOffSetUC / 2})`
               )
+              .style("font-size", "12px")
               .call(
                 //axisLeft(y).tickValues(yTickValues).tickFormat(d3.format("$,.2f"))
                 axisLeft(y).tickValues(yTickValues).tickFormat(format("$,.0f"))
@@ -133,6 +168,7 @@ function BarChart() {
               .join("g")
               .attr("transform", "rotate(-90)")
               .attr("class", "y-axis-label")
+              .style("font-size", "1.25em")
               .selectAll(".y-axis-text")
               .data([null])
               .join("text")
@@ -141,19 +177,20 @@ function BarChart() {
               .attr("dominant-baseline", "hanging")
               .attr("x", -barAreaHeightUC / 2)
               .attr("y", 0)
-              .text("Amount in USD");
+              .text("$ in USD");
 
             svg
               .selectAll(".x-axis-label")
               .data([null])
               .join("g")
               .attr("class", "x-axis-label")
+              .style("font-size", "1.25em")
               .selectAll(".x-axis-text")
               .data([null])
               .join("text")
               .attr("class", "x-axis-text")
               .attr("text-anchor", "middle")
-              .attr("dominant-baseline", "bottom")
+              //.attr("dominant-baseline", "bottom")
               //.attr("x", -barAreaWidthUC / 2)
               .attr("x", barAreaWidthUC / 2)
               .attr("y", minScreenRes)

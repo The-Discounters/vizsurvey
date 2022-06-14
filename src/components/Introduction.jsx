@@ -28,11 +28,12 @@ const Introduction = () => {
   const dispatch = useDispatch();
   const treatment = useSelector(fetchCurrentTreatment);
 
+  const navigate = useNavigate();
+
   useEffect(() => {
     dispatch(introductionShown(dateToState(DateTime.utc())));
+    if (!treatment) navigate("/invalidlink");
   }, []);
-
-  const navigate = useNavigate();
 
   const vizExplanation = (viewType) => {
     switch (viewType) {
@@ -146,7 +147,7 @@ const Introduction = () => {
               height: 4,
             }}
           />
-          {vizExplanation(treatment.viewType)}
+          {treatment ? vizExplanation(treatment.viewType) : <p />}
         </Grid>
         <Grid item xs={12}>
           <Button

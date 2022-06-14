@@ -18,31 +18,55 @@ import {
 import { StatusType } from "./features/StatusType";
 import { Consent } from "./components/Consent";
 
+class ErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { error: null, errorInfo: null };
+  }
+
+  componentDidCatch(error, errorInfo) {
+    // Catch errors in any components below and re-render with error message
+    this.setState({
+      error: error,
+      errorInfo: errorInfo,
+    });
+    // You can also log error messages to an error reporting service here
+  }
+
+  render() {
+    if (this.state.errorInfo) {
+      // Error path
+      return <InvalidSurveyLink />;
+    }
+    // Normally, just render children
+    return this.props.children;
+  }
+}
+
 const App = () => {
   return (
     <div>
-      <BrowserRouter>
-        <Container>
-          <Routes>
-            {
-              // eslint-disable-next-line no-undef
-              process.env.REACT_APP_ENV !== "production" ? (
-                <Route path="/dev" element={<DevHome />} />
+      <ErrorBoundary>
+        <BrowserRouter>
+          <Container>
+            <Routes>
+              {process.env.REACT_APP_ENV !== "production" ? (
+                <Route path="dev" element={<DevHome />} />
               ) : (
                 ""
-              )
-            }
-            <Route path="/" element={<Consent />} />
-            <Route path={"introduction"} element={<Introduction />} />
-            <Route path={"instruction"} element={<Instructions />} />
-            <Route path={"survey"} element={<Survey />} />
-            <Route path={"questionaire"} element={<PostSurvey />} />
-            <Route path={"thankyou"} element={<ThankYou />} />
-            <Route path={"invalidlink"} element={<InvalidSurveyLink />} />
-            <Route path="*" element={<InvalidSurveyLink />} />
-          </Routes>
-        </Container>
-      </BrowserRouter>
+              )}
+              <Route path="/" element={<Consent />} />
+              <Route path={"introduction"} element={<Introduction />} />
+              <Route path={"instruction"} element={<Instructions />} />
+              <Route path={"survey"} element={<Survey />} />
+              <Route path={"questionaire"} element={<PostSurvey />} />
+              <Route path={"thankyou"} element={<ThankYou />} />
+              <Route path={"invalidlink"} element={<InvalidSurveyLink />} />
+              <Route path="*" element={<InvalidSurveyLink />} />
+            </Routes>
+          </Container>
+        </BrowserRouter>
+      </ErrorBoundary>
     </div>
   );
 };

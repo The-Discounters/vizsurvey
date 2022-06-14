@@ -11,7 +11,6 @@ import NativeSelect from "@material-ui/core/NativeSelect";
 import { useSelector, useDispatch } from "react-redux";
 import "../App.css";
 import * as countries from "./countries.json";
-import * as allLanguages from "./languages.json";
 import { dateToState } from "../features/ConversionUtil";
 import {
   setTreatmentId,
@@ -42,15 +41,28 @@ export function Consent() {
     dispatch(consentShown(dateToState(DateTime.utc())));
   }, []);
 
+  const rand = () => {
+    return Math.floor(Math.random() * 10);
+  };
+
   if (status === StatusType.Unitialized) {
-    const [searchParams] = useSearchParams();
-    const treatmentId = searchParams.get("treatment_id");
-    dispatch(setTreatmentId(treatmentId));
+    const [searchParams, setSearchParams] = useSearchParams();
     const sessionId = searchParams.get("session_id");
     dispatch(setSessionId(sessionId));
     const participantId = searchParams.get("participant_id");
     dispatch(setParticipantId(participantId));
-    if (treatmentId && sessionId && participantId) dispatch(loadTreatment());
+    var treatmentId;
+    if (process.env.REACT_APP_ENV !== "production") {
+      treatmentId = searchParams.get("treatment_id");
+    }
+    if (!treatmentId) {
+      treatmentId = rand() + 1;
+      setSearchParams({
+        treatment_id: treatmentId,
+      });
+    }
+    dispatch(setTreatmentId(treatmentId));
+    dispatch(loadTreatment());
   }
 
   const useStyles = makeStyles((theme) => ({
@@ -65,8 +77,6 @@ export function Consent() {
   const classes = useStyles();
   const [disableSubmit, setDisableSubmit] = React.useState(true);
   const [country, setCountry] = React.useState("");
-  const [firstLanguage, setFirstLanguage] = React.useState("");
-  const [secondLanguage, setSecondLanguage] = React.useState("");
   const [visFamiliarity, setVisFamiliarity] = React.useState("");
   const [age, setAge] = React.useState("");
   const [gender, setGender] = React.useState("");
@@ -78,10 +88,6 @@ export function Consent() {
     if (
       country &&
       country.length > 1 &&
-      firstLanguage &&
-      firstLanguage.length > 1 &&
-      secondLanguage &&
-      secondLanguage.length > 1 &&
       visFamiliarity &&
       visFamiliarity.length > 0 &&
       age &&
@@ -119,12 +125,6 @@ export function Consent() {
       value: 7,
     },
   ];
-
-  const languages = allLanguages.default
-    .filter(function (value) {
-      return value["en"];
-    })
-    .sort((a, b) => (a["en"] > b["en"] ? 1 : -1));
 
   const ConsentTextEn = () => {
     return (
@@ -199,8 +199,7 @@ export function Consent() {
       <Grid container style={styles.root} justifyContent="center">
         <Grid item xs={12}>
           <Typography variant="h5">
-            <i> Money earlier or later?</i> -{" "}
-            <b>Does visualization influence your choice? </b>
+            <i>Receiving Money</i> - <b>How to Visualize It</b>
             <br />
           </Typography>
           <hr
@@ -266,68 +265,16 @@ export function Consent() {
             >
               <option> </option>
               {countries.default.map((option) => (
-                <option key={option.alpha3} value={option.alpha3}>
+                <option
+                  key={option.alpha3}
+                  id={option.alpha3}
+                  value={option.alpha3}
+                >
                   {option.name}
                 </option>
               ))}
             </NativeSelect>
             <FormHelperText>The country you are living in now</FormHelperText>
-          </FormControl>
-          <FormControl
-            className={classes.formControl}
-            required
-            style={{ maxWidth: 200, marginRight: 20 }}
-          >
-            <InputLabel htmlFor="first-language-select-helper">
-              First language
-            </InputLabel>
-            <NativeSelect
-              value={firstLanguage}
-              onChange={(event) => {
-                handleFieldChange(event, setFirstLanguage);
-              }}
-              inputProps={{
-                name: "first-language",
-                id: "first-language-select-helper",
-              }}
-            >
-              <option> </option>
-              {languages.map((option) => (
-                <option key={option.alpha3} value={option.alpha3}>
-                  {option["en"]}
-                </option>
-              ))}
-            </NativeSelect>
-            <FormHelperText>The language you use the most.</FormHelperText>
-          </FormControl>
-          <FormControl
-            className={classes.formControl}
-            required
-            style={{ maxWidth: 200, marginRight: 20 }}
-          >
-            <InputLabel htmlFor="second-language-select-helper">
-              Second language
-            </InputLabel>
-            <NativeSelect
-              value={secondLanguage}
-              onChange={(event) => {
-                handleFieldChange(event, setSecondLanguage);
-              }}
-              inputProps={{
-                name: "second-language",
-                id: "second-language-select-helper",
-              }}
-            >
-              <option> </option>
-              {languages.map((option) => (
-                <option key={option.alpha3} value={option.alpha3}>
-                  {option["en"]}
-                </option>
-              ))}
-            </NativeSelect>
-            <FormHelperText>
-              The second language you use the most.
-            </FormHelperText>
           </FormControl>
           <FormControl
             className={classes.formControl}
@@ -361,6 +308,7 @@ export function Consent() {
             className={classes.formControl}
             label="Age"
             type="number"
+            id="Age"
             onChange={(event) => {
               handleFieldChange(event, setAge);
             }}
@@ -370,6 +318,7 @@ export function Consent() {
             required
             className={classes.formControl}
             label="Gender"
+            id="Gender"
             onChange={(event) => {
               handleFieldChange(event, setGender);
             }}
@@ -379,6 +328,7 @@ export function Consent() {
             required
             className={classes.formControl}
             label="Current Profession"
+            id="Current-Profession"
             onChange={(event) => {
               handleFieldChange(event, setProfession);
             }}
@@ -395,8 +345,6 @@ export function Consent() {
               dispatch(
                 setDemographic({
                   country: country,
-                  firstLanguage: firstLanguage,
-                  secondLanguage: secondLanguage,
                   visFamiliarity: visFamiliarity,
                   age: age,
                   gender: gender,

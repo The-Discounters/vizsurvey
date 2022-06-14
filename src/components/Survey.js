@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import MELForm from "./MELForm";
 import BarChart from "./BarChart";
 import Calendar from "./Calendar";

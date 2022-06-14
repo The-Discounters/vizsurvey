@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { FullScreen, useFullScreenHandle } from "react-full-screen";
 import { Button, Grid, Typography } from "@material-ui/core";
 import { useSelector, useDispatch } from "react-redux";
 import { DateTime } from "luxon";
@@ -27,6 +28,7 @@ const styles = {
 const Instructions = () => {
   const dispatch = useDispatch();
   const treatment = useSelector(fetchCurrentTreatment);
+  var handle = useFullScreenHandle();
 
   useEffect(() => {
     dispatch(instructionsShown(dateToState(DateTime.utc())));
@@ -91,20 +93,24 @@ const Instructions = () => {
           {vizExplanation(treatment.viewType)}
         </Grid>
         <Grid item xs={12}>
-          <Button
-            variant="contained"
-            color="secondary"
-            disableRipple
-            disableFocusRipple
-            style={styles.button}
-            onClick={() => {
-              dispatch(instructionsCompleted(dateToState(DateTime.utc())));
-              navigate("/survey");
-            }}
-          >
-            {" "}
-            Start{" "}
-          </Button>
+          <FullScreen handle={handle}>
+            <Button
+              variant="contained"
+              color="secondary"
+              disableRipple
+              disableFocusRipple
+              style={styles.button}
+              onClick={() => {
+                dispatch(instructionsCompleted(dateToState(DateTime.utc())));
+                if (process.env.REACT_APP_FULLSCREEN === "enabled")
+                  handle.enter();
+                navigate("/survey");
+              }}
+            >
+              {" "}
+              Start{" "}
+            </Button>
+          </FullScreen>
         </Grid>
       </Grid>
     </React.Fragment>
