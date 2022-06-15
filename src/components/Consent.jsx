@@ -41,15 +41,28 @@ export function Consent() {
     dispatch(consentShown(dateToState(DateTime.utc())));
   }, []);
 
+  const rand = () => {
+    return Math.floor(Math.random() * 10);
+  };
+
   if (status === StatusType.Unitialized) {
-    const [searchParams] = useSearchParams();
-    const treatmentId = searchParams.get("treatment_id");
-    dispatch(setTreatmentId(treatmentId));
+    const [searchParams, setSearchParams] = useSearchParams();
     const sessionId = searchParams.get("session_id");
     dispatch(setSessionId(sessionId));
     const participantId = searchParams.get("participant_id");
     dispatch(setParticipantId(participantId));
-    if (treatmentId && sessionId && participantId) dispatch(loadTreatment());
+    var treatmentId;
+    if (process.env.REACT_APP_ENV !== "production") {
+      treatmentId = searchParams.get("treatment_id");
+    }
+    if (!treatmentId) {
+      treatmentId = rand() + 1;
+      setSearchParams({
+        treatment_id: treatmentId,
+      });
+    }
+    dispatch(setTreatmentId(treatmentId));
+    dispatch(loadTreatment());
   }
 
   const useStyles = makeStyles((theme) => ({
@@ -252,7 +265,11 @@ export function Consent() {
             >
               <option> </option>
               {countries.default.map((option) => (
-                <option key={option.alpha3} value={option.alpha3}>
+                <option
+                  key={option.alpha3}
+                  id={option.alpha3}
+                  value={option.alpha3}
+                >
                   {option.name}
                 </option>
               ))}
@@ -291,6 +308,7 @@ export function Consent() {
             className={classes.formControl}
             label="Age"
             type="number"
+            id="Age"
             onChange={(event) => {
               handleFieldChange(event, setAge);
             }}
@@ -300,6 +318,7 @@ export function Consent() {
             required
             className={classes.formControl}
             label="Gender"
+            id="Gender"
             onChange={(event) => {
               handleFieldChange(event, setGender);
             }}
@@ -309,6 +328,7 @@ export function Consent() {
             required
             className={classes.formControl}
             label="Current Profession"
+            id="Current-Profession"
             onChange={(event) => {
               handleFieldChange(event, setProfession);
             }}
