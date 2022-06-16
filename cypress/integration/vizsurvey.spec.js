@@ -91,7 +91,7 @@ describe("vizsurvey", () => {
       "2,3,barchart,none,none,300,2,,1000,7",
     ]);
   });
-  it("calendar bar", () => {
+  it("bar very wide but short in height", () => {
     cy.viewport(1200, 700);
     cy.visit(
       "http://localhost:3000/?treatment_id=3&session_id=1&participant_id=1"
@@ -105,9 +105,16 @@ describe("vizsurvey", () => {
     cy.get("button").contains("Next").click();
     cy.get("button").contains("Start").click();
     cy.get("button").contains("Start").click();
-    calendar("rect", "3", "Bar");
+    cy.get("#id5").click();
+    cy.get("#id7").click();
+    cy.get("#id7").click();
+    postsurvey([
+      "2,1,barchart,none,none,300,2,,700,5",
+      "2,2,barchart,none,none,500,2,,800,7",
+      "2,3,barchart,none,none,300,2,,1000,7",
+    ]);
   });
-  it("calendar word", () => {
+  it("calendar bar", () => {
     cy.viewport(1200, 700);
     cy.visit(
       "http://localhost:3000/?treatment_id=4&session_id=1&participant_id=1"
@@ -121,7 +128,23 @@ describe("vizsurvey", () => {
     cy.get("button").contains("Next").click();
     cy.get("button").contains("Start").click();
     cy.get("button").contains("Start").click();
-    calendar("day", "4", "Word");
+    calendar("day", "4", "Bar");
+  });
+  it("calendar word", () => {
+    cy.viewport(1200, 700);
+    cy.visit(
+      "http://localhost:3000/?treatment_id=5&session_id=1&participant_id=1"
+    );
+    cy.wait(150);
+    cy.get("#country-select-helper").select("United States of America");
+    cy.get("[name=familiarity-with-viz]").select("3");
+    cy.get("#Age").type("26");
+    cy.get("#Gender").type("Male");
+    cy.get("#Current-Profession").type("Software Developer");
+    cy.get("button").contains("Next").click();
+    cy.get("button").contains("Start").click();
+    cy.get("button").contains("Start").click();
+    calendar("day", "5", "Word");
   });
   it("survey invalid", () => {
     cy.viewport(1200, 700);
