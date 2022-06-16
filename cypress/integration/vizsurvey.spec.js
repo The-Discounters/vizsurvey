@@ -165,9 +165,7 @@ describe("vizsurvey", () => {
   it("survey random", () => {
     for (let i = 0; i < 10; i++) {
       cy.viewport(1200, 700);
-      cy.visit(
-        "http://localhost:3000/?session_id=1&participant_id=1"
-      );
+      cy.visit("http://localhost:3000/?session_id=1&participant_id=1");
       cy.wait(150);
       cy.get("#country-select-helper").select("United States of America");
       cy.get("[name=familiarity-with-viz]").select("3");
