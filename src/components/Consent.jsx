@@ -3,7 +3,6 @@ import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { DateTime } from "luxon";
 import { Grid, TextField, Button, Box, Typography } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
 import InputLabel from "@material-ui/core/InputLabel";
 import FormHelperText from "@material-ui/core/FormHelperText";
 import FormControl from "@material-ui/core/FormControl";
@@ -48,39 +47,29 @@ export function Consent() {
     return Math.floor(Math.random() * 10);
   };
 
-  console.log("Consent: searchParams: before");
-  if (status === StatusType.Unitialized) {
-    const [searchParams, setSearchParams] = useSearchParams();
-    const sessionId = searchParams.get("session_id");
-    if (sessionId) dispatch(setSessionId(sessionId));
-    const participantId = searchParams.get("participant_id");
-    if (participantId) dispatch(setParticipantId(participantId));
-    var treatmentId;
-    if (process.env.REACT_APP_ENV !== "production") {
-      treatmentId = searchParams.get("treatment_id");
-    }
+  const [searchParams, setSearchParams] = useSearchParams();
+  useEffect(async () => {
     if (!treatmentId) {
       treatmentId = rand() + 1;
       setSearchParams({
         treatment_id: treatmentId,
       });
     }
+  }, []);
+
+  console.log("Consent: searchParams: before");
+  if (status === StatusType.Unitialized) {
+    const sessionId = searchParams.get("session_id");
+    if (sessionId) dispatch(setSessionId(sessionId));
+    const participantId = searchParams.get("participant_id");
+    if (participantId) dispatch(setParticipantId(participantId));
+    var treatmentId = searchParams.get("treatment_id");
     if (treatmentId) dispatch(setTreatmentId(treatmentId));
     if (treatmentId && sessionId && participantId) dispatch(loadTreatment());
   }
   console.log("Consent: searchParams: after");
 
-  const useStyles = makeStyles((theme) => ({
-    formControl: {
-      margin: theme.spacing(1),
-      minWidth: 120,
-    },
-    selectEmpty: {
-      marginTop: theme.spacing(2),
-    },
-  }));
   console.log("Consent: useState: before");
-  const classes = useStyles();
   const [disableSubmit, setDisableSubmit] = React.useState(true);
   const [country, setCountry] = React.useState("");
   const [visFamiliarity, setVisFamiliarity] = React.useState("");
@@ -255,11 +244,7 @@ export function Consent() {
           </Typography>
         </Grid>
         <Grid item xs={12}>
-          <FormControl
-            className={classes.formControl}
-            required
-            style={{ maxWidth: 200, marginRight: 20 }}
-          >
+          <FormControl required style={{ maxWidth: 200, marginRight: 20 }}>
             <InputLabel htmlFor="country-select-helper">
               Country of residence
             </InputLabel>
@@ -286,18 +271,13 @@ export function Consent() {
             </NativeSelect>
             <FormHelperText>The country you are living in now</FormHelperText>
           </FormControl>
-          <FormControl
-            className={classes.formControl}
-            required
-            style={{ maxWidth: 200, marginRight: 20 }}
-          >
+          <FormControl required style={{ maxWidth: 200, marginRight: 20 }}>
             <NativeSelect
               value={visFamiliarity}
               onChange={(event) => {
                 handleFieldChange(event, setVisFamiliarity);
               }}
               name="familiarity-with-viz"
-              className={classes.selectEmpty}
               inputProps={{ "aria-label": "Datavis experience" }}
             >
               <option> </option>
@@ -315,7 +295,6 @@ export function Consent() {
         <Grid item xs={12} style={{ margin: 0 }}>
           <TextField
             required
-            className={classes.formControl}
             label="Age"
             type="number"
             id="Age"
@@ -326,7 +305,6 @@ export function Consent() {
           <label style={{ marginRight: 20 }}> </label>
           <TextField
             required
-            className={classes.formControl}
             label="Gender"
             id="Gender"
             onChange={(event) => {
@@ -336,7 +314,6 @@ export function Consent() {
           <label style={{ marginLeft: 25 }}> </label>
           <TextField
             required
-            className={classes.formControl}
             label="Current Profession"
             id="Current-Profession"
             onChange={(event) => {
