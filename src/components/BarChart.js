@@ -47,8 +47,8 @@ function BarChart() {
     totalUCHeight = q.verticalPixels;
     totalSVGWidth = `${totalUCWidth}px`;
     totalSVGHeight = `${totalUCHeight}px`;
-    leftOffSetUC = 30;
-    bottomOffSetUC = 30;
+    leftOffSetUC = 200;
+    bottomOffSetUC = 75;
     barAreaWidthUC = q.horizontalPixels - leftOffSetUC;
     barAreaHeightUC = q.verticalPixels - bottomOffSetUC;
     barWidth = 20;
@@ -145,6 +145,8 @@ function BarChart() {
                     const entry = data[i];
                     return entry.type === TickType.major ? entry.time : "";
                   })
+                  // eslint-disable-next-line no-unused-vars
+                  .tickSize(6)
               );
 
             // Add the class 'minor' to all minor ticks
@@ -153,7 +155,8 @@ function BarChart() {
               .filter(function (d, i) {
                 return data[i].type === TickType.major;
               })
-              .style("stroke-width", "3px");
+              .style("stroke-width", "3px")
+              .attr("y2", "12");
             //.classed("minor", "true");
             // .attr(
             //   "style",
@@ -189,9 +192,9 @@ function BarChart() {
               .data([null])
               .join("text")
               .attr("class", "y-axis-text")
-              .attr("text-anchor", "middle")
               .attr("dominant-baseline", "hanging")
-              .attr("x", -barAreaHeightUC / 2)
+              .attr("text-anchor", "middle")
+              .attr("x", -(barAreaHeightUC + bottomOffSetUC) / 2)
               .attr("y", 0)
               .text("$ in USD");
 
@@ -200,18 +203,19 @@ function BarChart() {
               .data([null])
               .join("g")
               .attr("class", "x-axis-label")
-              .style("font-size", "1.25em")
               .selectAll(".x-axis-text")
               .data([null])
               .join("text")
               .attr("class", "x-axis-text")
-              .attr("text-anchor", "middle")
-              //.attr("dominant-baseline", "bottom")
+              //.attr("text-anchor", "middle")
+              .attr("dominant-baseline", "auto")
+              //.attr("aligment-baseline", "ideographics")
               //.attr("x", -barAreaWidthUC / 2)
               .attr("x", barAreaWidthUC / 2)
               .attr("y", totalUCHeight)
               //.attr("y", 100)
-              .text("Delay in Months");
+              .text("Delay in Months")
+              .attr("font-size", "1em");
 
             chart
               .selectAll(".bar")
