@@ -48,11 +48,16 @@ export function Consent() {
   };
 
   const [searchParams, setSearchParams] = useSearchParams();
+  var treatmentId;
   useEffect(async () => {
     if (!treatmentId) {
       treatmentId = rand() + 1;
+      const sessionId = searchParams.get("session_id");
+      const participantId = searchParams.get("participant_id");
       setSearchParams({
         treatment_id: treatmentId,
+        session_id: sessionId,
+        participant_id: participantId,
       });
     }
   }, []);
@@ -63,7 +68,7 @@ export function Consent() {
     if (sessionId) dispatch(setSessionId(sessionId));
     const participantId = searchParams.get("participant_id");
     if (participantId) dispatch(setParticipantId(participantId));
-    var treatmentId = searchParams.get("treatment_id");
+    treatmentId = searchParams.get("treatment_id");
     if (treatmentId) dispatch(setTreatmentId(treatmentId));
     if (treatmentId && sessionId && participantId) dispatch(loadTreatment());
   }
