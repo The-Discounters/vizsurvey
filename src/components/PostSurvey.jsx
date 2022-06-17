@@ -22,6 +22,7 @@ import {
   writeAnswers,
 } from "../features/questionSlice";
 import { dateToState } from "../features/ConversionUtil";
+import { POST_SURVEY_QUESTIONS } from "../features/postsurveyquestions";
 
 const styles = {
   root: { flexGrow: 1, margin: 0 },
@@ -36,7 +37,7 @@ export function PostSurvey() {
   const navigate = useNavigate();
   const handle = useFullScreenHandle();
 
-  useEffect(async () => {
+  useEffect(() => {
     dispatch(postSurveyQuestionsShown(dateToState(DateTime.utc())));
     if (process.env.REACT_APP_FULLSCREEN === "enabled") handle.exit();
   }, []);
@@ -72,9 +73,11 @@ export function PostSurvey() {
     }
   };
 
-  useEffect(async () => {
+  const qList = [q15vs30, q50k6p, q100k5p, q200k5p];
+  const setQList = [setQ15vs30, setQ50k6p, setQ100k5p, setQ200k5p];
+  useEffect(() => {
     checkEnableSubmit();
-  }, [q15vs30, q50k6p, q100k5p, q200k5p]);
+  }, qList);
 
   const handleFieldChange = (event, setter) => {
     setter(event.target.value);
@@ -84,6 +87,7 @@ export function PostSurvey() {
   const answers = useSelector(selectAllQuestions);
   const io = new FileIOAdapter();
   const csv = io.convertToCSV(answers);
+  const questions = POST_SURVEY_QUESTIONS;
   return (
     <div>
       <FullScreen handle={handle}>
@@ -102,193 +106,33 @@ export function PostSurvey() {
             </Typography>
           </Grid>
           <Grid item xs={12}>
-            <FormControl className={classes.formControl} required>
-              <FormLabel id="15vs30">
-                Suppose a 15 year mortgage and a 30 year mortgage have the same
-                Annual Percentage Rate and the same amount borrowed. The total
-                amount repaid will be:
-              </FormLabel>
-              <RadioGroup
-                row
-                aria-labelledby="15vs30-row-radio-buttons-group-label"
-                name="15vs30-radio-buttons-group"
-              >
-                <FormControlLabel
-                  value="15+"
-                  checked={q15vs30 === "15+"}
-                  control={<Radio />}
-                  label="Higher for the 15 year mortgage"
-                  onChange={(event) => {
-                    handleFieldChange(event, setQ15vs30);
-                  }}
-                />
-                <FormControlLabel
-                  value="30+"
-                  checked={q15vs30 === "30+"}
-                  control={<Radio />}
-                  label="Higher for the 30 year mortgage"
-                  onChange={(event) => {
-                    handleFieldChange(event, setQ15vs30);
-                  }}
-                />
-                <FormControlLabel
-                  value="15=30"
-                  checked={q15vs30 === "5=30"}
-                  control={<Radio />}
-                  label="The total amount repaid will be the same"
-                  onChange={(event) => {
-                    handleFieldChange(event, setQ15vs30);
-                  }}
-                />
-              </RadioGroup>
-            </FormControl>
-            <FormControl className={classes.formControl} required>
-              <FormLabel id="50k6p">
-                Suppose you owe $50,000 on a mortgage at an Annual Percentage
-                Rate of 6%. If you didn’t make any payments on this mortgage how
-                much would you owe in total after one year?
-              </FormLabel>
-              <RadioGroup
-                row
-                aria-labelledby="50k6p-row-radio-buttons-group-label"
-                name="50k6p-radio-buttons-group"
-              >
-                <FormControlLabel
-                  value="<50k"
-                  checked={q50k6p === "<50k"}
-                  control={<Radio />}
-                  label="Less than $50,000"
-                  onChange={(event) => {
-                    handleFieldChange(event, setQ50k6p);
-                  }}
-                />
-                <FormControlLabel
-                  value="50kto55k"
-                  checked={q50k6p === "50kto55k"}
-                  control={<Radio />}
-                  label="$50,000 – $54,999"
-                  onChange={(event) => {
-                    handleFieldChange(event, setQ50k6p);
-                  }}
-                />
-                <FormControlLabel
-                  value="55kto60k"
-                  checked={q50k6p === "55kto60k"}
-                  control={<Radio />}
-                  label="$55,000 – $59,999"
-                  onChange={(event) => {
-                    handleFieldChange(event, setQ50k6p);
-                  }}
-                />
-                <FormControlLabel
-                  value="60kto65k"
-                  checked={q50k6p.value === "60kto65k"}
-                  control={<Radio />}
-                  label="$60,000 – $64,999"
-                  onChange={(event) => {
-                    handleFieldChange(event, setQ50k6p);
-                  }}
-                />
-                <FormControlLabel
-                  value="65k+"
-                  checked={q50k6p === "65k+"}
-                  control={<Radio />}
-                  label="More than $65,000"
-                  onChange={(event) => {
-                    handleFieldChange(event, setQ50k6p);
-                  }}
-                />
-              </RadioGroup>
-            </FormControl>
-            <FormControl className={classes.formControl} required>
-              <FormLabel id="100k5p">
-                Suppose you owe $100,000 on a mortgage at an Annual Percentage
-                Rate of 5%. If you didn’t make any payments on this mortgage how
-                much would you owe in total after five years?
-              </FormLabel>
-              <RadioGroup
-                row
-                aria-labelledby="100k5p-row-radio-buttons-group-label"
-                name="100k5p-radio-buttons-group"
-              >
-                <FormControlLabel
-                  value="<120k"
-                  checked={q100k5p === "<120k"}
-                  control={<Radio />}
-                  label="Less than $120,000"
-                  onChange={(event) => {
-                    handleFieldChange(event, setQ100k5p);
-                  }}
-                />
-                <FormControlLabel
-                  value="120kto125k"
-                  checked={q100k5p === "120kto125k"}
-                  control={<Radio />}
-                  label="Between $120,000 and $125,000"
-                  onChange={(event) => {
-                    handleFieldChange(event, setQ100k5p);
-                  }}
-                />
-                <FormControlLabel
-                  value="125k+"
-                  checked={q100k5p === "125k+"}
-                  control={<Radio />}
-                  label="More than $125,000"
-                  onChange={(event) => {
-                    handleFieldChange(event, setQ100k5p);
-                  }}
-                />
-              </RadioGroup>
-            </FormControl>
-            <FormControl className={classes.formControl} required>
-              <FormLabel id="200k5p">
-                Suppose you owe $200,000 on a mortgage with at an Annual
-                Percentage Rate of 5%. If you made annual payments of $10,000
-                per year how long would it take to repay the whole mortgage?
-              </FormLabel>
-              <RadioGroup
-                row
-                aria-labelledby="demo-row-radio-buttons-group-label"
-                name="15vs30-radio-buttons-group"
-              >
-                <FormControlLabel
-                  value="<20y"
-                  checked={q200k5p === "<20y"}
-                  control={<Radio />}
-                  label="Less than 20 years"
-                  onChange={(event) => {
-                    handleFieldChange(event, setQ200k5p);
-                  }}
-                />
-                <FormControlLabel
-                  value="20yto30y"
-                  checked={q200k5p === "20yto30y"}
-                  control={<Radio />}
-                  label="Between 20 and 30 years"
-                  onChange={(event) => {
-                    handleFieldChange(event, setQ200k5p);
-                  }}
-                />
-                <FormControlLabel
-                  value="30yto40y"
-                  checked={q200k5p === "30yto40y"}
-                  control={<Radio />}
-                  label="Between 30 and 40 years"
-                  onChange={(event) => {
-                    handleFieldChange(event, setQ200k5p);
-                  }}
-                />
-                <FormControlLabel
-                  value="never"
-                  checked={q200k5p === "never"}
-                  control={<Radio />}
-                  label="The mortgage would never be repaid"
-                  onChange={(event) => {
-                    handleFieldChange(event, setQ200k5p);
-                  }}
-                />
-              </RadioGroup>
-            </FormControl>
+            {questions.map(({ question, options }, index) => (
+              <FormControl key={index} className={classes.formControl} required>
+                <FormLabel id={question.textShort}>
+                  {index + 1 + ". " + question.textFull}
+                </FormLabel>
+                <RadioGroup
+                  row
+                  aria-labelledby={
+                    question.textShort + "-row-radio-buttons-group-label"
+                  }
+                  name={question.textShort + "-radio-buttons-group"}
+                >
+                  {options.map((option, index1) => (
+                    <FormControlLabel
+                      key={index1}
+                      value={option.textShort}
+                      checked={qList[index] === option.textShort}
+                      control={<Radio />}
+                      label={option.textFull}
+                      onChange={(event) => {
+                        handleFieldChange(event, setQList[index]);
+                      }}
+                    />
+                  ))}
+                </RadioGroup>
+              </FormControl>
+            ))}
           </Grid>
           <Grid item xs={12} style={{ margin: 0 }}>
             <Button
