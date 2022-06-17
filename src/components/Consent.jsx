@@ -50,7 +50,7 @@ export function Consent() {
 
   const [searchParams, setSearchParams] = useSearchParams();
   var treatmentId;
-  useEffect(async () => {
+  useEffect(() => {
     if (!treatmentId) {
       treatmentId = rand() + 1;
       const sessionId = searchParams.get("session_id");

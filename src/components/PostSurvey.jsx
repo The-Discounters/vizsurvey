@@ -37,7 +37,7 @@ export function PostSurvey() {
   const navigate = useNavigate();
   const handle = useFullScreenHandle();
 
-  useEffect(async () => {
+  useEffect(() => {
     dispatch(postSurveyQuestionsShown(dateToState(DateTime.utc())));
     if (process.env.REACT_APP_FULLSCREEN === "enabled") handle.exit();
   }, []);
@@ -75,7 +75,7 @@ export function PostSurvey() {
 
   const qList = [q15vs30, q50k6p, q100k5p, q200k5p];
   const setQList = [setQ15vs30, setQ50k6p, setQ100k5p, setQ200k5p];
-  useEffect(async () => {
+  useEffect(() => {
     checkEnableSubmit();
   }, qList);
 
