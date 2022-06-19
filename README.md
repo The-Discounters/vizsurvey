@@ -67,7 +67,7 @@ http://localhost:3000/dev?participant_id=1&session_id=3 will take you to the lis
 
 ### `npm run deploy`
 
-Will deploy the application to github pages via gh_pages package. Then surf to https://pcordone.github.io/vizsurvey?treatment_id=2&participant_id=1&session_id=3
+Will deploy the application to github pages via gh_pages package. Then surf to https://release.d2ptxb5fbsc082.amplifyapp.com?treatment_id=2&participant_id=1&session_id=3
 
 Change the participant_id to the value for the person taking the survey.
 

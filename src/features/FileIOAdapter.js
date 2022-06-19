@@ -1,6 +1,6 @@
 import { csvParse } from "d3";
-// import { Octokit } from "octokit";
-import { TREATMENTS_CSV } from "./treatments";
+
+import { TREATMENTS_DEV_CSV, TREATMENTS_PROD_CSV } from "./treatments";
 import { Question } from "./Question";
 import { ViewType } from "./ViewType";
 import { InteractionType } from "./InteractionType";
@@ -8,6 +8,13 @@ import { AmountType } from "./AmountType";
 import { stringToDate, dateToState, stateToDate } from "./ConversionUtil";
 
 import AWS from "aws-sdk";
+
+var TREATMENTS_CSV;
+if (process.env.REACT_APP_ENV !== "production") {
+  TREATMENTS_CSV = TREATMENTS_DEV_CSV;
+} else {
+  TREATMENTS_CSV = TREATMENTS_PROD_CSV;
+}
 
 const S3_BUCKET = process.env.REACT_APP_S3_BUCKET;
 const REGION = process.env.REACT_APP_REGION;
