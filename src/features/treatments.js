@@ -43,10 +43,10 @@ export const TREATMENTS_DEV_CSV = `treatment_id,position,view_type,interaction,v
 export const TREATMENTS_PROD_CSV = `treatment_id,position,view_type,interaction,variable_amount,amount_earlier,time_earlier,date_earlier,amount_later,time_later,date_later,max_amount,max_time,horizontal_pixels,vertical_pixels,left_margin_width_in,bottom_margin_height_in,graph_width_in,graph_height_in,width_in,height_in,comment
 1,1,barchart,none,none,350,4,,430,13,,430,14,400,300,,,,,,,Barchart MEL question time axis half the screen.
 1,2,barchart,none,none,490,2,,700,18,,700,19,400,300,,,,,,,Barchart MEL question time axis half the screen.
-1,3,barchart,none,none,720,6,,1390,36,,1390,37,400,300,,,,,,,Barchart MEL question time axis half the screen.
+1,3,barchart,none,none,720,6,,1390,24,,1390,25,400,300,,,,,,,Barchart MEL question time axis half the screen.
 1,4,barchart,none,none,840,3,,1120,16,,1120,17,400,300,,,,,,,Barchart MEL question time axis half the screen.
 2,1,barchart,none,none,350,4,,430,13,,430,27,800,300,,,,,,,Barchart MEL question time axis full the screen.
 2,2,barchart,none,none,490,2,,700,18,,700,37,800,300,,,,,,,Barchart MEL question time axis full the screen.
-2,3,barchart,none,none,720,6,,1390,36,,1390,73,800,300,,,,,,,Barchart MEL question time axis full the screen.
+2,3,barchart,none,none,720,6,,1390,24,,1390,49,800,300,,,,,,,Barchart MEL question time axis full the screen.
 2,4,barchart,none,none,840,3,,1120,16,,1120,33,800,300,,,,,,,Barchart MEL question time axis full the screen.
 `;

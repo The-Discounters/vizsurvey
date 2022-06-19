@@ -41,16 +41,16 @@ function BarChart() {
   var barAreaWidthUC;
   var barAreaHeightUC;
   var barWidth;
-
+  console.log("hello");
   if (q.horizontalPixels && q.verticalPixels) {
-    totalUCWidth = q.horizontalPixels;
-    totalUCHeight = q.verticalPixels;
+    totalUCWidth = q.horizontalPixels * window.devicePixelRatio;
+    totalUCHeight = q.verticalPixels * window.devicePixelRatio;
     totalSVGWidth = `${totalUCWidth}px`;
     totalSVGHeight = `${totalUCHeight}px`;
     leftOffSetUC = 200;
     bottomOffSetUC = 75;
-    barAreaWidthUC = q.horizontalPixels - leftOffSetUC;
-    barAreaHeightUC = q.verticalPixels - bottomOffSetUC;
+    barAreaWidthUC = totalUCWidth - leftOffSetUC;
+    barAreaHeightUC = totalUCHeight - bottomOffSetUC;
     barWidth = 20;
   } else {
     // SVG thinks the resolution is 96 ppi when macbook is 132 ppi so we need to adjust by device pixel ratio
@@ -77,6 +77,8 @@ function BarChart() {
     minor: "minor",
   };
 
+  const x = 1;
+  console.log(x);
   const data = Array.from(Array(q.maxTime * 4 + 1).keys()).map((d) => {
     const isMajor = d % 4 === 0;
     const delay = d / 4;
@@ -145,7 +147,6 @@ function BarChart() {
                     const entry = data[i];
                     return entry.type === TickType.major ? entry.time : "";
                   })
-                  // eslint-disable-next-line no-unused-vars
                   .tickSize(6)
               );
 
@@ -175,7 +176,6 @@ function BarChart() {
                 "transform",
                 `translate(${leftOffSetUC / 2},${bottomOffSetUC / 2})`
               )
-              .style("font-size", "12px")
               .call(
                 //axisLeft(y).tickValues(yTickValues).tickFormat(d3.format("$,.2f"))
                 axisLeft(y).tickValues(yTickValues).tickFormat(format("$,.0f"))
@@ -187,7 +187,7 @@ function BarChart() {
               .join("g")
               .attr("transform", "rotate(-90)")
               .attr("class", "y-axis-label")
-              .style("font-size", "1.25em")
+              .style("font-size", "1em")
               .selectAll(".y-axis-text")
               .data([null])
               .join("text")
