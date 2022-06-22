@@ -31,7 +31,6 @@ app.get("/", (req, res) => {
 });
 
 app.post("/test", (req, res) => {
-  console.log("Got body:", JSON.stringify(req.body, null, 2));
   var dir = "public/";
 
   if (!fs.existsSync(dir)) {
@@ -39,7 +38,6 @@ app.post("/test", (req, res) => {
   }
   fs.writeFile(dir + req.body.name, req.body.data, function (err) {
     if (err) throw err;
-    console.log("File is created successfully.");
   });
   res.send(JSON.stringify({ test: 123 }, null, 2));
 });
@@ -52,6 +50,3 @@ const portHTTPS = 3002;
 
 serverHTTP.listen(portHTTP);
 serverHTTPS.listen(portHTTPS);
-
-console.log("HTTP listening on " + portHTTP);
-console.log("HTTPS listening on " + portHTTPS);

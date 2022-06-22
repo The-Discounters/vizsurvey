@@ -1,4 +1,5 @@
 import React from "react";
+import * as d3 from "d3";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import {
@@ -41,13 +42,12 @@ function BarChart() {
   var barAreaWidthUC;
   var barAreaHeightUC;
   var barWidth;
-  console.log("hello");
   if (q.horizontalPixels && q.verticalPixels) {
     totalUCWidth = q.horizontalPixels * window.devicePixelRatio;
     totalUCHeight = q.verticalPixels * window.devicePixelRatio;
     totalSVGWidth = `${totalUCWidth}px`;
     totalSVGHeight = `${totalUCHeight}px`;
-    leftOffSetUC = 200;
+    leftOffSetUC = 150;
     bottomOffSetUC = 75;
     barAreaWidthUC = totalUCWidth - leftOffSetUC;
     barAreaHeightUC = totalUCHeight - bottomOffSetUC;
@@ -77,8 +77,6 @@ function BarChart() {
     minor: "minor",
   };
 
-  const x = 1;
-  console.log(x);
   const data = Array.from(Array(q.maxTime * 4 + 1).keys()).map((d) => {
     const isMajor = d % 4 === 0;
     const delay = d / 4;
@@ -207,12 +205,12 @@ function BarChart() {
               .data([null])
               .join("text")
               .attr("class", "x-axis-text")
-              //.attr("text-anchor", "middle")
               .attr("dominant-baseline", "auto")
               //.attr("aligment-baseline", "ideographics")
               //.attr("x", -barAreaWidthUC / 2)
-              .attr("x", barAreaWidthUC / 2)
-              .attr("y", totalUCHeight)
+              .attr("x", totalUCWidth / 2)
+              .attr("y", totalUCHeight - 5) // TODO how do I fix the -5 so that the bottom of the y doesn't get clipped
+              .attr("text-anchor", "middle")
               //.attr("y", 100)
               .text("Delay in Months")
               .attr("font-size", "1em");
@@ -234,6 +232,14 @@ function BarChart() {
               )
               .attr("width", barWidth)
               .attr("height", (d) => y(0) - y(d.amount))
+              .on("mouseover", function () {
+                d3.select(this).attr("stroke", "darkblue");
+                d3.select(this).attr("stroke-width", "3");
+              })
+              .on("mouseout", function () {
+                d3.select(this).transition().duration(250);
+                d3.select(this).attr("stroke", "none");
+              })
               .on("click", (d) => {
                 if (
                   q.interaction === InteractionType.titration ||

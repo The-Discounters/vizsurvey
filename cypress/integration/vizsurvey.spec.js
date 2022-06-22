@@ -13,10 +13,7 @@ function postsurvey(expects) {
     .should("exist")
     .then(() => {
       fetch("http://localhost:3001/answers-1.csv").then((response) => {
-        console.log(response.status);
         response.text().then((text) => {
-          console.log("Logging: answers file from cypress");
-          console.log(text);
           //treatment_id,position,view_type,interaction,variable_amount,amount_earlier,time_earlier,date_earlier,amount_later,time_later,date_later,max_amount,max_time,vertical_pixels,horizontal_pixels,left_margin_width_in,bottom_margin_height_in,graph_width_in,graph_height_in,width_in,height_in,choice,shown_timestamp,choice_timestamp,highup,lowdown,participant_code
           expects.forEach((expectStr) => {
             expect(text).to.contain(expectStr);
@@ -25,10 +22,7 @@ function postsurvey(expects) {
       });
       fetch("http://localhost:3001/post-survey-answers-1.json").then(
         (response) => {
-          console.log(response.status);
           response.text().then((text) => {
-            console.log("Logging post survey answers file from cypress");
-            console.log(text);
             expect(JSON.parse(text)).to.deep.equal({
               q15vs30: "15+",
               q50k6p: "<50k",

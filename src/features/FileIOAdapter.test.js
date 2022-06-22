@@ -155,7 +155,6 @@ describe("FileIOAdapter tests", () => {
     ).toBe(2001);
     const io = new FileIOAdapter();
     const result = io.convertToCSV(answers);
-    console.log(result);
     expect(result)
       .toBe(`treatment_id,position,view_type,interaction,variable_amount,amount_earlier,time_earlier,date_earlier,amount_later,time_later,date_later,max_amount,max_time,vertical_pixels,horizontal_pixels,left_margin_width_in,bottom_margin_height_in,graph_width_in,graph_height_in,width_in,height_in,choice,shown_timestamp,choice_timestamp,highup,lowdown,participant_code
 1,2,word,none,earlierAmount,3,4,2001-01-01T00:00:00.000Z,5,6,2001-01-02T00:00:00.000Z,7,8,9,10,11,12,13,14,15,16,earlier,2001-01-03T00:00:00.000Z,2001-01-04T00:00:00.000Z,17,18,participant code
