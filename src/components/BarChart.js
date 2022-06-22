@@ -48,7 +48,7 @@ function BarChart() {
     totalSVGWidth = `${totalUCWidth}px`;
     totalSVGHeight = `${totalUCHeight}px`;
     leftOffSetUC = 150;
-    bottomOffSetUC = 75;
+    bottomOffSetUC = 80;
     barAreaWidthUC = totalUCWidth - leftOffSetUC;
     barAreaHeightUC = totalUCHeight - bottomOffSetUC;
     barWidth = 20;
@@ -123,12 +123,21 @@ function BarChart() {
             const x = scaleLinear()
               .domain([0, q.maxTime])
               .range([0, barAreaWidthUC]);
-
             const yRange = [0, q.maxAmount];
             const y = scaleLinear().domain(yRange).range([barAreaHeightUC, 0]);
 
+            const majorTicks = xTickValues.filter((v, i) => {
+              const entry = data[i];
+              return entry.type === TickType.major;
+            });
+
+            const minorTicks = xTickValues.filter((v, i) => {
+              const entry = data[i];
+              return entry.type === TickType.minor;
+            });
+
             const xAxis = chart
-              .selectAll(".x-axis")
+              .selectAll(".x-axis-major")
               .data([null])
               .join("g")
               .attr(
@@ -137,30 +146,37 @@ function BarChart() {
                   barAreaHeightUC + bottomOffSetUC / 2
                 })`
               )
-              .attr("class", "x-axis")
-              .call(
-                axisBottom(x)
-                  .tickValues(xTickValues)
-                  .tickFormat(function (d, i) {
-                    const entry = data[i];
-                    return entry.type === TickType.major ? entry.time : "";
-                  })
-                  .tickSize(6)
-              );
+              .attr("class", "x-axis-major")
+              .call(axisBottom(x).tickValues(majorTicks).tickSize(10));
 
             // Add the class 'minor' to all minor ticks
             xAxis
               .selectAll("g")
               .filter(function (d, i) {
-                return data[i].type === TickType.major;
+                return majorTicks[i].type === TickType.major;
               })
               .style("stroke-width", "3px")
               .attr("y2", "12");
-            //.classed("minor", "true");
-            // .attr(
-            //   "style",
-            //   "stroke: #777; stroke-width: 1px; stroke-dasharray: 6,4"
-            // );
+
+            chart
+              .selectAll(".x-axis-minor")
+              .data([null])
+              .join("g")
+              .attr(
+                "transform",
+                `translate(${leftOffSetUC / 2},${
+                  barAreaHeightUC + bottomOffSetUC / 2
+                })`
+              )
+              .attr("class", "x-axis-minor")
+              .call(
+                axisBottom(x)
+                  .tickValues(minorTicks)
+                  .tickFormat(function () {
+                    return "";
+                  })
+                  .tickSize(6)
+              );
 
             const yTickValues = range(yRange[0], yRange[1], yRange[1] / 5);
             yTickValues.push(yRange[1]);
@@ -175,7 +191,6 @@ function BarChart() {
                 `translate(${leftOffSetUC / 2},${bottomOffSetUC / 2})`
               )
               .call(
-                //axisLeft(y).tickValues(yTickValues).tickFormat(d3.format("$,.2f"))
                 axisLeft(y).tickValues(yTickValues).tickFormat(format("$,.0f"))
               );
 
@@ -209,7 +224,7 @@ function BarChart() {
               //.attr("aligment-baseline", "ideographics")
               //.attr("x", -barAreaWidthUC / 2)
               .attr("x", totalUCWidth / 2)
-              .attr("y", totalUCHeight - 5) // TODO how do I fix the -5 so that the bottom of the y doesn't get clipped
+              .attr("y", totalUCHeight - 3) // TODO how do I fix the -5 so that the bottom of the y doesn't get clipped
               .attr("text-anchor", "middle")
               //.attr("y", 100)
               .text("Delay in Months")
