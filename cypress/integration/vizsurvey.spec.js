@@ -6,6 +6,7 @@ function postsurvey(expects) {
   cy.get("label").contains("Less than $50,000").click();
   cy.get("label").contains("Less than $120,000").click();
   cy.get("label").contains("Less than 20 years").click();
+  cy.get("label").contains("strongly-disagree").click();
   cy.get("button").contains("Next").click();
   cy.wait(1000);
   cy.get("p")
