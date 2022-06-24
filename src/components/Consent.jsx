@@ -34,23 +34,20 @@ const styles = {
 };
 
 export function Consent() {
-  console.log("Start: Consent");
   const dispatch = useDispatch();
   const status = useSelector(fetchStatus);
 
-  console.log("Consent: useEffect: before");
   useEffect(() => {
     dispatch(consentShown(dateToState(DateTime.utc())));
   }, []);
 
-  console.log("Consent: rand: before");
   const rand = () => {
     return Math.floor(Math.random() * 10);
   };
 
   const [searchParams, setSearchParams] = useSearchParams();
   var treatmentId;
-  useEffect(async () => {
+  useEffect(() => {
     if (!treatmentId) {
       treatmentId = rand() + 1;
       const sessionId = searchParams.get("session_id");
@@ -63,7 +60,6 @@ export function Consent() {
     }
   }, []);
 
-  console.log("Consent: searchParams: before");
   if (status === StatusType.Unitialized) {
     const sessionId = searchParams.get("session_id");
     if (sessionId) dispatch(setSessionId(sessionId));
@@ -73,7 +69,6 @@ export function Consent() {
     if (treatmentId) dispatch(setTreatmentId(treatmentId));
     if (treatmentId && sessionId && participantId) dispatch(loadTreatment());
   }
-  console.log("Consent: searchParams: after");
 
   const useStyles = makeStyles((theme) => ({
     formControl: {
@@ -84,7 +79,6 @@ export function Consent() {
       marginTop: theme.spacing(2),
     },
   }));
-  console.log("Consent: useState: before");
   const classes = useStyles();
   const [disableSubmit, setDisableSubmit] = React.useState(true);
   const [country, setCountry] = React.useState("");
@@ -92,11 +86,9 @@ export function Consent() {
   const [age, setAge] = React.useState("");
   const [gender, setGender] = React.useState("");
   const [profession, setProfession] = React.useState("");
-  console.log("Consent: useState: after");
 
   const navigate = useNavigate();
 
-  console.log("Consent: checkEnableSubmit: before");
   const checkEnableSubmit = () => {
     if (
       country &&
@@ -115,7 +107,6 @@ export function Consent() {
       setDisableSubmit(true);
     }
   };
-  console.log("Consent: checkEnableSubmit: after");
 
   const handleFieldChange = (event, setter) => {
     setter(event.target.value);
@@ -201,7 +192,6 @@ export function Consent() {
     );
   };
 
-  console.log("Return: Consent");
   return (
     <div>
       <Box height="25%" alignItems="center">

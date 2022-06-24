@@ -13,10 +13,7 @@ function postsurvey(expects) {
     .should("exist")
     .then(() => {
       fetch("http://localhost:3001/answers-1.csv").then((response) => {
-        console.log(response.status);
         response.text().then((text) => {
-          console.log("Logging: answers file from cypress");
-          console.log(text);
           //treatment_id,position,view_type,interaction,variable_amount,amount_earlier,time_earlier,date_earlier,amount_later,time_later,date_later,max_amount,max_time,vertical_pixels,horizontal_pixels,left_margin_width_in,bottom_margin_height_in,graph_width_in,graph_height_in,width_in,height_in,choice,shown_timestamp,choice_timestamp,highup,lowdown,participant_code
           expects.forEach((expectStr) => {
             expect(text).to.contain(expectStr);
@@ -25,10 +22,7 @@ function postsurvey(expects) {
       });
       fetch("http://localhost:3001/post-survey-answers-1.json").then(
         (response) => {
-          console.log(response.status);
           response.text().then((text) => {
-            console.log("Logging post survey answers file from cypress");
-            console.log(text);
             expect(JSON.parse(text)).to.deep.equal({
               q15vs30: "15+",
               q50k6p: "<50k",
@@ -91,7 +85,7 @@ describe("vizsurvey", () => {
       "2,3,barchart,none,none,300,2,,1000,7",
     ]);
   });
-  it("calendar bar", () => {
+  it("bar very wide but short in height", () => {
     cy.viewport(1200, 700);
     cy.visit(
       "http://localhost:3000/?treatment_id=3&session_id=1&participant_id=1"
@@ -105,9 +99,16 @@ describe("vizsurvey", () => {
     cy.get("button").contains("Next").click();
     cy.get("button").contains("Start").click();
     cy.get("button").contains("Start").click();
-    calendar("rect", "3", "Bar");
+    cy.get("#id5").click();
+    cy.get("#id7").click();
+    cy.get("#id7").click();
+    postsurvey([
+      "2,1,barchart,none,none,300,2,,700,5",
+      "2,2,barchart,none,none,500,2,,800,7",
+      "2,3,barchart,none,none,300,2,,1000,7",
+    ]);
   });
-  it("calendar word", () => {
+  it("calendar bar", () => {
     cy.viewport(1200, 700);
     cy.visit(
       "http://localhost:3000/?treatment_id=4&session_id=1&participant_id=1"
@@ -121,7 +122,23 @@ describe("vizsurvey", () => {
     cy.get("button").contains("Next").click();
     cy.get("button").contains("Start").click();
     cy.get("button").contains("Start").click();
-    calendar("day", "4", "Word");
+    calendar("day", "4", "Bar");
+  });
+  it("calendar word", () => {
+    cy.viewport(1200, 700);
+    cy.visit(
+      "http://localhost:3000/?treatment_id=5&session_id=1&participant_id=1"
+    );
+    cy.wait(150);
+    cy.get("#country-select-helper").select("United States of America");
+    cy.get("[name=familiarity-with-viz]").select("3");
+    cy.get("#Age").type("26");
+    cy.get("#Gender").type("Male");
+    cy.get("#Current-Profession").type("Software Developer");
+    cy.get("button").contains("Next").click();
+    cy.get("button").contains("Start").click();
+    cy.get("button").contains("Start").click();
+    calendar("day", "5", "Word");
   });
   it("survey invalid", () => {
     cy.viewport(1200, 700);
@@ -142,9 +159,7 @@ describe("vizsurvey", () => {
   it("survey random", () => {
     for (let i = 0; i < 10; i++) {
       cy.viewport(1200, 700);
-      cy.visit(
-        "http://localhost:3000/?session_id=1&participant_id=1"
-      );
+      cy.visit("http://localhost:3000/?session_id=1&participant_id=1");
       cy.wait(150);
       cy.get("#country-select-helper").select("United States of America");
       cy.get("[name=familiarity-with-viz]").select("3");

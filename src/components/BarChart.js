@@ -1,5 +1,5 @@
-/* eslint-disable no-unused-vars */
 import React from "react";
+import * as d3 from "d3";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import {
@@ -33,28 +33,44 @@ function BarChart() {
   const status = useSelector(fetchStatus);
   const navigate = useNavigate();
 
-  const minScreenRes = Math.min(window.screen.height, window.screen.width);
+  var totalSVGWidth;
+  var totalSVGHeight;
+  var totalUCWidth;
+  var totalUCHeight;
+  var leftOffSetUC;
+  var bottomOffSetUC;
+  var barAreaWidthUC;
+  var barAreaHeightUC;
+  var barWidth;
+  if (q.horizontalPixels && q.verticalPixels) {
+    totalUCWidth = q.horizontalPixels * window.devicePixelRatio;
+    totalUCHeight = q.verticalPixels * window.devicePixelRatio;
+    totalSVGWidth = `${totalUCWidth}px`;
+    totalSVGHeight = `${totalUCHeight}px`;
+    leftOffSetUC = 150;
+    bottomOffSetUC = 80;
+    barAreaWidthUC = totalUCWidth - leftOffSetUC;
+    barAreaHeightUC = totalUCHeight - bottomOffSetUC;
+    barWidth = 20;
+  } else {
+    // SVG thinks the resolution is 96 ppi when macbook is 132 ppi so we need to adjust by device pixel ratio
+    const minScreenRes = Math.min(window.screen.height, window.screen.width);
+    totalUCWidth = minScreenRes;
+    totalUCHeight = minScreenRes;
+    const pixelRatioScale = window.devicePixelRatio >= 2 ? 132 / 96 : 1;
+    const totalSVGWidthIn = q.leftMarginWidthIn + q.graphWidthIn;
+    const totalSVGHeightIn = q.bottomMarginHeightIn + q.graphHeightIn;
+    const scaleHorizUCPerIn = minScreenRes / totalSVGWidthIn;
+    const scaleVertUCPerIn = minScreenRes / totalSVGHeightIn;
 
-  const leftMarginWidthIn = q.leftMarginWidthIn;
-  const bottomMarginHeightIn = q.bottomMarginHeightIn;
-  const barAreaWidthIn = q.graphWidthIn;
-  const barAreaHeightIn = q.graphHeightIn;
-
-  const totalSVGWidthIn = leftMarginWidthIn + barAreaWidthIn;
-  const totalSVGHeightIn = bottomMarginHeightIn + barAreaHeightIn;
-
-  const scaleHorizUCPerIn = minScreenRes / totalSVGWidthIn;
-  const scaleVertUCPerIn = minScreenRes / totalSVGHeightIn;
-
-  const leftOffSetUC = scaleHorizUCPerIn * leftMarginWidthIn;
-  const bottomOffSetUC = scaleVertUCPerIn * bottomMarginHeightIn;
-  const barAreaWidthUC = minScreenRes - leftOffSetUC;
-  const barAreaHeightUC = minScreenRes - bottomOffSetUC;
-
-  const barWidth = 0.5 * scaleHorizUCPerIn; // bars are 0.1 inch wide
-
-  // SVG thinks the resolution is 96 ppi when macbook is 132 ppi so we need to adjust by device pixel ratio
-  const pixelRatioScale = window.devicePixelRatio >= 2 ? 132 / 96 : 1;
+    totalSVGWidth = `${totalSVGWidthIn * pixelRatioScale}in`;
+    totalSVGHeight = `${totalSVGHeightIn * pixelRatioScale}in`;
+    leftOffSetUC = scaleHorizUCPerIn * q.leftMarginWidthIn;
+    bottomOffSetUC = scaleVertUCPerIn * q.bottomMarginHeightIn;
+    barAreaWidthUC = minScreenRes - leftOffSetUC;
+    barAreaHeightUC = minScreenRes - bottomOffSetUC;
+    barWidth = 0.5 * scaleHorizUCPerIn; // bars are 0.1 inch wide
+  }
 
   const TickType = {
     major: "major",
@@ -93,9 +109,9 @@ function BarChart() {
   const result = (
     <div>
       <svg
-        width={`${totalSVGWidthIn * pixelRatioScale}in`}
-        height={`${totalSVGHeightIn * pixelRatioScale}in`}
-        viewBox={`0 0 ${minScreenRes} ${minScreenRes}`}
+        width={totalSVGWidth}
+        height={totalSVGHeight}
+        viewBox={`0 0 ${totalUCWidth} ${totalUCHeight}`}
         ref={useD3(
           (svg) => {
             var chart = svg
@@ -107,12 +123,21 @@ function BarChart() {
             const x = scaleLinear()
               .domain([0, q.maxTime])
               .range([0, barAreaWidthUC]);
-
             const yRange = [0, q.maxAmount];
             const y = scaleLinear().domain(yRange).range([barAreaHeightUC, 0]);
 
+            const majorTicks = xTickValues.filter((v, i) => {
+              const entry = data[i];
+              return entry.type === TickType.major;
+            });
+
+            const minorTicks = xTickValues.filter((v, i) => {
+              const entry = data[i];
+              return entry.type === TickType.minor;
+            });
+
             const xAxis = chart
-              .selectAll(".x-axis")
+              .selectAll(".x-axis-major")
               .data([null])
               .join("g")
               .attr(
@@ -121,28 +146,37 @@ function BarChart() {
                   barAreaHeightUC + bottomOffSetUC / 2
                 })`
               )
-              .attr("class", "x-axis")
-              .call(
-                axisBottom(x)
-                  .tickValues(xTickValues)
-                  .tickFormat(function (d, i) {
-                    const entry = data[i];
-                    return entry.type === TickType.major ? entry.time : "";
-                  })
-              );
-            x;
+              .attr("class", "x-axis-major")
+              .call(axisBottom(x).tickValues(majorTicks).tickSize(10));
+
             // Add the class 'minor' to all minor ticks
-            const ticks = xAxis
+            xAxis
               .selectAll("g")
               .filter(function (d, i) {
-                return data[i].type === TickType.major;
+                return majorTicks[i].type === TickType.major;
               })
-              .style("stroke-width", "3px");
-            //.classed("minor", "true");
-            // .attr(
-            //   "style",
-            //   "stroke: #777; stroke-width: 1px; stroke-dasharray: 6,4"
-            // );
+              .style("stroke-width", "3px")
+              .attr("y2", "12");
+
+            chart
+              .selectAll(".x-axis-minor")
+              .data([null])
+              .join("g")
+              .attr(
+                "transform",
+                `translate(${leftOffSetUC / 2},${
+                  barAreaHeightUC + bottomOffSetUC / 2
+                })`
+              )
+              .attr("class", "x-axis-minor")
+              .call(
+                axisBottom(x)
+                  .tickValues(minorTicks)
+                  .tickFormat(function () {
+                    return "";
+                  })
+                  .tickSize(6)
+              );
 
             const yTickValues = range(yRange[0], yRange[1], yRange[1] / 5);
             yTickValues.push(yRange[1]);
@@ -156,9 +190,7 @@ function BarChart() {
                 "transform",
                 `translate(${leftOffSetUC / 2},${bottomOffSetUC / 2})`
               )
-              .style("font-size", "12px")
               .call(
-                //axisLeft(y).tickValues(yTickValues).tickFormat(d3.format("$,.2f"))
                 axisLeft(y).tickValues(yTickValues).tickFormat(format("$,.0f"))
               );
 
@@ -168,14 +200,14 @@ function BarChart() {
               .join("g")
               .attr("transform", "rotate(-90)")
               .attr("class", "y-axis-label")
-              .style("font-size", "1.25em")
+              .style("font-size", "1em")
               .selectAll(".y-axis-text")
               .data([null])
               .join("text")
               .attr("class", "y-axis-text")
-              .attr("text-anchor", "middle")
               .attr("dominant-baseline", "hanging")
-              .attr("x", -barAreaHeightUC / 2)
+              .attr("text-anchor", "middle")
+              .attr("x", -(barAreaHeightUC + bottomOffSetUC) / 2)
               .attr("y", 0)
               .text("$ in USD");
 
@@ -184,18 +216,19 @@ function BarChart() {
               .data([null])
               .join("g")
               .attr("class", "x-axis-label")
-              .style("font-size", "1.25em")
               .selectAll(".x-axis-text")
               .data([null])
               .join("text")
               .attr("class", "x-axis-text")
-              .attr("text-anchor", "middle")
-              //.attr("dominant-baseline", "bottom")
+              .attr("dominant-baseline", "auto")
+              //.attr("aligment-baseline", "ideographics")
               //.attr("x", -barAreaWidthUC / 2)
-              .attr("x", barAreaWidthUC / 2)
-              .attr("y", minScreenRes)
+              .attr("x", totalUCWidth / 2)
+              .attr("y", totalUCHeight - 3) // TODO how do I fix the -5 so that the bottom of the y doesn't get clipped
+              .attr("text-anchor", "middle")
               //.attr("y", 100)
-              .text("Delay in Months");
+              .text("Delay in Months")
+              .attr("font-size", "1em");
 
             chart
               .selectAll(".bar")
@@ -214,6 +247,14 @@ function BarChart() {
               )
               .attr("width", barWidth)
               .attr("height", (d) => y(0) - y(d.amount))
+              .on("mouseover", function () {
+                d3.select(this).attr("stroke", "darkblue");
+                d3.select(this).attr("stroke-width", "3");
+              })
+              .on("mouseout", function () {
+                d3.select(this).transition().duration(250);
+                d3.select(this).attr("stroke", "none");
+              })
               .on("click", (d) => {
                 if (
                   q.interaction === InteractionType.titration ||
