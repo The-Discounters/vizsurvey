@@ -10,6 +10,7 @@ import { stringToDate, dateToState, stateToDate } from "./ConversionUtil";
 import AWS from "aws-sdk";
 
 var TREATMENTS_CSV;
+console.log("REACT_APP_ENV: " + process.env.REACT_APP_ENV);
 if (process.env.REACT_APP_ENV !== "production") {
   TREATMENTS_CSV = TREATMENTS_DEV_CSV;
 } else {
