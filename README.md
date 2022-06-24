@@ -33,6 +33,11 @@ Open [http://localhost:3000/dev] to view it in the browser.
 The page will reload if you make edits.\
 You will also see any lint errors in the console.
 
+### `npm run build; serve -s build`
+
+Runs the app in production mode.\
+http://localhost:3000/?participant_id=1&treatment_id=1&session_id=1 where you can edit the treatment_id value to load the treatment you want to test.
+
 ### `npm test`
 
 Launches the test runner in the interactive watch mode.\
@@ -67,7 +72,7 @@ http://localhost:3000/dev?participant_id=1&session_id=3 will take you to the lis
 
 ### `npm run deploy`
 
-Will deploy the application to github pages via gh_pages package. Then surf to https://pcordone.github.io/vizsurvey?treatment_id=2&participant_id=1&session_id=3
+Will deploy the application to github pages via gh_pages package. Then surf to https://release.d2ptxb5fbsc082.amplifyapp.com?treatment_id=2&participant_id=1&session_id=3
 
 Change the participant_id to the value for the person taking the survey.
 
