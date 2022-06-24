@@ -154,11 +154,14 @@ export class FileIOAdapter {
     const fileNameAnswers = "answers-" + data.participantId + ".csv";
     const fileNamePostSurveyAnswers =
       "post-survey-answers-" + data.participantId + ".json";
+    console.log("fileNameAnswers: " + fileNameAnswers);
 
     if (process.env.REACT_APP_AWS_ENABLED) {
+      console.log("AWS ENABLED");
       uploadFile(fileNameAnswers, data.csv);
       uploadFile(fileNamePostSurveyAnswers, postSurveyAnswersStr);
     } else {
+      console.log("AWS DISABLED");
       uploadFileOffline(fileNameAnswers, data.csv);
       uploadFileOffline(fileNamePostSurveyAnswers, postSurveyAnswersStr);
     }

@@ -50,3 +50,6 @@ const portHTTPS = 3002;
 
 serverHTTP.listen(portHTTP);
 serverHTTPS.listen(portHTTPS);
+
+console.log("HTTP listening on " + portHTTP);
+console.log("HTTPS listening on " + portHTTPS);
