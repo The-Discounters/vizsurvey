@@ -12,6 +12,7 @@ import {
   setQuestionShownTimestamp,
   answer,
 } from "../features/questionSlice";
+import { format } from "d3";
 import { dateToState } from "../features/ConversionUtil";
 
 export function MELForm() {
@@ -23,18 +24,18 @@ export function MELForm() {
   const dpi = window.devicePixelRatio >= 2 ? 132 : 96;
 
   const todayText = (sooner_time) =>
-    sooner_time === 0 ? "today" : `in ${sooner_time} weeks`;
+    sooner_time === 0 ? "today" : `in ${sooner_time} months`;
 
   function questionText() {
-    return `Make a choice to received ${question1stPartText()} or ${question2ndPartText()}`;
+    return `Make a choice to receive ${question1stPartText()} or ${question2ndPartText()}.`;
   }
 
   function question1stPartText() {
-    return `$${q.amountEarlier} ${todayText(q.timeEarlier)}`;
+    return `${format("$,.0f")(q.amountEarlier)} ${todayText(q.timeEarlier)}`;
   }
 
   function question2ndPartText() {
-    return `$${q.amountLater} in ${q.timeLater} weeks`;
+    return `${format("$,.0f")(q.amountLater)} in ${q.timeLater} months`;
   }
 
   const result = (
