@@ -1,8 +1,15 @@
-/* eslint-disable no-unused-vars */
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { DateTime } from "luxon";
-import { Grid, TextField, Button, Box, Typography } from "@material-ui/core";
+import {
+  Grid,
+  TextField,
+  Button,
+  Box,
+  Typography,
+  ThemeProvider,
+} from "@material-ui/core";
+import { useSearchParams } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import InputLabel from "@material-ui/core/InputLabel";
 import FormHelperText from "@material-ui/core/FormHelperText";
@@ -21,17 +28,18 @@ import {
   consentShown,
   setDemographic,
 } from "../features/questionSlice";
-
-import { useSearchParams } from "react-router-dom";
 import { StatusType } from "../features/StatusType";
+import { styles, theme } from "./ScreenHelper";
 
-const styles = {
-  root: { flexGrow: 1, margin: 0 },
-  button: { marginTop: 10, marginBottom: 10 },
-  container: { display: "flex", flexWrap: "wrap" },
-  textField: { marginLeft: 10, marginRight: 10, width: 200 },
-  label: { margin: 0 },
-};
+const useStyles = makeStyles((theme) => ({
+  formControl: {
+    margin: theme.spacing(1),
+    minWidth: 120,
+  },
+  selectEmpty: {
+    marginTop: theme.spacing(2),
+  },
+}));
 
 export function Consent() {
   const dispatch = useDispatch();
@@ -70,15 +78,6 @@ export function Consent() {
     if (treatmentId && sessionId && participantId) dispatch(loadTreatment());
   }
 
-  const useStyles = makeStyles((theme) => ({
-    formControl: {
-      margin: theme.spacing(1),
-      minWidth: 120,
-    },
-    selectEmpty: {
-      marginTop: theme.spacing(2),
-    },
-  }));
   const classes = useStyles();
   const [disableSubmit, setDisableSubmit] = React.useState(true);
   const [country, setCountry] = React.useState("");
@@ -133,7 +132,7 @@ export function Consent() {
 
   const ConsentTextEn = () => {
     return (
-      <>
+      <React.Fragment>
         <p>
           <b>The goal of this research is </b> to understand how choices between
           receiving two amounts of money, a smaller sooner amount or a larger
@@ -188,184 +187,186 @@ export function Consent() {
           the Human Protection Administrator (Gabriel Johnson, Tel.
           508-831-4989, Email: gjohnson@wpi.edu).
         </p>
-      </>
+      </React.Fragment>
     );
   };
 
   return (
-    <div>
-      <Box height="25%" alignItems="center">
-        <img
-          style={{ maxHeight: "240px" }}
-          src="money-on-calendar.png"
-          alt="$100 bills on calendar"
-        ></img>
-      </Box>
-      <Grid container style={styles.root} justifyContent="center">
-        <Grid item xs={12}>
-          <Typography variant="h5">
-            <i>Receiving Money</i> - <b>How to Visualize It</b>
-            <br />
-          </Typography>
-          <hr
-            style={{
-              color: "#ea3433",
-              backgroundColor: "#ea3433",
-              height: 4,
-            }}
-          />
-          <Typography>
-            We are often faced with decisions in life to choose between two
-            options of different value at different times where a sooner option
-            is of less value than the later one. For example if I were to offer
-            you $100 dollars now vs $300 dollars three months from now which
-            would you choose?
-          </Typography>
-          <Typography paragraph>
-            <br />
-            <i>
-              {" "}
-              <u>
-                Before you proceed, please read the following consent form
-                carefully:{" "}
-              </u>{" "}
-            </i>
-          </Typography>
-          <div
-            className="overflow-auto"
-            style={{
-              padding: 10,
-              marginBottom: 25,
-              maxWidth: "95%",
-              maxHeight: "300px",
-            }}
-            id="consent-section"
-          >
-            <ConsentTextEn />
-          </div>
+    <ThemeProvider theme={theme}>
+      <div>
+        <Box height="25%" alignItems="center">
+          <img
+            style={{ maxHeight: "240px" }}
+            src="money-on-calendar.png"
+            alt="$100 bills on calendar"
+          ></img>
+        </Box>
+        <Grid container style={styles.root} justifyContent="center">
+          <Grid item xs={12}>
+            <Typography variant="h5">
+              <i>Receiving Money</i> - <b>How to Visualize It</b>
+              <br />
+            </Typography>
+            <hr
+              style={{
+                color: "#ea3433",
+                backgroundColor: "#ea3433",
+                height: 4,
+              }}
+            />
+            <Typography>
+              We are often faced with decisions in life to choose between two
+              options of different value at different times where a sooner
+              option is of less value than the later one. For example if I were
+              to offer you $100 dollars now vs $300 dollars three months from
+              now which would you choose?
+            </Typography>
+            <Typography paragraph>
+              <br />
+              <i>
+                {" "}
+                <u>
+                  Before you proceed, please read the following consent form
+                  carefully:{" "}
+                </u>{" "}
+              </i>
+            </Typography>
+            <div
+              className="overflow-auto"
+              style={{
+                padding: 10,
+                marginBottom: 25,
+                maxWidth: "95%",
+                maxHeight: "300px",
+              }}
+              id="consent-section"
+            >
+              <ConsentTextEn />
+            </div>
 
-          <Typography paragraph>
-            By clicking &ldquo;Next&ldquo;, you agree to participate. Before we
-            begin, please enter your:
-          </Typography>
-        </Grid>
-        <Grid item xs={12}>
-          <FormControl
-            className={classes.formControl}
-            required
-            style={{ maxWidth: 200, marginRight: 20 }}
-          >
-            <InputLabel htmlFor="country-select-helper">
-              Country of residence
-            </InputLabel>
-            <NativeSelect
-              value={country}
-              onChange={(event) => {
-                handleFieldChange(event, setCountry);
-              }}
-              inputProps={{
-                name: "country-of-origin",
-                id: "country-select-helper",
-              }}
+            <Typography paragraph>
+              By clicking &ldquo;Next&ldquo;, you agree to participate. Before
+              we begin, please enter your:
+            </Typography>
+          </Grid>
+          <Grid item xs={12}>
+            <FormControl
+              className={classes.formControl}
+              required
+              style={{ maxWidth: 230, marginRight: 20 }}
             >
-              <option> </option>
-              {countries.default.map((option) => (
-                <option
-                  key={option.alpha3}
-                  id={option.alpha3}
-                  value={option.alpha3}
-                >
-                  {option.name}
-                </option>
-              ))}
-            </NativeSelect>
-            <FormHelperText>The country you are living in now</FormHelperText>
-          </FormControl>
-          <FormControl
-            className={classes.formControl}
-            required
-            style={{ maxWidth: 200, marginRight: 20 }}
-          >
-            <NativeSelect
-              value={visFamiliarity}
-              onChange={(event) => {
-                handleFieldChange(event, setVisFamiliarity);
-              }}
-              name="familiarity-with-viz"
-              className={classes.selectEmpty}
-              inputProps={{ "aria-label": "Datavis experience" }}
+              <InputLabel htmlFor="country-select-helper">
+                Country of residence
+              </InputLabel>
+              <NativeSelect
+                value={country}
+                onChange={(event) => {
+                  handleFieldChange(event, setCountry);
+                }}
+                inputProps={{
+                  name: "country-of-origin",
+                  id: "country-select-helper",
+                }}
+              >
+                <option> </option>
+                {countries.default.map((option) => (
+                  <option
+                    key={option.alpha3}
+                    id={option.alpha3}
+                    value={option.alpha3}
+                  >
+                    {option.name}
+                  </option>
+                ))}
+              </NativeSelect>
+              <FormHelperText>The country you are living in now</FormHelperText>
+            </FormControl>
+            <FormControl
+              className={classes.formControl}
+              required
+              style={{ maxWidth: 230, marginRight: 20 }}
             >
-              <option> </option>
-              {vizFamiliarityLevel.map((option) => (
-                <option key={option.id} value={option.id}>
-                  {option["name"]}
-                </option>
-              ))}
-            </NativeSelect>
-            <FormHelperText>
-              Your experience with data visualizations and charts
-            </FormHelperText>
-          </FormControl>
+              <NativeSelect
+                value={visFamiliarity}
+                onChange={(event) => {
+                  handleFieldChange(event, setVisFamiliarity);
+                }}
+                name="familiarity-with-viz"
+                className={classes.selectEmpty}
+                inputProps={{ "aria-label": "Datavis experience" }}
+              >
+                <option> </option>
+                {vizFamiliarityLevel.map((option) => (
+                  <option key={option.id} value={option.id}>
+                    {option["name"]}
+                  </option>
+                ))}
+              </NativeSelect>
+              <FormHelperText>
+                Your experience with data visualizations and charts
+              </FormHelperText>
+            </FormControl>
+          </Grid>
+          <Grid item xs={12} style={{ margin: 0 }}>
+            <TextField
+              required
+              className={classes.formControl}
+              label="Age"
+              type="number"
+              id="Age"
+              onChange={(event) => {
+                handleFieldChange(event, setAge);
+              }}
+            />
+            <label style={{ marginRight: 20 }}> </label>
+            <TextField
+              required
+              className={classes.formControl}
+              label="Gender"
+              id="Gender"
+              onChange={(event) => {
+                handleFieldChange(event, setGender);
+              }}
+            />
+            <label style={{ marginLeft: 25 }}> </label>
+            <TextField
+              required
+              className={classes.formControl}
+              label="Current Profession"
+              id="Current-Profession"
+              onChange={(event) => {
+                handleFieldChange(event, setProfession);
+              }}
+            />
+          </Grid>
+          <Grid item xs={12} style={{ margin: 0 }}>
+            <Button
+              variant="contained"
+              color="secondary"
+              disableRipple
+              disableFocusRipple
+              style={styles.button}
+              onClick={() => {
+                dispatch(
+                  setDemographic({
+                    country: country,
+                    visFamiliarity: visFamiliarity,
+                    age: age,
+                    gender: gender,
+                    profession: profession,
+                  })
+                );
+                navigate("/introduction");
+              }}
+              disabled={disableSubmit}
+            >
+              {" "}
+              Next{" "}
+            </Button>
+          </Grid>
         </Grid>
-        <Grid item xs={12} style={{ margin: 0 }}>
-          <TextField
-            required
-            className={classes.formControl}
-            label="Age"
-            type="number"
-            id="Age"
-            onChange={(event) => {
-              handleFieldChange(event, setAge);
-            }}
-          />
-          <label style={{ marginRight: 20 }}> </label>
-          <TextField
-            required
-            className={classes.formControl}
-            label="Gender"
-            id="Gender"
-            onChange={(event) => {
-              handleFieldChange(event, setGender);
-            }}
-          />
-          <label style={{ marginLeft: 25 }}> </label>
-          <TextField
-            required
-            className={classes.formControl}
-            label="Current Profession"
-            id="Current-Profession"
-            onChange={(event) => {
-              handleFieldChange(event, setProfession);
-            }}
-          />
-        </Grid>
-        <Grid item xs={12} style={{ margin: 0 }}>
-          <Button
-            variant="contained"
-            color="secondary"
-            disableRipple
-            disableFocusRipple
-            style={styles.button}
-            onClick={() => {
-              dispatch(
-                setDemographic({
-                  country: country,
-                  visFamiliarity: visFamiliarity,
-                  age: age,
-                  gender: gender,
-                  profession: profession,
-                })
-              );
-              navigate("/introduction");
-            }}
-            disabled={disableSubmit}
-          >
-            {" "}
-            Next{" "}
-          </Button>
-        </Grid>
-      </Grid>
-    </div>
+      </div>
+    </ThemeProvider>
   );
 }
 

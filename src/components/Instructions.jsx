@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { FullScreen, useFullScreenHandle } from "react-full-screen";
-import { Button, Grid, Typography } from "@material-ui/core";
+import { Button, Grid, Typography, ThemeProvider } from "@material-ui/core";
 import { useSelector, useDispatch } from "react-redux";
 import { DateTime } from "luxon";
 import "../App.css";
@@ -13,17 +13,7 @@ import {
 import { dateToState } from "../features/ConversionUtil";
 import { fetchCurrentTreatment } from "../features/questionSlice";
 import InvalidSurveyLink from "./InvalidSurveyLink";
-
-const styles = {
-  root: {
-    flexGrow: 1, // flex:1, padding: 5,height: "100%", width: "100%"
-    margin: 20,
-  },
-  button: { marginTop: 10, marginBottom: 10 },
-  container: { display: "flex", flexWrap: "wrap" },
-  textField: { marginLeft: 10, marginRight: 10, width: 200 },
-  label: { margin: 0 },
-};
+import { styles, theme } from "./ScreenHelper";
 
 const Instructions = () => {
   const dispatch = useDispatch();
@@ -79,7 +69,7 @@ const Instructions = () => {
   };
 
   return (
-    <React.Fragment>
+    <ThemeProvider theme={theme}>
       <Grid container style={styles.root}>
         <Grid item xs={12}>
           <Typography variant="h4">Instructions</Typography>
@@ -90,7 +80,9 @@ const Instructions = () => {
               height: 4,
             }}
           />
-          {vizExplanation(treatment.viewType)}
+          <Typography paragraph>
+            {vizExplanation(treatment.viewType)}
+          </Typography>
         </Grid>
         <Grid item xs={12}>
           <FullScreen handle={handle}>
@@ -113,7 +105,7 @@ const Instructions = () => {
           </FullScreen>
         </Grid>
       </Grid>
-    </React.Fragment>
+    </ThemeProvider>
   );
 };
 
