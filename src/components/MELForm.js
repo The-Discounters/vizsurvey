@@ -119,12 +119,6 @@ export function MELForm() {
                   checked={choice === ChoiceType.earlier}
                   control={<Radio />}
                   label={question1stPartText()}
-                  onChange={(event) => {
-                    console.log("onChange");
-                    setChoice(event.target.value);
-                    setHelperText(" ");
-                    setError(false);
-                  }}
                   error={() => {
                     console.log("error");
                     return choice === "";
@@ -142,9 +136,6 @@ export function MELForm() {
                   checked={choice === ChoiceType.later}
                   control={<Radio />}
                   label={question2ndPartText()}
-                  onChange={(event) => {
-                    setChoice(event.target.value);
-                  }}
                   error={() => {
                     console.log("error");
                     return choice === "";
