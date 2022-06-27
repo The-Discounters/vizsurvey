@@ -50,11 +50,11 @@ describe("vizsurvey", () => {
     cy.get("button").contains("Next").click();
     cy.get("button").contains("Start").click();
     cy.get("button").contains("Start").click();
-    cy.get("label").contains("$500 in 2 weeks").click();
+    cy.get("label").contains("$500 in 2 months").click();
     cy.get("#submit").click();
-    cy.get("label").contains("$50 in 2 weeks").click();
+    cy.get("label").contains("$50 in 2 months").click();
     cy.get("#submit").click();
-    cy.get("label").contains("$250 in 2 weeks").click();
+    cy.get("label").contains("$250 in 2 months").click();
     cy.get("#submit").click();
     postsurvey([
       "1,1,word,none,none,500,2,,1000,5",
