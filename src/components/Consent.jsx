@@ -194,13 +194,7 @@ export function Consent() {
   return (
     <ThemeProvider theme={theme}>
       <div>
-        <Box height="25%" alignItems="center">
-          <img
-            style={{ maxHeight: "240px" }}
-            src="money-on-calendar.png"
-            alt="$100 bills on calendar"
-          ></img>
-        </Box>
+        <Box height="25%" alignItems="center"></Box>
         <Grid container style={styles.root} justifyContent="center">
           <Grid item xs={12}>
             <Typography variant="h5">

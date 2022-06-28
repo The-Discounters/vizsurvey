@@ -152,6 +152,22 @@ function BarChart() {
                   .tickSize(6)
               );
 
+            svg
+              .selectAll(".x-axis-label")
+              .data([null])
+              .join("g")
+              .attr("class", "x-axis-label")
+              .selectAll(".x-axis-text")
+              .data([null])
+              .join("text")
+              .attr("class", "x-axis-text")
+              .attr("dominant-baseline", "auto")
+              .attr("x", totalUCWidth / 2)
+              .attr("y", totalUCHeight - 4) // TODO how do I fix the -5 so that the bottom of the y doesn't get clipped
+              .attr("text-anchor", "middle")
+              .text("Delay in Months")
+              .attr("font-size", "1.2em");
+
             const yTickValues = range(yRange[0], yRange[1], yRange[1] / 5);
             yTickValues.push(yRange[1]);
 
@@ -174,7 +190,7 @@ function BarChart() {
               .join("g")
               .attr("transform", "rotate(-90)")
               .attr("class", "y-axis-label")
-              .style("font-size", "1em")
+              .style("font-size", "1.2em")
               .selectAll(".y-axis-text")
               .data([null])
               .join("text")
@@ -183,26 +199,7 @@ function BarChart() {
               .attr("text-anchor", "middle")
               .attr("x", -(barAreaHeightUC + bottomOffSetUC) / 2)
               .attr("y", 0)
-              .text("$ in USD");
-
-            svg
-              .selectAll(".x-axis-label")
-              .data([null])
-              .join("g")
-              .attr("class", "x-axis-label")
-              .selectAll(".x-axis-text")
-              .data([null])
-              .join("text")
-              .attr("class", "x-axis-text")
-              .attr("dominant-baseline", "auto")
-              //.attr("aligment-baseline", "ideographics")
-              //.attr("x", -barAreaWidthUC / 2)
-              .attr("x", totalUCWidth / 2)
-              .attr("y", totalUCHeight - 3) // TODO how do I fix the -5 so that the bottom of the y doesn't get clipped
-              .attr("text-anchor", "middle")
-              //.attr("y", 100)
-              .text("Delay in Months")
-              .attr("font-size", "1em");
+              .text("US Dollars");
 
             chart
               .selectAll(".bar")
@@ -251,6 +248,52 @@ function BarChart() {
                   }
                 }
               });
+
+            const earlierEntry = data.find(
+              (v) => v.barType === AmountType.earlierAmount
+            );
+            const laterEntry = data.find(
+              (v) => v.barType === AmountType.laterAmount
+            );
+
+            chart
+              .selectAll(".earlier-amount-label")
+              .data([null])
+              .join("g")
+              .attr("class", "earlier-amount-label")
+              .selectAll(".earlier-amount-text")
+              .data([earlierEntry])
+              .join("text")
+              .attr("class", "earlier-amount-text")
+              .attr(
+                "transform",
+                `translate(${leftOffSetUC / 2},${bottomOffSetUC / 2 - 6})`
+              )
+              .attr("x", (d) => x(d.time))
+              .attr("y", (d) => y(d.amount))
+              .attr("text-anchor", "middle")
+              .text((d) => format("$,.0f")(d.amount))
+              .attr("font-size", "1.2em");
+
+            chart
+              .selectAll(".later-amount-label")
+              .data([null])
+              .join("g")
+              .attr("class", "later-amount-label")
+              .selectAll(".later-amount-text")
+              .data([laterEntry])
+              .join("text")
+              .attr("class", "later-amount-text")
+              .attr(
+                "transform",
+                `translate(${leftOffSetUC / 2},${bottomOffSetUC / 2 - 6})`
+              )
+              .attr("x", (d) => x(d.time))
+              .attr("y", (d) => y(d.amount))
+              .attr("text-anchor", "middle")
+              .text((d) => format("$,.0f")(d.amount))
+              .attr("font-size", "1.2em");
+
             var dragHandler = drag().on("drag", function (d) {
               if (
                 q.interaction === InteractionType.drag &&
