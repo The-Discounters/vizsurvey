@@ -1,3 +1,20 @@
+import { createTheme } from "@material-ui/core";
+
+export const styles = {
+  root: { flexGrow: 1, margin: 0 },
+  button: { marginTop: 10, marginBottom: 10 },
+  container: { display: "flex", flexWrap: "wrap" },
+  textField: { marginLeft: 10, marginRight: 10, width: 200 },
+  label: { margin: 0 },
+};
+
+export const theme = createTheme({
+  direction: "rtl",
+  typography: {
+    htmlFontSize: 12,
+  },
+});
+
 export const calcScreenValues = (q) => {
   var totalUCWidth;
   var totalUCHeight;

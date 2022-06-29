@@ -50,12 +50,22 @@ describe("vizsurvey", () => {
     cy.get("button").contains("Next").click();
     cy.get("button").contains("Start").click();
     cy.get("button").contains("Start").click();
-    cy.get("label").contains("$500 in 2 weeks").click();
-    cy.get("#submit").click();
-    cy.get("label").contains("$50 in 2 weeks").click();
-    cy.get("#submit").click();
-    cy.get("label").contains("$250 in 2 weeks").click();
-    cy.get("#submit").click();
+    cy.get("label").contains("$500 in 2 months").click();
+    cy.get("button").contains("Next").click();
+    cy.get("label").contains("$50 in 2 months").click();
+    cy.get("button").contains("Next").click();
+    cy.get("label").contains("$250 in 2 months").click();
+    cy.get("button").contains("Next").click();
+    cy.get("label").contains("$250 in 2 months").click();
+    cy.get("button").contains("Next").click();
+    cy.get("label").contains("$250 in 2 months").click();
+    cy.get("button").contains("Next").click();
+    cy.get("label").contains("$250 in 2 months").click();
+    cy.get("button").contains("Next").click();
+    cy.get("label").contains("$250 in 2 months").click();
+    cy.get("button").contains("Next").click();
+    cy.get("label").contains("$250 in 2 months").click();
+    cy.get("button").contains("Next").click();
     postsurvey([
       "1,1,word,none,none,500,2,,1000,5",
       "1,2,word,none,none,50,2,,300,7",
@@ -103,9 +113,9 @@ describe("vizsurvey", () => {
     cy.get("#id7").click();
     cy.get("#id7").click();
     postsurvey([
-      "2,1,barchart,none,none,300,2,,700,5",
-      "2,2,barchart,none,none,500,2,,800,7",
-      "2,3,barchart,none,none,300,2,,1000,7",
+      "3,1,barchart,none,none,300,2,,700,5",
+      "3,2,barchart,none,none,500,2,,800,7",
+      "3,3,barchart,none,none,300,2,,1000,7",
     ]);
   });
   it("calendar bar", () => {

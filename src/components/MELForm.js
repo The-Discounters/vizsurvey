@@ -1,9 +1,22 @@
-import React from "react";
+/* eslint-disable no-unused-vars */
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { DateTime } from "luxon";
-import { Formik, Form, Field, ErrorMessage } from "formik";
-import { Button } from "react-bootstrap";
+import {
+  createTheme,
+  Grid,
+  Button,
+  FormLabel,
+  FormControl,
+  FormControlLabel,
+  FormHelperText,
+  Radio,
+  RadioGroup,
+  Typography,
+} from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
+
 import { ChoiceType } from "../features/ChoiceType";
 import { StatusType } from "../features/StatusType";
 import {
@@ -14,14 +27,40 @@ import {
 } from "../features/questionSlice";
 import { format } from "d3";
 import { dateToState } from "../features/ConversionUtil";
+import { styles, theme } from "./ScreenHelper";
+
+const useStyles = makeStyles((theme) => ({
+  formControl: {
+    margin: theme.spacing(1),
+    minWidth: 120,
+  },
+  selectEmpty: {
+    marginTop: theme.spacing(2),
+  },
+  formLabel: {
+    fontSize: 18,
+    color: "black",
+  },
+  formControlLabel: {
+    fontSize: 18,
+    color: "black",
+  },
+}));
 
 export function MELForm() {
   const dispatch = useDispatch();
   const q = useSelector(selectCurrentQuestion);
   const status = useSelector(fetchStatus);
   const navigate = useNavigate();
+  const [choice, setChoice] = useState("");
+  const [error, setError] = React.useState(false);
+  const [helperText, setHelperText] = React.useState("");
 
-  const dpi = window.devicePixelRatio >= 2 ? 132 : 96;
+  useEffect(() => {
+    dispatch(dispatch(setQuestionShownTimestamp(dateToState(DateTime.utc()))));
+  }, []);
+
+  const classes = useStyles();
 
   const todayText = (sooner_time) =>
     sooner_time === 0 ? "today" : `in ${sooner_time} months`;
@@ -39,68 +78,105 @@ export function MELForm() {
   }
 
   const result = (
-    <div
-      width={`${Math.round(q.widthIn * dpi)}px`}
-      height={`${Math.round(q.heightIn * dpi)}px`}
-      overflow="hidden"
-    >
-      <Formik
-        initialValues={{ choice: ChoiceType.unitialized }}
-        validate={(values) => {
-          let errors = {};
-          if (!values.choice || values.choice === ChoiceType.unitialized) {
-            errors.choice = "Please choose a selection to continue.";
-          }
-          return errors;
-        }}
-        onSubmit={(values, { setSubmitting, resetForm }) => {
-          setTimeout(() => {
-            dispatch(
-              answer({
-                choice: values.choice,
-                choiceTimestamp: dateToState(DateTime.utc()),
-              })
-            );
-            setSubmitting(false);
-            resetForm();
-          }, 400);
-        }}
-      >
-        {({ isSubmitting }) => (
-          <Form>
-            <div
-              role="group"
-              aria-labelledby="my-radio-group"
-              className="radio-choice-label"
+    <div>
+      <Grid container style={styles.root} justifyContent="center">
+        <Grid item xs={12}>
+          <form
+            onSubmit={(event) => {
+              event.preventDefault();
+              setHelperText("Hello");
+              // if (
+              //   choice !== ChoiceType.earlier &&
+              //   choice !== ChoiceType.later
+              // ) {
+              //   setError(true);
+              //   setHelperText("You must choose one of the options below.");
+              // } else {
+              //   setError(false);
+              //   setHelperText("Thanks for choosing an option.");
+              // }
+            }}
+          >
+            <FormControl
+              className={classes.formControl}
+              required={false}
+              error={error}
             >
-              <p>{questionText()} </p>
-              <label>
-                <Field type="radio" name="choice" value={ChoiceType.earlier} />
-                &nbsp;{question1stPartText()}
-              </label>
-              <br></br>
-              <label>
-                <Field type="radio" name="choice" value={ChoiceType.later} />
-                &nbsp;{question2ndPartText()}
-              </label>
-              <span style={{ color: "red", fontWeight: "bold" }}>
-                <ErrorMessage name="choice" component="div" />
-              </span>
-            </div>
-            <Button id="submit" type="submit" disabled={isSubmitting}>
-              Submit
-            </Button>
-          </Form>
-        )}
-      </Formik>
+              <FormLabel className={classes.formLabel} id="question-text">
+                {questionText()}
+              </FormLabel>
+              <FormHelperText>{helperText}</FormHelperText>
+              <RadioGroup
+                row
+                aria-labelledby={q.textShort + "-row-radio-buttons-group-label"}
+                name={"question-radio-buttons-group"}
+                onChange={(event) => {
+                  setChoice(event.target.value);
+                  setHelperText("");
+                  setError(false);
+                }}
+                value={choice}
+              >
+                <FormControlLabel
+                  key={ChoiceType.earlier}
+                  value={ChoiceType.earlier}
+                  checked={choice === ChoiceType.earlier}
+                  style={{ fontSize: "18" }}
+                  control={<Radio />}
+                  label={question1stPartText()}
+                />
+                <FormControlLabel
+                  key={ChoiceType.later}
+                  value={ChoiceType.later}
+                  checked={choice === ChoiceType.later}
+                  className={classes.formControlLabel}
+                  control={<Radio />}
+                  label={question2ndPartText()}
+                />
+              </RadioGroup>
+            </FormControl>
+          </form>
+        </Grid>
+        <Grid item xs={12} style={{ margin: 0 }}>
+          <Button
+            variant="contained"
+            color="secondary"
+            disableRipple
+            disableFocusRipple
+            style={styles.button}
+            onClick={() => {
+              if (
+                choice !== ChoiceType.earlier &&
+                choice !== ChoiceType.later
+              ) {
+                setError(true);
+                setHelperText("You must choose one of the options below.");
+              } else {
+                setError(false);
+                setHelperText("");
+                setTimeout(() => {
+                  dispatch(
+                    answer({
+                      choice: choice,
+                      choiceTimestamp: dateToState(DateTime.utc()),
+                    })
+                  );
+                  setChoice(null);
+                  if (status === StatusType.Questionaire) {
+                    navigate("/questionaire");
+                  }
+                }, 400);
+              }
+            }}
+          >
+            {" "}
+            Next{" "}
+          </Button>
+        </Grid>
+      </Grid>
     </div>
   );
 
-  if (status === StatusType.Questionaire) {
-    navigate("/questionaire");
-  } else {
-    dispatch(setQuestionShownTimestamp(dateToState(DateTime.utc())));
-  }
   return result;
 }
 
