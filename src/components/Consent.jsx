@@ -197,14 +197,14 @@ export function Consent() {
         <Box height="25%" alignItems="center">
           <img
             style={{ maxHeight: "240px" }}
-            src="money-on-calendar.png"
+            src="bar-chart.png"
             alt="$100 bills on calendar"
           ></img>
-        </Box>
+        </Box>{" "}
         <Grid container style={styles.root} justifyContent="center">
           <Grid item xs={12}>
             <Typography variant="h5">
-              <i>Receiving Money</i> - <b>How to Visualize It</b>
+              <b>How to Visualize It</b>
               <br />
             </Typography>
             <hr
@@ -215,11 +215,8 @@ export function Consent() {
               }}
             />
             <Typography>
-              We are often faced with decisions in life to choose between two
-              options of different value at different times where a sooner
-              option is of less value than the later one. For example if I were
-              to offer you $100 dollars now vs $300 dollars three months from
-              now which would you choose?
+              We often have to make choices about receiveing rewards at
+              different point in time.
             </Typography>
             <Typography paragraph>
               <br />
