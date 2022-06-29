@@ -38,11 +38,11 @@ const useStyles = makeStyles((theme) => ({
     marginTop: theme.spacing(2),
   },
   formLabel: {
-    fontSize: 18,
+    fontSize: 32,
     color: "black",
   },
   formControlLabel: {
-    fontSize: 18,
+    fontSize: 24,
     color: "black",
   },
 }));
@@ -81,22 +81,7 @@ export function MELForm() {
     <div>
       <Grid container style={styles.root} justifyContent="center">
         <Grid item xs={12}>
-          <form
-            onSubmit={(event) => {
-              event.preventDefault();
-              setHelperText("Hello");
-              // if (
-              //   choice !== ChoiceType.earlier &&
-              //   choice !== ChoiceType.later
-              // ) {
-              //   setError(true);
-              //   setHelperText("You must choose one of the options below.");
-              // } else {
-              //   setError(false);
-              //   setHelperText("Thanks for choosing an option.");
-              // }
-            }}
-          >
+          <form onSubmit={(event) => {}}>
             <FormControl
               className={classes.formControl}
               required={false}
@@ -118,18 +103,18 @@ export function MELForm() {
                 value={choice}
               >
                 <FormControlLabel
+                  className={classes.formControlLabel}
                   key={ChoiceType.earlier}
                   value={ChoiceType.earlier}
                   checked={choice === ChoiceType.earlier}
-                  style={{ fontSize: "18" }}
                   control={<Radio />}
                   label={question1stPartText()}
                 />
                 <FormControlLabel
+                  className={classes.formControlLabel}
                   key={ChoiceType.later}
                   value={ChoiceType.later}
                   checked={choice === ChoiceType.later}
-                  className={classes.formControlLabel}
                   control={<Radio />}
                   label={question2ndPartText()}
                 />
