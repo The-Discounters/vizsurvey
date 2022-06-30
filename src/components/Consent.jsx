@@ -80,10 +80,12 @@ export function Consent() {
 
   const classes = useStyles();
   const [disableSubmit, setDisableSubmit] = React.useState(true);
+  const [disableSelfDescribe, setDisableSelfDescribe] = React.useState(true);
   const [country, setCountry] = React.useState("");
   const [visFamiliarity, setVisFamiliarity] = React.useState("");
   const [age, setAge] = React.useState("");
   const [gender, setGender] = React.useState("");
+  const [selfDescribeGender, setSelfDescribeGender] = React.useState("");
   const [profession, setProfession] = React.useState("");
 
   const navigate = useNavigate();
@@ -98,6 +100,8 @@ export function Consent() {
       age.length > 1 &&
       gender &&
       gender.length > 0 &&
+      (gender !== "self-describe" ||
+        (selfDescribeGender && selfDescribeGender.length > 0)) &&
       profession &&
       profession.length > 0
     ) {
@@ -110,6 +114,15 @@ export function Consent() {
   const handleFieldChange = (event, setter) => {
     setter(event.target.value);
     checkEnableSubmit();
+    if (event.target.value === "self-describe") {
+      setDisableSelfDescribe(false);
+    } else if (
+      ["female", "male", "transgender", "non-binary", "intersex"].includes(
+        event.target.value
+      )
+    ) {
+      setDisableSelfDescribe(true);
+    }
   };
 
   const vizFamiliarityLevel = [
@@ -334,14 +347,46 @@ export function Consent() {
               }}
             />
             <label style={{ marginRight: 20 }}> </label>
+            <FormControl
+              className={classes.formControl}
+              required
+              style={{ maxWidth: 230, marginRight: 20 }}
+            >
+              <InputLabel htmlFor="gender-select-helper">Gender</InputLabel>
+              <NativeSelect
+                value={gender}
+                onChange={(event) => {
+                  handleFieldChange(event, setGender);
+                }}
+                inputProps={{
+                  name: "gender",
+                  id: "gender-select-helper",
+                }}
+              >
+                <option> </option>
+                {[
+                  { value: "female", text: "Female" },
+                  { value: "male", text: "Male" },
+                  { value: "transgender", text: "Transgender" },
+                  { value: "non-binary", text: "Non-binary" },
+                  { value: "intersex", text: "Intersex" },
+                  { value: "self-describe", text: "Prefer to self-describe" },
+                ].map(({ value, text }) => (
+                  <option key={value} id={value} value={value}>
+                    {text}
+                  </option>
+                ))}
+              </NativeSelect>
+            </FormControl>
             <TextField
               required
               className={classes.formControl}
-              label="Gender"
-              id="Gender"
+              label="Self Describe Gender"
+              id="Self-Describe-Gender"
               onChange={(event) => {
-                handleFieldChange(event, setGender);
+                handleFieldChange(event, setSelfDescribeGender);
               }}
+              disabled={disableSelfDescribe}
             />
             <label style={{ marginLeft: 25 }}> </label>
             <TextField
