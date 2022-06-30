@@ -54,7 +54,7 @@ export function Consent() {
   };
 
   const [searchParams, setSearchParams] = useSearchParams();
-  var treatmentId;
+  var treatmentId = searchParams.get("treatment_id");
   useEffect(() => {
     if (!treatmentId) {
       treatmentId = rand() + 1;
