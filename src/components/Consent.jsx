@@ -169,7 +169,24 @@ export function Consent() {
           presentation of the data will not identify you.
         </p>
         <p>
-          <b>Contact info: </b> pcordone@wpi.edu (PI), ynachum@wpi.edu@
+          <b>Contact info: </b>
+          Prof. Daniel Reichman &lt;
+          <a href={`mailto:dreichman@wpi.edu`}>dreichman@wpi.edu</a>&gt;
+          {", "}
+          Prof. Ravit Heskiau &lt;
+          <a href={`mailto:r.heskiau@northeastern.edu`}>
+            r.heskiau@northeastern.edu
+          </a>
+          &gt;
+          {", "}
+          Prof. Lane Harrison &lt;
+          <a href={`mailto:ltharrison@wpi.edu`}>ltharrison@wpi.edu</a>&gt;
+          {", "}
+          Peter Cordone &lt;
+          <a href={`mailto:pcordone@wpi.edu`}>pcordone@wpi.edu</a>&gt;
+          {", "}
+          Yahel Nachum &lt;
+          <a href={`mailto:ynachum@wpi.edu`}>ynachum@wpi.edu</a>&gt;
         </p>
         <p>
           <b>Your participation in this research is voluntary. </b> Your refusal
