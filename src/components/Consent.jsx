@@ -135,8 +135,8 @@ export function Consent() {
       <React.Fragment>
         <p>
           <b>The goal of this research is </b> to understand how choices between
-          receiving two amounts of money, a smaller sooner amount or a larger
-          later amount are effected by how the choice is visualizaed.{" "}
+          receiving two amounts of money, one sooner and the other later, are
+          affected by the way they are presented.
         </p>
         <p>
           <b>Procedure: </b>You will be presented with a series of worded
@@ -222,7 +222,7 @@ export function Consent() {
         <Grid container style={styles.root} justifyContent="center">
           <Grid item xs={12}>
             <Typography variant="h5">
-              <b>How to Visualize It</b>
+              <b>Money Earlier or Later?</b>
               <br />
             </Typography>
             <hr
