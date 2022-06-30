@@ -170,23 +170,24 @@ export function Consent() {
         </p>
         <p>
           <b>Contact info: </b>
-          Prof. Daniel Reichman &lt;
-          <a href={`mailto:dreichman@wpi.edu`}>dreichman@wpi.edu</a>&gt;
-          {", "}
-          Prof. Ravit Heskiau &lt;
-          <a href={`mailto:r.heskiau@northeastern.edu`}>
-            r.heskiau@northeastern.edu
-          </a>
-          &gt;
-          {", "}
-          Prof. Lane Harrison &lt;
-          <a href={`mailto:ltharrison@wpi.edu`}>ltharrison@wpi.edu</a>&gt;
-          {", "}
-          Peter Cordone &lt;
-          <a href={`mailto:pcordone@wpi.edu`}>pcordone@wpi.edu</a>&gt;
-          {", "}
-          Yahel Nachum &lt;
-          <a href={`mailto:ynachum@wpi.edu`}>ynachum@wpi.edu</a>&gt;
+          {[
+            { name: "Prof. Daniel Reichman", email: "dreichman@wpi.edi" },
+            {
+              name: "Prof. Ravit Heskiau",
+              email: "r.heskiau@northeastern.edu",
+            },
+            { name: "Prof. Lane Harrison", email: "ltharrison@wpi.edu" },
+            { name: "Peter Cordone", email: "pcordone@wpi.edu" },
+            { name: "Yahel Nachum", email: "ynachum@wpi.edu" },
+          ].map(({ name, email }, index) => {
+            return (
+              <span key={index}>
+                {name} &lt;
+                <a href={`mailto:${email}`}>{email}</a>&gt;
+                {index < 4 ? ", " : ""}
+              </span>
+            );
+          })}
         </p>
         <p>
           <b>Your participation in this research is voluntary. </b> Your refusal
