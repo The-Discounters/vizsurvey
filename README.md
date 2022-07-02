@@ -33,6 +33,11 @@ Open [http://localhost:3000/dev] to view it in the browser.
 The page will reload if you make edits.\
 You will also see any lint errors in the console.
 
+### `npm run build; serve -s build`
+
+Runs the app in production mode.\
+http://localhost:3000/?participant_id=1&treatment_id=1&session_id=1 where you can edit the treatment_id value to load the treatment you want to test.
+
 ### `npm test`
 
 Launches the test runner in the interactive watch mode.\
@@ -67,7 +72,7 @@ http://localhost:3000/dev?participant_id=1&session_id=3 will take you to the lis
 
 ### `npm run deploy`
 
-Will deploy the application to github pages via gh_pages package. Then surf to https://pcordone.github.io/vizsurvey?treatment_id=2&participant_id=1&session_id=3
+Will deploy the application to github pages via gh_pages package. Then surf to https://release.d2ptxb5fbsc082.amplifyapp.com?treatment_id=2&participant_id=1&session_id=3
 
 Change the participant_id to the value for the person taking the survey.
 
@@ -119,6 +124,10 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/t
 
 ### links I found useful while developing
 
+https://styled-components.com/docs/basics
+
+https://blog.logrocket.com/13-ways-vertically-center-html-elements-css/
+
 Gives examples of using octokit for gist
 https://www.liquidweb.com/kb/little-known-ways-to-utilize-github-gists/
 
@@ -131,18 +140,30 @@ https://blog.logrocket.com/using-d3-js-v6-with-react/
 This post shows how to setup eslint and prettier
 https://medium.com/how-to-react/config-eslint-and-prettier-in-visual-studio-code-for-react-js-development-97bb2236b31a
 
-This post shows how to incorporate a D3 visualization as a react component
-https://www.pluralsight.com/guides/using-d3.js-inside-a-react-app
-
 Flexbox post
 https://css-tricks.com/snippets/css/a-guide-to-flexbox/
 
 #### D3 articles
 
+This post shows how to incorporate a D3 visualization as a react component
+https://www.pluralsight.com/guides/using-d3.js-inside-a-react-app
 https://bost.ocks.org/mike/selection/
 https://bost.ocks.org/mike/nest/
 https://www.animateddata.com/articles/d3/selections/
 https://www.d3indepth.com/datajoins/
+https://css-tricks.com/scale-svg/
+https://observablehq.com/@julesblm/svg-dominant-baseline-alignment-baseline-attributes#demoText
+http://bl.ocks.org/eweitnauer/7325338
+http://www.d3noob.org/2016/08/changing-text-size-for-axes-in-d3js-v4.html
+https://bl.ocks.org/erikvullings/41be28677574fd484b43e91413a7e45d
+https://bost.ocks.org/mike/selection/
+https://observablehq.com/@philippkoytek/d3-part-3-selection-join-explained
+https://www.d3indepth.com/datajoins/
+https://bost.ocks.org/mike/selection/
+http://using-d3js.com/01_04_create_delete_move_elements.html
+https://lvngd.com/blog/building-pictogram-grids-d3js/
+https://codepen.io/idan/pen/LYVGxp
+https://observablehq.com/@d3/learn-d3-joins
 
 ### Code I am crediting
 
@@ -169,6 +190,7 @@ https://crashcourse.housegordon.org/examples/svg_units.html
 https://jenkov.com/tutorials/svg/svg-transformation.html
 https://www.sarasoueidan.com/blog/svg-transformations/
 https://codepen.io/basiacoulter/pen/xGweXz
+https://css-tricks.com/scale-svg/
 
 ### Calendar example
 
@@ -177,4 +199,4 @@ https://codepen.io/bclinkinbeard/pen/MEZxMe
 
 ### I modeled the icon chart code on this post
 
-https://lvngd.com/blog/building-pictogram-grids-d3js/
+https://blog.logrocket.com/13-ways-vertically-center-html-elements-css/

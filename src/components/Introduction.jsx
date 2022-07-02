@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Button, Grid, Typography } from "@material-ui/core";
+import { Button, Grid, Typography, ThemeProvider } from "@material-ui/core";
 import { useSelector, useDispatch } from "react-redux";
 import { DateTime } from "luxon";
 import "../App.css";
@@ -12,17 +12,7 @@ import {
   fetchCurrentTreatment,
   startSurvey,
 } from "../features/questionSlice";
-
-const styles = {
-  root: {
-    flexGrow: 1, // flex:1, padding: 5,height: "100%", width: "100%"
-    margin: 20,
-  },
-  button: { marginTop: 10, marginBottom: 10 },
-  container: { display: "flex", flexWrap: "wrap" },
-  textField: { marginLeft: 10, marginRight: 10, width: 200 },
-  label: { margin: 0 },
-};
+import { styles, theme } from "./ScreenHelper";
 
 const Introduction = () => {
   const dispatch = useDispatch();
@@ -136,7 +126,7 @@ const Introduction = () => {
   };
 
   return (
-    <React.Fragment>
+    <ThemeProvider theme={theme}>
       <Grid container style={styles.root}>
         <Grid item xs={12}>
           <Typography variant="h4">Introduction</Typography>
@@ -167,7 +157,7 @@ const Introduction = () => {
           </Button>
         </Grid>
       </Grid>
-    </React.Fragment>
+    </ThemeProvider>
   );
 };
 

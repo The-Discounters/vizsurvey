@@ -14,10 +14,7 @@ function postsurvey(expects) {
     .should("exist")
     .then(() => {
       fetch("http://localhost:3001/answers-1.csv").then((response) => {
-        console.log(response.status);
         response.text().then((text) => {
-          console.log("Logging: answers file from cypress");
-          console.log(text);
           //treatment_id,position,view_type,interaction,variable_amount,amount_earlier,time_earlier,date_earlier,amount_later,time_later,date_later,max_amount,max_time,vertical_pixels,horizontal_pixels,left_margin_width_in,bottom_margin_height_in,graph_width_in,graph_height_in,width_in,height_in,choice,shown_timestamp,choice_timestamp,highup,lowdown,participant_code
           expects.forEach((expectStr) => {
             expect(text).to.contain(expectStr);
@@ -26,10 +23,7 @@ function postsurvey(expects) {
       });
       fetch("http://localhost:3001/post-survey-answers-1.json").then(
         (response) => {
-          console.log(response.status);
           response.text().then((text) => {
-            console.log("Logging post survey answers file from cypress");
-            console.log(text);
             expect(JSON.parse(text)).to.deep.equal({
               q15vs30: "15+",
               q50k6p: "<50k",
@@ -57,12 +51,22 @@ describe("vizsurvey", () => {
     cy.get("button").contains("Next").click();
     cy.get("button").contains("Start").click();
     cy.get("button").contains("Start").click();
-    cy.get("label").contains("$500 in 2 weeks").click();
-    cy.get("#submit").click();
-    cy.get("label").contains("$50 in 2 weeks").click();
-    cy.get("#submit").click();
-    cy.get("label").contains("$250 in 2 weeks").click();
-    cy.get("#submit").click();
+    cy.get("label").contains("$500 in 2 months").click();
+    cy.get("button").contains("Next").click();
+    cy.get("label").contains("$50 in 2 months").click();
+    cy.get("button").contains("Next").click();
+    cy.get("label").contains("$250 in 2 months").click();
+    cy.get("button").contains("Next").click();
+    cy.get("label").contains("$250 in 2 months").click();
+    cy.get("button").contains("Next").click();
+    cy.get("label").contains("$250 in 2 months").click();
+    cy.get("button").contains("Next").click();
+    cy.get("label").contains("$250 in 2 months").click();
+    cy.get("button").contains("Next").click();
+    cy.get("label").contains("$250 in 2 months").click();
+    cy.get("button").contains("Next").click();
+    cy.get("label").contains("$250 in 2 months").click();
+    cy.get("button").contains("Next").click();
     postsurvey([
       "1,1,word,none,none,500,2,,1000,5",
       "1,2,word,none,none,50,2,,300,7",
@@ -110,9 +114,9 @@ describe("vizsurvey", () => {
     cy.get("#id7").click();
     cy.get("#id7").click();
     postsurvey([
-      "2,1,barchart,none,none,300,2,,700,5",
-      "2,2,barchart,none,none,500,2,,800,7",
-      "2,3,barchart,none,none,300,2,,1000,7",
+      "3,1,barchart,none,none,300,2,,700,5",
+      "3,2,barchart,none,none,500,2,,800,7",
+      "3,3,barchart,none,none,300,2,,1000,7",
     ]);
   });
   it("calendar bar", () => {

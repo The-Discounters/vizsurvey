@@ -44,34 +44,34 @@ describe("FileIOAdapter tests", () => {
     expect(questions.length).toBe(3);
     expect(questions[0].treatmentId).toBe(3);
     expect(questions[0].position).toBe(1);
-    expect(questions[0].viewType).toBe(ViewType.calendarBar);
+    expect(questions[0].viewType).toBe(ViewType.barchart);
     expect(questions[0].interaction).toBe(InteractionType.none);
     expect(questions[0].variableAmount).toBe(AmountType.none);
     expect(questions[0].amountEarlier).toBe(300);
-    expect(questions[0].timeEarlier).toBeUndefined();
-    expect(questions[0].dateEarlier).toBe(1643673600000);
+    expect(questions[0].timeEarlier).toBe(2);
+    expect(questions[0].dateEarlier).toBeUndefined();
     expect(questions[0].amountLater).toBe(700);
-    expect(questions[0].timeLater).toBeUndefined();
-    expect(questions[0].dateLater).toBe(1645488000000);
+    expect(questions[0].timeLater).toBe(5);
+    expect(questions[0].dateLater).toBeUndefined();
     expect(questions[0].maxAmount).toBe(1100);
-    expect(questions[0].maxTime).toBeUndefined();
-    expect(questions[0].horizontalPixels).toBe(100);
-    expect(questions[0].verticalPixels).toBe(100);
+    expect(questions[0].maxTime).toBe(10);
+    expect(questions[0].horizontalPixels).toBe(800);
+    expect(questions[0].verticalPixels).toBe(200);
     expect(questions[0].leftMarginWidthIn).toBeUndefined();
     expect(questions[0].bottomMarginHeightIn).toBeUndefined();
     expect(questions[0].graphWidthIn).toBeUndefined();
     expect(questions[0].graphHeightIn).toBeUndefined();
-    expect(questions[0].widthIn).toBe(8);
-    expect(questions[0].heightIn).toBe(8);
+    expect(questions[0].widthIn).toBeUndefined();
+    expect(questions[0].heightIn).toBeUndefined();
     expect(questions[0].comment).toBe(
-      "Calendar month view with barchart and no interaction."
+      "Barchart MEL question with no interaction pixels."
     );
   });
 
   test("Validate loadAllTreatments loads all treatments correctly.", async () => {
     const io = new FileIOAdapter();
     var questions = await io.loadAllTreatments();
-    expect(questions.length).toBe(36);
+    expect(questions.length).toBe(39);
   });
 
   test("Validate answer CSV fields are written correctly.", async () => {
@@ -155,7 +155,6 @@ describe("FileIOAdapter tests", () => {
     ).toBe(2001);
     const io = new FileIOAdapter();
     const result = io.convertToCSV(answers);
-    console.log(result);
     expect(result)
       .toBe(`treatment_id,position,view_type,interaction,variable_amount,amount_earlier,time_earlier,date_earlier,amount_later,time_later,date_later,max_amount,max_time,vertical_pixels,horizontal_pixels,left_margin_width_in,bottom_margin_height_in,graph_width_in,graph_height_in,width_in,height_in,choice,shown_timestamp,choice_timestamp,highup,lowdown,participant_code
 1,2,word,none,earlierAmount,3,4,2001-01-01T00:00:00.000Z,5,6,2001-01-02T00:00:00.000Z,7,8,9,10,11,12,13,14,15,16,earlier,2001-01-03T00:00:00.000Z,2001-01-04T00:00:00.000Z,17,18,participant code

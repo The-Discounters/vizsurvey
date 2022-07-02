@@ -13,6 +13,7 @@ import {
   FormControlLabel,
   Radio,
   RadioGroup,
+  ThemeProvider,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import {
@@ -23,14 +24,17 @@ import {
 } from "../features/questionSlice";
 import { dateToState } from "../features/ConversionUtil";
 import { POST_SURVEY_QUESTIONS } from "../features/postsurveyquestions";
+import { styles, theme } from "./ScreenHelper";
 
-const styles = {
-  root: { flexGrow: 1, margin: 0 },
-  button: { marginTop: 10, marginBottom: 10 },
-  container: { display: "flex", flexWrap: "wrap" },
-  textField: { marginLeft: 10, marginRight: 10, width: 200 },
-  label: { margin: 0 },
-};
+const useStyles = makeStyles((theme) => ({
+  formControl: {
+    margin: theme.spacing(1),
+    minWidth: 120,
+  },
+  selectEmpty: {
+    marginTop: theme.spacing(2),
+  },
+}));
 
 export function PostSurvey() {
   const dispatch = useDispatch();
@@ -41,16 +45,6 @@ export function PostSurvey() {
     dispatch(postSurveyQuestionsShown(dateToState(DateTime.utc())));
     if (process.env.REACT_APP_FULLSCREEN === "enabled") handle.exit();
   }, []);
-
-  const useStyles = makeStyles((theme) => ({
-    formControl: {
-      margin: theme.spacing(1),
-      minWidth: 120,
-    },
-    selectEmpty: {
-      marginTop: theme.spacing(2),
-    },
-  }));
 
   const classes = useStyles();
 
@@ -106,124 +100,126 @@ export function PostSurvey() {
   const io = new FileIOAdapter();
   const csv = io.convertToCSV(answers);
   return (
-    <div>
-      <FullScreen handle={handle}>
-        <Grid container style={styles.root} justifyContent="center">
-          <Grid item xs={12}>
-            <Typography variant="h4">Questionaire</Typography>
-            <hr
-              style={{
-                color: "#ea3433",
-                backgroundColor: "#ea3433",
-                height: 4,
-              }}
-            />
-            <Typography paragraph>
-              The last step in this survey is to answer the questions below.
-            </Typography>
-          </Grid>
-          <Grid item xs={12}>
-            {surveys.map(({ questionsType, questions }, index2) => (
-              <div key={index2}>
-                {questions.map(({ question, options }, index) => (
-                  <FormControl
-                    key={index}
-                    className={classes.formControl}
-                    required
-                  >
-                    <FormLabel id={question.textShort}>
-                      {index + 1 + ". " + question.textFull}
-                    </FormLabel>
-                    <RadioGroup
-                      row
-                      aria-labelledby={
-                        question.textShort + "-row-radio-buttons-group-label"
-                      }
-                      name={question.textShort + "-radio-buttons-group"}
+    <ThemeProvider theme={theme}>
+      <div>
+        <FullScreen handle={handle}>
+          <Grid container style={styles.root} justifyContent="center">
+            <Grid item xs={12}>
+              <Typography variant="h4">Questionaire</Typography>
+              <hr
+                style={{
+                  color: "#ea3433",
+                  backgroundColor: "#ea3433",
+                  height: 4,
+                }}
+              />
+              <Typography paragraph>
+                The last step in this survey is to answer the questions below.
+              </Typography>
+            </Grid>
+            <Grid item xs={12}>
+              {surveys.map(({ questionsType, questions }, index2) => (
+                <div key={index2}>
+                  {questions.map(({ question, options }, index) => (
+                    <FormControl
+                      key={index}
+                      className={classes.formControl}
+                      required
                     >
-                      {questionsType === "multiple choice"
-                        ? options.map((option, index1) => (
-                            <FormControlLabel
-                              key={index1}
-                              value={option.textShort}
-                              checked={
-                                qList2[index2][index] === option.textShort
-                              }
-                              control={<Radio />}
-                              label={option.textFull}
-                              onChange={(event) => {
-                                handleFieldChange(
-                                  event,
-                                  setQList2[index2][index]
-                                );
-                              }}
-                            />
-                          ))
-                        : [
-                            "strongly-disagree",
-                            "disagree",
-                            "neutral",
-                            "agree",
-                            "strongly-agree",
-                          ].map((option, index1) => (
-                            <FormControlLabel
-                              key={index1}
-                              value={option}
-                              checked={qList2[index2][index] === option}
-                              control={<Radio />}
-                              label={option}
-                              onChange={(event) => {
-                                handleFieldChange(
-                                  event,
-                                  setQList2[index2][index]
-                                );
-                              }}
-                            />
-                          ))}
-                    </RadioGroup>
-                  </FormControl>
-                ))}
-              </div>
-            ))}
-          </Grid>
-          <Grid item xs={12} style={{ margin: 0 }}>
-            <Button
-              variant="contained"
-              color="secondary"
-              disableRipple
-              disableFocusRipple
-              style={styles.button}
-              onClick={() => {
-                if (process.env.REACT_APP_FULLSCREEN === "enabled")
-                  handle.enter();
-                setTimeout(() => {
+                      <FormLabel id={question.textShort}>
+                        {index + 1 + ". " + question.textFull}
+                      </FormLabel>
+                      <RadioGroup
+                        row
+                        aria-labelledby={
+                          question.textShort + "-row-radio-buttons-group-label"
+                        }
+                        name={question.textShort + "-radio-buttons-group"}
+                      >
+                        {questionsType === "multiple choice"
+                          ? options.map((option, index1) => (
+                              <FormControlLabel
+                                key={index1}
+                                value={option.textShort}
+                                checked={
+                                  qList2[index2][index] === option.textShort
+                                }
+                                control={<Radio />}
+                                label={option.textFull}
+                                onChange={(event) => {
+                                  handleFieldChange(
+                                    event,
+                                    setQList2[index2][index]
+                                  );
+                                }}
+                              />
+                            ))
+                          : [
+                              "strongly-disagree",
+                              "disagree",
+                              "neutral",
+                              "agree",
+                              "strongly-agree",
+                            ].map((option, index1) => (
+                              <FormControlLabel
+                                key={index1}
+                                value={option}
+                                checked={qList2[index2][index] === option}
+                                control={<Radio />}
+                                label={option}
+                                onChange={(event) => {
+                                  handleFieldChange(
+                                    event,
+                                    setQList2[index2][index]
+                                  );
+                                }}
+                              />
+                            ))}
+                      </RadioGroup>
+                    </FormControl>
+                  ))}
+                </div>
+              ))}
+            </Grid>
+            <Grid item xs={12} style={{ margin: 0 }}>
+              <Button
+                variant="contained"
+                color="secondary"
+                disableRipple
+                disableFocusRipple
+                style={styles.button}
+                onClick={() => {
                   if (process.env.REACT_APP_FULLSCREEN === "enabled")
-                    handle.exit();
-                  dispatch(
-                    writeAnswers({
-                      csv: csv,
-                      participantId: participantId,
-                      postSurveyAnswers: surveys[0].questions.reduce(
-                        (prev, { question }, index) => {
-                          prev[question.textShort] = qList2Flat[index];
-                          return prev;
-                        },
-                        {}
-                      ),
-                    })
-                  );
-                  navigate("/thankyou");
-                }, 400);
-              }}
-              disabled={disableSubmit}
-            >
-              {" "}
-              Next{" "}
-            </Button>
+                    handle.enter();
+                  setTimeout(() => {
+                    if (process.env.REACT_APP_FULLSCREEN === "enabled")
+                      handle.exit();
+                    dispatch(
+                      writeAnswers({
+                        csv: csv,
+                        participantId: participantId,
+                        postSurveyAnswers: surveys[0].questions.reduce(
+                          (prev, { question }, index) => {
+                            prev[question.textShort] = qList2Flat[index];
+                            return prev;
+                          },
+                          {}
+                        ),
+                      })
+                    );
+                    navigate("/thankyou");
+                  }, 400);
+                }}
+                disabled={disableSubmit}
+              >
+                {" "}
+                Next{" "}
+              </Button>
+            </Grid>
           </Grid>
-        </Grid>
-      </FullScreen>
-    </div>
+        </FullScreen>
+      </div>
+    </ThemeProvider>
   );
 }
 

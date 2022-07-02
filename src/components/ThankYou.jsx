@@ -1,20 +1,10 @@
 import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { DateTime } from "luxon";
-import { Grid, Typography } from "@material-ui/core";
+import { Grid, Typography, ThemeProvider } from "@material-ui/core";
 import { thankYouShownTimestamp } from "../features/questionSlice";
 import { dateToState } from "../features/ConversionUtil";
-
-const styles = {
-  root: {
-    flexGrow: 1, // flex:1, padding: 5,height: "100%", width: "100%"
-    margin: 20,
-  },
-  button: { marginTop: 10, marginBottom: 10 },
-  container: { display: "flex", flexWrap: "wrap" },
-  textField: { marginLeft: 10, marginRight: 10, width: 200 },
-  label: { margin: 0 },
-};
+import { styles, theme } from "./ScreenHelper";
 
 const ThankYou = () => {
   useEffect(() => {
@@ -24,7 +14,7 @@ const ThankYou = () => {
   const dispatch = useDispatch();
 
   return (
-    <React.Fragment>
+    <ThemeProvider theme={theme}>
       <Grid container style={styles.root}>
         <Grid item xs={12}>
           <Typography variant="h4">Thank You!</Typography>
@@ -41,7 +31,7 @@ const ThankYou = () => {
           </Typography>
         </Grid>
       </Grid>
-    </React.Fragment>
+    </ThemeProvider>
   );
 };
 
