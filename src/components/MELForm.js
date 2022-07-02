@@ -25,7 +25,7 @@ import {
 } from "../features/questionSlice";
 import { format } from "d3";
 import { dateToState } from "../features/ConversionUtil";
-import { styles } from "./ScreenHelper";
+import { styles, theme } from "./ScreenHelper";
 
 const formControl = {
   margin: theme.spacing(1),
