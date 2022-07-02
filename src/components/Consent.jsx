@@ -40,10 +40,12 @@ export function Consent() {
 
   const classes = useStyles();
   const [disableSubmit, setDisableSubmit] = React.useState(true);
+  const [disableSelfDescribe, setDisableSelfDescribe] = React.useState(true);
   const [country, setCountry] = React.useState("");
   const [visFamiliarity, setVisFamiliarity] = React.useState("");
   const [age, setAge] = React.useState("");
   const [gender, setGender] = React.useState("");
+  const [selfDescribeGender, setSelfDescribeGender] = React.useState("");
   const [profession, setProfession] = React.useState("");
 
   const navigate = useNavigate();
@@ -58,6 +60,8 @@ export function Consent() {
       age.length > 1 &&
       gender &&
       gender.length > 0 &&
+      (gender !== "self-describe" ||
+        (selfDescribeGender && selfDescribeGender.length > 0)) &&
       profession &&
       profession.length > 0
     ) {
@@ -70,6 +74,15 @@ export function Consent() {
   const handleFieldChange = (event, setter) => {
     setter(event.target.value);
     checkEnableSubmit();
+    if (event.target.value === "self-describe") {
+      setDisableSelfDescribe(false);
+    } else if (
+      ["female", "male", "transgender", "non-binary", "intersex"].includes(
+        event.target.value
+      )
+    ) {
+      setDisableSelfDescribe(true);
+    }
   };
 
   const vizFamiliarityLevel = [
@@ -95,8 +108,8 @@ export function Consent() {
       <React.Fragment>
         <p>
           <b>The goal of this research is </b> to understand how choices between
-          receiving two amounts of money, a smaller sooner amount or a larger
-          later amount are effected by how the choice is visualizaed.{" "}
+          receiving two amounts of money, one sooner and the other later, are
+          affected by the way they are presented.
         </p>
         <p>
           <b>Procedure: </b>You will be presented with a series of worded
@@ -129,7 +142,25 @@ export function Consent() {
           presentation of the data will not identify you.
         </p>
         <p>
-          <b>Contact info: </b> pcordone@wpi.edu (PI), ynachum@wpi.edu@
+          <b>Contact info: </b>
+          {[
+            { name: "Prof. Daniel Reichman", email: "dreichman@wpi.edi" },
+            {
+              name: "Prof. Ravit Heskiau",
+              email: "r.heskiau@northeastern.edu",
+            },
+            { name: "Prof. Lane Harrison", email: "ltharrison@wpi.edu" },
+            { name: "Peter Cordone", email: "pcordone@wpi.edu" },
+            { name: "Yahel Nachum", email: "ynachum@wpi.edu" },
+          ].map(({ name, email }, index) => {
+            return (
+              <span key={index}>
+                {name} &lt;
+                <a href={`mailto:${email}`}>{email}</a>&gt;
+                {index < 4 ? ", " : ""}
+              </span>
+            );
+          })}
         </p>
         <p>
           <b>Your participation in this research is voluntary. </b> Your refusal
@@ -164,7 +195,7 @@ export function Consent() {
         <Grid container style={styles.root} justifyContent="center">
           <Grid item xs={12}>
             <Typography variant="h5">
-              <b>How to Visualize It</b>
+              <b>Money Earlier or Later?</b>
               <br />
             </Typography>
             <hr
@@ -276,14 +307,46 @@ export function Consent() {
               }}
             />
             <label style={{ marginRight: 20 }}> </label>
+            <FormControl
+              className={classes.formControl}
+              required
+              style={{ maxWidth: 230, marginRight: 20 }}
+            >
+              <InputLabel htmlFor="gender-select-helper">Gender</InputLabel>
+              <NativeSelect
+                value={gender}
+                onChange={(event) => {
+                  handleFieldChange(event, setGender);
+                }}
+                inputProps={{
+                  name: "gender",
+                  id: "gender-select-helper",
+                }}
+              >
+                <option> </option>
+                {[
+                  { value: "female", text: "Female" },
+                  { value: "male", text: "Male" },
+                  { value: "transgender", text: "Transgender" },
+                  { value: "non-binary", text: "Non-binary" },
+                  { value: "intersex", text: "Intersex" },
+                  { value: "self-describe", text: "Prefer to self-describe" },
+                ].map(({ value, text }) => (
+                  <option key={value} id={value} value={value}>
+                    {text}
+                  </option>
+                ))}
+              </NativeSelect>
+            </FormControl>
             <TextField
               required
               className={classes.formControl}
-              label="Gender"
-              id="Gender"
+              label="Self Describe Gender"
+              id="Self-Describe-Gender"
               onChange={(event) => {
-                handleFieldChange(event, setGender);
+                handleFieldChange(event, setSelfDescribeGender);
               }}
+              disabled={disableSelfDescribe}
             />
             <label style={{ marginLeft: 25 }}> </label>
             <TextField
