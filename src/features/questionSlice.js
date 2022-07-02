@@ -12,6 +12,12 @@ export const writeAnswers = createAsyncThunk(
   io.writeAnswers
 );
 
+function getRandomIntInclusive(min, max) {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min + 1) + min); //The maximum is inclusive and the minimum is inclusive
+}
+
 export const questionSlice = createSlice({
   name: "questions", // I believe the global state is partitioned by the name value thus the terminology "slice"
   initialState: {
@@ -135,6 +141,18 @@ export const questionSlice = createSlice({
       state.status = StatusType.Unitialized;
       state.error = null;
     },
+    genRandomTreatment(state) {
+      // figure out the min and max treatment id
+      const allTreatments = io.loadAllTreatments();
+      const min = allTreatments.reduce((pv, cv) => {
+        return cv.treatmentId < pv ? cv.treatmentId : pv;
+      }, allTreatments[0].treatmentId);
+      const max = allTreatments.reduce(
+        (pv, cv) => (cv.treatmentId > pv ? cv.treatmentId : pv),
+        allTreatments[0].treatmentId
+      );
+      state.treatmentId = getRandomIntInclusive(min, max);
+    },
   },
 });
 
@@ -194,6 +212,7 @@ export const {
   postSurveyQuestionsShown,
   thankYouShownTimestamp,
   clearState,
+  genRandomTreatment,
 } = questionSlice.actions;
 
 export default questionSlice.reducer;

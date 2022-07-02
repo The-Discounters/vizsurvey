@@ -1,10 +1,8 @@
-/* eslint-disable no-unused-vars */
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { DateTime } from "luxon";
 import {
-  createTheme,
   Grid,
   Button,
   FormLabel,
@@ -13,7 +11,6 @@ import {
   FormHelperText,
   Radio,
   RadioGroup,
-  Typography,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 
@@ -27,7 +24,7 @@ import {
 } from "../features/questionSlice";
 import { format } from "d3";
 import { dateToState } from "../features/ConversionUtil";
-import { styles, theme } from "./ScreenHelper";
+import { styles } from "./ScreenHelper";
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
@@ -81,7 +78,7 @@ export function MELForm() {
     <div>
       <Grid container style={styles.root} justifyContent="center">
         <Grid item xs={12}>
-          <form onSubmit={(event) => {}}>
+          <form onSubmit={() => {}}>
             <FormControl
               className={classes.formControl}
               required={false}
