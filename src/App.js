@@ -1,6 +1,13 @@
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { BrowserRouter, Route, Routes, Link } from "react-router-dom";
+import {
+  useSearchParams,
+  useNavigate,
+  BrowserRouter,
+  Route,
+  Routes,
+  Link,
+} from "react-router-dom";
 import { Container } from "@material-ui/core";
 import "./App.css";
 import Introduction from "./components/Introduction";
@@ -14,6 +21,12 @@ import {
   fetchAllTreatments,
   fetchStatus,
   clearState,
+  genRandomTreatment,
+  fetchTreatmentId,
+  setSessionId,
+  setParticipantId,
+  setTreatmentId,
+  loadTreatment,
 } from "./features/questionSlice";
 import { StatusType } from "./features/StatusType";
 import { Consent } from "./components/Consent";
@@ -55,7 +68,8 @@ const App = () => {
               ) : (
                 ""
               )}
-              <Route path="/" element={<Consent />} />
+              <Route path="/" element={<GenTreatmentId />} />
+              <Route path="consent" element={<Consent />} />
               <Route path={"introduction"} element={<Introduction />} />
               <Route path={"instruction"} element={<Instructions />} />
               <Route path={"survey"} element={<Survey />} />
@@ -71,16 +85,36 @@ const App = () => {
   );
 };
 
+const GenTreatmentId = () => {
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  var treatmentId = searchParams.get("treatment_id");
+  if (!treatmentId) {
+    dispatch(genRandomTreatment());
+    treatmentId = useSelector(fetchTreatmentId);
+  } else {
+    dispatch(setTreatmentId(treatmentId));
+  }
+  const sessionId = searchParams.get("session_id");
+  dispatch(setSessionId(sessionId));
+  const participantId = searchParams.get("participant_id");
+  dispatch(setParticipantId(participantId));
+  dispatch(loadTreatment());
+
+  useEffect(() => {
+    navigate("/consent");
+  }, []);
+  return "";
+};
+
 const DevHome = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(loadAllTreatments());
   }, []);
-
-  // if (treatmentId === null) {
-  //   dispatch(loadAllTreatments());
-  // }
 
   const status = useSelector(fetchStatus);
   const allTreatments = useSelector(fetchAllTreatments);

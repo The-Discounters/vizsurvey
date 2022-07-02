@@ -9,27 +9,17 @@ import {
   Typography,
   ThemeProvider,
 } from "@material-ui/core";
-import { useSearchParams } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import InputLabel from "@material-ui/core/InputLabel";
 import FormHelperText from "@material-ui/core/FormHelperText";
 import FormControl from "@material-ui/core/FormControl";
 import NativeSelect from "@material-ui/core/NativeSelect";
-import { useSelector, useDispatch } from "react-redux";
-import "../App.css";
+import { useDispatch } from "react-redux";
 import * as countries from "./countries.json";
 import { dateToState } from "../features/ConversionUtil";
-import {
-  setTreatmentId,
-  setSessionId,
-  setParticipantId,
-  loadTreatment,
-  fetchStatus,
-  consentShown,
-  setDemographic,
-} from "../features/questionSlice";
-import { StatusType } from "../features/StatusType";
+import { consentShown, setDemographic } from "../features/questionSlice";
 import { styles, theme } from "./ScreenHelper";
+import "../App.css";
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
@@ -43,40 +33,10 @@ const useStyles = makeStyles((theme) => ({
 
 export function Consent() {
   const dispatch = useDispatch();
-  const status = useSelector(fetchStatus);
 
   useEffect(() => {
     dispatch(consentShown(dateToState(DateTime.utc())));
   }, []);
-
-  const rand = () => {
-    return Math.floor(Math.random() * 10);
-  };
-
-  const [searchParams, setSearchParams] = useSearchParams();
-  var treatmentId;
-  useEffect(() => {
-    if (!treatmentId) {
-      treatmentId = rand() + 1;
-      const sessionId = searchParams.get("session_id");
-      const participantId = searchParams.get("participant_id");
-      setSearchParams({
-        treatment_id: treatmentId,
-        session_id: sessionId,
-        participant_id: participantId,
-      });
-    }
-  }, []);
-
-  if (status === StatusType.Unitialized) {
-    const sessionId = searchParams.get("session_id");
-    if (sessionId) dispatch(setSessionId(sessionId));
-    const participantId = searchParams.get("participant_id");
-    if (participantId) dispatch(setParticipantId(participantId));
-    treatmentId = searchParams.get("treatment_id");
-    if (treatmentId) dispatch(setTreatmentId(treatmentId));
-    if (treatmentId && sessionId && participantId) dispatch(loadTreatment());
-  }
 
   const classes = useStyles();
   const [disableSubmit, setDisableSubmit] = React.useState(true);
