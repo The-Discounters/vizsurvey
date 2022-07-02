@@ -32,7 +32,7 @@ const Introduction = () => {
           <React.Fragment>
             <Typography paragraph>
               You will be presented with the choice of two amounts at two
-              differen times. Select the radio button that corresponds to your
+              different times. Select the radio button that corresponds to your
               choice.
             </Typography>
             <img src="test.png" alt="Barchart example"></img>
