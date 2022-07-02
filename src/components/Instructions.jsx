@@ -80,9 +80,7 @@ const Instructions = () => {
               height: 4,
             }}
           />
-          <Typography paragraph>
-            {vizExplanation(treatment.viewType)}
-          </Typography>
+          {vizExplanation(treatment.viewType)}
         </Grid>
         <Grid item xs={12}>
           <FullScreen handle={handle}>
