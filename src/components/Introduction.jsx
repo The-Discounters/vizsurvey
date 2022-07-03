@@ -25,101 +25,95 @@ const Introduction = () => {
     if (!treatment) navigate("/invalidlink");
   }, []);
 
+  const radioBtnExp = () => {
+    return (
+      <React.Fragment>
+        <Typography paragraph>
+          <b>
+            {" "}
+            <span style={{ fontSize: 20 }}>&#8226;</span> Radio Buttons:{" "}
+          </b>
+          Radio buttons allow a user to pick one of two options as shown below.
+        </Typography>
+        <img src="test.png" alt="Barchart example"></img>
+      </React.Fragment>
+    );
+  };
+
+  const barchartExp = () => {
+    return (
+      <React.Fragment>
+        <Typography paragraph>
+          <b>
+            {" "}
+            <span style={{ fontSize: 20 }}>&#8226;</span> Bar chart:{" "}
+          </b>
+          A bar chart is a pictoral representation of information where the
+          height of the bar represents one value and the position of the bar
+          horizontal a second. In this experiment, the height represents the
+          amount of money and the position the delay in months of when that
+          money is received.
+        </Typography>
+        <img src="test.png" alt="Barchart example"></img>
+      </React.Fragment>
+    );
+  };
+
+  const calendarExp = () => {
+    return (
+      <React.Fragment>
+        <Typography paragraph>
+          <b>
+            {" "}
+            <span style={{ fontSize: 20 }}>&#8226;</span> Calendar:{" "}
+          </b>
+          A calendar is a pictoral representation of dates. In this experiment,
+          the date that money will be received is shown on a calendar.
+        </Typography>
+        <img src="test.png" alt="Calendar example."></img>
+        <Typography paragraph>.</Typography>
+      </React.Fragment>
+    );
+  };
+
+  const iconExp = () => {
+    return (
+      <React.Fragment>
+        <Typography paragraph>
+          <b>
+            {" "}
+            <span style={{ fontSize: 20 }}>&#8226;</span> Icon array:{" "}
+          </b>
+          An icon array is a visual display that shows a proportion using
+          colored icons. For example, to represent a proportion of 67%, one can
+          start with 100 gray icons (here we use squares), and color 67 of them
+          orange.
+        </Typography>
+        <img
+          src="intro-icon-array-67-10PerRow.png"
+          alt="Icon array example"
+        ></img>
+      </React.Fragment>
+    );
+  };
+
   const vizExplanation = (viewType) => {
+    const result = [];
     switch (viewType) {
       case ViewType.word:
-        return (
-          <React.Fragment>
-            <Typography paragraph>
-              You will be presented with the choice of two amounts at two
-              different times. Select the radio button that corresponds to your
-              choice.
-            </Typography>
-            <img src="test.png" alt="Barchart example"></img>
-          </React.Fragment>
-        );
+        return radioBtnExp();
       case ViewType.barchart:
-        return (
-          <React.Fragment>
-            <Typography paragraph>
-              <b>
-                {" "}
-                <span style={{ fontSize: 20 }}>&#8226;</span> Bar chart:{" "}
-              </b>
-              A bar chart represents the choice of earlier or later amounts at
-              two different times where the height of the bar will represent the
-              amount of money and the position of the bar along the horizontal
-              axis will represent the time of receiving the money. Below is an
-              example bar chart where the amounts offered are $100 at one month
-              from now or $500 six months from now.
-            </Typography>
-            <img src="test.png" alt="Barchart example"></img>
-            <Typography paragraph>
-              You could also be offered the amounts on specific dates in which
-              case the horizontal axis would represent the date of receiving the
-              money.
-            </Typography>
-          </React.Fragment>
-        );
+        return barchartExp();
       case ViewType.calendarBar:
-        return (
-          <React.Fragment>
-            <Typography paragraph>
-              <b>
-                {" "}
-                <span style={{ fontSize: 20 }}>&#8226;</span> Calendar bar
-                chart:{" "}
-              </b>
-              A calendar view represents the date of receving the earlier or
-              later amounts with the square for the day. The vertical height of
-              a bar in the earlier and later day will indicate the amount of
-              money for each day with the amount as text also shows.
-            </Typography>
-            <img src="test.png" alt="Calendar example."></img>
-            <Typography paragraph>.</Typography>
-          </React.Fragment>
-        );
+        result.push(barchartExp());
+        result.push(calendarExp());
+        return <React.Fragment>{result}</React.Fragment>;
       case ViewType.calendarWord:
-        return (
-          <React.Fragment>
-            <Typography paragraph>
-              <b>
-                {" "}
-                <span style={{ fontSize: 20 }}>&#8226;</span>Calendar word:{" "}
-              </b>
-              A calendar view represents the date of receving the earlier or
-              later amounts with the square for the day. The text in the
-              corresponding day square will indicate the earlier and later
-              amounts.
-            </Typography>
-            <img src="test.png" alt="Calendar example."></img>
-          </React.Fragment>
-        );
+        return calendarExp();
       case ViewType.calendarIcon:
-        return (
-          <React.Fragment>
-            <Typography paragraph>
-              <b>
-                {" "}
-                <span style={{ fontSize: 20 }}>&#8226;</span> Icon array:{" "}
-              </b>
-              An icon array is a visual display that shows a proportion using
-              colored icons. For example, to represent a proportion of 67%, one
-              can start with 100 gray icons (here we use square ones), and color
-              67 of them orange.
-            </Typography>
-            <img
-              src="intro-icon-array-67-10PerRow.png"
-              alt="Icon array example"
-            ></img>
-            <Typography paragraph>
-              A calendar view represents the date of receving the earlier or
-              later amounts with the square for the day. The icon array in the
-              corresponding day square will indicate the earlier and later
-              amounts.
-            </Typography>
-          </React.Fragment>
-        );
+        result.push(iconExp());
+        result.push(calendarExp());
+        return <React.Fragment>{result}</React.Fragment>;
       default:
         return <React.Fragment>{navigate("/invalidlink")}</React.Fragment>;
     }

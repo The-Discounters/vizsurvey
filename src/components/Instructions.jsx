@@ -31,7 +31,7 @@ const Instructions = () => {
       case ViewType.word:
         return (
           <React.Fragment>
-            <Typography paragraph>Word instructions.</Typography>
+            <Typography paragraph></Typography>
             <img src="test.png" alt="Word instructions"></img>
           </React.Fragment>
         );
