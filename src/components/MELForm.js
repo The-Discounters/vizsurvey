@@ -13,7 +13,7 @@ import {
   RadioGroup,
   Box,
   ThemeProvider,
-} from "@material-ui/core";
+} from "@mui/material";
 
 import { ChoiceType } from "../features/ChoiceType";
 import { StatusType } from "../features/StatusType";
@@ -29,7 +29,7 @@ import { styles, theme } from "./ScreenHelper";
 
 const formControl = {
   margin: theme.spacing(1),
-  minWidth: 120,
+  flexGrow: 1,
 };
 
 const formLabel = {
@@ -38,9 +38,16 @@ const formLabel = {
 };
 
 const formControlLabel = {
-  fontSize: 32,
   color: "black",
+  ".MuiTypography-root": { fontSize: 32 },
 };
+
+// const boxDefault = {
+//   height: 100,
+//   //display: "flex",
+//   border: "1px solid black",
+//   padding: 2,
+// };
 
 export function MELForm() {
   const dispatch = useDispatch();
@@ -72,19 +79,22 @@ export function MELForm() {
 
   const result = (
     <ThemeProvider theme={theme}>
-      <Box>
-        <Grid container style={styles.root} justifyContent="center">
-          <Grid item xs={12}>
-            <form>
-              <FormControl
-                sx={{ ...formControl }}
-                required={false}
-                error={error}
+      <Grid container style={styles.root} justifyContent="center">
+        <Grid item xs={12}>
+          <form>
+            <FormControl sx={{ ...formControl }} required={false} error={error}>
+              <FormLabel sx={{ ...formLabel }} id="question-text">
+                {questionText()}
+              </FormLabel>
+              <FormHelperText>{helperText}</FormHelperText>
+              <Box
+                component="span"
+                m={1}
+                display="flex"
+                justifyContent="space-between"
+                alignItems="center"
+                border="1"
               >
-                <FormLabel sx={{ ...formLabel }} id="question-text">
-                  {questionText()}
-                </FormLabel>
-                <FormHelperText>{helperText}</FormHelperText>
                 <RadioGroup
                   row
                   aria-labelledby={
@@ -115,47 +125,47 @@ export function MELForm() {
                     label={question2ndPartText()}
                   />
                 </RadioGroup>
-              </FormControl>
-            </form>
-          </Grid>
-          <Grid item xs={12} style={{ margin: 0 }}>
-            <Button
-              variant="contained"
-              color="secondary"
-              disableRipple
-              disableFocusRipple
-              style={styles.button}
-              onClick={() => {
-                if (
-                  choice !== ChoiceType.earlier &&
-                  choice !== ChoiceType.later
-                ) {
-                  setError(true);
-                  setHelperText("You must choose one of the options below.");
-                } else {
-                  setError(false);
-                  setHelperText("");
-                  setTimeout(() => {
-                    dispatch(
-                      answer({
-                        choice: choice,
-                        choiceTimestamp: dateToState(DateTime.utc()),
-                      })
-                    );
-                    setChoice(null);
-                    if (status === StatusType.Questionaire) {
-                      navigate("/questionaire");
-                    }
-                  }, 400);
-                }
-              }}
-            >
-              {" "}
-              Next{" "}
-            </Button>
-          </Grid>
+              </Box>
+            </FormControl>
+          </form>
         </Grid>
-      </Box>
+        <Grid item xs={12} style={{ margin: 0 }}>
+          <Button
+            variant="contained"
+            color="secondary"
+            disableRipple
+            disableFocusRipple
+            style={styles.button}
+            onClick={() => {
+              if (
+                choice !== ChoiceType.earlier &&
+                choice !== ChoiceType.later
+              ) {
+                setError(true);
+                setHelperText("You must choose one of the options below.");
+              } else {
+                setError(false);
+                setHelperText("");
+                setTimeout(() => {
+                  dispatch(
+                    answer({
+                      choice: choice,
+                      choiceTimestamp: dateToState(DateTime.utc()),
+                    })
+                  );
+                  setChoice(null);
+                  if (status === StatusType.Questionaire) {
+                    navigate("/questionaire");
+                  }
+                }, 400);
+              }
+            }}
+          >
+            {" "}
+            Next{" "}
+          </Button>
+        </Grid>
+      </Grid>
     </ThemeProvider>
   );
 

@@ -200,3 +200,13 @@ https://codepen.io/bclinkinbeard/pen/MEZxMe
 ### I modeled the icon chart code on this post
 
 https://blog.logrocket.com/13-ways-vertically-center-html-elements-css/
+
+### Material UI
+
+Ultimate guide to material ui styling
+https://smartdevpreneur.com/material-ui-styled-components/
+https://smartdevpreneur.com/material-ui-sx-prop/
+
+Using box component to change left and right justification.
+https://smartdevpreneur.com/align-buttons-in-material-ui-using-the-box-component/
+https://codesandbox.io/s/material-ui-box-demo-v5-5xwghd?file=/BoxDemo.jsx
