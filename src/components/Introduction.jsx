@@ -1,6 +1,18 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Button, Grid, Typography, ThemeProvider } from "@material-ui/core";
+import {
+  Button,
+  Grid,
+  Typography,
+  ThemeProvider,
+  FormLabel,
+  FormControl,
+  FormControlLabel,
+  FormHelperText,
+  Radio,
+  RadioGroup,
+} from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
 import { useSelector, useDispatch } from "react-redux";
 import { DateTime } from "luxon";
 import "../App.css";
@@ -17,13 +29,36 @@ import { styles, theme } from "./ScreenHelper";
 const Introduction = () => {
   const dispatch = useDispatch();
   const treatment = useSelector(fetchCurrentTreatment);
-
   const navigate = useNavigate();
+
+  const [choice, setChoice] = useState("");
+  const [error, setError] = React.useState(false);
+  const [helperText, setHelperText] = React.useState("");
 
   useEffect(() => {
     dispatch(introductionShown(dateToState(DateTime.utc())));
     if (!treatment) navigate("/invalidlink");
   }, []);
+
+  const useStyles = makeStyles((theme) => ({
+    formControl: {
+      margin: theme.spacing(1),
+      minWidth: 120,
+    },
+    selectEmpty: {
+      marginTop: theme.spacing(2),
+    },
+    formLabel: {
+      fontSize: 24,
+      color: "black",
+    },
+    formControlLabel: {
+      fontSize: 24,
+      color: "black",
+    },
+  }));
+
+  const classes = useStyles();
 
   const radioBtnExp = () => {
     return (
@@ -33,9 +68,58 @@ const Introduction = () => {
             {" "}
             <span style={{ fontSize: 20 }}>&#8226;</span> Radio Buttons:{" "}
           </b>
-          Radio buttons allow a user to pick one of two options as shown below.
+          Radio buttons allow a user to pick one of two options as shown in the
+          video clip below.
         </Typography>
-        <img src="test.png" alt="Barchart example"></img>
+        <img src="radio-buttons.gif" alt="Radio button example"></img>
+        <Typography paragraph>
+          <b>
+            {" "}
+            <span style={{ fontSize: 20 }}>&#8226;</span>&nbsp;Try it out below.
+          </b>
+        </Typography>
+
+        <form onSubmit={() => {}}>
+          <FormControl
+            className={classes.formControl}
+            required={false}
+            error={error}
+          >
+            <FormLabel className={classes.formLabel} id="question-text">
+              Select one of the options below by clicking on the circle and then
+              click the Next button to proceed.
+            </FormLabel>
+            <FormHelperText>{helperText}</FormHelperText>
+            <RadioGroup
+              row
+              aria-labelledby="row-radio-buttons-group-label"
+              name="question-radio-buttons-group"
+              onChange={(event) => {
+                setChoice(event.target.value);
+                setHelperText("");
+                setError(false);
+              }}
+              value={choice}
+            >
+              <FormControlLabel
+                className={classes.formControlLabel}
+                key="firstOption"
+                value="firstOption"
+                checked={choice === "firstOption"}
+                control={<Radio />}
+                label="First option."
+              />
+              <FormControlLabel
+                className={classes.formControlLabel}
+                key="secondOption"
+                value="secondOption"
+                checked={choice === "secondOption"}
+                control={<Radio />}
+                label="Second option"
+              />
+            </RadioGroup>
+          </FormControl>
+        </form>
       </React.Fragment>
     );
   };
@@ -50,11 +134,15 @@ const Introduction = () => {
           </b>
           A bar chart is a pictoral representation of information where the
           height of the bar represents one value and the position of the bar
-          horizontal a second. In this experiment, the height represents the
-          amount of money and the position the delay in months of when that
-          money is received.
+          horizontal a second. In the chart below, the height represents the
+          amount of money is US dollars and the position on the horizontal axis
+          the delay in months of when that money is received. In this case the
+          choice is to receive $300 in two months or $700 in five months.
         </Typography>
-        <img src="test.png" alt="Barchart example"></img>
+        <img
+          src="barchart-introduction-760x280.png"
+          alt="Barchart example"
+        ></img>
       </React.Fragment>
     );
   };
@@ -141,9 +229,18 @@ const Introduction = () => {
             disableFocusRipple
             style={styles.button}
             onClick={() => {
-              dispatch(introductionCompleted(dateToState(DateTime.utc())));
-              dispatch(startSurvey());
-              navigate("/instruction");
+              if (
+                treatment.viewType === ViewType.word &&
+                choice !== "firstOption" &&
+                choice !== "secondOption"
+              ) {
+                setError(true);
+                setHelperText("You must choose one of the options below.");
+              } else {
+                dispatch(introductionCompleted(dateToState(DateTime.utc())));
+                dispatch(startSurvey());
+                navigate("/instruction");
+              }
             }}
           >
             {" "}

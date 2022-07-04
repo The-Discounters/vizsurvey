@@ -26,24 +26,6 @@ import { format } from "d3";
 import { dateToState } from "../features/ConversionUtil";
 import { styles } from "./ScreenHelper";
 
-const useStyles = makeStyles((theme) => ({
-  formControl: {
-    margin: theme.spacing(1),
-    minWidth: 120,
-  },
-  selectEmpty: {
-    marginTop: theme.spacing(2),
-  },
-  formLabel: {
-    fontSize: 32,
-    color: "black",
-  },
-  formControlLabel: {
-    fontSize: 24,
-    color: "black",
-  },
-}));
-
 export function MELForm() {
   const dispatch = useDispatch();
   const q = useSelector(selectCurrentQuestion);
@@ -56,6 +38,24 @@ export function MELForm() {
   useEffect(() => {
     dispatch(dispatch(setQuestionShownTimestamp(dateToState(DateTime.utc()))));
   }, []);
+
+  const useStyles = makeStyles((theme) => ({
+    formControl: {
+      margin: theme.spacing(1),
+      minWidth: 120,
+    },
+    selectEmpty: {
+      marginTop: theme.spacing(2),
+    },
+    formLabel: {
+      fontSize: 32,
+      color: "black",
+    },
+    formControlLabel: {
+      fontSize: 24,
+      color: "black",
+    },
+  }));
 
   const classes = useStyles();
 

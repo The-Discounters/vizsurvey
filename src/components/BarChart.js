@@ -121,7 +121,12 @@ function BarChart() {
                 })`
               )
               .attr("class", "x-axis-major")
-              .call(axisBottom(x).tickValues(majorTicks).tickSize(10));
+              .call(
+                axisBottom(x)
+                  .tickValues(majorTicks)
+                  .tickSize(10)
+                  .tickFormat(format(""))
+              );
 
             // Add the class 'minor' to all minor ticks
             xAxis
