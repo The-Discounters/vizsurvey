@@ -72,6 +72,10 @@ export function Consent() {
   };
 
   const handleFieldChange = (event, setter) => {
+    // reject negative ages.
+    // if (event.target.value <= 0) {
+    //   event.target.value = "";
+    // } else {
     setter(event.target.value);
     checkEnableSubmit();
     if (event.target.value === "self-describe") {
@@ -83,6 +87,7 @@ export function Consent() {
     ) {
       setDisableSelfDescribe(true);
     }
+    //    }
   };
 
   const vizFamiliarityLevel = [
