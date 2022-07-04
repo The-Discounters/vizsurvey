@@ -31,15 +31,33 @@ const Instructions = () => {
       case ViewType.word:
         return (
           <React.Fragment>
-            <Typography paragraph></Typography>
-            <img src="test.png" alt="Word instructions"></img>
+            <Typography paragraph>
+              You will be presented with a choice of receiving an amount of
+              money earlier or a different amount of money later. All amounts
+              are in US dollars and the time of receiving the money is in months
+              from the present. Select one of the options by clicking on the
+              circle for your choice and then clicking the next button. You must
+              make s selection to proceed onto the next question.
+            </Typography>
+            <img src="worded-instructions.gif" alt="Word instructions"></img>
           </React.Fragment>
         );
       case ViewType.barchart:
         return (
           <React.Fragment>
-            <Typography paragraph>Barchart instructions.</Typography>
-            <img src="test.png" alt="Barchart instructions"></img>
+            <Typography paragraph>
+              You will be presented with a bar chart representing a choice of
+              receiving an amount of money earlier or a different amount of
+              money later. All amounts are in US dollars and the time of
+              receiving the money is in months from the present. Select one of
+              the options by clicking on the bar for your choice and the next
+              option will be presented. You must make s selection to proceed
+              onto the next question.
+            </Typography>
+            <img
+              src="barchart-instructions.gif"
+              alt="Barchart instructions"
+            ></img>
           </React.Fragment>
         );
       case ViewType.calendarBar:
