@@ -11,8 +11,9 @@ import {
   FormHelperText,
   Radio,
   RadioGroup,
-} from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
+  Box,
+  ThemeProvider,
+} from "@mui/material";
 
 import { ChoiceType } from "../features/ChoiceType";
 import { StatusType } from "../features/StatusType";
@@ -24,7 +25,20 @@ import {
 } from "../features/questionSlice";
 import { format } from "d3";
 import { dateToState } from "../features/ConversionUtil";
-import { styles } from "./ScreenHelper";
+import {
+  styles,
+  theme,
+  formControl,
+  formLabel,
+  formControlLabel,
+} from "./ScreenHelper";
+
+// const boxDefault = {
+//   height: 100,
+//   //display: "flex",
+//   border: "1px solid black",
+//   padding: 2,
+// };
 
 export function MELForm() {
   const dispatch = useDispatch();
@@ -38,26 +52,6 @@ export function MELForm() {
   useEffect(() => {
     dispatch(dispatch(setQuestionShownTimestamp(dateToState(DateTime.utc()))));
   }, []);
-
-  const useStyles = makeStyles((theme) => ({
-    formControl: {
-      margin: theme.spacing(1),
-      minWidth: 120,
-    },
-    selectEmpty: {
-      marginTop: theme.spacing(2),
-    },
-    formLabel: {
-      fontSize: 32,
-      color: "black",
-    },
-    formControlLabel: {
-      fontSize: 24,
-      color: "black",
-    },
-  }));
-
-  const classes = useStyles();
 
   const todayText = (sooner_time) =>
     sooner_time === 0 ? "today" : `in ${sooner_time} months`;
@@ -75,47 +69,54 @@ export function MELForm() {
   }
 
   const result = (
-    <div>
+    <ThemeProvider theme={theme}>
       <Grid container style={styles.root} justifyContent="center">
         <Grid item xs={12}>
-          <form onSubmit={() => {}}>
-            <FormControl
-              className={classes.formControl}
-              required={false}
-              error={error}
-            >
-              <FormLabel className={classes.formLabel} id="question-text">
+          <form>
+            <FormControl sx={{ ...formControl }} required={false} error={error}>
+              <FormLabel sx={{ ...formLabel }} id="question-text">
                 {questionText()}
               </FormLabel>
               <FormHelperText>{helperText}</FormHelperText>
-              <RadioGroup
-                row
-                aria-labelledby={q.textShort + "-row-radio-buttons-group-label"}
-                name={"question-radio-buttons-group"}
-                onChange={(event) => {
-                  setChoice(event.target.value);
-                  setHelperText("");
-                  setError(false);
-                }}
-                value={choice}
+              <Box
+                component="span"
+                m={1}
+                display="flex"
+                justifyContent="space-between"
+                alignItems="center"
+                border="1"
               >
-                <FormControlLabel
-                  className={classes.formControlLabel}
-                  key={ChoiceType.earlier}
-                  value={ChoiceType.earlier}
-                  checked={choice === ChoiceType.earlier}
-                  control={<Radio />}
-                  label={question1stPartText()}
-                />
-                <FormControlLabel
-                  className={classes.formControlLabel}
-                  key={ChoiceType.later}
-                  value={ChoiceType.later}
-                  checked={choice === ChoiceType.later}
-                  control={<Radio />}
-                  label={question2ndPartText()}
-                />
-              </RadioGroup>
+                <RadioGroup
+                  row
+                  aria-labelledby={
+                    q.textShort + "-row-radio-buttons-group-label"
+                  }
+                  name={"question-radio-buttons-group"}
+                  onChange={(event) => {
+                    setChoice(event.target.value);
+                    setHelperText("");
+                    setError(false);
+                  }}
+                  value={choice}
+                >
+                  <FormControlLabel
+                    sx={{ ...formControlLabel }}
+                    key={ChoiceType.earlier}
+                    value={ChoiceType.earlier}
+                    checked={choice === ChoiceType.earlier}
+                    control={<Radio />}
+                    label={question1stPartText()}
+                  />
+                  <FormControlLabel
+                    sx={{ ...formControlLabel }}
+                    key={ChoiceType.later}
+                    value={ChoiceType.later}
+                    checked={choice === ChoiceType.later}
+                    control={<Radio />}
+                    label={question2ndPartText()}
+                  />
+                </RadioGroup>
+              </Box>
             </FormControl>
           </form>
         </Grid>
@@ -156,7 +157,7 @@ export function MELForm() {
           </Button>
         </Grid>
       </Grid>
-    </div>
+    </ThemeProvider>
   );
 
   return result;

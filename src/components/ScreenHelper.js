@@ -1,4 +1,4 @@
-import { createTheme } from "@material-ui/core";
+import { createTheme } from "@mui/material";
 
 export const styles = {
   root: { flexGrow: 1, margin: 0 },
@@ -14,6 +14,25 @@ export const theme = createTheme({
     htmlFontSize: 12,
   },
 });
+
+export const selectEmpty = {
+  marginTop: theme.spacing(2),
+};
+
+export const formControl = {
+  margin: theme.spacing(1),
+  flexGrow: 1,
+};
+
+export const formLabel = {
+  fontSize: 32,
+  color: "black",
+};
+
+export const formControlLabel = {
+  color: "black",
+  ".MuiTypography-root": { fontSize: 32 },
+};
 
 export const calcScreenValues = (q) => {
   var totalUCWidth;
