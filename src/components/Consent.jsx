@@ -214,7 +214,7 @@ export function Consent() {
               We often have to make choices about receiveing rewards at
               different point in time.
             </Typography>
-            <Typography paragraph>
+            <Typography>
               <br />
               <i>
                 {" "}
@@ -237,7 +237,7 @@ export function Consent() {
               <ConsentTextEn />
             </div>
 
-            <Typography paragraph>
+            <Typography>
               By clicking &ldquo;Next&ldquo;, you agree to participate. Before
               we begin, please enter your:
             </Typography>

@@ -63,7 +63,7 @@ const Introduction = () => {
   const radioBtnExp = () => {
     return (
       <React.Fragment>
-        <Typography paragraph>
+        <Typography>
           <b>
             {" "}
             <span style={{ fontSize: 20 }}>&#8226;</span> Radio Buttons:{" "}
@@ -72,10 +72,10 @@ const Introduction = () => {
           video clip below.
         </Typography>
         <img src="radio-buttons.gif" alt="Radio button example"></img>
-        <Typography paragraph>
+        <Typography>
           <b>
             {" "}
-            <span style={{ fontSize: 20 }}>&#8226;</span>&nbsp;Try it out below.
+            <span style={{ fontSize: 20 }}>&#8226;</span>&nbsp;Try it out below:
           </b>
         </Typography>
 
@@ -244,7 +244,7 @@ const Introduction = () => {
             }}
           >
             {" "}
-            Start{" "}
+            Next{" "}
           </Button>
         </Grid>
       </Grid>
