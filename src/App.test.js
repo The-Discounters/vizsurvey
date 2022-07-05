@@ -11,6 +11,6 @@ test("renders learn react link", () => {
     </Provider>
   );
 
-  const linkElement = screen.getByText("How to Visualize It");
+  const linkElement = screen.getByText("<b>Money Earlier or Later?</b>");
   expect(linkElement).toBeInTheDocument();
 });

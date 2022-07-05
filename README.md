@@ -10,6 +10,10 @@ I hope you find it useful.
 
 The application is written in react using redux and axios. It fetches the survey question data in csv format from gist and will write back the survey questions to gist as well, so hosting question data and answers can be done for free. The application retrieves the survey questionaire data, and renders the questions in a click through format making the data avialable to the react component that wraps the D3 visualization.
 
+# Reference
+
+We looked at code from https://supp-exp-en.netlify.app/ for examples of how to style and implement the application.
+
 # Setup
 
 ## Github Gist Setup

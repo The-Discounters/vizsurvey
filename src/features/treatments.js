@@ -5,9 +5,11 @@ export const TREATMENTS_DEV_CSV = `treatment_id,position,view_type,interaction,v
 2,1,barchart,none,none,300,2,,700,5,,1100,10,,,1,1,7,7,8.5,8.5,Barchart MEL question with no interaction inches.
 2,2,barchart,none,none,500,2,,800,7,,1100,15,,,1,1,7,7,8.5,8.5,Barchart with no interaction inches.
 2,3,barchart,none,none,300,2,,1000,7,,1100,15,,,1,1,3.5,3.5,4.5,4.5,Barchart with no interaction inches.
-3,1,barchart,none,none,300,2,,700,5,,1100,10,800,200,,,,,,,Barchart MEL question with no interaction pixels.
-3,2,barchart,none,none,500,2,,800,7,,1100,15,800,200,,,,,,,Barchart with no interaction pixels.
-3,3,barchart,none,none,300,2,,1000,7,,1100,15,800,200,,,,,,,Barchart with no interaction pixels.
+3,1,barchart,none,none,300,2,,700,5,,1100,10,800,300,,,,,,,Barchart MEL question with no interaction pixels.
+3,2,barchart,none,none,300,2,,700,5,,1100,6,800,300,,,,,,,Barchart MEL question with no interaction pixels.
+3,3,barchart,none,none,500,2,,800,7,,1100,15,800,300,,,,,,,Barchart with no interaction pixels.
+3,4,barchart,none,none,500,2,,800,7,,1100,8,800,300,,,,,,,Barchart with no interaction pixels.
+3,5,barchart,none,none,300,2,,1000,7,,1100,15,800,300,,,,,,,Barchart with no interaction pixels.
 4,1,calendarBar,none,none,300,,2/1/2022,700,,2/22/2022,1100,,100,100,,,,,8,8,Calendar month view with barchart and no interaction.
 4,2,calendarBar,none,none,500,,3/1/2022,800,,3/12/2022,1100,,100,100,,,,,8,8,Calendar month view with barchart and no interaction.
 4,3,calendarBar,none,none,300,,4/1/2022,1000,,4/15/2022,1100,,100,100,,,,,8,8,Calendar month view with barchart and no interaction.
