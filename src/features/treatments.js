@@ -5,9 +5,11 @@ export const TREATMENTS_DEV_CSV = `treatment_id,position,view_type,interaction,v
 2,1,barchart,none,none,300,2,,700,5,,1100,10,,,1,1,7,7,8.5,8.5,Barchart MEL question with no interaction inches.
 2,2,barchart,none,none,500,2,,800,7,,1100,15,,,1,1,7,7,8.5,8.5,Barchart with no interaction inches.
 2,3,barchart,none,none,300,2,,1000,7,,1100,15,,,1,1,3.5,3.5,4.5,4.5,Barchart with no interaction inches.
-3,1,barchart,none,none,300,2,,700,5,,1100,10,800,200,,,,,,,Barchart MEL question with no interaction pixels.
-3,2,barchart,none,none,500,2,,800,7,,1100,15,800,200,,,,,,,Barchart with no interaction pixels.
-3,3,barchart,none,none,300,2,,1000,7,,1100,15,800,200,,,,,,,Barchart with no interaction pixels.
+3,1,barchart,none,none,300,2,,700,5,,1100,10,800,300,,,,,,,Barchart MEL question with no interaction pixels.
+3,2,barchart,none,none,300,2,,700,5,,1100,6,800,300,,,,,,,Barchart MEL question with no interaction pixels.
+3,3,barchart,none,none,500,2,,800,7,,1100,15,800,300,,,,,,,Barchart with no interaction pixels.
+3,4,barchart,none,none,500,2,,800,7,,1100,8,800,300,,,,,,,Barchart with no interaction pixels.
+3,5,barchart,none,none,300,2,,1000,7,,1100,15,800,300,,,,,,,Barchart with no interaction pixels.
 4,1,calendarBar,none,none,300,,2/1/2022,700,,2/22/2022,1100,,100,100,,,,,8,8,Calendar month view with barchart and no interaction.
 4,2,calendarBar,none,none,500,,3/1/2022,800,,3/12/2022,1100,,100,100,,,,,8,8,Calendar month view with barchart and no interaction.
 4,3,calendarBar,none,none,300,,4/1/2022,1000,,4/15/2022,1100,,100,100,,,,,8,8,Calendar month view with barchart and no interaction.
@@ -51,8 +53,8 @@ export const TREATMENTS_PROD_CSV = `treatment_id,position,view_type,interaction,
 1,8,word,none,none,28000,3,,37000,16,,37000,,,,,,,,,,Worded MEL question 33.3 DWR of experiment 1 to test magnitude effect.
 1,9,word,none,none,32,4,,39,13,,40,,,,,,,,,,Worded MEL question experiment 3 of date/delay paper.
 1,10,word,none,none,45,2,,70,18,,70,,,,,,,,,,Worded MEL question experiment 3 of date/delay paper.
-1,11,word,none,none,66,6,,110,23,,110,,,,,,,,,,Worded MEL question experiment 3 of date/delay paper.
-1,12,word,none,none,77,3,,118,16,,120,17,600,300,,,,,,,Worded MEL question experiment 3 of date/delay paper.
+1,11,word,none,none,66,6,,110,24,,110,,,,,,,,,,Worded MEL question experiment 3 of date/delay paper.
+1,12,word,none,none,77,3,,118,16,,120,,600,300,,,,,,,Worded MEL question experiment 3 of date/delay paper.
 2,1,barchart,none,none,350,4,,430,13,,430,14,600,300,,,,,,,Barchart MEL question experiment 1 date/delay paper half the screen.
 2,2,barchart,none,none,490,2,,700,18,,700,19,600,300,,,,,,,Barchart MEL question experiment 1 date/delay paper half the screen.
 2,3,barchart,none,none,720,6,,1390,24,,1390,25,600,300,,,,,,,Barchart MEL question experiment 1 date/delay paper half the screen.
@@ -63,18 +65,18 @@ export const TREATMENTS_PROD_CSV = `treatment_id,position,view_type,interaction,
 2,8,barchart,none,none,28000,3,,37000,16,,37000,17,600,300,,,,,,,Barchart MEL question 33.3 DWR of experiment 1 to test magnitude effect half the screen.
 2,9,barchart,none,none,32,4,,39,13,,40,14,600,300,,,,,,,Barchart MEL question experiment 3 of date/delay paper half the screen.
 2,10,barchart,none,none,45,2,,70,18,,70,19,600,300,,,,,,,Barchart MEL question experiment 3 of date/delay paper half the screen.
-2,11,barchart,none,none,66,6,,110,23,,110,24,600,300,,,,,,,Barchart MEL question experiment 3 of date/delay paper.
+2,11,barchart,none,none,66,6,,110,24,,110,25,600,300,,,,,,,Barchart MEL question experiment 3 of date/delay paper.
 2,12,barchart,none,none,77,3,,118,16,,120,17,600,300,,,,,,,Barchart MEL question experiment 3 of date/delay paper half the screen.
-3,1,barchart,none,none,350,4,,430,13,,430,26,1200,300,,,,,,,Barchart MEL question experiment 1 date/delay paper full screen.
-3,2,barchart,none,none,490,2,,700,18,,700,36,1200,300,,,,,,,Barchart MEL question experiment 1 date/delay paper full screen.
-3,3,barchart,none,none,720,6,,1390,24,,1390,48,1200,300,,,,,,,Barchart MEL question experiment 1 date/delay paper full screen.
-3,4,barchart,none,none,840,3,,1120,16,,1120,32,1200,300,,,,,,,Barchart MEL question experiment 1 date/delay paper full screen.
-3,5,barchart,none,none,11600,4,,14000,13,,14000,26,1200,300,,,,,,,Barchart MEL question 33.3 DWR of experiment 1 to test magnitude effect full screen.
-3,6,barchart,none,none,16300,2,,23000,18,,23000,36,1200,300,,,,,,,Barchart MEL question 33.3 DWR of experiment 1 to test magnitude effect full screen.
-3,7,barchart,none,none,24000,6,,46000,24,,46000,48,1200,300,,,,,,,Barchart MEL question 33.3 DWR of experiment 1 to test magnitude effect full screen.
-3,8,barchart,none,none,28000,3,,37000,16,,37000,32,1200,300,,,,,,,Barchart MEL question 33.3 DWR of experiment 1 to test magnitude effect full screen.
-3,9,barchart,none,none,32,4,,39,13,,40,26,1200,300,,,,,,,Barchart MEL question experiment 3 of date/delay paper full screen.
-3,10,barchart,none,none,45,2,,70,18,,70,36,1200,300,,,,,,,Barchart MEL question experiment 3 of date/delay paper full screen.
-3,11,barchart,none,none,66,6,,110,23,,110,26,1200,300,,,,,,,Barchart MEL question experiment 3 of date/delay paper full screen.
-3,12,barchart,none,none,77,3,,118,16,,120,32,1200,300,,,,,,,Barchart MEL question experiment 3 of date/delay paper full screen.
+3,1,barchart,none,none,350,4,,430,13,,430,27,1200,300,,,,,,,Barchart MEL question experiment 1 date/delay paper full screen.
+3,2,barchart,none,none,490,2,,700,18,,700,37,1200,300,,,,,,,Barchart MEL question experiment 1 date/delay paper full screen.
+3,3,barchart,none,none,720,6,,1390,24,,1390,49,1200,300,,,,,,,Barchart MEL question experiment 1 date/delay paper full screen.
+3,4,barchart,none,none,840,3,,1120,16,,1120,33,1200,300,,,,,,,Barchart MEL question experiment 1 date/delay paper full screen.
+3,5,barchart,none,none,11600,4,,14000,13,,14000,37,1200,300,,,,,,,Barchart MEL question 33.3 DWR of experiment 1 to test magnitude effect full screen.
+3,6,barchart,none,none,16300,2,,23000,18,,23000,37,1200,300,,,,,,,Barchart MEL question 33.3 DWR of experiment 1 to test magnitude effect full screen.
+3,7,barchart,none,none,24000,6,,46000,24,,46000,49,1200,300,,,,,,,Barchart MEL question 33.3 DWR of experiment 1 to test magnitude effect full screen.
+3,8,barchart,none,none,28000,3,,37000,16,,37000,33,1200,300,,,,,,,Barchart MEL question 33.3 DWR of experiment 1 to test magnitude effect full screen.
+3,9,barchart,none,none,32,4,,39,13,,40,27,1200,300,,,,,,,Barchart MEL question experiment 3 of date/delay paper full screen.
+3,10,barchart,none,none,45,2,,70,18,,70,37,1200,300,,,,,,,Barchart MEL question experiment 3 of date/delay paper full screen.
+3,11,barchart,none,none,66,6,,110,24,,110,49,1200,300,,,,,,,Barchart MEL question experiment 3 of date/delay paper full screen.
+3,12,barchart,none,none,77,3,,118,16,,120,33,1200,300,,,,,,,Barchart MEL question experiment 3 of date/delay paper full screen.
 `;

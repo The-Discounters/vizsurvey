@@ -2,12 +2,13 @@
 
 # dependencies
 /node_modules
-test/node_modules
 /.pnp
 .pnp.js
 
 # testing
 /coverage
+test/node_modules
+test/public
 
 # production
 /build
@@ -35,6 +36,7 @@ cypress/plugins
 cypress/screenshots
 cypress/support
 cypress/videos
+cypress/downloads
 doc/~$MCL questions.xlsx
 
 #amplify-do-not-edit-begin

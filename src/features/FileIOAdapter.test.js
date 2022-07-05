@@ -41,37 +41,37 @@ describe("FileIOAdapter tests", () => {
       "Worded with no interaction and Read 2001 example values."
     );
     questions = await io.loadTreatment(3);
-    expect(questions.length).toBe(3);
+    expect(questions.length).toBe(5);
     expect(questions[0].treatmentId).toBe(3);
     expect(questions[0].position).toBe(1);
-    expect(questions[0].viewType).toBe(ViewType.calendarBar);
+    expect(questions[0].viewType).toBe(ViewType.barchart);
     expect(questions[0].interaction).toBe(InteractionType.none);
     expect(questions[0].variableAmount).toBe(AmountType.none);
     expect(questions[0].amountEarlier).toBe(300);
-    expect(questions[0].timeEarlier).toBeUndefined();
-    expect(questions[0].dateEarlier).toBe(1643673600000);
+    expect(questions[0].timeEarlier).toBe(2);
+    expect(questions[0].dateEarlier).toBeUndefined();
     expect(questions[0].amountLater).toBe(700);
-    expect(questions[0].timeLater).toBeUndefined();
-    expect(questions[0].dateLater).toBe(1645488000000);
+    expect(questions[0].timeLater).toBe(5);
+    expect(questions[0].dateLater).toBeUndefined();
     expect(questions[0].maxAmount).toBe(1100);
-    expect(questions[0].maxTime).toBeUndefined();
-    expect(questions[0].horizontalPixels).toBe(100);
-    expect(questions[0].verticalPixels).toBe(100);
+    expect(questions[0].maxTime).toBe(10);
+    expect(questions[0].horizontalPixels).toBe(800);
+    expect(questions[0].verticalPixels).toBe(300);
     expect(questions[0].leftMarginWidthIn).toBeUndefined();
     expect(questions[0].bottomMarginHeightIn).toBeUndefined();
     expect(questions[0].graphWidthIn).toBeUndefined();
     expect(questions[0].graphHeightIn).toBeUndefined();
-    expect(questions[0].widthIn).toBe(8);
-    expect(questions[0].heightIn).toBe(8);
+    expect(questions[0].widthIn).toBeUndefined();
+    expect(questions[0].heightIn).toBeUndefined();
     expect(questions[0].comment).toBe(
-      "Calendar month view with barchart and no interaction."
+      "Barchart MEL question with no interaction pixels."
     );
   });
 
   test("Validate loadAllTreatments loads all treatments correctly.", async () => {
     const io = new FileIOAdapter();
     var questions = await io.loadAllTreatments();
-    expect(questions.length).toBe(36);
+    expect(questions.length).toBe(41);
   });
 
   test("Validate answer CSV fields are written correctly.", async () => {

@@ -26,6 +26,7 @@ import {
   answer,
 } from "../features/questionSlice";
 import { dateToState } from "../features/ConversionUtil";
+import { calcScreenValues } from "./ScreenHelper";
 
 function BarChart() {
   const dispatch = useDispatch();
@@ -33,44 +34,17 @@ function BarChart() {
   const status = useSelector(fetchStatus);
   const navigate = useNavigate();
 
-  var totalSVGWidth;
-  var totalSVGHeight;
-  var totalUCWidth;
-  var totalUCHeight;
-  var leftOffSetUC;
-  var bottomOffSetUC;
-  var barAreaWidthUC;
-  var barAreaHeightUC;
-  var barWidth;
-  if (q.horizontalPixels && q.verticalPixels) {
-    totalUCWidth = q.horizontalPixels * window.devicePixelRatio;
-    totalUCHeight = q.verticalPixels * window.devicePixelRatio;
-    totalSVGWidth = `${totalUCWidth}px`;
-    totalSVGHeight = `${totalUCHeight}px`;
-    leftOffSetUC = 150;
-    bottomOffSetUC = 80;
-    barAreaWidthUC = totalUCWidth - leftOffSetUC;
-    barAreaHeightUC = totalUCHeight - bottomOffSetUC;
-    barWidth = 20;
-  } else {
-    // SVG thinks the resolution is 96 ppi when macbook is 132 ppi so we need to adjust by device pixel ratio
-    const minScreenRes = Math.min(window.screen.height, window.screen.width);
-    totalUCWidth = minScreenRes;
-    totalUCHeight = minScreenRes;
-    const pixelRatioScale = window.devicePixelRatio >= 2 ? 132 / 96 : 1;
-    const totalSVGWidthIn = q.leftMarginWidthIn + q.graphWidthIn;
-    const totalSVGHeightIn = q.bottomMarginHeightIn + q.graphHeightIn;
-    const scaleHorizUCPerIn = minScreenRes / totalSVGWidthIn;
-    const scaleVertUCPerIn = minScreenRes / totalSVGHeightIn;
-
-    totalSVGWidth = `${totalSVGWidthIn * pixelRatioScale}in`;
-    totalSVGHeight = `${totalSVGHeightIn * pixelRatioScale}in`;
-    leftOffSetUC = scaleHorizUCPerIn * q.leftMarginWidthIn;
-    bottomOffSetUC = scaleVertUCPerIn * q.bottomMarginHeightIn;
-    barAreaWidthUC = minScreenRes - leftOffSetUC;
-    barAreaHeightUC = minScreenRes - bottomOffSetUC;
-    barWidth = 0.5 * scaleHorizUCPerIn; // bars are 0.1 inch wide
-  }
+  const {
+    totalUCWidth,
+    totalUCHeight,
+    totalSVGWidth,
+    totalSVGHeight,
+    leftOffSetUC,
+    bottomOffSetUC,
+    barAreaWidthUC,
+    barAreaHeightUC,
+    barWidth,
+  } = calcScreenValues(q);
 
   const TickType = {
     major: "major",
@@ -147,7 +121,12 @@ function BarChart() {
                 })`
               )
               .attr("class", "x-axis-major")
-              .call(axisBottom(x).tickValues(majorTicks).tickSize(10));
+              .call(
+                axisBottom(x)
+                  .tickValues(majorTicks)
+                  .tickSize(10)
+                  .tickFormat(format(""))
+              );
 
             // Add the class 'minor' to all minor ticks
             xAxis
@@ -178,6 +157,22 @@ function BarChart() {
                   .tickSize(6)
               );
 
+            svg
+              .selectAll(".x-axis-label")
+              .data([null])
+              .join("g")
+              .attr("class", "x-axis-label")
+              .selectAll(".x-axis-text")
+              .data([null])
+              .join("text")
+              .attr("class", "x-axis-text")
+              .attr("dominant-baseline", "auto")
+              .attr("x", totalUCWidth / 2)
+              .attr("y", totalUCHeight - 4) // TODO how do I fix the -5 so that the bottom of the y doesn't get clipped
+              .attr("text-anchor", "middle")
+              .text("Delay in Months")
+              .attr("font-size", "1.2em");
+
             const yTickValues = range(yRange[0], yRange[1], yRange[1] / 5);
             yTickValues.push(yRange[1]);
 
@@ -200,7 +195,7 @@ function BarChart() {
               .join("g")
               .attr("transform", "rotate(-90)")
               .attr("class", "y-axis-label")
-              .style("font-size", "1em")
+              .style("font-size", "1.2em")
               .selectAll(".y-axis-text")
               .data([null])
               .join("text")
@@ -209,26 +204,7 @@ function BarChart() {
               .attr("text-anchor", "middle")
               .attr("x", -(barAreaHeightUC + bottomOffSetUC) / 2)
               .attr("y", 0)
-              .text("$ in USD");
-
-            svg
-              .selectAll(".x-axis-label")
-              .data([null])
-              .join("g")
-              .attr("class", "x-axis-label")
-              .selectAll(".x-axis-text")
-              .data([null])
-              .join("text")
-              .attr("class", "x-axis-text")
-              .attr("dominant-baseline", "auto")
-              //.attr("aligment-baseline", "ideographics")
-              //.attr("x", -barAreaWidthUC / 2)
-              .attr("x", totalUCWidth / 2)
-              .attr("y", totalUCHeight - 3) // TODO how do I fix the -5 so that the bottom of the y doesn't get clipped
-              .attr("text-anchor", "middle")
-              //.attr("y", 100)
-              .text("Delay in Months")
-              .attr("font-size", "1em");
+              .text("US Dollars");
 
             chart
               .selectAll(".bar")
@@ -277,6 +253,52 @@ function BarChart() {
                   }
                 }
               });
+
+            const earlierEntry = data.find(
+              (v) => v.barType === AmountType.earlierAmount
+            );
+            const laterEntry = data.find(
+              (v) => v.barType === AmountType.laterAmount
+            );
+
+            chart
+              .selectAll(".earlier-amount-label")
+              .data([null])
+              .join("g")
+              .attr("class", "earlier-amount-label")
+              .selectAll(".earlier-amount-text")
+              .data([earlierEntry])
+              .join("text")
+              .attr("class", "earlier-amount-text")
+              .attr(
+                "transform",
+                `translate(${leftOffSetUC / 2},${bottomOffSetUC / 2 - 6})`
+              )
+              .attr("x", (d) => x(d.time))
+              .attr("y", (d) => y(d.amount))
+              .attr("text-anchor", "middle")
+              .text((d) => format("$,.0f")(d.amount))
+              .attr("font-size", "1.2em");
+
+            chart
+              .selectAll(".later-amount-label")
+              .data([null])
+              .join("g")
+              .attr("class", "later-amount-label")
+              .selectAll(".later-amount-text")
+              .data([laterEntry])
+              .join("text")
+              .attr("class", "later-amount-text")
+              .attr(
+                "transform",
+                `translate(${leftOffSetUC / 2},${bottomOffSetUC / 2 - 6})`
+              )
+              .attr("x", (d) => x(d.time))
+              .attr("y", (d) => y(d.amount))
+              .attr("text-anchor", "middle")
+              .text((d) => format("$,.0f")(d.amount))
+              .attr("font-size", "1.2em");
+
             var dragHandler = drag().on("drag", function (d) {
               if (
                 q.interaction === InteractionType.drag &&

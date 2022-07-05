@@ -1,90 +1,51 @@
-/* eslint-disable no-unused-vars */
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { DateTime } from "luxon";
-import { Grid, TextField, Button, Box, Typography } from "@material-ui/core";
+import {
+  Grid,
+  TextField,
+  Button,
+  Box,
+  Typography,
+  ThemeProvider,
+} from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import InputLabel from "@material-ui/core/InputLabel";
 import FormHelperText from "@material-ui/core/FormHelperText";
 import FormControl from "@material-ui/core/FormControl";
 import NativeSelect from "@material-ui/core/NativeSelect";
-import { useSelector, useDispatch } from "react-redux";
-import "../App.css";
+import { useDispatch } from "react-redux";
 import * as countries from "./countries.json";
 import { dateToState } from "../features/ConversionUtil";
-import {
-  setTreatmentId,
-  setSessionId,
-  setParticipantId,
-  loadTreatment,
-  fetchStatus,
-  consentShown,
-  setDemographic,
-} from "../features/questionSlice";
+import { consentShown, setDemographic } from "../features/questionSlice";
+import { styles, theme } from "./ScreenHelper";
+import "../App.css";
 
-import { useSearchParams } from "react-router-dom";
-import { StatusType } from "../features/StatusType";
-
-const styles = {
-  root: { flexGrow: 1, margin: 0 },
-  button: { marginTop: 10, marginBottom: 10 },
-  container: { display: "flex", flexWrap: "wrap" },
-  textField: { marginLeft: 10, marginRight: 10, width: 200 },
-  label: { margin: 0 },
-};
+const useStyles = makeStyles((theme) => ({
+  formControl: {
+    margin: theme.spacing(1),
+    minWidth: 120,
+  },
+  selectEmpty: {
+    marginTop: theme.spacing(2),
+  },
+}));
 
 export function Consent() {
   const dispatch = useDispatch();
-  const status = useSelector(fetchStatus);
 
   useEffect(() => {
     dispatch(consentShown(dateToState(DateTime.utc())));
   }, []);
 
-  const rand = () => {
-    return Math.floor(Math.random() * 10);
-  };
-
-  const [searchParams, setSearchParams] = useSearchParams();
-  var treatmentId;
-  useEffect(() => {
-    if (!treatmentId) {
-      treatmentId = rand() + 1;
-      const sessionId = searchParams.get("session_id");
-      const participantId = searchParams.get("participant_id");
-      setSearchParams({
-        treatment_id: treatmentId,
-        session_id: sessionId,
-        participant_id: participantId,
-      });
-    }
-  }, []);
-
-  if (status === StatusType.Unitialized) {
-    const sessionId = searchParams.get("session_id");
-    if (sessionId) dispatch(setSessionId(sessionId));
-    const participantId = searchParams.get("participant_id");
-    if (participantId) dispatch(setParticipantId(participantId));
-    treatmentId = searchParams.get("treatment_id");
-    if (treatmentId) dispatch(setTreatmentId(treatmentId));
-    if (treatmentId && sessionId && participantId) dispatch(loadTreatment());
-  }
-
-  const useStyles = makeStyles((theme) => ({
-    formControl: {
-      margin: theme.spacing(1),
-      minWidth: 120,
-    },
-    selectEmpty: {
-      marginTop: theme.spacing(2),
-    },
-  }));
   const classes = useStyles();
   const [disableSubmit, setDisableSubmit] = React.useState(true);
+  const [disableSelfDescribe, setDisableSelfDescribe] = React.useState(true);
   const [country, setCountry] = React.useState("");
   const [visFamiliarity, setVisFamiliarity] = React.useState("");
   const [age, setAge] = React.useState("");
   const [gender, setGender] = React.useState("");
+  const [selfDescribeGender, setSelfDescribeGender] = React.useState("");
   const [profession, setProfession] = React.useState("");
 
   const navigate = useNavigate();
@@ -99,6 +60,8 @@ export function Consent() {
       age.length > 1 &&
       gender &&
       gender.length > 0 &&
+      (gender !== "self-describe" ||
+        (selfDescribeGender && selfDescribeGender.length > 0)) &&
       profession &&
       profession.length > 0
     ) {
@@ -109,8 +72,22 @@ export function Consent() {
   };
 
   const handleFieldChange = (event, setter) => {
+    // reject negative ages.
+    // if (event.target.value <= 0) {
+    //   event.target.value = "";
+    // } else {
     setter(event.target.value);
     checkEnableSubmit();
+    if (event.target.value === "self-describe") {
+      setDisableSelfDescribe(false);
+    } else if (
+      ["female", "male", "transgender", "non-binary", "intersex"].includes(
+        event.target.value
+      )
+    ) {
+      setDisableSelfDescribe(true);
+    }
+    //    }
   };
 
   const vizFamiliarityLevel = [
@@ -133,11 +110,11 @@ export function Consent() {
 
   const ConsentTextEn = () => {
     return (
-      <>
+      <React.Fragment>
         <p>
           <b>The goal of this research is </b> to understand how choices between
-          receiving two amounts of money, a smaller sooner amount or a larger
-          later amount are effected by how the choice is visualizaed.{" "}
+          receiving two amounts of money, one sooner and the other later, are
+          affected by the way they are presented.
         </p>
         <p>
           <b>Procedure: </b>You will be presented with a series of worded
@@ -170,7 +147,25 @@ export function Consent() {
           presentation of the data will not identify you.
         </p>
         <p>
-          <b>Contact info: </b> pcordone@wpi.edu (PI), ynachum@wpi.edu@
+          <b>Contact info: </b>
+          {[
+            { name: "Prof. Daniel Reichman", email: "dreichman@wpi.edi" },
+            {
+              name: "Prof. Ravit Heskiau",
+              email: "r.heskiau@northeastern.edu",
+            },
+            { name: "Prof. Lane Harrison", email: "ltharrison@wpi.edu" },
+            { name: "Peter Cordone", email: "pcordone@wpi.edu" },
+            { name: "Yahel Nachum", email: "ynachum@wpi.edu" },
+          ].map(({ name, email }, index) => {
+            return (
+              <span key={index}>
+                {name} &lt;
+                <a href={`mailto:${email}`}>{email}</a>&gt;
+                {index < 4 ? ", " : ""}
+              </span>
+            );
+          })}
         </p>
         <p>
           <b>Your participation in this research is voluntary. </b> Your refusal
@@ -188,184 +183,215 @@ export function Consent() {
           the Human Protection Administrator (Gabriel Johnson, Tel.
           508-831-4989, Email: gjohnson@wpi.edu).
         </p>
-      </>
+      </React.Fragment>
     );
   };
 
   return (
-    <div>
-      <Box height="25%" alignItems="center">
-        <img
-          style={{ maxHeight: "240px" }}
-          src="money-on-calendar.png"
-          alt="$100 bills on calendar"
-        ></img>
-      </Box>
-      <Grid container style={styles.root} justifyContent="center">
-        <Grid item xs={12}>
-          <Typography variant="h5">
-            <i>Receiving Money</i> - <b>How to Visualize It</b>
-            <br />
-          </Typography>
-          <hr
-            style={{
-              color: "#ea3433",
-              backgroundColor: "#ea3433",
-              height: 4,
-            }}
-          />
-          <Typography>
-            We are often faced with decisions in life to choose between two
-            options of different value at different times where a sooner option
-            is of less value than the later one. For example if I were to offer
-            you $100 dollars now vs $300 dollars three months from now which
-            would you choose?
-          </Typography>
-          <Typography paragraph>
-            <br />
-            <i>
-              {" "}
-              <u>
-                Before you proceed, please read the following consent form
-                carefully:{" "}
-              </u>{" "}
-            </i>
-          </Typography>
-          <div
-            className="overflow-auto"
-            style={{
-              padding: 10,
-              marginBottom: 25,
-              maxWidth: "95%",
-              maxHeight: "300px",
-            }}
-            id="consent-section"
-          >
-            <ConsentTextEn />
-          </div>
+    <ThemeProvider theme={theme}>
+      <div>
+        <Box height="25%" alignItems="center">
+          <img
+            style={{ maxHeight: "240px" }}
+            src="bar-chart.png"
+            alt="$100 bills on calendar"
+          ></img>
+        </Box>{" "}
+        <Grid container style={styles.root} justifyContent="center">
+          <Grid item xs={12}>
+            <Typography variant="h5">
+              <b>Money Earlier or Later?</b>
+              <br />
+            </Typography>
+            <hr
+              style={{
+                color: "#ea3433",
+                backgroundColor: "#ea3433",
+                height: 4,
+              }}
+            />
+            <Typography>
+              We often have to make choices about receiveing rewards at
+              different point in time.
+            </Typography>
+            <Typography>
+              <br />
+              <i>
+                {" "}
+                <u>
+                  Before you proceed, please read the following consent form
+                  carefully:{" "}
+                </u>{" "}
+              </i>
+            </Typography>
+            <div
+              className="overflow-auto"
+              style={{
+                padding: 10,
+                marginBottom: 25,
+                maxWidth: "95%",
+                maxHeight: "300px",
+              }}
+              id="consent-section"
+            >
+              <ConsentTextEn />
+            </div>
 
-          <Typography paragraph>
-            By clicking &ldquo;Next&ldquo;, you agree to participate. Before we
-            begin, please enter your:
-          </Typography>
-        </Grid>
-        <Grid item xs={12}>
-          <FormControl
-            className={classes.formControl}
-            required
-            style={{ maxWidth: 200, marginRight: 20 }}
-          >
-            <InputLabel htmlFor="country-select-helper">
-              Country of residence
-            </InputLabel>
-            <NativeSelect
-              value={country}
-              onChange={(event) => {
-                handleFieldChange(event, setCountry);
-              }}
-              inputProps={{
-                name: "country-of-origin",
-                id: "country-select-helper",
-              }}
+            <Typography>
+              By clicking &ldquo;Next&ldquo;, you agree to participate. Before
+              we begin, please enter your:
+            </Typography>
+          </Grid>
+          <Grid item xs={12}>
+            <FormControl
+              className={classes.formControl}
+              required
+              style={{ maxWidth: 230, marginRight: 20 }}
             >
-              <option> </option>
-              {countries.default.map((option) => (
-                <option
-                  key={option.alpha3}
-                  id={option.alpha3}
-                  value={option.alpha3}
-                >
-                  {option.name}
-                </option>
-              ))}
-            </NativeSelect>
-            <FormHelperText>The country you are living in now</FormHelperText>
-          </FormControl>
-          <FormControl
-            className={classes.formControl}
-            required
-            style={{ maxWidth: 200, marginRight: 20 }}
-          >
-            <NativeSelect
-              value={visFamiliarity}
-              onChange={(event) => {
-                handleFieldChange(event, setVisFamiliarity);
-              }}
-              name="familiarity-with-viz"
-              className={classes.selectEmpty}
-              inputProps={{ "aria-label": "Datavis experience" }}
+              <InputLabel htmlFor="country-select-helper">
+                Country of residence
+              </InputLabel>
+              <NativeSelect
+                value={country}
+                onChange={(event) => {
+                  handleFieldChange(event, setCountry);
+                }}
+                inputProps={{
+                  name: "country-of-origin",
+                  id: "country-select-helper",
+                }}
+              >
+                <option> </option>
+                {countries.default.map((option) => (
+                  <option
+                    key={option.alpha3}
+                    id={option.alpha3}
+                    value={option.alpha3}
+                  >
+                    {option.name}
+                  </option>
+                ))}
+              </NativeSelect>
+              <FormHelperText>The country you are living in now</FormHelperText>
+            </FormControl>
+            <FormControl
+              className={classes.formControl}
+              required
+              style={{ maxWidth: 230, marginRight: 20 }}
             >
-              <option> </option>
-              {vizFamiliarityLevel.map((option) => (
-                <option key={option.id} value={option.id}>
-                  {option["name"]}
-                </option>
-              ))}
-            </NativeSelect>
-            <FormHelperText>
-              Your experience with data visualizations and charts
-            </FormHelperText>
-          </FormControl>
+              <NativeSelect
+                value={visFamiliarity}
+                onChange={(event) => {
+                  handleFieldChange(event, setVisFamiliarity);
+                }}
+                name="familiarity-with-viz"
+                className={classes.selectEmpty}
+                inputProps={{ "aria-label": "Datavis experience" }}
+              >
+                <option> </option>
+                {vizFamiliarityLevel.map((option) => (
+                  <option key={option.id} value={option.id}>
+                    {option["name"]}
+                  </option>
+                ))}
+              </NativeSelect>
+              <FormHelperText>
+                Your experience with data visualizations and charts
+              </FormHelperText>
+            </FormControl>
+          </Grid>
+          <Grid item xs={12} style={{ margin: 0 }}>
+            <TextField
+              required
+              className={classes.formControl}
+              label="Age"
+              type="number"
+              id="Age"
+              onChange={(event) => {
+                handleFieldChange(event, setAge);
+              }}
+            />
+            <label style={{ marginRight: 20 }}> </label>
+            <FormControl
+              className={classes.formControl}
+              required
+              style={{ maxWidth: 230, marginRight: 20 }}
+            >
+              <InputLabel htmlFor="gender-select-helper">Gender</InputLabel>
+              <NativeSelect
+                value={gender}
+                onChange={(event) => {
+                  handleFieldChange(event, setGender);
+                }}
+                inputProps={{
+                  name: "gender",
+                  id: "gender-select-helper",
+                }}
+              >
+                <option> </option>
+                {[
+                  { value: "female", text: "Female" },
+                  { value: "male", text: "Male" },
+                  { value: "transgender", text: "Transgender" },
+                  { value: "non-binary", text: "Non-binary" },
+                  { value: "intersex", text: "Intersex" },
+                  { value: "self-describe", text: "Prefer to self-describe" },
+                ].map(({ value, text }) => (
+                  <option key={value} id={value} value={value}>
+                    {text}
+                  </option>
+                ))}
+              </NativeSelect>
+            </FormControl>
+            <TextField
+              required
+              className={classes.formControl}
+              label="Self Describe Gender"
+              id="Self-Describe-Gender"
+              onChange={(event) => {
+                handleFieldChange(event, setSelfDescribeGender);
+              }}
+              disabled={disableSelfDescribe}
+            />
+            <label style={{ marginLeft: 25 }}> </label>
+            <TextField
+              required
+              className={classes.formControl}
+              label="Current Profession"
+              id="Current-Profession"
+              onChange={(event) => {
+                handleFieldChange(event, setProfession);
+              }}
+            />
+          </Grid>
+          <Grid item xs={12} style={{ margin: 0 }}>
+            <Button
+              variant="contained"
+              color="secondary"
+              disableRipple
+              disableFocusRipple
+              style={styles.button}
+              onClick={() => {
+                dispatch(
+                  setDemographic({
+                    country: country,
+                    visFamiliarity: visFamiliarity,
+                    age: age,
+                    gender: gender,
+                    profession: profession,
+                  })
+                );
+                navigate("/introduction");
+              }}
+              disabled={disableSubmit}
+            >
+              {" "}
+              Next{" "}
+            </Button>
+          </Grid>
         </Grid>
-        <Grid item xs={12} style={{ margin: 0 }}>
-          <TextField
-            required
-            className={classes.formControl}
-            label="Age"
-            type="number"
-            id="Age"
-            onChange={(event) => {
-              handleFieldChange(event, setAge);
-            }}
-          />
-          <label style={{ marginRight: 20 }}> </label>
-          <TextField
-            required
-            className={classes.formControl}
-            label="Gender"
-            id="Gender"
-            onChange={(event) => {
-              handleFieldChange(event, setGender);
-            }}
-          />
-          <label style={{ marginLeft: 25 }}> </label>
-          <TextField
-            required
-            className={classes.formControl}
-            label="Current Profession"
-            id="Current-Profession"
-            onChange={(event) => {
-              handleFieldChange(event, setProfession);
-            }}
-          />
-        </Grid>
-        <Grid item xs={12} style={{ margin: 0 }}>
-          <Button
-            variant="contained"
-            color="secondary"
-            disableRipple
-            disableFocusRipple
-            style={styles.button}
-            onClick={() => {
-              dispatch(
-                setDemographic({
-                  country: country,
-                  visFamiliarity: visFamiliarity,
-                  age: age,
-                  gender: gender,
-                  profession: profession,
-                })
-              );
-              navigate("/introduction");
-            }}
-            disabled={disableSubmit}
-          >
-            {" "}
-            Next{" "}
-          </Button>
-        </Grid>
-      </Grid>
-    </div>
+      </div>
+    </ThemeProvider>
   );
 }
 

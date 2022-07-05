@@ -11,8 +11,6 @@ test("renders learn react link", () => {
     </Provider>
   );
 
-  const linkElement = screen.getByText(
-    "Click a link below to launch one of the experiments. The experimental parameters are not setup yet and are configurable through a file. Right now these links give a feel for what each type of stimulus is like."
-  );
+  const linkElement = screen.getByText("<b>Money Earlier or Later?</b>");
   expect(linkElement).toBeInTheDocument();
 });
