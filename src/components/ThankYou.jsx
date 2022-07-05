@@ -58,6 +58,9 @@ const ThankYou = () => {
               &nbsp;here&nbsp;
             </a>
           </Typography>
+          <Typography paragraph>
+            You can now close this browser window.
+          </Typography>
         </Grid>
       </Grid>
     </ThemeProvider>
