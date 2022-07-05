@@ -55,7 +55,7 @@ const ThankYou = () => {
                 "Enter your feedback here."
               )}`}
             >
-              &nbsp;here&nbsp;
+              here
             </a>
           </Typography>
         </Grid>
