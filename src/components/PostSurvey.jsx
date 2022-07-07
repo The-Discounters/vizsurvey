@@ -49,11 +49,6 @@ export function PostSurvey() {
   const classes = useStyles();
 
   const [disableSubmit, setDisableSubmit] = React.useState(true);
-  /*
-            {surveys.map(({ questionsType, questions }, index2) => (
-              <div key={index2}>
-                {questions.map(({ question, options }, index) => (
-*/
   const surveys = POST_SURVEY_QUESTIONS;
   let qList2 = [];
   let qList2Flat = [];
@@ -61,15 +56,26 @@ export function PostSurvey() {
   surveys.forEach(({ questions }) => {
     let qList = [];
     let setQList = [];
-    questions.forEach(() => {
-      const [q, setQ] = React.useState("");
-      qList.push(q);
-      qList2Flat.push(q);
-      setQList.push(setQ);
-    });
+    // TODO: filter entire survey ealier and use that as defacto survey obj list
+    questions
+      .filter(({ question }) => {
+        if (question.disabled === true) {
+          return false;
+        } else {
+          return true;
+        }
+      })
+      .forEach(() => {
+        const [q, setQ] = React.useState("");
+        qList.push(q);
+        qList2Flat.push(q);
+        setQList.push(setQ);
+      });
     qList2.push(qList);
     setQList2.push(setQList);
   });
+
+  console.log(qList2Flat.length);
 
   const checkEnableSubmit = () => {
     let result = false;
@@ -80,11 +86,7 @@ export function PostSurvey() {
         }
       });
     });
-    if (!result) {
-      setDisableSubmit(false);
-    } else {
-      setDisableSubmit(true);
-    }
+    setDisableSubmit(result);
   };
 
   useEffect(() => {
@@ -127,74 +129,78 @@ export function PostSurvey() {
               {surveys.map(({ prompt, questionsType, questions }, index2) => (
                 <div key={index2}>
                   <Typography paragraph>{prompt}</Typography>
-                  {questions
-                    .filter(({ question }) => {
-                      if (question.disabled === true) {
-                        return false;
-                      } else {
-                        return true;
-                      }
-                    })
-                    .map(({ question, options }, index) => (
-                      <FormControl
-                        key={index}
-                        className={classes.formControl}
-                        required
-                      >
-                        <FormLabel id={question.textShort}>
-                          {index + 1 + ". " + question.textFull}
-                        </FormLabel>
-                        <RadioGroup
-                          row
-                          aria-labelledby={
-                            question.textShort +
-                            "-row-radio-buttons-group-label"
-                          }
-                          name={question.textShort + "-radio-buttons-group"}
+                  {
+                    // TODO: filter entire survey ealier and use that as defacto survey obj list
+                    questions
+                      .filter(({ question }) => {
+                        if (question.disabled === true) {
+                          return false;
+                        } else {
+                          return true;
+                        }
+                      })
+                      .map(({ question, options }, index) => (
+                        <FormControl
+                          key={index}
+                          className={classes.formControl}
+                          required
                         >
-                          {questionsType === "multiple choice"
-                            ? options.map((option, index1) => (
-                                <FormControlLabel
-                                  key={index1}
-                                  value={option.textShort}
-                                  checked={
-                                    qList2[index2][index] === option.textShort
-                                  }
-                                  control={<Radio />}
-                                  label={option.textFull}
-                                  onChange={(event) => {
-                                    handleFieldChange(
-                                      event,
-                                      setQList2[index2][index]
-                                    );
-                                  }}
-                                />
-                              ))
-                            : [
-                                "prefer not to answer",
-                                "strongly-disagree",
-                                "disagree",
-                                "neutral",
-                                "agree",
-                                "strongly-agree",
-                              ].map((option, index1) => (
-                                <FormControlLabel
-                                  key={index1}
-                                  value={option}
-                                  checked={qList2[index2][index] === option}
-                                  control={<Radio />}
-                                  label={option}
-                                  onChange={(event) => {
-                                    handleFieldChange(
-                                      event,
-                                      setQList2[index2][index]
-                                    );
-                                  }}
-                                />
-                              ))}
-                        </RadioGroup>
-                      </FormControl>
-                    ))}
+                          <FormLabel id={question.textShort}>
+                            {index + 1 + ". " + question.textFull}
+                          </FormLabel>
+                          <RadioGroup
+                            row
+                            aria-labelledby={
+                              question.textShort +
+                              "-row-radio-buttons-group-label"
+                            }
+                            name={question.textShort + "-radio-buttons-group"}
+                          >
+                            {questionsType === "multiple choice"
+                              ? options.map((option, index1) => (
+                                  <FormControlLabel
+                                    key={index1}
+                                    value={option.textShort}
+                                    checked={
+                                      qList2[index2][index] === option.textShort
+                                    }
+                                    control={<Radio />}
+                                    label={option.textFull}
+                                    onChange={(event) => {
+                                      handleFieldChange(
+                                        event,
+                                        setQList2[index2][index]
+                                      );
+                                    }}
+                                  />
+                                ))
+                              : [
+                                  "prefer not to answer",
+                                  "strongly-disagree",
+                                  "disagree",
+                                  "neutral",
+                                  "agree",
+                                  "strongly-agree",
+                                ].map((option, index1) => (
+                                  <FormControlLabel
+                                    key={index1}
+                                    value={option}
+                                    id={question.textShort + "-" + option}
+                                    checked={qList2[index2][index] === option}
+                                    control={<Radio />}
+                                    label={option}
+                                    onChange={(event) => {
+                                      handleFieldChange(
+                                        event,
+                                        setQList2[index2][index]
+                                      );
+                                    }}
+                                  />
+                                ))}
+                          </RadioGroup>
+                        </FormControl>
+                      ))
+                  }
                   <hr
                     style={{
                       backgroundColor: "#aaaaaa",
