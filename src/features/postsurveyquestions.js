@@ -1,8 +1,12 @@
 export const POST_SURVEY_QUESTIONS = [
   {
-    prompt: "The following questions try to assess your money TODO ability.",
+    prompt: "The following questions try to assess your financial literacy.",
     questionsType: "multiple choice",
     questions: [
+      /*
+      https://www.sciencedirect.com/science/article/pii/S0378426617300316?casa_token=5v9mS3YD8twAAAAA:Bw8be0MPJq7r-pS-HcC23y-JMFMMKQ_sNM_ANNNLJP0-W-Gp3INZjY2Y22s7od6YVu_ntp07
+      Financial literacy, present bias and alternative mortgage products
+*/
       {
         question: {
           textFull:
@@ -103,7 +107,7 @@ export const POST_SURVEY_QUESTIONS = [
   },
   {
     prompt:
-      "The following questions try to assess how strong your sense of purpose is in life.",
+      "The following questions try to assess how strong your sense of purpose is.",
     questionsType: "multiple choice auto",
     questions: [
       {
