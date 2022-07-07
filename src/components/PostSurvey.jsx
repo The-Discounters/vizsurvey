@@ -128,8 +128,8 @@ export function PostSurvey() {
                 <div key={index2}>
                   <Typography paragraph>{prompt}</Typography>
                   {questions
-                    .filter((q) => {
-                      if (q.disabled === true) { // TODO: fix
+                    .filter(({ question }) => {
+                      if (question.disabled === true) {
                         return false;
                       } else {
                         return true;
