@@ -1,6 +1,6 @@
 export const POST_SURVEY_QUESTIONS = [
   {
-    prompt: "The following questions try to assess your financial literacy.",
+    prompt: "The following questions try to assess your financial literacy. Please answer thes to the best of your knowledge.",
     questionsType: "multiple choice",
     questions: [
       /*
@@ -107,7 +107,7 @@ export const POST_SURVEY_QUESTIONS = [
   },
   {
     prompt:
-      "The following questions try to assess how strong your sense of purpose is.",
+      "The following questions try to assess how strong your sense of purpose is. Please indicate your agreement or disagreement with the following statements.",
     questionsType: "multiple choice auto",
     questions: [
       {
