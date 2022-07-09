@@ -342,6 +342,7 @@ export function Consent() {
                   { value: "non-binary", text: "Non-binary" },
                   { value: "intersex", text: "Intersex" },
                   { value: "self-describe", text: "Prefer to self-describe" },
+                  { value: "prefer-not-to-say", text: "Prefer not to say" },
                 ].map(({ value, text }) => (
                   <option key={value} id={value} value={value}>
                     {text}
