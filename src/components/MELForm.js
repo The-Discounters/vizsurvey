@@ -40,6 +40,7 @@ const useStyles = makeStyles(() => ({
     "border-style": "solid",
     "border-width": "5px",
     "border-radius": "20px",
+    paddingRight: "10px",
     "&:hover": {
       borderColor: "#000000",
     },
@@ -124,7 +125,7 @@ export function MELForm() {
                     },
                   ].map(({ key, label }) => (
                     <FormControlLabel
-                      sx={{ ...formControlLabel }}
+                      sx={{ ...formControlLabel, mr: "100px" }}
                       key={key}
                       value={key}
                       checked={choice === key}
