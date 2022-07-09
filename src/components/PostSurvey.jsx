@@ -188,7 +188,7 @@ export function PostSurvey() {
                                     id={question.textShort + "-" + option}
                                     checked={qList2[index2][index] === option}
                                     control={<Radio />}
-                                    label={option}
+                                    label={option.replace("-", " ")}
                                     onChange={(event) => {
                                       handleFieldChange(
                                         event,
