@@ -113,24 +113,26 @@ export function MELForm() {
                   }}
                   value={choice}
                 >
-                  <FormControlLabel
-                    sx={{ ...formControlLabel }}
-                    key={ChoiceType.earlier}
-                    value={ChoiceType.earlier}
-                    checked={choice === ChoiceType.earlier}
-                    control={<Radio />}
-                    label={question1stPartText()}
-                    className={classes.btn}
-                  />
-                  <FormControlLabel
-                    sx={{ ...formControlLabel }}
-                    key={ChoiceType.later}
-                    value={ChoiceType.later}
-                    checked={choice === ChoiceType.later}
-                    control={<Radio />}
-                    label={question2ndPartText()}
-                    className={classes.btn}
-                  />
+                  {[
+                    {
+                      key: ChoiceType.earlier,
+                      label: question1stPartText(),
+                    },
+                    {
+                      key: ChoiceType.later,
+                      label: question2ndPartText(),
+                    },
+                  ].map(({ key, label }) => (
+                    <FormControlLabel
+                      sx={{ ...formControlLabel }}
+                      key={key}
+                      value={key}
+                      checked={choice === key}
+                      control={<Radio />}
+                      label={label}
+                      className={classes.btn}
+                    />
+                  ))}
                 </RadioGroup>
               </Box>
             </FormControl>
