@@ -1,3 +1,4 @@
+import { makeStyles } from "@material-ui/core/styles";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
@@ -32,6 +33,18 @@ import {
   formLabel,
   formControlLabel,
 } from "./ScreenHelper";
+
+const useStyles = makeStyles(() => ({
+  btn: {
+    borderColor: "#ffffff",
+    "border-style": "solid",
+    "border-width": "5px",
+    "border-radius": "20px",
+    "&:hover": {
+      borderColor: "#000000",
+    },
+  },
+}));
 
 // const boxDefault = {
 //   height: 100,
@@ -68,6 +81,7 @@ export function MELForm() {
     return `${format("$,.0f")(q.amountLater)} in ${q.timeLater} months`;
   }
 
+  const classes = useStyles();
   const result = (
     <ThemeProvider theme={theme}>
       <Grid container style={styles.root} justifyContent="center">
@@ -106,6 +120,7 @@ export function MELForm() {
                     checked={choice === ChoiceType.earlier}
                     control={<Radio />}
                     label={question1stPartText()}
+                    className={classes.btn}
                   />
                   <FormControlLabel
                     sx={{ ...formControlLabel }}
@@ -114,6 +129,7 @@ export function MELForm() {
                     checked={choice === ChoiceType.later}
                     control={<Radio />}
                     label={question2ndPartText()}
+                    className={classes.btn}
                   />
                 </RadioGroup>
               </Box>
