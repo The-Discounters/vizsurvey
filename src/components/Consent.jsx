@@ -308,6 +308,12 @@ export function Consent() {
               type="number"
               id="Age"
               onChange={(event) => {
+                event.target.value < 0 ||
+                event.target.value.includes("e") ||
+                event.target.value.includes("-") ||
+                event.target.value.includes(".")
+                  ? (event.target.value = 0)
+                  : event.target.value;
                 handleFieldChange(event, setAge);
               }}
             />
