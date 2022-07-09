@@ -1,6 +1,6 @@
 /// <reference types="cypress" />
 
-let baseURL = "http://localhost:3000/start"
+let baseURL = "http://localhost:3000/start";
 
 function postsurvey(expects) {
   cy.wait(1000);
@@ -44,20 +44,18 @@ function postsurvey(expects) {
 }
 
 function demographic() {
-    cy.get("#country-select-helper").select("United States of America");
-    cy.get("[name=familiarity-with-viz]").select("3");
-    cy.get("#Age").type("26");
-    cy.get("#gender-select-helper").select("Male");
-    cy.get("#Current-Profession").type("Software Developer");
-    cy.get("button").contains("Next").click();
+  cy.get("#country-select-helper").select("United States of America");
+  cy.get("[name=familiarity-with-viz]").select("3");
+  cy.get("#Age").type("26");
+  cy.get("#gender-select-helper").select("Male");
+  cy.get("#Current-Profession").type("Software Developer");
+  cy.get("button").contains("Next").click();
 }
 
 describe("vizsurvey", () => {
   it("word", () => {
     cy.viewport(1200, 700);
-    cy.visit(
-      baseURL + "?treatment_id=1&session_id=1&participant_id=1"
-    );
+    cy.visit(baseURL + "?treatment_id=1&session_id=1&participant_id=1");
     cy.wait(150);
     demographic();
     cy.get("label").contains("First option").click();
@@ -87,9 +85,7 @@ describe("vizsurvey", () => {
   });
   it("bar", () => {
     cy.viewport(1200, 700);
-    cy.visit(
-      baseURL + "?treatment_id=2&session_id=1&participant_id=1"
-    );
+    cy.visit(baseURL + "?treatment_id=2&session_id=1&participant_id=1");
     cy.wait(150);
     demographic();
     cy.get("button").contains("Next").click();
@@ -105,9 +101,7 @@ describe("vizsurvey", () => {
   });
   it("bar very wide but short in height", () => {
     cy.viewport(1200, 700);
-    cy.visit(
-      baseURL + "?treatment_id=3&session_id=1&participant_id=1"
-    );
+    cy.visit(baseURL + "?treatment_id=3&session_id=1&participant_id=1");
     cy.wait(150);
     demographic();
     cy.get("button").contains("Next").click();
@@ -127,9 +121,7 @@ describe("vizsurvey", () => {
   });
   it("calendar bar", () => {
     cy.viewport(1200, 700);
-    cy.visit(
-      baseURL + "?treatment_id=4&session_id=1&participant_id=1"
-    );
+    cy.visit(baseURL + "?treatment_id=4&session_id=1&participant_id=1");
     cy.wait(150);
     demographic();
     cy.get("button").contains("Next").click();
@@ -138,9 +130,7 @@ describe("vizsurvey", () => {
   });
   it("calendar word", () => {
     cy.viewport(1200, 700);
-    cy.visit(
-      baseURL + "?treatment_id=5&session_id=1&participant_id=1"
-    );
+    cy.visit(baseURL + "?treatment_id=5&session_id=1&participant_id=1");
     cy.wait(150);
     demographic();
     cy.get("button").contains("Next").click();
@@ -149,9 +139,7 @@ describe("vizsurvey", () => {
   });
   it("survey invalid", () => {
     cy.viewport(1200, 700);
-    cy.visit(
-      baseURL + "?treatment_id=100&session_id=1&participant_id=1"
-    );
+    cy.visit(baseURL + "?treatment_id=100&session_id=1&participant_id=1");
     cy.wait(150);
     demographic();
     cy.get("p")
