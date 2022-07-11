@@ -32,10 +32,20 @@ function postsurvey(expects) {
         (response) => {
           response.text().then((text) => {
             expect(JSON.parse(text)).to.deep.equal({
-              q15vs30: "v15+",
-              q50k6p: "v<50k",
-              q100k5p: "v<120k",
-              q200k5p: "v<20y",
+              fincanialLit: {
+                q15vs30: "v15+",
+                q50k6p: "v<50k",
+                q100k5p: "v<120k",
+                q200k5p: "v<20y",
+              },
+              senseOfPurpose: {
+                posdiff: "strongly-disagree",
+                carbetplac: "strongly-disagree",
+                servsoc: "strongly-disagree",
+                thinkach: "strongly-disagree",
+                descrpurp: "strongly-disagree",
+                effort: "strongly-disagree",
+              },
             });
           });
         }
