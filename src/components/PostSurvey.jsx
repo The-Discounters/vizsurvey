@@ -75,8 +75,6 @@ export function PostSurvey() {
     setQList2.push(setQList);
   });
 
-  console.log(qList2Flat.length);
-
   const checkEnableSubmit = () => {
     let result = false;
     qList2.forEach((qList) => {
