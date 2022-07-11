@@ -11,6 +11,7 @@ import {
 import { Container } from "@material-ui/core";
 import "./App.css";
 import Introduction from "./components/Introduction";
+import Demographic from "./components/Demographic";
 import Instructions from "./components/Instructions";
 import Survey from "./components/Survey";
 import PostSurvey from "./components/PostSurvey";
@@ -69,7 +70,8 @@ const App = () => {
               ) : (
                 ""
               )}
-              <Route path="consent" element={<Consent />} />
+              <Route path={"consent"} element={<Consent />} />
+              <Route path={"demographic"} element={<Demographic />} />
               <Route path={"introduction"} element={<Introduction />} />
               <Route path={"instruction"} element={<Instructions />} />
               <Route path={"survey"} element={<Survey />} />

@@ -83,6 +83,9 @@ export const questionSlice = createSlice({
     consentShown(state, action) {
       state.consentShownTimestamp = action.payload;
     },
+    consentCompleted(state, action) {
+      state.consentCompletedTimestamp = action.payload;
+    },
     introductionShown(state, action) {
       state.introductionShowTimestamp = action.payload;
     },
@@ -127,6 +130,7 @@ export const questionSlice = createSlice({
       state.gender = null;
       state.profession = null;
       state.consentShownTimestamp = null;
+      state.consentCompletedTimestamp = null;
       state.introductionShowTimestamp = null;
       state.introductionCompletedTimestamp = null;
       state.instructionsShowTimestamp = null;
@@ -204,6 +208,7 @@ export const {
   setTreatmentId,
   setSessionId,
   consentShown,
+  consentCompleted,
   setDemographic,
   instructionsShown,
   instructionsCompleted,
