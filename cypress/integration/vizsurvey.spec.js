@@ -99,25 +99,47 @@ describe("vizsurvey", () => {
       "2,3,barchart,none,none,300,2,,1000,7",
     ]);
   });
-  it("bar very wide but short in height", () => {
-    cy.viewport(1200, 700);
-    cy.visit(baseURL + "?treatment_id=3&session_id=1&participant_id=1");
-    cy.wait(150);
-    demographic();
-    cy.get("button").contains("Next").click();
-    cy.get("button").contains("Start").click();
-    cy.get("#id5").click();
-    cy.get("#id5").click();
-    cy.get("#id7").click();
-    cy.get("#id7").click();
-    cy.get("#id2").click();
-    postsurvey([
-      "3,1,barchart,none,none,300,2,,700,5",
-      "3,2,barchart,none,none,300,2,,700,5",
-      "3,3,barchart,none,none,500,2,,800,7",
-      "3,4,barchart,none,none,500,2,,800,7",
-      "3,5,barchart,none,none,300,2,,1000,7",
-    ]);
+  [
+    {
+      width: 800,
+      height: 600,
+    },
+    {
+      width: 1280,
+      height: 720,
+    },
+    {
+      width: 1920,
+      height: 1080,
+    },
+    {
+      width: 2560,
+      height: 1440,
+    },
+  ].forEach(({ width, height }) => {
+    it(
+      "bar very wide but short in height (" + width + ", " + height + ")",
+      () => {
+        cy.viewport(width, height);
+        cy.visit(baseURL + "?treatment_id=3&session_id=1&participant_id=1");
+        cy.wait(150);
+        demographic();
+        cy.get("button").contains("Next").click();
+        cy.get("button").contains("Start").click();
+        cy.get("#id5").click();
+        cy.get("#id5").click();
+        cy.get("#id7").click();
+        cy.get("#id7").click();
+        cy.get("#id2").click();
+        postsurvey([
+          "3,1,barchart,none,none,300,2,,700,5",
+          "3,2,barchart,none,none,300,2,,700,5",
+          "3,3,barchart,none,none,500,2,,800,7",
+          "3,4,barchart,none,none,500,2,,800,7",
+          "3,5,barchart,none,none,300,2,,1000,7",
+        ]);
+      }
+    );
   });
   it("calendar bar", () => {
     cy.viewport(1200, 700);
