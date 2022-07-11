@@ -18,6 +18,7 @@ import {
 import { makeStyles } from "@material-ui/core/styles";
 import {
   getParticipant,
+  getDemographics,
   postSurveyQuestionsShown,
   selectAllQuestions,
   writeAnswers,
@@ -101,6 +102,7 @@ export function PostSurvey() {
   const answers = useSelector(selectAllQuestions);
   const io = new FileIOAdapter();
   const csv = io.convertToCSV(answers);
+  const demographics = useSelector(getDemographics);
   return (
     <ThemeProvider theme={theme}>
       <div>
@@ -129,69 +131,66 @@ export function PostSurvey() {
               {surveys.map(({ prompt, questionsType, questions }, index2) => (
                 <div key={index2}>
                   <Typography paragraph>{prompt}</Typography>
-                  {
-                    questions.map(({ question, options }, index) => (
-                      <FormControl
-                        key={index}
-                        className={classes.formControl}
-                        required
+                  {questions.map(({ question, options }, index) => (
+                    <FormControl
+                      key={index}
+                      className={classes.formControl}
+                      required
+                    >
+                      <FormLabel id={question.textShort}>
+                        {index + 1 + ". " + question.textFull}
+                      </FormLabel>
+                      <RadioGroup
+                        row
+                        aria-labelledby={
+                          question.textShort + "-row-radio-buttons-group-label"
+                        }
+                        name={question.textShort + "-radio-buttons-group"}
                       >
-                        <FormLabel id={question.textShort}>
-                          {index + 1 + ". " + question.textFull}
-                        </FormLabel>
-                        <RadioGroup
-                          row
-                          aria-labelledby={
-                            question.textShort +
-                            "-row-radio-buttons-group-label"
-                          }
-                          name={question.textShort + "-radio-buttons-group"}
-                        >
-                          {questionsType === "multiple choice"
-                            ? options.map((option, index1) => (
-                                <FormControlLabel
-                                  key={index1}
-                                  value={option.textShort}
-                                  checked={
-                                    qList2[index2][index] === option.textShort
-                                  }
-                                  control={<Radio />}
-                                  label={option.textFull}
-                                  onChange={(event) => {
-                                    handleFieldChange(
-                                      event,
-                                      setQList2[index2][index]
-                                    );
-                                  }}
-                                />
-                              ))
-                            : [
-                                "prefer not to answer",
-                                "strongly-disagree",
-                                "disagree",
-                                "neutral",
-                                "agree",
-                                "strongly-agree",
-                              ].map((option, index1) => (
-                                <FormControlLabel
-                                  key={index1}
-                                  value={option}
-                                  id={question.textShort + "-" + option}
-                                  checked={qList2[index2][index] === option}
-                                  control={<Radio />}
-                                  label={option.replace("-", " ")}
-                                  onChange={(event) => {
-                                    handleFieldChange(
-                                      event,
-                                      setQList2[index2][index]
-                                    );
-                                  }}
-                                />
-                              ))}
-                        </RadioGroup>
-                      </FormControl>
-                    ))
-                  }
+                        {questionsType === "multiple choice"
+                          ? options.map((option, index1) => (
+                              <FormControlLabel
+                                key={index1}
+                                value={option.textShort}
+                                checked={
+                                  qList2[index2][index] === option.textShort
+                                }
+                                control={<Radio />}
+                                label={option.textFull}
+                                onChange={(event) => {
+                                  handleFieldChange(
+                                    event,
+                                    setQList2[index2][index]
+                                  );
+                                }}
+                              />
+                            ))
+                          : [
+                              "prefer not to answer",
+                              "strongly-disagree",
+                              "disagree",
+                              "neutral",
+                              "agree",
+                              "strongly-agree",
+                            ].map((option, index1) => (
+                              <FormControlLabel
+                                key={index1}
+                                value={option}
+                                id={question.textShort + "-" + option}
+                                checked={qList2[index2][index] === option}
+                                control={<Radio />}
+                                label={option.replace("-", " ")}
+                                onChange={(event) => {
+                                  handleFieldChange(
+                                    event,
+                                    setQList2[index2][index]
+                                  );
+                                }}
+                              />
+                            ))}
+                      </RadioGroup>
+                    </FormControl>
+                  ))}
                   <hr
                     style={{
                       backgroundColor: "#aaaaaa",
@@ -230,7 +229,7 @@ export function PostSurvey() {
                             );
                             return prev1;
                           },
-                          {}
+                          { demographics: demographics }
                         ),
                       })
                     );

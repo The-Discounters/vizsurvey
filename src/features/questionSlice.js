@@ -31,6 +31,7 @@ export const questionSlice = createSlice({
     vizFamiliarity: null,
     age: null,
     gender: null,
+    selfDescribeGender: null,
     profession: null,
     consentShownTimestamp: null,
     introductionShowTimestamp: null,
@@ -61,12 +62,11 @@ export const questionSlice = createSlice({
       return state;
     },
     setDemographic(state, action) {
-      state.countryOfResidence = action.payload.countryOfResidence;
-      state.firstLanguage = action.payload.firstLanguage;
-      state.secondLanguage = action.payload.secondLanguage;
+      state.countryOfResidence = action.payload.country;
       state.vizFamiliarity = action.payload.vizFamiliarity;
       state.age = action.payload.age;
       state.gender = action.payload.gender;
+      state.selfDescribeGender = action.payload.selfDescribeGender;
       state.profession = action.payload.profession;
       state.status = StatusType.Introduction;
     },
@@ -120,11 +120,10 @@ export const questionSlice = createSlice({
       state.articipantId = null;
       state.sessionId = null;
       state.countryOfResidence = null;
-      state.firstLanguage = null;
-      state.secondLanguage = null;
       state.vizFamiliarity = null;
       state.age = null;
       state.gender = null;
+      state.selfDescribeGender = null;
       state.profession = null;
       state.consentShownTimestamp = null;
       state.introductionShowTimestamp = null;
@@ -162,6 +161,17 @@ export const selectAllQuestions = (state) => {
 
 export const getParticipant = (state) => {
   return state.questions.participantId;
+};
+
+export const getDemographics = (state) => {
+  return {
+    countryOfResidence: state.questions.countryOfResidence,
+    vizFamiliarity: state.questions.vizFamiliarity,
+    age: state.questions.age,
+    gender: state.questions.gender,
+    selfDescribeGender: state.questions.selfDescribeGender,
+    profession: state.questions.profession,
+  };
 };
 
 export const fetchCurrentTreatment = (state) => {

@@ -382,9 +382,10 @@ export function Consent() {
                 dispatch(
                   setDemographic({
                     country: country,
-                    visFamiliarity: visFamiliarity,
+                    vizFamiliarity: visFamiliarity,
                     age: age,
                     gender: gender,
+                    selfDescribeGender: selfDescribeGender,
                     profession: profession,
                   })
                 );

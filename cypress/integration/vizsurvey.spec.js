@@ -32,6 +32,14 @@ function postsurvey(expects) {
         (response) => {
           response.text().then((text) => {
             expect(JSON.parse(text)).to.deep.equal({
+              demographics: {
+                countryOfResidence: "usa",
+                vizFamiliarity: "3",
+                age: "26",
+                gender: "male",
+                selfDescribeGender: "",
+                profession: "Software Developer",
+              },
               fincanialLit: {
                 q15vs30: "v15+",
                 q50k6p: "v<50k",
