@@ -1,6 +1,7 @@
 export const POST_SURVEY_QUESTIONS = [
   {
-    prompt: "The following questions try to assess your financial literacy. Please answer thes to the best of your knowledge.",
+    prompt:
+      "The following questions try to assess your financial literacy. Please answer these to the best of your knowledge.",
     questionsType: "multiple choice",
     questions: [
       /*
