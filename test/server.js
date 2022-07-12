@@ -36,6 +36,9 @@ app.post("/test", (req, res) => {
   if (!fs.existsSync(dir)) {
     fs.mkdirSync(dir);
   }
+
+  console.log("req.body.data: " + req.body.data);
+
   fs.writeFile(dir + req.body.name, req.body.data, function (err) {
     if (err) throw err;
   });
