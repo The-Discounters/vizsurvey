@@ -80,6 +80,8 @@ function BarChart() {
 
   const xTickValues = data.map((d) => d.time);
 
+  console.log("width={" + totalSVGWidth + "}");
+  console.log("height={" + totalSVGHeight + "}");
   const result = (
     <div>
       <svg

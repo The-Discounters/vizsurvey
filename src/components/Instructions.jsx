@@ -37,7 +37,7 @@ const Instructions = () => {
               are in US dollars and the time of receiving the money is in months
               from the present. Select one of the options by clicking on the
               circle for your choice and then clicking the next button. You must
-              make s selection to proceed onto the next question.
+              make a selection to proceed onto the next question.
             </Typography>
             <img src="worded-instructions.gif" alt="Word instructions"></img>
           </React.Fragment>
@@ -51,7 +51,7 @@ const Instructions = () => {
               money later. All amounts are in US dollars and the time of
               receiving the money is in months from the present. Select one of
               the options by clicking on the bar for your choice and the next
-              option will be presented. You must make s selection to proceed
+              option will be presented. You must make a selection to proceed
               onto the next question.
             </Typography>
             <img

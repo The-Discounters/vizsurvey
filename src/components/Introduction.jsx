@@ -11,6 +11,7 @@ import {
   FormHelperText,
   Radio,
   RadioGroup,
+  Box,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { useSelector, useDispatch } from "react-redux";
@@ -24,7 +25,7 @@ import {
   fetchCurrentTreatment,
   startSurvey,
 } from "../features/questionSlice";
-import { styles, theme } from "./ScreenHelper";
+import { styles, theme, formControlLabel } from "./ScreenHelper";
 
 const Introduction = () => {
   const dispatch = useDispatch();
@@ -52,9 +53,15 @@ const Introduction = () => {
       fontSize: 24,
       color: "black",
     },
-    formControlLabel: {
-      fontSize: 24,
-      color: "black",
+    btn: {
+      borderColor: "#ffffff",
+      "border-style": "solid",
+      "border-width": "5px",
+      "border-radius": "20px",
+      paddingRight: "10px",
+      "&:hover": {
+        borderColor: "#000000",
+      },
     },
   }));
 
@@ -90,34 +97,47 @@ const Introduction = () => {
               click the Next button to proceed.
             </FormLabel>
             <FormHelperText>{helperText}</FormHelperText>
-            <RadioGroup
-              row
-              aria-labelledby="row-radio-buttons-group-label"
-              name="question-radio-buttons-group"
-              onChange={(event) => {
-                setChoice(event.target.value);
-                setHelperText("");
-                setError(false);
-              }}
-              value={choice}
+            <Box
+              component="span"
+              m={1}
+              display="flex"
+              justifyContent="space-between"
+              alignItems="center"
+              border="1"
             >
-              <FormControlLabel
-                className={classes.formControlLabel}
-                key="firstOption"
-                value="firstOption"
-                checked={choice === "firstOption"}
-                control={<Radio />}
-                label="First option."
-              />
-              <FormControlLabel
-                className={classes.formControlLabel}
-                key="secondOption"
-                value="secondOption"
-                checked={choice === "secondOption"}
-                control={<Radio />}
-                label="Second option"
-              />
-            </RadioGroup>
+              <RadioGroup
+                row
+                aria-labelledby="row-radio-buttons-group-label"
+                name="question-radio-buttons-group"
+                onChange={(event) => {
+                  setChoice(event.target.value);
+                  setHelperText("");
+                  setError(false);
+                }}
+                value={choice}
+              >
+                {[
+                  {
+                    key: "firstOption",
+                    label: "First option.",
+                  },
+                  {
+                    key: "secondOption",
+                    label: "Second option.",
+                  },
+                ].map(({ key, label }) => (
+                  <FormControlLabel
+                    sx={{ ...formControlLabel, mr: "100px" }}
+                    key={key}
+                    value={key}
+                    checked={choice === key}
+                    control={<Radio />}
+                    label={label}
+                    className={classes.btn}
+                  />
+                ))}
+              </RadioGroup>
+            </Box>
           </FormControl>
         </form>
       </React.Fragment>

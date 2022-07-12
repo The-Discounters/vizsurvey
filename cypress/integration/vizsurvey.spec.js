@@ -1,12 +1,19 @@
 /// <reference types="cypress" />
 
+let baseURL = "http://localhost:3000/start";
+
 function postsurvey(expects) {
   cy.wait(1000);
   cy.get("label").contains("Higher for the 15 year mortgage").click();
   cy.get("label").contains("Less than $50,000").click();
   cy.get("label").contains("Less than $120,000").click();
   cy.get("label").contains("Less than 20 years").click();
-  cy.get("label").contains("strongly-disagree").click();
+  cy.get("#posdiff-strongly-disagree").click();
+  cy.get("#carbetplac-strongly-disagree").click();
+  cy.get("#servsoc-strongly-disagree").click();
+  cy.get("#thinkach-strongly-disagree").click();
+  cy.get("#descrpurp-strongly-disagree").click();
+  cy.get("#effort-strongly-disagree").click();
   cy.get("button").contains("Next").click();
   cy.wait(1000);
   cy.get("p")
@@ -25,10 +32,28 @@ function postsurvey(expects) {
         (response) => {
           response.text().then((text) => {
             expect(JSON.parse(text)).to.deep.equal({
-              q15vs30: "15+",
-              q50k6p: "<50k",
-              q100k5p: "<120k",
-              q200k5p: "<20y",
+              demographics: {
+                countryOfResidence: "usa",
+                vizFamiliarity: "3",
+                age: "26",
+                gender: "male",
+                selfDescribeGender: "",
+                profession: "Software Developer",
+              },
+              fincanialLit: {
+                q15vs30: "v15+",
+                q50k6p: "v<50k",
+                q100k5p: "v<120k",
+                q200k5p: "v<20y",
+              },
+              senseOfPurpose: {
+                posdiff: "strongly-disagree",
+                carbetplac: "strongly-disagree",
+                servsoc: "strongly-disagree",
+                thinkach: "strongly-disagree",
+                descrpurp: "strongly-disagree",
+                effort: "strongly-disagree",
+              },
             });
           });
         }
@@ -36,20 +61,23 @@ function postsurvey(expects) {
     });
 }
 
+function demographic() {
+  cy.get("#country-select-helper").select("United States of America");
+  cy.get("[name=familiarity-with-viz]").select("3");
+  cy.get("#Age").type("26");
+  cy.get("#gender-select-helper").select("Male");
+  cy.get("#Current-Profession").type("Software Developer");
+  cy.get("button").contains("Next").click();
+}
+
 describe("vizsurvey", () => {
   it("word", () => {
     cy.viewport(1200, 700);
-    cy.visit(
-      "http://localhost:3000/?treatment_id=1&session_id=1&participant_id=1"
-    );
+    cy.visit(baseURL + "?treatment_id=1&session_id=1&participant_id=1");
     cy.wait(150);
-    cy.get("#country-select-helper").select("United States of America");
-    cy.get("[name=familiarity-with-viz]").select("3");
-    cy.get("#Age").type("26");
-    cy.get("#Gender").type("Male");
-    cy.get("#Current-Profession").type("Software Developer");
+    demographic();
+    cy.get("label").contains("First option").click();
     cy.get("button").contains("Next").click();
-    cy.get("button").contains("Start").click();
     cy.get("button").contains("Start").click();
     cy.get("label").contains("$500 in 2 months").click();
     cy.get("button").contains("Next").click();
@@ -75,17 +103,10 @@ describe("vizsurvey", () => {
   });
   it("bar", () => {
     cy.viewport(1200, 700);
-    cy.visit(
-      "http://localhost:3000/?treatment_id=2&session_id=1&participant_id=1"
-    );
+    cy.visit(baseURL + "?treatment_id=2&session_id=1&participant_id=1");
     cy.wait(150);
-    cy.get("#country-select-helper").select("United States of America");
-    cy.get("[name=familiarity-with-viz]").select("3");
-    cy.get("#Age").type("26");
-    cy.get("#Gender").type("Male");
-    cy.get("#Current-Profession").type("Software Developer");
+    demographic();
     cy.get("button").contains("Next").click();
-    cy.get("button").contains("Start").click();
     cy.get("button").contains("Start").click();
     cy.get("#id5").click();
     cy.get("#id7").click();
@@ -96,73 +117,71 @@ describe("vizsurvey", () => {
       "2,3,barchart,none,none,300,2,,1000,7",
     ]);
   });
-  it("bar very wide but short in height", () => {
-    cy.viewport(1200, 700);
-    cy.visit(
-      "http://localhost:3000/?treatment_id=3&session_id=1&participant_id=1"
+  [
+    {
+      width: 800,
+      height: 600,
+    },
+    {
+      width: 1280,
+      height: 720,
+    },
+    {
+      width: 1920,
+      height: 1080,
+    },
+    {
+      width: 2560,
+      height: 1440,
+    },
+  ].forEach(({ width, height }) => {
+    it(
+      "bar very wide but short in height (" + width + ", " + height + ")",
+      () => {
+        cy.viewport(width, height);
+        cy.visit(baseURL + "?treatment_id=3&session_id=1&participant_id=1");
+        cy.wait(150);
+        demographic();
+        cy.get("button").contains("Next").click();
+        cy.get("button").contains("Start").click();
+        cy.get("#id5").click();
+        cy.get("#id5").click();
+        cy.get("#id7").click();
+        cy.get("#id7").click();
+        cy.get("#id2").click();
+        postsurvey([
+          "3,1,barchart,none,none,300,2,,700,5",
+          "3,2,barchart,none,none,300,2,,700,5",
+          "3,3,barchart,none,none,500,2,,800,7",
+          "3,4,barchart,none,none,500,2,,800,7",
+          "3,5,barchart,none,none,300,2,,1000,7",
+        ]);
+      }
     );
-    cy.wait(150);
-    cy.get("#country-select-helper").select("United States of America");
-    cy.get("[name=familiarity-with-viz]").select("3");
-    cy.get("#Age").type("26");
-    cy.get("#Gender").type("Male");
-    cy.get("#Current-Profession").type("Software Developer");
-    cy.get("button").contains("Next").click();
-    cy.get("button").contains("Start").click();
-    cy.get("button").contains("Start").click();
-    cy.get("#id5").click();
-    cy.get("#id7").click();
-    cy.get("#id7").click();
-    postsurvey([
-      "3,1,barchart,none,none,300,2,,700,5",
-      "3,2,barchart,none,none,500,2,,800,7",
-      "3,3,barchart,none,none,300,2,,1000,7",
-    ]);
   });
   it("calendar bar", () => {
     cy.viewport(1200, 700);
-    cy.visit(
-      "http://localhost:3000/?treatment_id=4&session_id=1&participant_id=1"
-    );
+    cy.visit(baseURL + "?treatment_id=4&session_id=1&participant_id=1");
     cy.wait(150);
-    cy.get("#country-select-helper").select("United States of America");
-    cy.get("[name=familiarity-with-viz]").select("3");
-    cy.get("#Age").type("26");
-    cy.get("#Gender").type("Male");
-    cy.get("#Current-Profession").type("Software Developer");
+    demographic();
     cy.get("button").contains("Next").click();
-    cy.get("button").contains("Start").click();
     cy.get("button").contains("Start").click();
     calendar("day", "4", "Bar");
   });
   it("calendar word", () => {
     cy.viewport(1200, 700);
-    cy.visit(
-      "http://localhost:3000/?treatment_id=5&session_id=1&participant_id=1"
-    );
+    cy.visit(baseURL + "?treatment_id=5&session_id=1&participant_id=1");
     cy.wait(150);
-    cy.get("#country-select-helper").select("United States of America");
-    cy.get("[name=familiarity-with-viz]").select("3");
-    cy.get("#Age").type("26");
-    cy.get("#Gender").type("Male");
-    cy.get("#Current-Profession").type("Software Developer");
+    demographic();
     cy.get("button").contains("Next").click();
-    cy.get("button").contains("Start").click();
     cy.get("button").contains("Start").click();
     calendar("day", "5", "Word");
   });
   it("survey invalid", () => {
     cy.viewport(1200, 700);
-    cy.visit(
-      "http://localhost:3000/?treatment_id=100&session_id=1&participant_id=1"
-    );
+    cy.visit(baseURL + "?treatment_id=100&session_id=1&participant_id=1");
     cy.wait(150);
-    cy.get("#country-select-helper").select("United States of America");
-    cy.get("[name=familiarity-with-viz]").select("3");
-    cy.get("#Age").type("26");
-    cy.get("#Gender").type("Male");
-    cy.get("#Current-Profession").type("Software Developer");
-    cy.get("button").contains("Next").click();
+    demographic();
     cy.get("p")
       .contains("You have been provided an invalid survey link")
       .should("exist");
@@ -170,15 +189,10 @@ describe("vizsurvey", () => {
   it("survey random", () => {
     for (let i = 0; i < 10; i++) {
       cy.viewport(1200, 700);
-      cy.visit("http://localhost:3000/?session_id=1&participant_id=1");
+      cy.visit(baseURL + "?session_id=1&participant_id=1");
       cy.wait(150);
-      cy.get("#country-select-helper").select("United States of America");
-      cy.get("[name=familiarity-with-viz]").select("3");
-      cy.get("#Age").type("26");
-      cy.get("#Gender").type("Male");
-      cy.get("#Current-Profession").type("Software Developer");
+      demographic();
       cy.get("button").contains("Next").click();
-      cy.get("button").contains("Start").should("exist");
       cy.get("button").contains("Start").should("exist");
     }
   });
