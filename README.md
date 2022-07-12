@@ -204,3 +204,7 @@ https://codepen.io/bclinkinbeard/pen/MEZxMe
 ### I modeled the icon chart code on this post
 
 https://blog.logrocket.com/13-ways-vertically-center-html-elements-css/
+
+### Great article that explains react hooks and useEffect
+
+https://blog.logrocket.com/guide-to-react-useeffect-hook/#:~:text=Don't%20be%20afraid%20to,need%20more%20than%20one%20effect.

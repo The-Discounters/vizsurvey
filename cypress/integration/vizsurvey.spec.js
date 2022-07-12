@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 /// <reference types="cypress" />
 
 let baseURL = "http://localhost:3000/start";
@@ -75,6 +76,7 @@ describe("vizsurvey", () => {
     cy.viewport(1200, 700);
     cy.visit(baseURL + "?treatment_id=1&session_id=1&participant_id=1");
     cy.wait(150);
+    cy.get("button").contains("Next").click();
     demographic();
     cy.get("label").contains("First option").click();
     cy.get("button").contains("Next").click();
@@ -105,6 +107,7 @@ describe("vizsurvey", () => {
     cy.viewport(1200, 700);
     cy.visit(baseURL + "?treatment_id=2&session_id=1&participant_id=1");
     cy.wait(150);
+    cy.get("button").contains("Next").click();
     demographic();
     cy.get("button").contains("Next").click();
     cy.get("button").contains("Start").click();
@@ -141,6 +144,7 @@ describe("vizsurvey", () => {
         cy.viewport(width, height);
         cy.visit(baseURL + "?treatment_id=3&session_id=1&participant_id=1");
         cy.wait(150);
+        cy.get("button").contains("Next").click();
         demographic();
         cy.get("button").contains("Next").click();
         cy.get("button").contains("Start").click();
@@ -163,6 +167,7 @@ describe("vizsurvey", () => {
     cy.viewport(1200, 700);
     cy.visit(baseURL + "?treatment_id=4&session_id=1&participant_id=1");
     cy.wait(150);
+    cy.get("button").contains("Next").click();
     demographic();
     cy.get("button").contains("Next").click();
     cy.get("button").contains("Start").click();
@@ -172,6 +177,7 @@ describe("vizsurvey", () => {
     cy.viewport(1200, 700);
     cy.visit(baseURL + "?treatment_id=5&session_id=1&participant_id=1");
     cy.wait(150);
+    cy.get("button").contains("Next").click();
     demographic();
     cy.get("button").contains("Next").click();
     cy.get("button").contains("Start").click();
@@ -181,6 +187,7 @@ describe("vizsurvey", () => {
     cy.viewport(1200, 700);
     cy.visit(baseURL + "?treatment_id=100&session_id=1&participant_id=1");
     cy.wait(150);
+    cy.get("button").contains("Next").click();
     demographic();
     cy.get("p")
       .contains("You have been provided an invalid survey link")
@@ -191,9 +198,9 @@ describe("vizsurvey", () => {
       cy.viewport(1200, 700);
       cy.visit(baseURL + "?session_id=1&participant_id=1");
       cy.wait(150);
-      demographic();
       cy.get("button").contains("Next").click();
-      cy.get("button").contains("Start").should("exist");
+      demographic();
+      cy.get("button").contains("Next").should("exist");
     }
   });
 });
