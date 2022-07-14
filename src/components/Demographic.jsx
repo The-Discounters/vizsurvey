@@ -42,7 +42,7 @@ export function Consent() {
   const [disableSubmit, setDisableSubmit] = React.useState(true);
   const [disableSelfDescribe, setDisableSelfDescribe] = React.useState(true);
   const [country, setCountry] = React.useState("");
-  const [visFamiliarity, setVisFamiliarity] = React.useState("");
+  const [vizFamiliarity, setVizFamiliarity] = React.useState("");
   const [age, setAge] = React.useState("");
   const [gender, setGender] = React.useState("");
   const [selfDescribeGender, setSelfDescribeGender] = React.useState("");
@@ -54,8 +54,8 @@ export function Consent() {
     if (
       country &&
       country.length > 1 &&
-      visFamiliarity &&
-      visFamiliarity.length > 0 &&
+      vizFamiliarity &&
+      vizFamiliarity.length > 0 &&
       age &&
       age.length > 1 &&
       gender &&
@@ -82,7 +82,7 @@ export function Consent() {
   }, [
     disableSelfDescribe,
     country,
-    visFamiliarity,
+    vizFamiliarity,
     age,
     gender,
     selfDescribeGender,
@@ -184,9 +184,9 @@ export function Consent() {
                 Dataviz experience
               </InputLabel>
               <NativeSelect
-                value={visFamiliarity}
+                value={vizFamiliarity}
                 onChange={(event) => {
-                  handleFieldChange(event, setVisFamiliarity);
+                  handleFieldChange(event, setVizFamiliarity);
                 }}
                 name="familiarity-with-viz"
                 className={classes.selectEmpty}
@@ -288,9 +288,10 @@ export function Consent() {
                 dispatch(
                   setDemographic({
                     country: country,
-                    visFamiliarity: visFamiliarity,
+                    vizFamiliarity: vizFamiliarity,
                     age: age,
                     gender: gender,
+                    selfDescribeGender: selfDescribeGender,
                     profession: profession,
                   })
                 );

@@ -18,7 +18,7 @@ function postsurvey(expects) {
   cy.get("button").contains("Next").click();
   cy.wait(1000);
   cy.get("p")
-    .contains("Thank you")
+    .contains("This experiment seeks to examine")
     .should("exist")
     .then(() => {
       fetch("http://localhost:3001/answers-1.csv").then((response) => {
@@ -60,6 +60,10 @@ function postsurvey(expects) {
         }
       );
     });
+  cy.get("button").contains("Next").click();
+  cy.get("p")
+    .contains("You have completed the survey")
+    .should("exist")
 }
 
 function demographic() {
@@ -85,18 +89,15 @@ describe("vizsurvey", () => {
     cy.get("button").contains("Next").click();
     cy.get("label").contains("$50 in 2 months").click();
     cy.get("button").contains("Next").click();
-    cy.get("label").contains("$250 in 2 months").click();
-    cy.get("button").contains("Next").click();
-    cy.get("label").contains("$250 in 2 months").click();
-    cy.get("button").contains("Next").click();
-    cy.get("label").contains("$250 in 2 months").click();
-    cy.get("button").contains("Next").click();
-    cy.get("label").contains("$250 in 2 months").click();
-    cy.get("button").contains("Next").click();
-    cy.get("label").contains("$250 in 2 months").click();
-    cy.get("button").contains("Next").click();
-    cy.get("label").contains("$250 in 2 months").click();
-    cy.get("button").contains("Next").click();
+    function answerMELForm() {
+      cy.wait(1000);
+      cy.get("label").contains("$250 in 2 months").click();
+      cy.wait(1000);
+      cy.get("button").contains("Next").click();
+    }
+    answerMELForm()
+    answerMELForm()
+
     postsurvey([
       "1,1,word,none,none,500,2,,1000,5",
       "1,2,word,none,none,50,2,,300,7",
