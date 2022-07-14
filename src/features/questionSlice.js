@@ -98,7 +98,7 @@ export const questionSlice = createSlice({
       state.instructionsShownTimestamp = action.payload;
     },
     instructionsCompleted(state, action) {
-      state.intructionsCompletedTimestamp = action.payload;
+      state.instructionsCompletedTimestamp = action.payload;
       state.status = StatusType.Survey;
     },
     startSurvey(state) {

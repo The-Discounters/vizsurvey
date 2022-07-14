@@ -47,7 +47,7 @@ function postsurvey(expects) {
                 introductionShowTimestamp: 2000,
                 introductionCompletedTimestamp: 2000,
                 instructionsShownTimestamp: 2000,
-                instructionsCompletedTimestamp: null,
+                instructionsCompletedTimestamp: 3000,
                 postSurveyQuestionsShownTimestamp: 7000,
                 debriefShownTimestamp: null,
                 debriefCompleted: null,
@@ -95,16 +95,22 @@ function visitTreatment(treatmentId, width=1200, height=700) {
     cy.wait(1000);
     cy.get("button").contains("Next").click();
     demographic();
+
+    if (treatmentId === 1) {
+      cy.get("button").should("be.disabled");
+      cy.get("label").contains("First option").click();
+      cy.get("button").should("not.be.disabled").click();
+    } else {
+      cy.get("button").click();
+    }
+
+    cy.tick(1000);
+    cy.wait(1000);
+    cy.get("button").contains("Start").click();
 }
 describe("vizsurvey", () => {
   it("word", () => {
     visitTreatment(1);
-    cy.get("button").should("be.disabled");
-    cy.get("label").contains("First option").click();
-    cy.get("button").should("not.be.disabled").click();
-    cy.tick(1000);
-    cy.wait(1000);
-    cy.get("button").contains("Start").click();
     function answerMELForm() {
       let waitTime = 200;
       cy.wait(waitTime);
@@ -136,10 +142,8 @@ describe("vizsurvey", () => {
   });
   it("bar", () => {
     visitTreatment(2);
-    cy.get("button").contains("Next").click();
-    cy.get("button").contains("Start").click();
     cy.get("#id5").click();
-    cy.tick(5000);
+    cy.tick(4000);
     cy.get("#id7").click();
     cy.get("#id7").click();
     postsurvey([
@@ -170,11 +174,9 @@ describe("vizsurvey", () => {
       "bar very wide but short in height (" + width + ", " + height + ")",
       () => {
         visitTreatment(3, width, height);
-        cy.get("button").contains("Next").click();
-        cy.get("button").contains("Start").click();
         cy.get("#id5").click();
         cy.get("#id5").click();
-        cy.tick(5000);
+        cy.tick(4000);
         cy.get("#id7").click();
         cy.get("#id7").click();
         cy.get("#id2").click();
@@ -190,16 +192,12 @@ describe("vizsurvey", () => {
   });
   it("calendar bar", () => {
     visitTreatment(4);
-    cy.get("button").contains("Next").click();
-    cy.get("button").contains("Start").click();
-    cy.tick(5000);
+    cy.tick(4000);
     calendar("day", "4", "Bar");
   });
   it("calendar word", () => {
     visitTreatment(5);
-    cy.get("button").contains("Next").click();
-    cy.get("button").contains("Start").click();
-    cy.tick(5000);
+    cy.tick(4000);
     calendar("day", "5", "Word");
   });
   it("survey invalid", () => {
