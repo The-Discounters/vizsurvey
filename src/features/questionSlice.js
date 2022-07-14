@@ -36,7 +36,7 @@ export const questionSlice = createSlice({
     consentShownTimestamp: null,
     introductionShowTimestamp: null,
     introductionCompletedTimestamp: null,
-    instructionsShowTimestamp: null,
+    instructionsShownTimestamp: null,
     instructionsCompletedTimestamp: null,
     postSurveyQuestionsShownTimestamp: null,
     debriefShownTimestamp: null,
@@ -95,7 +95,7 @@ export const questionSlice = createSlice({
       state.introductionCompletedTimestamp = action.payload;
     },
     instructionsShown(state, action) {
-      state.instructionsShowTimestamp = action.payload;
+      state.instructionsShownTimestamp = action.payload;
     },
     instructionsCompleted(state, action) {
       state.intructionsCompletedTimestamp = action.payload;
@@ -140,7 +140,7 @@ export const questionSlice = createSlice({
       state.consentCompletedTimestamp = null;
       state.introductionShowTimestamp = null;
       state.introductionCompletedTimestamp = null;
-      state.instructionsShowTimestamp = null;
+      state.instructionsShownTimestamp = null;
       state.instructionsCompletedTimestamp = null;
       state.postSurveyQuestionsShownTimestamp = null;
       state.debriefShownTimestamp = null;
@@ -183,6 +183,23 @@ export const getDemographics = (state) => {
     gender: state.questions.gender,
     selfDescribeGender: state.questions.selfDescribeGender,
     profession: state.questions.profession,
+  };
+};
+
+export const getTimestamps = (state) => {
+  return {
+    consentShownTimestamp: state.questions.consentShownTimestamp,
+    introductionShowTimestamp: state.questions.introductionShowTimestamp,
+    introductionCompletedTimestamp:
+      state.questions.introductionCompletedTimestamp,
+    instructionsShownTimestamp: state.questions.instructionsShownTimestamp,
+    instructionsCompletedTimestamp:
+      state.questions.instructionsCompletedTimestamp,
+    postSurveyQuestionsShownTimestamp:
+      state.questions.postSurveyQuestionsShownTimestamp,
+    debriefShownTimestamp: state.questions.debriefShownTimestamp,
+    debriefCompleted: state.questions.debriefCompleted,
+    theEndShownTimestamp: state.questions.theEndShownTimestamp,
   };
 };
 

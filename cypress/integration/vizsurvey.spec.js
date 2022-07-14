@@ -16,6 +16,7 @@ function postsurvey(expects) {
   cy.get("#descrpurp-strongly-disagree").click();
   cy.get("#effort-strongly-disagree").click();
   cy.get("button").contains("Next").click();
+  cy.tick(1000);
   cy.wait(1000);
   cy.get("p")
     .contains("This experiment seeks to examine")
@@ -40,6 +41,17 @@ function postsurvey(expects) {
                 gender: "male",
                 selfDescribeGender: "",
                 profession: "Software Developer",
+              },
+              timestamps: {
+                consentShownTimestamp: 1000,
+                introductionShowTimestamp: 2000,
+                introductionCompletedTimestamp: 2000,
+                instructionsShownTimestamp: 2000,
+                instructionsCompletedTimestamp: null,
+                postSurveyQuestionsShownTimestamp: 7000,
+                debriefShownTimestamp: null,
+                debriefCompleted: null,
+                theEndShownTimestamp: null,
               },
               fincanialLit: {
                 q15vs30: "v15+",
@@ -70,26 +82,45 @@ function demographic() {
   cy.get("#Age").type("26");
   cy.get("#gender-select-helper").select("Male");
   cy.get("#Current-Profession").type("Software Developer");
+  cy.tick(1000);
+  cy.wait(1000);
   cy.get("button").contains("Next").click();
 }
 
-describe("vizsurvey", () => {
-  it("word", () => {
-    cy.viewport(1200, 700);
-    cy.visit(baseURL + "?treatment_id=1&session_id=1&participant_id=1");
-    cy.wait(150);
+function visitTreatment(treatmentId, width=1200, height=700) {
+    cy.clock();
+    cy.viewport(width, height);
+    cy.visit(baseURL + `?treatment_id=${treatmentId}&session_id=1&participant_id=1`);
+    cy.tick(1000);
+    cy.wait(1000);
     cy.get("button").contains("Next").click();
     demographic();
+}
+describe("vizsurvey", () => {
+  it("word", () => {
+    visitTreatment(1);
     cy.get("button").should("be.disabled");
     cy.get("label").contains("First option").click();
     cy.get("button").should("not.be.disabled").click();
+    cy.tick(1000);
+    cy.wait(1000);
     cy.get("button").contains("Start").click();
     function answerMELForm() {
-      cy.wait(1000);
-      cy.get("#earlier").should('have.css', 'borderColor', 'rgb(255, 255, 255)');
-      cy.get("#earlier").realHover().should('have.css', 'borderColor', 'rgb(0, 0, 0)').click();
-      cy.wait(1000);
+      let waitTime = 200;
+      cy.wait(waitTime);
+      cy.get("#earlier").should(
+        "have.css",
+        "borderColor",
+        "rgb(255, 255, 255)"
+      );
+      cy.wait(waitTime);
+      cy.get("#earlier")
+        .realHover()
+        .should("have.css", "borderColor", "rgb(0, 0, 0)")
+        .click();
+      cy.wait(waitTime);
       cy.get("button").realHover().click();
+      cy.tick(1000);
     }
     answerMELForm();
     answerMELForm();
@@ -104,14 +135,11 @@ describe("vizsurvey", () => {
     ]);
   });
   it("bar", () => {
-    cy.viewport(1200, 700);
-    cy.visit(baseURL + "?treatment_id=2&session_id=1&participant_id=1");
-    cy.wait(150);
-    cy.get("button").contains("Next").click();
-    demographic();
+    visitTreatment(2);
     cy.get("button").contains("Next").click();
     cy.get("button").contains("Start").click();
     cy.get("#id5").click();
+    cy.tick(5000);
     cy.get("#id7").click();
     cy.get("#id7").click();
     postsurvey([
@@ -141,15 +169,12 @@ describe("vizsurvey", () => {
     it(
       "bar very wide but short in height (" + width + ", " + height + ")",
       () => {
-        cy.viewport(width, height);
-        cy.visit(baseURL + "?treatment_id=3&session_id=1&participant_id=1");
-        cy.wait(150);
-        cy.get("button").contains("Next").click();
-        demographic();
+        visitTreatment(3, width, height);
         cy.get("button").contains("Next").click();
         cy.get("button").contains("Start").click();
         cy.get("#id5").click();
         cy.get("#id5").click();
+        cy.tick(5000);
         cy.get("#id7").click();
         cy.get("#id7").click();
         cy.get("#id2").click();
@@ -164,23 +189,17 @@ describe("vizsurvey", () => {
     );
   });
   it("calendar bar", () => {
-    cy.viewport(1200, 700);
-    cy.visit(baseURL + "?treatment_id=4&session_id=1&participant_id=1");
-    cy.wait(150);
-    cy.get("button").contains("Next").click();
-    demographic();
+    visitTreatment(4);
     cy.get("button").contains("Next").click();
     cy.get("button").contains("Start").click();
+    cy.tick(5000);
     calendar("day", "4", "Bar");
   });
   it("calendar word", () => {
-    cy.viewport(1200, 700);
-    cy.visit(baseURL + "?treatment_id=5&session_id=1&participant_id=1");
-    cy.wait(150);
-    cy.get("button").contains("Next").click();
-    demographic();
+    visitTreatment(5);
     cy.get("button").contains("Next").click();
     cy.get("button").contains("Start").click();
+    cy.tick(5000);
     calendar("day", "5", "Word");
   });
   it("survey invalid", () => {
@@ -195,6 +214,7 @@ describe("vizsurvey", () => {
   });
   it("survey random", () => {
     for (let i = 0; i < 10; i++) {
+      cy.clock();
       cy.viewport(1200, 700);
       cy.visit(baseURL + "?session_id=1&participant_id=1");
       cy.wait(150);
