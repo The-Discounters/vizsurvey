@@ -61,9 +61,7 @@ function postsurvey(expects) {
       );
     });
   cy.get("button").contains("Next").click();
-  cy.get("p")
-    .contains("You have completed the survey")
-    .should("exist")
+  cy.get("p").contains("You have completed the survey").should("exist");
 }
 
 function demographic() {
@@ -82,22 +80,22 @@ describe("vizsurvey", () => {
     cy.wait(150);
     cy.get("button").contains("Next").click();
     demographic();
-    cy.get("button").should('be.disabled')
+    cy.get("button").should("be.disabled");
     cy.get("label").contains("First option").click();
     cy.get("button").contains("Next").click();
     cy.get("button").contains("Start").click();
     cy.get("label").contains("$500 in 2 months").click();
     cy.get("button").contains("Next").click();
     cy.get("label").contains("$50 in 2 months").click();
-    cy.get("button").should('not.be.disabled').click();
+    cy.get("button").should("not.be.disabled").click();
     function answerMELForm() {
       cy.wait(1000);
       cy.get("label").contains("$250 in 2 months").click();
       cy.wait(1000);
       cy.get("button").contains("Next").click();
     }
-    answerMELForm()
-    answerMELForm()
+    answerMELForm();
+    answerMELForm();
 
     postsurvey([
       "1,1,word,none,none,500,2,,1000,5",
