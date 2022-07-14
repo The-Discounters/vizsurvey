@@ -82,18 +82,18 @@ describe("vizsurvey", () => {
     demographic();
     cy.get("button").should("be.disabled");
     cy.get("label").contains("First option").click();
-    cy.get("button").contains("Next").click();
-    cy.get("button").contains("Start").click();
-    cy.get("label").contains("$500 in 2 months").click();
-    cy.get("button").contains("Next").click();
-    cy.get("label").contains("$50 in 2 months").click();
     cy.get("button").should("not.be.disabled").click();
+    cy.get("button").contains("Start").click();
     function answerMELForm() {
       cy.wait(1000);
-      cy.get("label").contains("$250 in 2 months").click();
+      cy.get("#earlier").should('have.css', 'borderColor', 'rgb(255, 255, 255)');
+      cy.get("#earlier").realHover().should('have.css', 'borderColor', 'rgb(0, 0, 0)').click();
       cy.wait(1000);
-      cy.get("button").contains("Next").click();
+      cy.get("button").realHover().click();
     }
+    answerMELForm();
+    answerMELForm();
+
     answerMELForm();
     answerMELForm();
 

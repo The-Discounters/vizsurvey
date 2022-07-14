@@ -143,6 +143,7 @@ export function MELForm() {
                     <FormControlLabel
                       sx={{ ...formControlLabel, mr: "100px" }}
                       key={key}
+                      id={key}
                       value={key}
                       checked={choice === key}
                       control={<Radio />}
