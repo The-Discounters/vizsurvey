@@ -109,7 +109,7 @@ export function PostSurvey() {
         <FullScreen handle={handle}>
           <Grid container style={styles.root} justifyContent="center">
             <Grid item xs={12}>
-              <Typography variant="h4">Questionaire</Typography>
+              <Typography variant="h4">Additional Questions</Typography>
               <hr
                 style={{
                   color: "#ea3433",
@@ -233,7 +233,7 @@ export function PostSurvey() {
                         ),
                       })
                     );
-                    navigate("/thankyou");
+                    navigate("/debrief");
                   }, 400);
                 }}
                 disabled={disableSubmit}

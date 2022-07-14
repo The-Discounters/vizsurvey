@@ -27,17 +27,16 @@ const TheEnd = () => {
           />
           <Typography paragraph>
             You have completed the survey and your answers have been submitted.
-            Thank you and we hope you have enjoyed this experience.
-          </Typography>
-          <Typography paragraph>
-            We welcome any feedback through email by clicking
+            We hope you have enjoyed taking this survey and welcome any feedback
+            and/or questions through email by clicking&nbsp;
             <a
               href={`mailto:pncordone@wpi.edu?subject=Survey Feedback&body=${encodeURIComponent(
                 "Enter your feedback here."
               )}`}
             >
-              &nbsp;here&nbsp;
+              here
             </a>
+            .
           </Typography>
           <Typography paragraph>
             You can now close this browser window.

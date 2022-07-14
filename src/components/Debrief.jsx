@@ -10,7 +10,7 @@ import {
 import { dateToState } from "../features/ConversionUtil";
 import { styles, theme } from "./ScreenHelper";
 
-const ThankYou = () => {
+const Debrief = () => {
   useEffect(() => {
     dispatch(debriefShownTimestamp(dateToState(DateTime.utc())));
   }, []);
@@ -23,7 +23,7 @@ const ThankYou = () => {
     <ThemeProvider theme={theme}>
       <Grid container style={styles.root}>
         <Grid item xs={12}>
-          <Typography variant="h4">Debrief</Typography>
+          <Typography variant="h4">Study Explanation</Typography>
           <hr
             style={{
               color: "#ea3433",
@@ -43,11 +43,17 @@ const ThankYou = () => {
             are malleable and discounting can be counteracted by how attention
             is focused, how a reference point is framed, and how time is
             represented. Visualization offers a powerful tool that influence all
-            three of these factors. This experiment seeks to see how
-            visualization can be designed to influence people in making better
-            long term decisions. In particluar, how space is used in the time
-            (horizontal) axis to influence people to choose the longer term
-            option.
+            three of these factors.
+          </Typography>
+
+          <Typography paragraph>
+            This experiment seeks to examine how visualization can be designed
+            to influence people in making long term decisions differently. For
+            this purpose, participants in this experiment are randomly assigned
+            to be presented with word choices or different versions of graphical
+            displays, such as a bar graph. In particluar, we examine how space
+            can be used in the time (horizontal) axis to increase the likelihood
+            of choosing the longer-term option.
           </Typography>
         </Grid>
         <Grid item xs={12} style={{ margin: 0 }}>
@@ -71,4 +77,4 @@ const ThankYou = () => {
   );
 };
 
-export default ThankYou;
+export default Debrief;
