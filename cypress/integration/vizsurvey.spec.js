@@ -45,10 +45,10 @@ function postsurvey(expects) {
               timestamps: {
                 consentShownTimestamp: 1000,
                 introductionShowTimestamp: 2000,
-                introductionCompletedTimestamp: 2000,
-                instructionsShownTimestamp: 2000,
-                instructionsCompletedTimestamp: 3000,
-                postSurveyQuestionsShownTimestamp: 7000,
+                introductionCompletedTimestamp: 3000,
+                instructionsShownTimestamp: 3000,
+                instructionsCompletedTimestamp: 4000,
+                postSurveyQuestionsShownTimestamp: 8000,
                 debriefShownTimestamp: null,
                 debriefCompleted: null,
                 theEndShownTimestamp: null,
@@ -96,6 +96,8 @@ function visitTreatment(treatmentId, width=1200, height=700) {
     cy.get("button").contains("Next").click();
     demographic();
 
+    cy.tick(1000);
+    cy.wait(1000);
     if (treatmentId === 1) {
       cy.get("button").should("be.disabled");
       cy.get("label").contains("First option").click();
