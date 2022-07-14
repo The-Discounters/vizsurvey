@@ -1,15 +1,21 @@
 import React, { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { DateTime } from "luxon";
-import { Grid, Typography, ThemeProvider } from "@material-ui/core";
-import { thankYouShownTimestamp } from "../features/questionSlice";
+import { Grid, Button, Typography, ThemeProvider } from "@material-ui/core";
+import {
+  debriefShownTimestamp,
+  debriefCompleted,
+} from "../features/questionSlice";
 import { dateToState } from "../features/ConversionUtil";
 import { styles, theme } from "./ScreenHelper";
 
 const ThankYou = () => {
   useEffect(() => {
-    dispatch(thankYouShownTimestamp(dateToState(DateTime.utc())));
+    dispatch(debriefShownTimestamp(dateToState(DateTime.utc())));
   }, []);
+
+  const navigate = useNavigate();
 
   const dispatch = useDispatch();
 
@@ -17,7 +23,7 @@ const ThankYou = () => {
     <ThemeProvider theme={theme}>
       <Grid container style={styles.root}>
         <Grid item xs={12}>
-          <Typography variant="h4">Thank You and Debrief!</Typography>
+          <Typography variant="h4">Debrief</Typography>
           <hr
             style={{
               color: "#ea3433",
@@ -26,15 +32,11 @@ const ThankYou = () => {
             }}
           />
           <Typography paragraph>
-            You have completed the survey and your answers have been submitted.
-            Thank you for taking this survey!
-          </Typography>
-          <Typography paragraph>
             When it comes to decisions between payoffs sooner or later in time,
-            people tend to discount the later reward and choose the sooner
-            option even at the cost of larger later rewards. This is called
-            discounting the later reward. Discounting can manifest itself in
-            decisions regarding finance, health, and the environment. Life
+            people tend to place less value on the later reward and choose the
+            sooner option even at the cost of larger later rewards. This is
+            called discounting the later reward. Discounting can manifest itself
+            in decisions regarding finance, health, and the environment. Life
             expectancy and quality of life can be negatively impacted,
             especially in later years as the negative consequence of choosing
             the shorter term option accumulate over time. Decisions like these
@@ -47,20 +49,22 @@ const ThankYou = () => {
             (horizontal) axis to influence people to choose the longer term
             option.
           </Typography>
-          <Typography paragraph>
-            We hope you have enjoyed taking this survey and welcome any feedback
-            through email by clicking
-            <a
-              href={`mailto:pncordone@wpi.edu?subject=Experiment Feedback&body=${encodeURIComponent(
-                "Enter your feedback here."
-              )}`}
-            >
-              &nbsp;here&nbsp;
-            </a>
-          </Typography>
-          <Typography paragraph>
-            You can now close this browser window.
-          </Typography>
+        </Grid>
+        <Grid item xs={12} style={{ margin: 0 }}>
+          <Button
+            variant="contained"
+            color="secondary"
+            disableRipple
+            disableFocusRipple
+            style={styles.button}
+            onClick={() => {
+              dispatch(debriefCompleted(dateToState(DateTime.utc())));
+              navigate("/theend");
+            }}
+          >
+            {" "}
+            Next{" "}
+          </Button>
         </Grid>
       </Grid>
     </ThemeProvider>

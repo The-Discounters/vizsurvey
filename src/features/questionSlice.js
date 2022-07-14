@@ -39,7 +39,9 @@ export const questionSlice = createSlice({
     instructionsShowTimestamp: null,
     instructionsCompletedTimestamp: null,
     postSurveyQuestionsShownTimestamp: null,
-    thankYouShownTimestamp: null,
+    debriefShownTimestamp: null,
+    debriefCompleted: null,
+    theEndShownTimestamp: null,
     treatments: [],
     answers: [],
     currentQuestionIdx: 0,
@@ -114,8 +116,14 @@ export const questionSlice = createSlice({
     postSurveyQuestionsShown(state, action) {
       state.postSurveyQuestionsShownTimestamp = action.payload;
     },
-    thankYouShownTimestamp(state, action) {
-      state.thankYouShownTimestamp = action.payload;
+    debriefShownTimestamp(state, action) {
+      state.debriefShownTimestamp = action.payload;
+    },
+    debriefCompleted(state, action) {
+      state.debriefCompleted = action.payload;
+    },
+    theEndShownTimestamp(state, action) {
+      state.theEndShownTimestamp = action.payload;
     },
     clearState(state) {
       state.allTreatments = null;
@@ -135,7 +143,7 @@ export const questionSlice = createSlice({
       state.instructionsShowTimestamp = null;
       state.instructionsCompletedTimestamp = null;
       state.postSurveyQuestionsShownTimestamp = null;
-      state.thankYouShownTimestamp = null;
+      state.debriefShownTimestamp = null;
       state.treatments = [];
       state.answers = [];
       state.currentQuestionIdx = 0;
@@ -225,7 +233,9 @@ export const {
   introductionShown,
   introductionCompleted,
   postSurveyQuestionsShown,
-  thankYouShownTimestamp,
+  debriefShownTimestamp,
+  debriefCompleted,
+  theEndShownTimestamp,
   clearState,
   genRandomTreatment,
 } = questionSlice.actions;

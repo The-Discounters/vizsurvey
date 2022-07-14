@@ -33,6 +33,7 @@ const Introduction = () => {
   const navigate = useNavigate();
 
   const [choice, setChoice] = useState("");
+  const [disableSubmit, setDisableSubmit] = React.useState(true);
   const [error, setError] = React.useState(false);
   const [helperText, setHelperText] = React.useState("");
 
@@ -40,6 +41,14 @@ const Introduction = () => {
     dispatch(introductionShown(dateToState(DateTime.utc())));
     if (!treatment) navigate("/invalidlink");
   }, []);
+
+  useEffect(() => {
+    if (choice && choice.length > 1) {
+      setDisableSubmit(false);
+    } else {
+      setDisableSubmit(true);
+    }
+  }, [choice]);
 
   const useStyles = makeStyles((theme) => ({
     formControl: {
@@ -262,6 +271,7 @@ const Introduction = () => {
                 navigate("/instruction");
               }
             }}
+            disabled={disableSubmit}
           >
             {" "}
             Next{" "}

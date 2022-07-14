@@ -59,6 +59,7 @@ export function MELForm() {
   const q = useSelector(selectCurrentQuestion);
   const status = useSelector(fetchStatus);
   const navigate = useNavigate();
+  const [disableSubmit, setDisableSubmit] = React.useState(true);
   const [choice, setChoice] = useState("");
   const [error, setError] = React.useState(false);
   const [helperText, setHelperText] = React.useState("");
@@ -66,6 +67,14 @@ export function MELForm() {
   useEffect(() => {
     dispatch(dispatch(setQuestionShownTimestamp(dateToState(DateTime.utc()))));
   }, []);
+
+  useEffect(() => {
+    if (choice && choice.length > 1) {
+      setDisableSubmit(false);
+    } else {
+      setDisableSubmit(true);
+    }
+  }, [choice]);
 
   const todayText = (sooner_time) =>
     sooner_time === 0 ? "today" : `in ${sooner_time} months`;
@@ -152,7 +161,7 @@ export function MELForm() {
                 choice !== ChoiceType.later
               ) {
                 setError(true);
-                setHelperText("You must choose one of the options below.");
+                setHelperText("Please choose one of the options below.");
               } else {
                 setError(false);
                 setHelperText("");
@@ -170,6 +179,7 @@ export function MELForm() {
                 }, 400);
               }
             }}
+            disabled={disableSubmit}
           >
             {" "}
             Next{" "}

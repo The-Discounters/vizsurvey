@@ -16,6 +16,7 @@ import Instructions from "./components/Instructions";
 import Survey from "./components/Survey";
 import PostSurvey from "./components/PostSurvey";
 import ThankYou from "./components/ThankYou";
+import TheEnd from "./components/TheEnd";
 import InvalidSurveyLink from "./components/InvalidSurveyLink";
 import {
   loadAllTreatments,
@@ -77,6 +78,7 @@ const App = () => {
               <Route path={"survey"} element={<Survey />} />
               <Route path={"questionaire"} element={<PostSurvey />} />
               <Route path={"thankyou"} element={<ThankYou />} />
+              <Route path={"theend"} element={<TheEnd />} />
               <Route path={"invalidlink"} element={<InvalidSurveyLink />} />
               <Route path="*" element={<InvalidSurveyLink />} />
             </Routes>

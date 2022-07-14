@@ -51,9 +51,6 @@ export function Consent() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    console.log(
-      `country: ${country}, visFamiliarity:${visFamiliarity}, age:${age}, gender:${gender}, profession: ${profession}`
-    );
     if (
       country &&
       country.length > 1 &&
@@ -194,6 +191,7 @@ export function Consent() {
                 name="familiarity-with-viz"
                 className={classes.selectEmpty}
                 inputProps={{ "aria-label": "Datavis experience" }}
+                helperText
               >
                 <option> </option>
                 {vizFamiliarityLevel.map((option) => (
