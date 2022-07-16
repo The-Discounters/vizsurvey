@@ -33,7 +33,9 @@ const Introduction = () => {
   const navigate = useNavigate();
 
   const [choice, setChoice] = useState("");
-  const [disableSubmit, setDisableSubmit] = React.useState(true);
+  const [disableSubmit, setDisableSubmit] = React.useState(
+    treatment.viewType === ViewType.word ? true : false
+  );
   const [error, setError] = React.useState(false);
   const [helperText, setHelperText] = React.useState("");
 
@@ -43,10 +45,10 @@ const Introduction = () => {
   }, []);
 
   useEffect(() => {
-    if (choice && choice.length > 1) {
-      setDisableSubmit(false);
-    } else {
+    if (treatment.viewType === ViewType.word && choice && choice.length > 1) {
       setDisableSubmit(true);
+    } else {
+      setDisableSubmit(false);
     }
   }, [choice]);
 
