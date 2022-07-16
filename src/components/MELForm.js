@@ -1,4 +1,3 @@
-import { makeStyles } from "@material-ui/core/styles";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
@@ -15,7 +14,7 @@ import {
   Box,
   ThemeProvider,
 } from "@mui/material";
-
+import { makeStyles } from "@material-ui/core/styles";
 import { ChoiceType } from "../features/ChoiceType";
 import { StatusType } from "../features/StatusType";
 import {
@@ -92,7 +91,7 @@ export function MELForm() {
   }
 
   const classes = useStyles();
-  const result = (
+  return (
     <ThemeProvider theme={theme}>
       <Grid container style={styles.root} justifyContent="center">
         <Grid item xs={12}>
@@ -188,8 +187,6 @@ export function MELForm() {
       </Grid>
     </ThemeProvider>
   );
-
-  return result;
 }
 
 export default MELForm;
