@@ -7,9 +7,13 @@ import {
   Box,
   Typography,
   ThemeProvider,
+  FormLabel,
+  FormControl,
+  FormControlLabel,
+  Radio,
+  RadioGroup,
 } from "@material-ui/core";
 import FormGroup from "@mui/material/FormGroup";
-import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import { useDispatch } from "react-redux";
 import { dateToState } from "../features/ConversionUtil";
@@ -130,6 +134,24 @@ export function Consent() {
     );
   };
 
+  let qList2 = [];
+  let setQList2 = [];
+  [
+    "strongly-disagree",
+    "disagree",
+    "neutral",
+    "agree",
+    "strongly-agree",
+  ].forEach(() => {
+    const [q, setQ] = React.useState("");
+    qList2.push(q);
+    setQList2.push(setQ);
+  });
+
+  const handleFieldChange = (event, setter) => {
+    setter(event.target.value);
+  };
+
   return (
     <ThemeProvider theme={theme}>
       <div>
@@ -192,6 +214,52 @@ export function Consent() {
                 }
               />
             </FormGroup>
+          </Grid>
+          <Grid item xs={12} style={{ margin: 0 }}>
+            {[
+              {
+                // Examples of Good (and Bad) Attention Check Questions in Surveys
+                // https://www.cloudresearch.com/resources/blog/attention-check-questions-in-surveys-examples/
+                question: {
+                  textShort: "attention-check",
+                  textFull:
+                    "Please select 'stongly agree' to show that you are paying attention to this question.",
+                },
+              },
+            ].map(({ question }, index) => (
+              <FormControl key={index} required>
+                <FormLabel id={question.textShort}>
+                  {index + 1 + ". " + question.textFull}
+                </FormLabel>
+                <RadioGroup
+                  row
+                  aria-labelledby={
+                    question.textShort + "-row-radio-buttons-group-label"
+                  }
+                  name={question.textShort + "-radio-buttons-group"}
+                >
+                  {[
+                    "strongly-disagree",
+                    "disagree",
+                    "neutral",
+                    "agree",
+                    "strongly-agree",
+                  ].map((option, index1) => (
+                    <FormControlLabel
+                      key={index1}
+                      value={option}
+                      id={"attention-check-" + option}
+                      checked={qList2[index] === option}
+                      control={<Radio />}
+                      label={option.replace("-", " ")}
+                      onChange={(event) => {
+                        handleFieldChange(event, setQList2[index]);
+                      }}
+                    />
+                  ))}
+                </RadioGroup>
+              </FormControl>
+            ))}
           </Grid>
           <Grid item xs={12} style={{ margin: 0 }}>
             <Button
