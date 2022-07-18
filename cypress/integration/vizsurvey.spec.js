@@ -87,28 +87,31 @@ function demographic() {
   cy.get("button").contains("Next").click();
 }
 
-function visitTreatment(treatmentId, width=1200, height=700) {
-    cy.clock();
-    cy.viewport(width, height);
-    cy.visit(baseURL + `?treatment_id=${treatmentId}&session_id=1&participant_id=1`);
-    cy.tick(1000);
-    cy.wait(1000);
-    cy.get("button").contains("Next").click();
-    demographic();
+function visitTreatment(treatmentId, width = 1200, height = 700) {
+  cy.clock();
+  cy.viewport(width, height);
+  cy.visit(
+    baseURL + `?treatment_id=${treatmentId}&session_id=1&participant_id=1`
+  );
+  cy.tick(1000);
+  cy.wait(1000);
+  cy.get("#checkConsent").click();
+  cy.get("button").contains("Next").click();
+  demographic();
 
-    cy.tick(1000);
-    cy.wait(1000);
-    if (treatmentId === 1) {
-      cy.get("button").should("be.disabled");
-      cy.get("label").contains("First option").click();
-      cy.get("button").should("not.be.disabled").click();
-    } else {
-      cy.get("button").click();
-    }
+  cy.tick(1000);
+  cy.wait(1000);
+  if (treatmentId === 1) {
+    cy.get("button").should("be.disabled");
+    cy.get("label").contains("First option").click();
+    cy.get("button").should("not.be.disabled").click();
+  } else {
+    cy.get("button").click();
+  }
 
-    cy.tick(1000);
-    cy.wait(1000);
-    cy.get("button").contains("Start").click();
+  cy.tick(1000);
+  cy.wait(1000);
+  cy.get("button").contains("Start").click();
 }
 describe("vizsurvey", () => {
   it("word", () => {

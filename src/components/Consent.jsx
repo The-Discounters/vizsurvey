@@ -8,6 +8,9 @@ import {
   Typography,
   ThemeProvider,
 } from "@material-ui/core";
+import FormGroup from "@mui/material/FormGroup";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Checkbox from "@mui/material/Checkbox";
 import { useDispatch } from "react-redux";
 import { dateToState } from "../features/ConversionUtil";
 import { consentShown, consentCompleted } from "../features/questionSlice";
@@ -16,6 +19,14 @@ import "../App.css";
 
 export function Consent() {
   const dispatch = useDispatch();
+
+  const [disableSubmit, setDisableSubmit] = React.useState(true);
+  const [checked, setChecked] = React.useState(false);
+
+  const handleChange = (event) => {
+    setChecked(event.target.checked);
+    setDisableSubmit(!event.target.checked);
+  };
 
   useEffect(() => {
     dispatch(consentShown(dateToState(DateTime.utc())));
@@ -87,14 +98,33 @@ export function Consent() {
         </Typography>
         <Typography paragraph>
           For more information about your rights as a research participant, or
-          any concerns related to this study, please contact the:<br></br>
-          IRB Chair Professor Kent Rissmiller<br></br>
-          Tel. 508-831-5019<br></br>
-          Email: kjr@wpi.edu<br></br>
-          and the<br></br>
-          Human Protection Administrator Gabriel Johnson<br></br>
-          Tel. 508-831-4989<br></br>
-          Email: gjohnson@wpi.edu
+          any concerns related to this study, please contact the:
+          <br />
+          <br />
+          {[
+            {
+              name: "IRB Chair Professor Kent Rissmiller",
+              phone: "508-831-5019",
+              email: "kjr@wpi.edu",
+            },
+            {
+              name: "Human Protection Administrator Gabriel Johnson",
+              phone: "508-831-4989",
+              email: "gjohnson@wpi.edu",
+            },
+          ].map(({ name, phone, email }, index) => {
+            return (
+              <span key={index}>
+                {name}
+                <br />
+                Tel: {phone}
+                <br />
+                Email: &lt;<a href={`mailto:${email}`}>{email}</a>&gt;
+                <br />
+                {index < 1 ? <br /> : ""}
+              </span>
+            );
+          })}
         </Typography>
       </React.Fragment>
     );
@@ -137,22 +167,31 @@ export function Consent() {
                 </u>{" "}
               </i>
             </Typography>
-            <div
-              className="overflow-auto"
-              style={{
-                padding: 10,
-                marginBottom: 25,
-                maxWidth: "95%",
-                maxHeight: "300px",
-              }}
-              id="consent-section"
-            >
-              <ConsentTextEn />
-            </div>
-
+            <ConsentTextEn />
             <Typography paragraph>
               By clicking &ldquo;Next&ldquo;, you agree to participate.
             </Typography>
+          </Grid>
+          <Grid item xs={12} style={{ margin: 0 }}>
+            <FormGroup>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={checked}
+                    onChange={handleChange}
+                    name="checkConsent"
+                    id="checkConsent"
+                    color="primary"
+                  />
+                }
+                label={
+                  <Typography>
+                    I agree that any information provided in this survey can be
+                    used for the purpose(s) mentioned in the Consent Form
+                  </Typography>
+                }
+              />
+            </FormGroup>
           </Grid>
           <Grid item xs={12} style={{ margin: 0 }}>
             <Button
@@ -165,6 +204,7 @@ export function Consent() {
                 dispatch(consentCompleted(dateToState(DateTime.utc())));
                 navigate("/demographic");
               }}
+              disabled={disableSubmit}
             >
               {" "}
               Next{" "}
