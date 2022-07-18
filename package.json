@@ -17,6 +17,7 @@
     "axios": "^0.21.4",
     "bootstrap": "^5.1.0",
     "calendar-matrix": "^1.0.0",
+    "cypress-real-events": "^1.7.1",
     "d3": "^7.4.4",
     "enumify": "^2.0.0",
     "formik": "^2.2.9",

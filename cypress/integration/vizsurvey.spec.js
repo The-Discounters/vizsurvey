@@ -16,9 +16,10 @@ function postsurvey(expects) {
   cy.get("#descrpurp-strongly-disagree").click();
   cy.get("#effort-strongly-disagree").click();
   cy.get("button").contains("Next").click();
+  cy.tick(1000);
   cy.wait(1000);
   cy.get("p")
-    .contains("Thank you")
+    .contains("This experiment seeks to examine")
     .should("exist")
     .then(() => {
       fetch("http://localhost:3001/answers-1.csv").then((response) => {
@@ -41,6 +42,17 @@ function postsurvey(expects) {
                 selfDescribeGender: "",
                 profession: "Software Developer",
               },
+              timestamps: {
+                consentShownTimestamp: 1000,
+                introductionShowTimestamp: 2000,
+                introductionCompletedTimestamp: 3000,
+                instructionsShownTimestamp: 3000,
+                instructionsCompletedTimestamp: 4000,
+                postSurveyQuestionsShownTimestamp: 8000,
+                debriefShownTimestamp: null,
+                debriefCompleted: null,
+                theEndShownTimestamp: null,
+              },
               fincanialLit: {
                 q15vs30: "v15+",
                 q50k6p: "v<50k",
@@ -60,6 +72,8 @@ function postsurvey(expects) {
         }
       );
     });
+  cy.get("button").contains("Next").click();
+  cy.get("p").contains("You have completed the survey").should("exist");
 }
 
 function demographic() {
@@ -68,35 +82,63 @@ function demographic() {
   cy.get("#Age").type("26");
   cy.get("#gender-select-helper").select("Male");
   cy.get("#Current-Profession").type("Software Developer");
+  cy.tick(1000);
+  cy.wait(1000);
   cy.get("button").contains("Next").click();
 }
 
+function visitTreatment(treatmentId, width = 1200, height = 700) {
+  cy.clock();
+  cy.viewport(width, height);
+  cy.visit(
+    baseURL + `?treatment_id=${treatmentId}&session_id=1&participant_id=1`
+  );
+  cy.tick(1000);
+  cy.wait(1000);
+  cy.get("#checkConsent").click();
+  cy.get("button").contains("Next").click();
+  demographic();
+
+  cy.tick(1000);
+  cy.wait(1000);
+  if (treatmentId === 1) {
+    cy.get("button").should("be.disabled");
+    cy.get("label").contains("First option").click();
+    cy.get("button").should("not.be.disabled").click();
+  } else {
+    cy.get("button").click();
+  }
+
+  cy.tick(1000);
+  cy.wait(1000);
+  cy.get("button").contains("Start").click();
+}
 describe("vizsurvey", () => {
   it("word", () => {
-    cy.viewport(1200, 700);
-    cy.visit(baseURL + "?treatment_id=1&session_id=1&participant_id=1");
-    cy.wait(150);
-    cy.get("button").contains("Next").click();
-    demographic();
-    cy.get("label").contains("First option").click();
-    cy.get("button").contains("Next").click();
-    cy.get("button").contains("Start").click();
-    cy.get("label").contains("$500 in 2 months").click();
-    cy.get("button").contains("Next").click();
-    cy.get("label").contains("$50 in 2 months").click();
-    cy.get("button").contains("Next").click();
-    cy.get("label").contains("$250 in 2 months").click();
-    cy.get("button").contains("Next").click();
-    cy.get("label").contains("$250 in 2 months").click();
-    cy.get("button").contains("Next").click();
-    cy.get("label").contains("$250 in 2 months").click();
-    cy.get("button").contains("Next").click();
-    cy.get("label").contains("$250 in 2 months").click();
-    cy.get("button").contains("Next").click();
-    cy.get("label").contains("$250 in 2 months").click();
-    cy.get("button").contains("Next").click();
-    cy.get("label").contains("$250 in 2 months").click();
-    cy.get("button").contains("Next").click();
+    visitTreatment(1);
+    function answerMELForm() {
+      let waitTime = 200;
+      cy.wait(waitTime);
+      cy.get("#earlier").should(
+        "have.css",
+        "borderColor",
+        "rgb(255, 255, 255)"
+      );
+      cy.wait(waitTime);
+      cy.get("#earlier")
+        .realHover()
+        .should("have.css", "borderColor", "rgb(0, 0, 0)")
+        .click();
+      cy.wait(waitTime);
+      cy.get("button").realHover().click();
+      cy.tick(1000);
+    }
+    answerMELForm();
+    answerMELForm();
+
+    answerMELForm();
+    answerMELForm();
+
     postsurvey([
       "1,1,word,none,none,500,2,,1000,5",
       "1,2,word,none,none,50,2,,300,7",
@@ -104,14 +146,9 @@ describe("vizsurvey", () => {
     ]);
   });
   it("bar", () => {
-    cy.viewport(1200, 700);
-    cy.visit(baseURL + "?treatment_id=2&session_id=1&participant_id=1");
-    cy.wait(150);
-    cy.get("button").contains("Next").click();
-    demographic();
-    cy.get("button").contains("Next").click();
-    cy.get("button").contains("Start").click();
+    visitTreatment(2);
     cy.get("#id5").click();
+    cy.tick(4000);
     cy.get("#id7").click();
     cy.get("#id7").click();
     postsurvey([
@@ -141,15 +178,10 @@ describe("vizsurvey", () => {
     it(
       "bar very wide but short in height (" + width + ", " + height + ")",
       () => {
-        cy.viewport(width, height);
-        cy.visit(baseURL + "?treatment_id=3&session_id=1&participant_id=1");
-        cy.wait(150);
-        cy.get("button").contains("Next").click();
-        demographic();
-        cy.get("button").contains("Next").click();
-        cy.get("button").contains("Start").click();
+        visitTreatment(3, width, height);
         cy.get("#id5").click();
         cy.get("#id5").click();
+        cy.tick(4000);
         cy.get("#id7").click();
         cy.get("#id7").click();
         cy.get("#id2").click();
@@ -164,23 +196,13 @@ describe("vizsurvey", () => {
     );
   });
   it("calendar bar", () => {
-    cy.viewport(1200, 700);
-    cy.visit(baseURL + "?treatment_id=4&session_id=1&participant_id=1");
-    cy.wait(150);
-    cy.get("button").contains("Next").click();
-    demographic();
-    cy.get("button").contains("Next").click();
-    cy.get("button").contains("Start").click();
+    visitTreatment(4);
+    cy.tick(4000);
     calendar("day", "4", "Bar");
   });
   it("calendar word", () => {
-    cy.viewport(1200, 700);
-    cy.visit(baseURL + "?treatment_id=5&session_id=1&participant_id=1");
-    cy.wait(150);
-    cy.get("button").contains("Next").click();
-    demographic();
-    cy.get("button").contains("Next").click();
-    cy.get("button").contains("Start").click();
+    visitTreatment(5);
+    cy.tick(4000);
     calendar("day", "5", "Word");
   });
   it("survey invalid", () => {
@@ -195,6 +217,7 @@ describe("vizsurvey", () => {
   });
   it("survey random", () => {
     for (let i = 0; i < 10; i++) {
+      cy.clock();
       cy.viewport(1200, 700);
       cy.visit(baseURL + "?session_id=1&participant_id=1");
       cy.wait(150);

@@ -273,7 +273,7 @@ const Introduction = () => {
                 navigate("/instruction");
               }
             }}
-            disabled={disableSubmit}
+            disabled={disableSubmit && treatment.viewType === ViewType.word}
           >
             {" "}
             Next{" "}
