@@ -16,8 +16,10 @@ import { DateTime } from "luxon";
 import { useD3 } from "../hooks/useD3";
 import { InteractionType } from "../features/InteractionType";
 import { AmountType } from "../features/AmountType";
+import { StatusType } from "../features/StatusType";
 import {
   selectCurrentQuestion,
+  fetchStatus,
   setQuestionShownTimestamp,
   answer,
 } from "../features/questionSlice";
@@ -30,6 +32,7 @@ function BarChart() {
   const q = useSelector(selectCurrentQuestion);
   const [choice, setChoice] = useState(AmountType.none);
   const [disableSubmit, setDisableSubmit] = useState(true);
+  const status = useSelector(fetchStatus);
   const t = d3.transition().duration(500);
   const navigate = useNavigate();
   const stateRef = useRef();
@@ -365,7 +368,9 @@ function BarChart() {
                   choiceTimestamp: dateToState(DateTime.utc()),
                 })
               );
-              navigate("/questionaire");
+              if (status === StatusType.Questionaire) {
+                navigate("/questionaire");
+              }
             }}
             disabled={disableSubmit}
           >
