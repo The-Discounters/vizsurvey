@@ -1,7 +1,6 @@
 import { StatusType } from "./StatusType";
 import { AmountType } from "./AmountType";
 import { InteractionType } from "./InteractionType";
-import { ChoiceType } from "./ChoiceType";
 import { Answer } from "./Answer";
 
 export const TIMESTAMP_FORMAT = "MM/dd/yyyy H:mm:ss:SSS ZZZZ";
@@ -57,7 +56,7 @@ export class QuestionEngine {
       graphHeightIn: treatment.graphHeightIn,
       widthIn: treatment.widthIn,
       heightIn: treatment.heightIn,
-      choice: ChoiceType.unitialized,
+      choice: AmountType.unitialized,
       highup: highup,
       lowdown: lowdown,
     });
@@ -116,7 +115,7 @@ export class QuestionEngine {
     const { treatment, latestAnswer } =
       this.currentTreatmentAndLatestAnswer(state);
     switch (latestAnswer.choice) {
-      case ChoiceType.earlier:
+      case AmountType.earlierAmount:
         var possibleHighup =
           treatment.variableAmount === AmountType.laterAmount
             ? latestAnswer.amountLater
@@ -124,7 +123,7 @@ export class QuestionEngine {
         if (!state.highup || possibleHighup > state.highup)
           state.highup = possibleHighup;
         break;
-      case ChoiceType.later:
+      case AmountType.laterAmount:
         var possibleLowdown =
           treatment.variableAmount === AmountType.laterAmount
             ? latestAnswer.amountLater
@@ -152,10 +151,10 @@ export class QuestionEngine {
     switch (treatment.variableAmount) {
       case AmountType.laterAmount:
         console.assert(
-          latestAnswer.choice && latestAnswer.choice !== ChoiceType.unitialized
+          latestAnswer.choice && latestAnswer.choice !== AmountType.none
         );
         adjustmentAmount =
-          latestAnswer.choice === ChoiceType.earlier
+          latestAnswer.choice === AmountType.earlierAmount
             ? titrationAmount
             : -1 * titrationAmount;
         return (
@@ -163,7 +162,7 @@ export class QuestionEngine {
         );
       case AmountType.earlierAmount:
         adjustmentAmount =
-          latestAnswer.choice === ChoiceType.earlier
+          latestAnswer.choice === AmountType.earlierAmount
             ? -1 * titrationAmount
             : titrationAmount;
         return (

@@ -45,8 +45,12 @@ const Introduction = () => {
   }, []);
 
   useEffect(() => {
-    if (treatment.viewType === ViewType.word && choice && choice.length > 1) {
-      setDisableSubmit(true);
+    if (treatment.viewType === ViewType.word) {
+      if (choice && choice.length > 1) {
+        setDisableSubmit(false);
+      } else {
+        setDisableSubmit(true);
+      }
     } else {
       setDisableSubmit(false);
     }

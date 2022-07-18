@@ -18,7 +18,7 @@ function postsurvey(expects) {
   cy.get("button").contains("Next").click();
   cy.wait(1000);
   cy.get("p")
-    .contains("Thank you")
+    .contains("Study Explanation")
     .should("exist")
     .then(() => {
       fetch("http://localhost:3001/answers-1.csv").then((response) => {

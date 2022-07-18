@@ -15,7 +15,7 @@ import {
   ThemeProvider,
 } from "@mui/material";
 import { makeStyles } from "@material-ui/core/styles";
-import { ChoiceType } from "../features/ChoiceType";
+import { AmountType } from "../features/AmountType";
 import { StatusType } from "../features/StatusType";
 import {
   selectCurrentQuestion,
@@ -124,11 +124,11 @@ export function MELForm() {
                 >
                   {[
                     {
-                      key: ChoiceType.earlier,
+                      key: AmountType.earlierAmount,
                       label: question1stPartText(),
                     },
                     {
-                      key: ChoiceType.later,
+                      key: AmountType.laterAmount,
                       label: question2ndPartText(),
                     },
                   ].map(({ key, label }) => (
@@ -156,8 +156,8 @@ export function MELForm() {
             style={styles.button}
             onClick={() => {
               if (
-                choice !== ChoiceType.earlier &&
-                choice !== ChoiceType.later
+                choice !== AmountType.earlierAmount &&
+                choice !== AmountType.laterAmount
               ) {
                 setError(true);
                 setHelperText("Please choose one of the options below.");
