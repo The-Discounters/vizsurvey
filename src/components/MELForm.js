@@ -44,6 +44,13 @@ const useStyles = makeStyles(() => ({
       borderColor: "#000000",
     },
   },
+  qArea: {
+    "border-style": "solid",
+    "border-width": "5px",
+    "border-radius": "20px",
+    padding: "10px",
+    borderColor: "#000000",
+  },
 }));
 
 // const boxDefault = {
@@ -95,7 +102,7 @@ export function MELForm() {
     <ThemeProvider theme={theme}>
       <Grid container style={styles.root} justifyContent="center">
         <Grid item xs={12}>
-          <form>
+          <form className={classes.qArea}>
             <FormControl sx={{ ...formControl }} required={false} error={error}>
               <FormLabel sx={{ ...formLabel }} id="question-text">
                 {questionText()}
@@ -135,6 +142,7 @@ export function MELForm() {
                     <FormControlLabel
                       sx={{ ...formControlLabel, mr: "100px" }}
                       key={key}
+                      id={key}
                       value={key}
                       checked={choice === key}
                       control={<Radio />}
