@@ -18,7 +18,7 @@ function postsurvey(expects) {
   cy.get("button").contains("Next").click();
   cy.tick(1000);
   cy.wait(1000);
-  cy.get("p")
+  cy.get("h4")
     .contains("Study Explanation")
     .should("exist")
     .then(() => {
@@ -119,13 +119,13 @@ describe("vizsurvey", () => {
     function answerMELForm() {
       let waitTime = 200;
       cy.wait(waitTime);
-      cy.get("#earlier").should(
+      cy.get("#earlierAmount").should(
         "have.css",
         "borderColor",
         "rgb(255, 255, 255)"
       );
       cy.wait(waitTime);
-      cy.get("#earlier")
+      cy.get("#earlierAmount")
         .realHover()
         .should("have.css", "borderColor", "rgb(0, 0, 0)")
         .click();
@@ -147,10 +147,13 @@ describe("vizsurvey", () => {
   });
   it("bar", () => {
     visitTreatment(2);
-    cy.get("#id5").click();
+    cy.get("#earlierAmount").click();
+    cy.get("button").contains("Next").click();
     cy.tick(4000);
-    cy.get("#id7").click();
-    cy.get("#id7").click();
+    cy.get("#laterAmount").click();
+    cy.get("button").contains("Next").click();
+    cy.get("#laterAmount").click();
+    cy.get("button").contains("Next").click();
     postsurvey([
       "2,1,barchart,none,none,300,2,,700,5",
       "2,2,barchart,none,none,500,2,,800,7",
@@ -179,12 +182,16 @@ describe("vizsurvey", () => {
       "bar very wide but short in height (" + width + ", " + height + ")",
       () => {
         visitTreatment(3, width, height);
-        cy.get("#id5").click();
-        cy.get("#id5").click();
+        cy.get("#earlierAmount").click();
+        cy.get("button").contains("Next").click();
+        cy.get("#earlierAmount").click();
         cy.tick(4000);
-        cy.get("#id7").click();
-        cy.get("#id7").click();
-        cy.get("#id2").click();
+        cy.get("#laterAmount").click();
+        cy.get("button").contains("Next").click();
+        cy.get("#laterAmount").click();
+        cy.get("button").contains("Next").click();
+        cy.get("#earlierAmount").click();
+        cy.get("button").contains("Next").click();
         postsurvey([
           "3,1,barchart,none,none,300,2,,700,5",
           "3,2,barchart,none,none,300,2,,700,5",

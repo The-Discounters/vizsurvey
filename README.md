@@ -37,6 +37,10 @@ Open [http://localhost:3000/dev] to view it in the browser.
 The page will reload if you make edits.\
 You will also see any lint errors in the console.
 
+### Running file server (needed for Cypress tests)
+
+cd into the test folder and also run `npm start` in a separate terminal if you want the file server to run. This is needed to run cypres tests. If this is the first time then you need to run `npm install` from the test folder.
+
 ### `npm run build; serve -s build`
 
 Runs the app in production mode.\
