@@ -154,7 +154,6 @@ describe("vizsurvey", () => {
     cy.get("button").contains("Next").click();
     cy.get("#laterAmount").click();
     cy.get("button").contains("Next").click();
-    cy.get("button").contains("Next").click(); // TODO: fix later
     postsurvey([
       "2,1,barchart,none,none,300,2,,700,5",
       "2,2,barchart,none,none,500,2,,800,7",
@@ -195,7 +194,6 @@ describe("vizsurvey", () => {
         cy.get("button").contains("Next").click();
         cy.get("#earlierAmount").click();
         cy.get("button").contains("Next").click();
-        cy.get("button").contains("Next").click(); // TODO: fix later
         postsurvey([
           "3,1,barchart,none,none,300,2,,700,5",
           "3,2,barchart,none,none,300,2,,700,5",

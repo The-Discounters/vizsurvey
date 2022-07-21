@@ -167,6 +167,10 @@ export const questionSlice = createSlice({
   },
 });
 
+export const isLastTreatment = (state) => {
+  return qe.isLastTreatment(state.questions);
+};
+
 export const selectAllQuestions = (state) => {
   return qe.allQuestions(state.questions);
 };
