@@ -192,6 +192,8 @@ describe("vizsurvey", () => {
         cy.get("button").contains("Next").click();
         cy.get("#earlierAmount").click();
         cy.get("button").contains("Next").click();
+        cy.get("#earlierAmount").click();
+        cy.get("button").contains("Next").click();
         postsurvey([
           "3,1,barchart,none,none,300,2,,700,5",
           "3,2,barchart,none,none,300,2,,700,5",
@@ -227,7 +229,9 @@ describe("vizsurvey", () => {
       cy.clock();
       cy.viewport(1200, 700);
       cy.visit(baseURL + "?session_id=1&participant_id=1");
-      cy.wait(150);
+      cy.tick(1000);
+      cy.wait(1000);
+      cy.get("#checkConsent").click();
       cy.get("button").contains("Next").click();
       demographic();
       cy.get("button").contains("Next").should("exist");
