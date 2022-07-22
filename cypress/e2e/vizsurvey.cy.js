@@ -3,6 +3,8 @@
 
 let baseURL = "http://localhost:3000/start";
 
+let participantId = 1;
+
 function postsurvey(expects) {
   cy.wait(1000);
   cy.get("label").contains("Higher for the 15 year mortgage").click();
@@ -22,7 +24,7 @@ function postsurvey(expects) {
     .contains("Study Explanation")
     .should("exist")
     .then(() => {
-      fetch("http://localhost:3001/answers-1.csv").then((response) => {
+      fetch(`http://localhost:3001/answers-${participantId}.csv`).then((response) => {
         response.text().then((text) => {
           //treatment_id,position,view_type,interaction,variable_amount,amount_earlier,time_earlier,date_earlier,amount_later,time_later,date_later,max_amount,max_time,vertical_pixels,horizontal_pixels,left_margin_width_in,bottom_margin_height_in,graph_width_in,graph_height_in,width_in,height_in,choice,shown_timestamp,choice_timestamp,highup,lowdown,participant_code
           expects.forEach((expectStr) => {
@@ -30,7 +32,7 @@ function postsurvey(expects) {
           });
         });
       });
-      fetch("http://localhost:3001/post-survey-answers-1.json").then(
+      fetch(`http://localhost:3001/post-survey-answers-${participantId}.json`).then(
         (response) => {
           response.text().then((text) => {
             expect(JSON.parse(text)).to.deep.equal({
@@ -68,6 +70,7 @@ function postsurvey(expects) {
                 effort: "strongly-disagree",
               },
             });
+            participantId++;
           });
         }
       );
@@ -91,7 +94,7 @@ function visitTreatment(treatmentId, width = 1200, height = 700) {
   cy.clock();
   cy.viewport(width, height);
   cy.visit(
-    baseURL + `?treatment_id=${treatmentId}&session_id=1&participant_id=1`
+    baseURL + `?treatment_id=${treatmentId}&session_id=1&participant_id=${participantId}`
   );
   cy.tick(1000);
   cy.wait(1000);
