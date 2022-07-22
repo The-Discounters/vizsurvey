@@ -71,7 +71,7 @@
   "devDependencies": {
     "babel-eslint": "^10.1.0",
     "babel-preset-flow": "^6.23.0",
-    "cypress": "^9.5.1",
+    "cypress": "^10.3.1",
     "eslint": "^7.32.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^4.0.0",
