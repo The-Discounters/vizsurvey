@@ -198,6 +198,8 @@ describe("vizsurvey", () => {
         cy.get("button").contains("Next").click();
         cy.get("#laterAmount").click();
         cy.get("button").contains("Next").click();
+        cy.get("#attention-check-strongly-disagree").click();
+        cy.get("button").contains("Next").click();
         cy.get("#earlierAmount").click();
         cy.get("button").contains("Next").click();
         cy.get("#earlierAmount").click();
