@@ -11,7 +11,7 @@ import {
   answer,
 } from "../features/questionSlice";
 import { useD3 } from "../hooks/useD3";
-import { ChoiceType } from "../features/ChoiceType";
+import { AmountType } from "../features/AmountType";
 import { StatusType } from "../features/StatusType";
 import { InteractionType } from "../features/InteractionType";
 import { drawCalendar } from "./CalendarHelper";
@@ -55,7 +55,7 @@ export function Calendar() {
       ></table>
       {q.interaction === InteractionType.drag ? (
         <Formik
-          initialValues={{ choice: ChoiceType.Unitialized }}
+          initialValues={{ choice: AmountType.none }}
           validate={() => {
             let errors = {};
             return errors;

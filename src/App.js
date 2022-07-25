@@ -11,10 +11,12 @@ import {
 import { Container } from "@material-ui/core";
 import "./App.css";
 import Introduction from "./components/Introduction";
+import Demographic from "./components/Demographic";
 import Instructions from "./components/Instructions";
 import Survey from "./components/Survey";
 import PostSurvey from "./components/PostSurvey";
-import ThankYou from "./components/ThankYou";
+import Debrief from "./components/Debrief";
+import TheEnd from "./components/TheEnd";
 import InvalidSurveyLink from "./components/InvalidSurveyLink";
 import {
   loadAllTreatments,
@@ -69,12 +71,14 @@ const App = () => {
               ) : (
                 ""
               )}
-              <Route path="consent" element={<Consent />} />
+              <Route path={"consent"} element={<Consent />} />
+              <Route path={"demographic"} element={<Demographic />} />
               <Route path={"introduction"} element={<Introduction />} />
               <Route path={"instruction"} element={<Instructions />} />
               <Route path={"survey"} element={<Survey />} />
               <Route path={"questionaire"} element={<PostSurvey />} />
-              <Route path={"thankyou"} element={<ThankYou />} />
+              <Route path={"debrief"} element={<Debrief />} />
+              <Route path={"theend"} element={<TheEnd />} />
               <Route path={"invalidlink"} element={<InvalidSurveyLink />} />
               <Route path="*" element={<InvalidSurveyLink />} />
             </Routes>

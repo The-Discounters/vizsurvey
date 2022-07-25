@@ -8,7 +8,7 @@ export const StatusType = {
   Instructions: "instruction",
   Survey: "survey",
   Questionaire: "questionaire",
-  ThankYou: "thankyou",
+  Debrief: "debrief",
   Error: "Error",
 };
 

@@ -14,8 +14,8 @@ import {
   Box,
   ThemeProvider,
 } from "@mui/material";
-
-import { ChoiceType } from "../features/ChoiceType";
+import { makeStyles } from "@material-ui/core/styles";
+import { AmountType } from "../features/AmountType";
 import { StatusType } from "../features/StatusType";
 import {
   selectCurrentQuestion,
@@ -33,6 +33,26 @@ import {
   formControlLabel,
 } from "./ScreenHelper";
 
+const useStyles = makeStyles(() => ({
+  btn: {
+    borderColor: "#ffffff",
+    "border-style": "solid",
+    "border-width": "5px",
+    "border-radius": "20px",
+    paddingRight: "10px",
+    "&:hover": {
+      borderColor: "#000000",
+    },
+  },
+  qArea: {
+    "border-style": "solid",
+    "border-width": "5px",
+    "border-radius": "20px",
+    padding: "10px",
+    borderColor: "#000000",
+  },
+}));
+
 // const boxDefault = {
 //   height: 100,
 //   //display: "flex",
@@ -45,6 +65,7 @@ export function MELForm() {
   const q = useSelector(selectCurrentQuestion);
   const status = useSelector(fetchStatus);
   const navigate = useNavigate();
+  const [disableSubmit, setDisableSubmit] = React.useState(true);
   const [choice, setChoice] = useState("");
   const [error, setError] = React.useState(false);
   const [helperText, setHelperText] = React.useState("");
@@ -52,6 +73,14 @@ export function MELForm() {
   useEffect(() => {
     dispatch(dispatch(setQuestionShownTimestamp(dateToState(DateTime.utc()))));
   }, []);
+
+  useEffect(() => {
+    if (choice && choice.length > 1) {
+      setDisableSubmit(false);
+    } else {
+      setDisableSubmit(true);
+    }
+  }, [choice]);
 
   const todayText = (sooner_time) =>
     sooner_time === 0 ? "today" : `in ${sooner_time} months`;
@@ -68,11 +97,12 @@ export function MELForm() {
     return `${format("$,.0f")(q.amountLater)} in ${q.timeLater} months`;
   }
 
-  const result = (
+  const classes = useStyles();
+  return (
     <ThemeProvider theme={theme}>
       <Grid container style={styles.root} justifyContent="center">
         <Grid item xs={12}>
-          <form>
+          <form className={classes.qArea}>
             <FormControl sx={{ ...formControl }} required={false} error={error}>
               <FormLabel sx={{ ...formLabel }} id="question-text">
                 {questionText()}
@@ -99,22 +129,27 @@ export function MELForm() {
                   }}
                   value={choice}
                 >
-                  <FormControlLabel
-                    sx={{ ...formControlLabel }}
-                    key={ChoiceType.earlier}
-                    value={ChoiceType.earlier}
-                    checked={choice === ChoiceType.earlier}
-                    control={<Radio />}
-                    label={question1stPartText()}
-                  />
-                  <FormControlLabel
-                    sx={{ ...formControlLabel }}
-                    key={ChoiceType.later}
-                    value={ChoiceType.later}
-                    checked={choice === ChoiceType.later}
-                    control={<Radio />}
-                    label={question2ndPartText()}
-                  />
+                  {[
+                    {
+                      key: AmountType.earlierAmount,
+                      label: question1stPartText(),
+                    },
+                    {
+                      key: AmountType.laterAmount,
+                      label: question2ndPartText(),
+                    },
+                  ].map(({ key, label }) => (
+                    <FormControlLabel
+                      sx={{ ...formControlLabel, mr: "100px" }}
+                      key={key}
+                      id={key}
+                      value={key}
+                      checked={choice === key}
+                      control={<Radio />}
+                      label={label}
+                      className={classes.btn}
+                    />
+                  ))}
                 </RadioGroup>
               </Box>
             </FormControl>
@@ -129,11 +164,11 @@ export function MELForm() {
             style={styles.button}
             onClick={() => {
               if (
-                choice !== ChoiceType.earlier &&
-                choice !== ChoiceType.later
+                choice !== AmountType.earlierAmount &&
+                choice !== AmountType.laterAmount
               ) {
                 setError(true);
-                setHelperText("You must choose one of the options below.");
+                setHelperText("Please choose one of the options below.");
               } else {
                 setError(false);
                 setHelperText("");
@@ -151,6 +186,7 @@ export function MELForm() {
                 }, 400);
               }
             }}
+            disabled={disableSubmit}
           >
             {" "}
             Next{" "}
@@ -159,8 +195,6 @@ export function MELForm() {
       </Grid>
     </ThemeProvider>
   );
-
-  return result;
 }
 
 export default MELForm;

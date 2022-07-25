@@ -1,7 +1,6 @@
 import { DateTime } from "luxon";
 import { QuestionEngine } from "./QuestionEngine";
 import { ViewType } from "./ViewType";
-import { ChoiceType } from "./ChoiceType";
 import { StatusType } from "./StatusType";
 import { Question } from "./Question";
 import { InteractionType } from "./InteractionType";
@@ -59,42 +58,42 @@ describe("QuestionEngine tests", () => {
     expect(a.amountEarlier).toBe(500);
     expect(a.amountLater).toBe(1000);
     const qe = new QuestionEngine();
-    a.choice = ChoiceType.earlier;
+    a.choice = AmountType.earlierAmount;
     // first calc from paper example, use highdown which is initilly set equal to earlier amount
     qe.updateHighupOrLowdown(state);
     expect(state.highup).toBe(1000);
     expect(state.lowdown).toBeUndefined();
     expect(qe.calcTitrationAmount(undefined, 500, 500)).toBe(250);
     a.amountLater = 1250;
-    a.choice = ChoiceType.later;
+    a.choice = AmountType.laterAmount;
     // second calc from paper example there is no lowdown, so passes larger later amount as lowdown
     qe.updateHighupOrLowdown(state);
     expect(state.highup).toBe(1000);
     expect(state.lowdown).toBe(1250);
     expect(qe.calcTitrationAmount(1250, 1000, null)).toBe(125);
     a.amountLater = 1120;
-    a.choice = ChoiceType.later;
+    a.choice = AmountType.laterAmount;
     // third calc from paper example
     qe.updateHighupOrLowdown(state);
     expect(state.highup).toBe(1000);
     expect(state.lowdown).toBe(1120);
     expect(qe.calcTitrationAmount(1120, 1000, null)).toBe(60);
     a.amountLater = 1060;
-    a.choice = ChoiceType.earlier;
+    a.choice = AmountType.earlierAmount;
     // fourth calc from paper example
     qe.updateHighupOrLowdown(state);
     expect(state.highup).toBe(1060);
     expect(state.lowdown).toBe(1120);
     expect(qe.calcTitrationAmount(1120, 1060, null)).toBe(30);
     a.amountLater = 1090;
-    a.choice = ChoiceType.later;
+    a.choice = AmountType.laterAmount;
     // fifth calc from paper example
     qe.updateHighupOrLowdown(state);
     expect(state.highup).toBe(1060);
     expect(state.lowdown).toBe(1090);
     expect(qe.calcTitrationAmount(1090, 1060, null)).toBe(15);
     a.amountLater = 1070;
-    a.choice = ChoiceType.earlier;
+    a.choice = AmountType.earlierAmount;
     // sixth calc from paper example
     qe.updateHighupOrLowdown(state);
     expect(state.highup).toBe(1070);
@@ -124,7 +123,7 @@ describe("QuestionEngine tests", () => {
     // first answer
     qe.answerCurrentQuestion(state, {
       payload: {
-        choice: ChoiceType.earlier,
+        choice: AmountType.earlierAmount,
         choiceTimestamp: dateToState(DateTime.utc()),
       },
     });
@@ -139,7 +138,7 @@ describe("QuestionEngine tests", () => {
     // second answer
     qe.answerCurrentQuestion(state, {
       payload: {
-        choice: ChoiceType.later,
+        choice: AmountType.laterAmount,
         choiceTimestamp: dateToState(DateTime.utc()),
       },
     });
@@ -154,7 +153,7 @@ describe("QuestionEngine tests", () => {
     // third answer
     qe.answerCurrentQuestion(state, {
       payload: {
-        choice: ChoiceType.later,
+        choice: AmountType.laterAmount,
         choiceTimestamp: dateToState(DateTime.utc()),
       },
     });
@@ -169,7 +168,7 @@ describe("QuestionEngine tests", () => {
     // fourth answer
     qe.answerCurrentQuestion(state, {
       payload: {
-        choice: ChoiceType.earlier,
+        choice: AmountType.earlierAmount,
         choiceTimestamp: dateToState(DateTime.utc()),
       },
     });
@@ -184,7 +183,7 @@ describe("QuestionEngine tests", () => {
     // fifth answer
     qe.answerCurrentQuestion(state, {
       payload: {
-        choice: ChoiceType.later,
+        choice: AmountType.laterAmount,
         choiceTimestamp: dateToState(DateTime.utc()),
       },
     });
@@ -202,7 +201,7 @@ describe("QuestionEngine tests", () => {
         // the paper said the last choice was earlier; however, I think it is wrong and meant later.
         // Choice of later seems to make the last value of lowdown work according to the algorithm
         // I derived from the earlier steps in the example.
-        choice: ChoiceType.later,
+        choice: AmountType.laterAmount,
         choiceTimestamp: dateToState(DateTime.utc()),
       },
     });
@@ -260,7 +259,7 @@ export class TestDataFactory {
       maxTime: 8,
       verticalPixels: 480,
       horizontalPixels: 480,
-      choice: ChoiceType.undefined,
+      choice: AmountType.none,
       shownTimestamp: null,
       choiceTimestamp: null,
       highup: null,

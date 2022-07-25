@@ -4,7 +4,6 @@ import { DateTime } from "luxon";
 import { answer } from "../features/questionSlice";
 import { ViewType } from "../features/ViewType";
 import { AmountType } from "../features/AmountType";
-import { ChoiceType } from "../features/ChoiceType";
 import { InteractionType } from "../features/InteractionType";
 import { dateToState } from "../features/ConversionUtil";
 
@@ -310,14 +309,14 @@ export const drawCalendar = ({
               if (d.target.__data__.type === AmountType.earlierAmount) {
                 dispatchCallback(
                   answer({
-                    choice: ChoiceType.earlier,
+                    choice: AmountType.earlierAmount,
                     choiceTimestamp: dateToState(DateTime.utc()),
                   })
                 );
               } else if (d.target.__data__.type === AmountType.laterAmount) {
                 dispatchCallback(
                   answer({
-                    choice: ChoiceType.later,
+                    choice: AmountType.laterAmount,
                     choiceTimestamp: dateToState(DateTime.utc()),
                   })
                 );

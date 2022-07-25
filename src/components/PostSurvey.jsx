@@ -18,6 +18,8 @@ import {
 import { makeStyles } from "@material-ui/core/styles";
 import {
   getParticipant,
+  getDemographics,
+  getTimestamps,
   postSurveyQuestionsShown,
   selectAllQuestions,
   writeAnswers,
@@ -49,12 +51,18 @@ export function PostSurvey() {
   const classes = useStyles();
 
   const [disableSubmit, setDisableSubmit] = React.useState(true);
-  /*
-            {surveys.map(({ questionsType, questions }, index2) => (
-              <div key={index2}>
-                {questions.map(({ question, options }, index) => (
-*/
-  const surveys = POST_SURVEY_QUESTIONS;
+  let surveys = POST_SURVEY_QUESTIONS;
+  surveys = surveys.map((survey) => {
+    survey["questions"] = survey.questions.filter(({ question }) => {
+      if (question.disabled === true) {
+        return false;
+      } else {
+        return true;
+      }
+    });
+    return survey;
+  });
+
   let qList2 = [];
   let qList2Flat = [];
   let setQList2 = [];
@@ -80,11 +88,7 @@ export function PostSurvey() {
         }
       });
     });
-    if (!result) {
-      setDisableSubmit(false);
-    } else {
-      setDisableSubmit(true);
-    }
+    setDisableSubmit(result);
   };
 
   useEffect(() => {
@@ -99,13 +103,15 @@ export function PostSurvey() {
   const answers = useSelector(selectAllQuestions);
   const io = new FileIOAdapter();
   const csv = io.convertToCSV(answers);
+  const demographics = useSelector(getDemographics);
+  const timestamps = useSelector(getTimestamps);
   return (
     <ThemeProvider theme={theme}>
       <div>
         <FullScreen handle={handle}>
           <Grid container style={styles.root} justifyContent="center">
             <Grid item xs={12}>
-              <Typography variant="h4">Questionaire</Typography>
+              <Typography variant="h4">Additional Questions</Typography>
               <hr
                 style={{
                   color: "#ea3433",
@@ -116,10 +122,17 @@ export function PostSurvey() {
               <Typography paragraph>
                 The last step in this survey is to answer the questions below.
               </Typography>
+              <hr
+                style={{
+                  backgroundColor: "#aaaaaa",
+                  height: 4,
+                }}
+              />
             </Grid>
             <Grid item xs={12}>
-              {surveys.map(({ questionsType, questions }, index2) => (
+              {surveys.map(({ prompt, questionsType, questions }, index2) => (
                 <div key={index2}>
+                  <Typography paragraph>{prompt}</Typography>
                   {questions.map(({ question, options }, index) => (
                     <FormControl
                       key={index}
@@ -155,6 +168,7 @@ export function PostSurvey() {
                               />
                             ))
                           : [
+                              "prefer not to answer",
                               "strongly-disagree",
                               "disagree",
                               "neutral",
@@ -164,9 +178,10 @@ export function PostSurvey() {
                               <FormControlLabel
                                 key={index1}
                                 value={option}
+                                id={question.textShort + "-" + option}
                                 checked={qList2[index2][index] === option}
                                 control={<Radio />}
-                                label={option}
+                                label={option.replace("-", " ")}
                                 onChange={(event) => {
                                   handleFieldChange(
                                     event,
@@ -178,6 +193,12 @@ export function PostSurvey() {
                       </RadioGroup>
                     </FormControl>
                   ))}
+                  <hr
+                    style={{
+                      backgroundColor: "#aaaaaa",
+                      height: 4,
+                    }}
+                  />
                 </div>
               ))}
             </Grid>
@@ -198,16 +219,26 @@ export function PostSurvey() {
                       writeAnswers({
                         csv: csv,
                         participantId: participantId,
-                        postSurveyAnswers: surveys[0].questions.reduce(
-                          (prev, { question }, index) => {
-                            prev[question.textShort] = qList2Flat[index];
-                            return prev;
+                        postSurveyAnswers: surveys.reduce(
+                          (prev1, { questions, promptShort }, index1) => {
+                            prev1[promptShort] = questions.reduce(
+                              (prev, { question }, index) => {
+                                prev[question.textShort] =
+                                  qList2[index1][index];
+                                return prev;
+                              },
+                              {}
+                            );
+                            return prev1;
                           },
-                          {}
+                          {
+                            demographics: demographics,
+                            timestamps: timestamps,
+                          }
                         ),
                       })
                     );
-                    navigate("/thankyou");
+                    navigate("/debrief");
                   }, 400);
                 }}
                 disabled={disableSubmit}

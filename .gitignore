@@ -34,7 +34,6 @@ yarn-error.log*
 cypress/fixtures
 cypress/plugins
 cypress/screenshots
-cypress/support
 cypress/videos
 cypress/downloads
 doc/~$MCL questions.xlsx
