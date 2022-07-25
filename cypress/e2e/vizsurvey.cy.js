@@ -24,56 +24,58 @@ function postsurvey(expects) {
     .contains("Study Explanation")
     .should("exist")
     .then(() => {
-      fetch(`http://localhost:3001/answers-${participantId}.csv`).then((response) => {
-        response.text().then((text) => {
-          //treatment_id,position,view_type,interaction,variable_amount,amount_earlier,time_earlier,date_earlier,amount_later,time_later,date_later,max_amount,max_time,vertical_pixels,horizontal_pixels,left_margin_width_in,bottom_margin_height_in,graph_width_in,graph_height_in,width_in,height_in,choice,shown_timestamp,choice_timestamp,highup,lowdown,participant_code
-          expects.forEach((expectStr) => {
-            expect(text).to.contain(expectStr);
-          });
-        });
-      });
-      fetch(`http://localhost:3001/post-survey-answers-${participantId}.json`).then(
+      fetch(`http://localhost:3001/answers-${participantId}.csv`).then(
         (response) => {
           response.text().then((text) => {
-            expect(JSON.parse(text)).to.deep.equal({
-              demographics: {
-                countryOfResidence: "usa",
-                vizFamiliarity: "3",
-                age: "26",
-                gender: "male",
-                selfDescribeGender: "",
-                profession: "Software Developer",
-              },
-              timestamps: {
-                consentShownTimestamp: 1000,
-                introductionShowTimestamp: 2000,
-                introductionCompletedTimestamp: 3000,
-                instructionsShownTimestamp: 3000,
-                instructionsCompletedTimestamp: 4000,
-                postSurveyQuestionsShownTimestamp: 8000,
-                debriefShownTimestamp: null,
-                debriefCompleted: null,
-                theEndShownTimestamp: null,
-              },
-              fincanialLit: {
-                q15vs30: "v15+",
-                q50k6p: "v<50k",
-                q100k5p: "v<120k",
-                q200k5p: "v<20y",
-              },
-              senseOfPurpose: {
-                posdiff: "strongly-disagree",
-                carbetplac: "strongly-disagree",
-                servsoc: "strongly-disagree",
-                thinkach: "strongly-disagree",
-                descrpurp: "strongly-disagree",
-                effort: "strongly-disagree",
-              },
+            //treatment_id,position,view_type,interaction,variable_amount,amount_earlier,time_earlier,date_earlier,amount_later,time_later,date_later,max_amount,max_time,vertical_pixels,horizontal_pixels,left_margin_width_in,bottom_margin_height_in,graph_width_in,graph_height_in,width_in,height_in,choice,shown_timestamp,choice_timestamp,highup,lowdown,participant_code
+            expects.forEach((expectStr) => {
+              expect(text).to.contain(expectStr);
             });
-            participantId++;
           });
         }
       );
+      fetch(
+        `http://localhost:3001/post-survey-answers-${participantId}.json`
+      ).then((response) => {
+        response.text().then((text) => {
+          expect(JSON.parse(text)).to.deep.equal({
+            demographics: {
+              countryOfResidence: "usa",
+              vizFamiliarity: "3",
+              age: "26",
+              gender: "male",
+              selfDescribeGender: "",
+              profession: "Software Developer",
+            },
+            timestamps: {
+              consentShownTimestamp: 1000,
+              introductionShowTimestamp: 2000,
+              introductionCompletedTimestamp: 3000,
+              instructionsShownTimestamp: 3000,
+              instructionsCompletedTimestamp: 4000,
+              postSurveyQuestionsShownTimestamp: 8000,
+              debriefShownTimestamp: null,
+              debriefCompleted: null,
+              theEndShownTimestamp: null,
+            },
+            fincanialLit: {
+              q15vs30: "v15+",
+              q50k6p: "v<50k",
+              q100k5p: "v<120k",
+              q200k5p: "v<20y",
+            },
+            senseOfPurpose: {
+              posdiff: "strongly-disagree",
+              carbetplac: "strongly-disagree",
+              servsoc: "strongly-disagree",
+              thinkach: "strongly-disagree",
+              descrpurp: "strongly-disagree",
+              effort: "strongly-disagree",
+            },
+          });
+          participantId++;
+        });
+      });
     });
   cy.get("button").contains("Next").click();
   cy.get("p").contains("You have completed the survey").should("exist");
@@ -94,7 +96,8 @@ function visitTreatment(treatmentId, width = 1200, height = 700) {
   cy.clock();
   cy.viewport(width, height);
   cy.visit(
-    baseURL + `?treatment_id=${treatmentId}&session_id=1&participant_id=${participantId}`
+    baseURL +
+      `?treatment_id=${treatmentId}&session_id=1&participant_id=${participantId}`
   );
   cy.tick(1000);
   cy.wait(1000);
@@ -154,6 +157,8 @@ describe("vizsurvey", () => {
     cy.get("button").contains("Next").click();
     cy.tick(4000);
     cy.get("#laterAmount").click();
+    cy.get("button").contains("Next").click();
+    cy.get("#attention-check-strongly-disagree").click();
     cy.get("button").contains("Next").click();
     cy.get("#laterAmount").click();
     cy.get("button").contains("Next").click();

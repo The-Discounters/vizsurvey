@@ -171,6 +171,10 @@ export const isLastTreatment = (state) => {
   return qe.isLastTreatment(state.questions);
 };
 
+export const isMiddleTreatment = (state) => {
+  return qe.isMiddleTreatment(state.questions);
+};
+
 export const selectAllQuestions = (state) => {
   return qe.allQuestions(state.questions);
 };
