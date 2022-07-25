@@ -6,7 +6,6 @@ let baseURL = "http://localhost:3000/start";
 let participantId = 1;
 
 function postsurvey(expects) {
-  cy.wait(1000);
   cy.get("label").contains("Higher for the 15 year mortgage").click();
   cy.get("label").contains("Less than $50,000").click();
   cy.get("label").contains("Less than $120,000").click();
@@ -19,7 +18,6 @@ function postsurvey(expects) {
   cy.get("#effort-strongly-disagree").click();
   cy.get("button").contains("Next").click();
   cy.tick(1000);
-  cy.wait(1000);
   cy.get("h4")
     .contains("Study Explanation")
     .should("exist")
@@ -88,7 +86,6 @@ function demographic() {
   cy.get("#gender-select-helper").select("Male");
   cy.get("#Current-Profession").type("Software Developer");
   cy.tick(1000);
-  cy.wait(1000);
   cy.get("button").contains("Next").click();
 }
 
@@ -100,13 +97,11 @@ function visitTreatment(treatmentId, width = 1200, height = 700) {
       `?treatment_id=${treatmentId}&session_id=1&participant_id=${participantId}`
   );
   cy.tick(1000);
-  cy.wait(1000);
   cy.get("#checkConsent").click();
   cy.get("button").contains("Next").click();
   demographic();
 
   cy.tick(1000);
-  cy.wait(1000);
   if (treatmentId === 1) {
     cy.get("button").should("be.disabled");
     cy.get("label").contains("First option").click();
@@ -116,26 +111,21 @@ function visitTreatment(treatmentId, width = 1200, height = 700) {
   }
 
   cy.tick(1000);
-  cy.wait(1000);
   cy.get("button").contains("Start").click();
 }
 describe("vizsurvey", () => {
   it("word", () => {
     visitTreatment(1);
     function answerMELForm() {
-      let waitTime = 200;
-      cy.wait(waitTime);
       cy.get("#earlierAmount").should(
         "have.css",
         "borderColor",
         "rgb(255, 255, 255)"
       );
-      cy.wait(waitTime);
       cy.get("#earlierAmount")
         .realHover()
         .should("have.css", "borderColor", "rgb(0, 0, 0)")
         .click();
-      cy.wait(waitTime);
       cy.get("button").realHover().click();
       cy.tick(1000);
     }
