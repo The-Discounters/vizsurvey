@@ -71,12 +71,14 @@ function postsurvey(expects) {
               effort: "strongly-disagree",
             },
           });
-          participantId++;
         });
       });
     });
   cy.get("button").contains("Next").click();
   cy.get("p").contains("You have completed the survey").should("exist");
+  cy.wait(1000).then(() => {
+    participantId++;
+  });
 }
 
 function demographic() {
