@@ -2,7 +2,6 @@ import { FileIOAdapter } from "./FileIOAdapter";
 import { InteractionType } from "./InteractionType";
 import { AmountType } from "./AmountType";
 import { ViewType } from "./ViewType";
-import { ChoiceType } from "./ChoiceType";
 import { Answer } from "./Answer";
 import { DateTime } from "luxon";
 
@@ -41,37 +40,37 @@ describe("FileIOAdapter tests", () => {
       "Worded with no interaction and Read 2001 example values."
     );
     questions = await io.loadTreatment(3);
-    expect(questions.length).toBe(3);
+    expect(questions.length).toBe(5);
     expect(questions[0].treatmentId).toBe(3);
     expect(questions[0].position).toBe(1);
-    expect(questions[0].viewType).toBe(ViewType.calendarBar);
+    expect(questions[0].viewType).toBe(ViewType.barchart);
     expect(questions[0].interaction).toBe(InteractionType.none);
     expect(questions[0].variableAmount).toBe(AmountType.none);
     expect(questions[0].amountEarlier).toBe(300);
-    expect(questions[0].timeEarlier).toBeUndefined();
-    expect(questions[0].dateEarlier).toBe(1643673600000);
+    expect(questions[0].timeEarlier).toBe(2);
+    expect(questions[0].dateEarlier).toBeUndefined();
     expect(questions[0].amountLater).toBe(700);
-    expect(questions[0].timeLater).toBeUndefined();
-    expect(questions[0].dateLater).toBe(1645488000000);
+    expect(questions[0].timeLater).toBe(5);
+    expect(questions[0].dateLater).toBeUndefined();
     expect(questions[0].maxAmount).toBe(1100);
-    expect(questions[0].maxTime).toBeUndefined();
-    expect(questions[0].horizontalPixels).toBe(100);
-    expect(questions[0].verticalPixels).toBe(100);
+    expect(questions[0].maxTime).toBe(10);
+    expect(questions[0].horizontalPixels).toBe(800);
+    expect(questions[0].verticalPixels).toBe(300);
     expect(questions[0].leftMarginWidthIn).toBeUndefined();
     expect(questions[0].bottomMarginHeightIn).toBeUndefined();
     expect(questions[0].graphWidthIn).toBeUndefined();
     expect(questions[0].graphHeightIn).toBeUndefined();
-    expect(questions[0].widthIn).toBe(8);
-    expect(questions[0].heightIn).toBe(8);
+    expect(questions[0].widthIn).toBeUndefined();
+    expect(questions[0].heightIn).toBeUndefined();
     expect(questions[0].comment).toBe(
-      "Calendar month view with barchart and no interaction."
+      "Barchart MEL question with no interaction pixels."
     );
   });
 
   test("Validate loadAllTreatments loads all treatments correctly.", async () => {
     const io = new FileIOAdapter();
     var questions = await io.loadAllTreatments();
-    expect(questions.length).toBe(36);
+    expect(questions.length).toBe(41);
   });
 
   test("Validate answer CSV fields are written correctly.", async () => {
@@ -101,7 +100,7 @@ describe("FileIOAdapter tests", () => {
       graphHeightIn: 14,
       widthIn: 15,
       heightIn: 16,
-      choice: ChoiceType.earlier,
+      choice: AmountType.earlierAmount,
       shownTimestamp: DateTime.fromFormat("1/3/2001", "M/d/yyyy", {
         zone: "utc",
       }).toMillis(),
@@ -138,7 +137,7 @@ describe("FileIOAdapter tests", () => {
       graphHeightIn: 26,
       widthIn: 27,
       heightIn: 28,
-      choice: ChoiceType.later,
+      choice: AmountType.laterAmount,
       shownTimestamp: DateTime.utc(2001, 1, 2, 3, 1, 1, 1, {
         zone: "utc",
       }).toMillis(),
@@ -157,7 +156,7 @@ describe("FileIOAdapter tests", () => {
     const result = io.convertToCSV(answers);
     expect(result)
       .toBe(`treatment_id,position,view_type,interaction,variable_amount,amount_earlier,time_earlier,date_earlier,amount_later,time_later,date_later,max_amount,max_time,vertical_pixels,horizontal_pixels,left_margin_width_in,bottom_margin_height_in,graph_width_in,graph_height_in,width_in,height_in,choice,shown_timestamp,choice_timestamp,highup,lowdown,participant_code
-1,2,word,none,earlierAmount,3,4,2001-01-01T00:00:00.000Z,5,6,2001-01-02T00:00:00.000Z,7,8,9,10,11,12,13,14,15,16,earlier,2001-01-03T00:00:00.000Z,2001-01-04T00:00:00.000Z,17,18,participant code
-13,14,barchart,drag,earlierAmount,15,16,2001-01-02T01:01:01.001Z,17,18,2001-01-02T02:01:01.001Z,19,20,21,22,23,24,25,26,27,28,later,2001-01-02T03:01:01.001Z,2001-01-02T04:01:01.001Z,29,30,participant code 2`);
+1,2,word,none,earlierAmount,3,4,2001-01-01T00:00:00.000Z,5,6,2001-01-02T00:00:00.000Z,7,8,9,10,11,12,13,14,15,16,earlierAmount,2001-01-03T00:00:00.000Z,2001-01-04T00:00:00.000Z,17,18,participant code
+13,14,barchart,drag,earlierAmount,15,16,2001-01-02T01:01:01.001Z,17,18,2001-01-02T02:01:01.001Z,19,20,21,22,23,24,25,26,27,28,laterAmount,2001-01-02T03:01:01.001Z,2001-01-02T04:01:01.001Z,29,30,participant code 2`);
   });
 });
