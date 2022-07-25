@@ -41,7 +41,6 @@ function BarChart() {
   }, []);
 
   useEffect(() => {
-    console.log("choice=" + choice);
     switch (choice) {
       case AmountType.earlierAmount:
         d3.select("#laterAmount").transition(t).attr("stroke", "none");
@@ -57,6 +56,8 @@ function BarChart() {
         break;
       default:
         setDisableSubmit(true);
+        d3.select("#laterAmount").transition(t).attr("stroke", "none");
+        d3.select("#earlierAmount").transition(t).attr("stroke", "none");
     }
   }, [choice]);
 
@@ -369,6 +370,8 @@ function BarChart() {
               );
               if (status) {
                 navigate("/questionaire");
+              } else {
+                setChoice(AmountType.none);
               }
             }}
             disabled={disableSubmit}
