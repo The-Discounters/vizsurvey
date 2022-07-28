@@ -5,6 +5,8 @@ let baseURL = "http://localhost:3000/start";
 
 let participantId = 1;
 
+let fetching = true;
+let fetching1 = true;
 function postsurvey(expects) {
   cy.get("label").contains("Higher for the 15 year mortgage").click();
   cy.get("label").contains("Less than $50,000").click();
@@ -18,24 +20,27 @@ function postsurvey(expects) {
   cy.get("#effort-strongly-disagree").click();
   cy.get("button").contains("Next").click();
   cy.tick(1000);
+  cy.wait(1000);
   cy.get("h4")
     .contains("Study Explanation")
     .should("exist")
     .then(() => {
-      fetch(`http://localhost:3001/answers-${participantId}.csv`).then(
-        (response) => {
-          response.text().then((text) => {
-            //treatment_id,position,view_type,interaction,variable_amount,amount_earlier,time_earlier,date_earlier,amount_later,time_later,date_later,max_amount,max_time,vertical_pixels,horizontal_pixels,left_margin_width_in,bottom_margin_height_in,graph_width_in,graph_height_in,width_in,height_in,choice,shown_timestamp,choice_timestamp,highup,lowdown,participant_code
-            expects.forEach((expectStr) => {
-              expect(text).to.contain(expectStr);
-            });
-          });
-        }
-      );
-      fetch(
-        `http://localhost:3001/post-survey-answers-${participantId}.json`
-      ).then((response) => {
+      let file = `http://localhost:3001/answers-${participantId}.csv`;
+      console.log("fetching file: " + file);
+      fetch(file).then((response) => {
         response.text().then((text) => {
+          console.log("file text: " + text);
+          expects.forEach((expectStr) => {
+            expect(text).to.contain(expectStr);
+            fetching = false;
+          });
+        });
+      });
+      let file1 = `http://localhost:3001/post-survey-answers-${participantId}.json`;
+      console.log("fetching file1: " + file1);
+      fetch(file1).then((response) => {
+        response.text().then((text) => {
+          console.log("file1 text: " + text);
           expect(JSON.parse(text)).to.deep.equal({
             demographics: {
               countryOfResidence: "usa",
@@ -45,6 +50,7 @@ function postsurvey(expects) {
               selfDescribeGender: "",
               profession: "Software Developer",
             },
+            attentioncheck: "strongly-disagree",
             timestamps: {
               consentShownTimestamp: 1000,
               introductionShowTimestamp: 2000,
@@ -71,12 +77,22 @@ function postsurvey(expects) {
               effort: "strongly-disagree",
             },
           });
+          fetching1 = false;
         });
       });
     });
   cy.get("button").contains("Next").click();
+  waitingForFetch();
   cy.get("p").contains("You have completed the survey").should("exist");
-  cy.wait(1000).then(() => {
+}
+
+function waitingForFetch(waitTime = 1000) {
+  cy.wait(waitTime).then(() => {
+    if (fetching || fetching1) {
+      waitingForFetch(waitTime * 2);
+    }
+    fetching = true;
+    fetching1 = true;
     participantId++;
   });
 }
@@ -134,8 +150,11 @@ describe("vizsurvey", () => {
     answerMELForm();
     answerMELForm();
 
+    cy.get("#attention-check-strongly-disagree").click();
+    cy.get("button").contains("Next").click();
+
     answerMELForm();
-    answerMELForm();
+    cy.tick(1000);
 
     postsurvey([
       "1,1,word,none,none,500,2,,1000,5",
@@ -160,6 +179,7 @@ describe("vizsurvey", () => {
       "2,3,barchart,none,none,300,2,,1000,7",
     ]);
   });
+  /*
   [
     {
       width: 800,
@@ -239,6 +259,7 @@ describe("vizsurvey", () => {
       cy.get("button").contains("Next").should("exist");
     }
   });
+*/
 });
 
 function calendar(id, treatmentNum, treatmentName) {

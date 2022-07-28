@@ -19,6 +19,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import {
   getParticipant,
   getDemographics,
+  getAttentionCheck,
   getTimestamps,
   postSurveyQuestionsShown,
   selectAllQuestions,
@@ -104,6 +105,7 @@ export function PostSurvey() {
   const io = new FileIOAdapter();
   const csv = io.convertToCSV(answers);
   const demographics = useSelector(getDemographics);
+  const attentioncheck = useSelector(getAttentionCheck);
   const timestamps = useSelector(getTimestamps);
   return (
     <ThemeProvider theme={theme}>
@@ -233,6 +235,7 @@ export function PostSurvey() {
                           },
                           {
                             demographics: demographics,
+                            attentioncheck: attentioncheck,
                             timestamps: timestamps,
                           }
                         ),

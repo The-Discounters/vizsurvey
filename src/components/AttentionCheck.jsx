@@ -14,7 +14,10 @@ import {
   RadioGroup,
   ThemeProvider,
 } from "@material-ui/core";
-import { postSurveyQuestionsShown } from "../features/questionSlice";
+import {
+  postSurveyQuestionsShown,
+  setAttentionCheck,
+} from "../features/questionSlice";
 import { dateToState } from "../features/ConversionUtil";
 import { styles, theme } from "./ScreenHelper";
 
@@ -132,7 +135,7 @@ export function AttentionCheck() {
                 disableFocusRipple
                 style={styles.button}
                 onClick={() => {
-                  // TODO: write answer
+                  dispatch(setAttentionCheck(qList2[0]));
                   navigate("/survey");
                 }}
                 disabled={disableSubmit}

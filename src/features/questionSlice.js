@@ -33,6 +33,7 @@ export const questionSlice = createSlice({
     gender: null,
     selfDescribeGender: null,
     profession: null,
+    attentioncheck: null,
     consentShownTimestamp: null,
     introductionShowTimestamp: null,
     introductionCompletedTimestamp: null,
@@ -71,6 +72,10 @@ export const questionSlice = createSlice({
       state.selfDescribeGender = action.payload.selfDescribeGender;
       state.profession = action.payload.profession;
       state.status = StatusType.Introduction;
+    },
+    setAttentionCheck(state, action) {
+      console.log("here " + action.payload);
+      state.attentioncheck = action.payload;
     },
     loadTreatment(state) {
       state.treatments = io.loadTreatment(state.treatmentId);
@@ -131,6 +136,7 @@ export const questionSlice = createSlice({
       state.articipantId = null;
       state.sessionId = null;
       state.countryOfResidence = null;
+      state.attentioncheck = null;
       state.vizFamiliarity = null;
       state.age = null;
       state.gender = null;
@@ -194,6 +200,11 @@ export const getDemographics = (state) => {
   };
 };
 
+export const getAttentionCheck = (state) => {
+  console.log("here2 " + state.questions.attentioncheck);
+  return state.questions.attentioncheck;
+};
+
 export const getTimestamps = (state) => {
   return {
     consentShownTimestamp: state.questions.consentShownTimestamp,
@@ -253,6 +264,7 @@ export const {
   consentShown,
   consentCompleted,
   setDemographic,
+  setAttentionCheck,
   instructionsShown,
   instructionsCompleted,
   introductionShown,

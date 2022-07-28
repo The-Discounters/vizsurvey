@@ -44,11 +44,6 @@ export const calcScreenValues = (q) => {
   var barAreaWidthUC;
   var barAreaHeightUC;
   var barWidth;
-  console.log("calcScreenValues: devicePixelRatio: " + window.devicePixelRatio);
-  console.log("calcScreenValues: width: " + window.screen.width);
-  console.log("calcScreenValues: height: " + window.screen.height);
-  console.log("calcScreenValues: inner width: " + window.innerWidth);
-  console.log("calcScreenValues: inner height: " + window.innerHeight);
   if (q.horizontalPixels && q.verticalPixels) {
     console.log("calcScreenValues: if");
     totalUCWidth = q.horizontalPixels;
