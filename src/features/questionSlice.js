@@ -25,6 +25,7 @@ export const questionSlice = createSlice({
     treatmentId: null,
     participantId: null,
     sessionId: null,
+    postsurvey: null,
     countryOfResidence: null,
     firstLanguage: null,
     secondLanguage: null,
@@ -72,6 +73,9 @@ export const questionSlice = createSlice({
       state.selfDescribeGender = action.payload.selfDescribeGender;
       state.profession = action.payload.profession;
       state.status = StatusType.Introduction;
+    },
+    setPostSurvey(state, action) {
+      state.postsurvey = action.payload;
     },
     setAttentionCheck(state, action) {
       console.log("here " + action.payload);
@@ -135,6 +139,7 @@ export const questionSlice = createSlice({
       state.treatmentId = null;
       state.articipantId = null;
       state.sessionId = null;
+      state.postsurvey = null;
       state.countryOfResidence = null;
       state.attentioncheck = null;
       state.vizFamiliarity = null;
@@ -198,6 +203,10 @@ export const getDemographics = (state) => {
     selfDescribeGender: state.questions.selfDescribeGender,
     profession: state.questions.profession,
   };
+};
+
+export const getPostSurvey = (state) => {
+  return state.questions.postsurvey;
 };
 
 export const getAttentionCheck = (state) => {
@@ -264,6 +273,7 @@ export const {
   consentShown,
   consentCompleted,
   setDemographic,
+  setPostSurvey,
   setAttentionCheck,
   instructionsShown,
   instructionsCompleted,

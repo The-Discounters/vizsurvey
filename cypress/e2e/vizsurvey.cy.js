@@ -20,70 +20,74 @@ function postsurvey(expects) {
   cy.get("#effort-strongly-disagree").click();
   cy.get("button").contains("Next").click();
   cy.tick(1000);
-  cy.wait(1000);
-  cy.get("h4")
-    .contains("Study Explanation")
-    .should("exist")
+  cy.get("h4").contains("Study Explanation").should("exist");
+  cy.get("button").contains("Next").click();
+  cy.get("p").contains("You have completed the survey").should("exist");
+  cy.get("button")
+    .contains("Submit and Exit")
+    .click()
     .then(() => {
-      let file = `http://localhost:3001/answers-${participantId}.csv`;
-      console.log("fetching file: " + file);
-      fetch(file).then((response) => {
-        response.text().then((text) => {
-          console.log("file text: " + text);
-          expects.forEach((expectStr) => {
-            expect(text).to.contain(expectStr);
-            fetching = false;
+      cy.wait(1000).then(() => {
+        let file = `http://localhost:3001/answers-${participantId}.csv`;
+        console.log("fetching file: " + file);
+        fetch(file).then((response) => {
+          response.text().then((text) => {
+            console.log("file text: " + text);
+            expects.forEach((expectStr) => {
+              expect(text).to.contain(expectStr);
+              fetching = false;
+            });
           });
         });
-      });
-      let file1 = `http://localhost:3001/post-survey-answers-${participantId}.json`;
-      console.log("fetching file1: " + file1);
-      fetch(file1).then((response) => {
-        response.text().then((text) => {
-          console.log("file1 text: " + text);
-          expect(JSON.parse(text)).to.deep.equal({
-            demographics: {
-              countryOfResidence: "usa",
-              vizFamiliarity: "3",
-              age: "26",
-              gender: "male",
-              selfDescribeGender: "",
-              profession: "Software Developer",
-            },
-            attentioncheck: "strongly-disagree",
-            timestamps: {
-              consentShownTimestamp: 1000,
-              introductionShowTimestamp: 2000,
-              introductionCompletedTimestamp: 3000,
-              instructionsShownTimestamp: 3000,
-              instructionsCompletedTimestamp: 4000,
-              postSurveyQuestionsShownTimestamp: 8000,
-              debriefShownTimestamp: null,
-              debriefCompleted: null,
-              theEndShownTimestamp: null,
-            },
-            fincanialLit: {
-              q15vs30: "v15+",
-              q50k6p: "v<50k",
-              q100k5p: "v<120k",
-              q200k5p: "v<20y",
-            },
-            senseOfPurpose: {
-              posdiff: "strongly-disagree",
-              carbetplac: "strongly-disagree",
-              servsoc: "strongly-disagree",
-              thinkach: "strongly-disagree",
-              descrpurp: "strongly-disagree",
-              effort: "strongly-disagree",
-            },
+        let file1 = `http://localhost:3001/post-survey-answers-${participantId}.json`;
+        console.log("fetching file1: " + file1);
+        fetch(file1).then((response) => {
+          response.text().then((text) => {
+            console.log("file1 text: " + text);
+            expect(JSON.parse(text)).to.deep.equal({
+              demographics: {
+                countryOfResidence: "usa",
+                vizFamiliarity: "3",
+                age: "26",
+                gender: "male",
+                selfDescribeGender: "",
+                profession: "Software Developer",
+              },
+              attentioncheck: "strongly-disagree",
+              timestamps: {
+                consentShownTimestamp: 1000,
+                introductionShowTimestamp: 2000,
+                introductionCompletedTimestamp: 3000,
+                instructionsShownTimestamp: 3000,
+                instructionsCompletedTimestamp: 4000,
+                postSurveyQuestionsShownTimestamp: 8000,
+                debriefShownTimestamp: 9000,
+                debriefCompleted: 9000,
+                theEndShownTimestamp: 9000,
+              },
+              postsurvey: {
+                fincanialLit: {
+                  q15vs30: "v15+",
+                  q50k6p: "v<50k",
+                  q100k5p: "v<120k",
+                  q200k5p: "v<20y",
+                },
+                senseOfPurpose: {
+                  posdiff: "strongly-disagree",
+                  carbetplac: "strongly-disagree",
+                  servsoc: "strongly-disagree",
+                  thinkach: "strongly-disagree",
+                  descrpurp: "strongly-disagree",
+                  effort: "strongly-disagree",
+                },
+              },
+            });
+            fetching1 = false;
           });
-          fetching1 = false;
         });
       });
     });
-  cy.get("button").contains("Next").click();
   waitingForFetch();
-  cy.get("p").contains("You have completed the survey").should("exist");
 }
 
 function waitingForFetch(waitTime = 1000) {

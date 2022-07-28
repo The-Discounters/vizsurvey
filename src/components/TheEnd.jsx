@@ -1,10 +1,20 @@
 import React, { useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { DateTime } from "luxon";
-import { Grid, Typography, ThemeProvider } from "@material-ui/core";
+import { Grid, Typography, ThemeProvider, Button } from "@material-ui/core";
 import { theEndShownTimestamp } from "../features/questionSlice";
 import { dateToState } from "../features/ConversionUtil";
 import { styles, theme } from "./ScreenHelper";
+import {
+  getParticipant,
+  getPostSurvey,
+  getDemographics,
+  getAttentionCheck,
+  getTimestamps,
+  selectAllQuestions,
+  writeAnswers,
+} from "../features/questionSlice";
+import { FileIOAdapter } from "../features/FileIOAdapter";
 
 const TheEnd = () => {
   useEffect(() => {
@@ -12,6 +22,15 @@ const TheEnd = () => {
   }, []);
 
   const dispatch = useDispatch();
+
+  const participantId = useSelector(getParticipant);
+  const answers = useSelector(selectAllQuestions);
+  const io = new FileIOAdapter();
+  const csv = io.convertToCSV(answers);
+  const postsurvey = useSelector(getPostSurvey);
+  const demographics = useSelector(getDemographics);
+  const attentioncheck = useSelector(getAttentionCheck);
+  const timestamps = useSelector(getTimestamps);
 
   return (
     <ThemeProvider theme={theme}>
@@ -26,9 +45,9 @@ const TheEnd = () => {
             }}
           />
           <Typography paragraph>
-            You have completed the survey and your answers have been submitted.
-            We hope you have enjoyed taking this survey and welcome any feedback
-            and/or questions through email by clicking&nbsp;
+            You have completed the survey. We hope you have enjoyed taking this
+            survey and welcome any feedback and/or questions through email by
+            clicking&nbsp;
             <a
               href={`mailto:pncordone@wpi.edu?subject=Survey Feedback&body=${encodeURIComponent(
                 "Enter your feedback here."
@@ -36,11 +55,42 @@ const TheEnd = () => {
             >
               here
             </a>
-            .
+            . Please click the button below to submit your answers and exit this
+            tab.
           </Typography>
           <Typography paragraph>
             You can now close this browser window.
           </Typography>
+        </Grid>
+        <Grid item xs={12} style={{ margin: 0 }}>
+          <Button
+            variant="contained"
+            color="secondary"
+            disableRipple
+            disableFocusRipple
+            style={styles.button}
+            onClick={() => {
+              dispatch(
+                writeAnswers({
+                  csv: csv,
+                  participantId: participantId,
+                  postSurveyAnswers: {
+                    postsurvey: postsurvey,
+                    demographics: demographics,
+                    attentioncheck: attentioncheck,
+                    timestamps: timestamps,
+                  },
+                })
+              );
+              setTimeout(() => {
+                window.open("about:blank", "_self");
+                window.close();
+              }, 400);
+            }}
+          >
+            {" "}
+            Submit and Exit{" "}
+          </Button>
         </Grid>
       </Grid>
     </ThemeProvider>
