@@ -179,7 +179,6 @@ describe("vizsurvey", () => {
       "2,3,barchart,none,none,300,2,,1000,7",
     ]);
   });
-  /*
   [
     {
       width: 800,
@@ -226,6 +225,7 @@ describe("vizsurvey", () => {
       }
     );
   });
+  /*
   it("calendar bar", () => {
     visitTreatment(4);
     cy.tick(4000);
