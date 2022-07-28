@@ -16,10 +16,10 @@ import {
 } from "@mui/material";
 import { makeStyles } from "@material-ui/core/styles";
 import { AmountType } from "../features/AmountType";
-import { StatusType } from "../features/StatusType";
 import {
   selectCurrentQuestion,
-  fetchStatus,
+  isLastTreatment,
+  isMiddleTreatment,
   setQuestionShownTimestamp,
   answer,
 } from "../features/questionSlice";
@@ -63,7 +63,8 @@ const useStyles = makeStyles(() => ({
 export function MELForm() {
   const dispatch = useDispatch();
   const q = useSelector(selectCurrentQuestion);
-  const status = useSelector(fetchStatus);
+  const isLastTreatmentQ = useSelector(isLastTreatment);
+  const isMiddleTreatmentQ = useSelector(isMiddleTreatment);
   const navigate = useNavigate();
   const [disableSubmit, setDisableSubmit] = React.useState(true);
   const [choice, setChoice] = useState("");
@@ -180,8 +181,10 @@ export function MELForm() {
                     })
                   );
                   setChoice(null);
-                  if (status === StatusType.Questionaire) {
+                  if (isLastTreatmentQ) {
                     navigate("/questionaire");
+                  } else if (isMiddleTreatmentQ) {
+                    navigate("/attentioncheck");
                   }
                 }, 400);
               }

@@ -1,9 +1,8 @@
 import React, { useEffect } from "react";
 import { FullScreen, useFullScreenHandle } from "react-full-screen";
 import { useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { DateTime } from "luxon";
-import { FileIOAdapter } from "../features/FileIOAdapter";
 import {
   Grid,
   Button,
@@ -17,12 +16,8 @@ import {
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import {
-  getParticipant,
-  getDemographics,
-  getTimestamps,
   postSurveyQuestionsShown,
-  selectAllQuestions,
-  writeAnswers,
+  setPostSurvey,
 } from "../features/questionSlice";
 import { dateToState } from "../features/ConversionUtil";
 import { POST_SURVEY_QUESTIONS } from "../features/postsurveyquestions";
@@ -99,12 +94,6 @@ export function PostSurvey() {
     setter(event.target.value);
   };
 
-  const participantId = useSelector(getParticipant);
-  const answers = useSelector(selectAllQuestions);
-  const io = new FileIOAdapter();
-  const csv = io.convertToCSV(answers);
-  const demographics = useSelector(getDemographics);
-  const timestamps = useSelector(getTimestamps);
   return (
     <ThemeProvider theme={theme}>
       <div>
@@ -216,10 +205,8 @@ export function PostSurvey() {
                     if (process.env.REACT_APP_FULLSCREEN === "enabled")
                       handle.exit();
                     dispatch(
-                      writeAnswers({
-                        csv: csv,
-                        participantId: participantId,
-                        postSurveyAnswers: surveys.reduce(
+                      setPostSurvey(
+                        surveys.reduce(
                           (prev1, { questions, promptShort }, index1) => {
                             prev1[promptShort] = questions.reduce(
                               (prev, { question }, index) => {
@@ -231,12 +218,9 @@ export function PostSurvey() {
                             );
                             return prev1;
                           },
-                          {
-                            demographics: demographics,
-                            timestamps: timestamps,
-                          }
-                        ),
-                      })
+                          {}
+                        )
+                      )
                     );
                     navigate("/debrief");
                   }, 400);

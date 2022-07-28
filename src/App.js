@@ -15,6 +15,7 @@ import Demographic from "./components/Demographic";
 import Instructions from "./components/Instructions";
 import Survey from "./components/Survey";
 import PostSurvey from "./components/PostSurvey";
+import AttentionCheck from "./components/AttentionCheck";
 import Debrief from "./components/Debrief";
 import TheEnd from "./components/TheEnd";
 import InvalidSurveyLink from "./components/InvalidSurveyLink";
@@ -77,6 +78,7 @@ const App = () => {
               <Route path={"instruction"} element={<Instructions />} />
               <Route path={"survey"} element={<Survey />} />
               <Route path={"questionaire"} element={<PostSurvey />} />
+              <Route path={"attentioncheck"} element={<AttentionCheck />} />
               <Route path={"debrief"} element={<Debrief />} />
               <Route path={"theend"} element={<TheEnd />} />
               <Route path={"invalidlink"} element={<InvalidSurveyLink />} />

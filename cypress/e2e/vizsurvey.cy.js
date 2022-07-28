@@ -5,8 +5,9 @@ let baseURL = "http://localhost:3000/start";
 
 let participantId = 1;
 
+let fetching = true;
+let fetching1 = true;
 function postsurvey(expects) {
-  cy.wait(1000);
   cy.get("label").contains("Higher for the 15 year mortgage").click();
   cy.get("label").contains("Less than $50,000").click();
   cy.get("label").contains("Less than $120,000").click();
@@ -19,22 +20,30 @@ function postsurvey(expects) {
   cy.get("#effort-strongly-disagree").click();
   cy.get("button").contains("Next").click();
   cy.tick(1000);
-  cy.wait(1000);
-  cy.get("h4")
-    .contains("Study Explanation")
-    .should("exist")
+  cy.get("h4").contains("Study Explanation").should("exist");
+  cy.get("button").contains("Next").click();
+  cy.get("p").contains("You have completed the survey").should("exist");
+  cy.get("button")
+    .contains("Submit and Exit")
+    .click()
     .then(() => {
-      fetch(`http://localhost:3001/answers-${participantId}.csv`).then((response) => {
-        response.text().then((text) => {
-          //treatment_id,position,view_type,interaction,variable_amount,amount_earlier,time_earlier,date_earlier,amount_later,time_later,date_later,max_amount,max_time,vertical_pixels,horizontal_pixels,left_margin_width_in,bottom_margin_height_in,graph_width_in,graph_height_in,width_in,height_in,choice,shown_timestamp,choice_timestamp,highup,lowdown,participant_code
-          expects.forEach((expectStr) => {
-            expect(text).to.contain(expectStr);
+      cy.wait(1000).then(() => {
+        let file = `http://localhost:3001/answers-${participantId}.csv`;
+        console.log("fetching file: " + file);
+        fetch(file).then((response) => {
+          response.text().then((text) => {
+            console.log("file text: " + text);
+            expects.forEach((expectStr) => {
+              expect(text).to.contain(expectStr);
+              fetching = false;
+            });
           });
         });
-      });
-      fetch(`http://localhost:3001/post-survey-answers-${participantId}.json`).then(
-        (response) => {
+        let file1 = `http://localhost:3001/post-survey-answers-${participantId}.json`;
+        console.log("fetching file1: " + file1);
+        fetch(file1).then((response) => {
           response.text().then((text) => {
+            console.log("file1 text: " + text);
             expect(JSON.parse(text)).to.deep.equal({
               demographics: {
                 countryOfResidence: "usa",
@@ -44,6 +53,7 @@ function postsurvey(expects) {
                 selfDescribeGender: "",
                 profession: "Software Developer",
               },
+              attentioncheck: "strongly-disagree",
               timestamps: {
                 consentShownTimestamp: 1000,
                 introductionShowTimestamp: 2000,
@@ -51,32 +61,44 @@ function postsurvey(expects) {
                 instructionsShownTimestamp: 3000,
                 instructionsCompletedTimestamp: 4000,
                 postSurveyQuestionsShownTimestamp: 8000,
-                debriefShownTimestamp: null,
-                debriefCompleted: null,
-                theEndShownTimestamp: null,
+                debriefShownTimestamp: 9000,
+                debriefCompleted: 9000,
+                theEndShownTimestamp: 9000,
               },
-              fincanialLit: {
-                q15vs30: "v15+",
-                q50k6p: "v<50k",
-                q100k5p: "v<120k",
-                q200k5p: "v<20y",
-              },
-              senseOfPurpose: {
-                posdiff: "strongly-disagree",
-                carbetplac: "strongly-disagree",
-                servsoc: "strongly-disagree",
-                thinkach: "strongly-disagree",
-                descrpurp: "strongly-disagree",
-                effort: "strongly-disagree",
+              postsurvey: {
+                fincanialLit: {
+                  q15vs30: "v15+",
+                  q50k6p: "v<50k",
+                  q100k5p: "v<120k",
+                  q200k5p: "v<20y",
+                },
+                senseOfPurpose: {
+                  posdiff: "strongly-disagree",
+                  carbetplac: "strongly-disagree",
+                  servsoc: "strongly-disagree",
+                  thinkach: "strongly-disagree",
+                  descrpurp: "strongly-disagree",
+                  effort: "strongly-disagree",
+                },
               },
             });
-            participantId++;
+            fetching1 = false;
           });
-        }
-      );
+        });
+      });
     });
-  cy.get("button").contains("Next").click();
-  cy.get("p").contains("You have completed the survey").should("exist");
+  waitingForFetch();
+}
+
+function waitingForFetch(waitTime = 1000) {
+  cy.wait(waitTime).then(() => {
+    if (fetching || fetching1) {
+      waitingForFetch(waitTime * 2);
+    }
+    fetching = true;
+    fetching1 = true;
+    participantId++;
+  });
 }
 
 function demographic() {
@@ -86,7 +108,6 @@ function demographic() {
   cy.get("#gender-select-helper").select("Male");
   cy.get("#Current-Profession").type("Software Developer");
   cy.tick(1000);
-  cy.wait(1000);
   cy.get("button").contains("Next").click();
 }
 
@@ -94,16 +115,15 @@ function visitTreatment(treatmentId, width = 1200, height = 700) {
   cy.clock();
   cy.viewport(width, height);
   cy.visit(
-    baseURL + `?treatment_id=${treatmentId}&session_id=1&participant_id=${participantId}`
+    baseURL +
+      `?treatment_id=${treatmentId}&session_id=1&participant_id=${participantId}`
   );
   cy.tick(1000);
-  cy.wait(1000);
   cy.get("#checkConsent").click();
   cy.get("button").contains("Next").click();
   demographic();
 
   cy.tick(1000);
-  cy.wait(1000);
   if (treatmentId === 1) {
     cy.get("button").should("be.disabled");
     cy.get("label").contains("First option").click();
@@ -113,34 +133,32 @@ function visitTreatment(treatmentId, width = 1200, height = 700) {
   }
 
   cy.tick(1000);
-  cy.wait(1000);
   cy.get("button").contains("Start").click();
 }
 describe("vizsurvey", () => {
   it("word", () => {
     visitTreatment(1);
     function answerMELForm() {
-      let waitTime = 200;
-      cy.wait(waitTime);
       cy.get("#earlierAmount").should(
         "have.css",
         "borderColor",
         "rgb(255, 255, 255)"
       );
-      cy.wait(waitTime);
       cy.get("#earlierAmount")
         .realHover()
         .should("have.css", "borderColor", "rgb(0, 0, 0)")
         .click();
-      cy.wait(waitTime);
       cy.get("button").realHover().click();
       cy.tick(1000);
     }
     answerMELForm();
     answerMELForm();
 
+    cy.get("#attention-check-strongly-disagree").click();
+    cy.get("button").contains("Next").click();
+
     answerMELForm();
-    answerMELForm();
+    cy.tick(1000);
 
     postsurvey([
       "1,1,word,none,none,500,2,,1000,5",
@@ -154,6 +172,8 @@ describe("vizsurvey", () => {
     cy.get("button").contains("Next").click();
     cy.tick(4000);
     cy.get("#laterAmount").click();
+    cy.get("button").contains("Next").click();
+    cy.get("#attention-check-strongly-disagree").click();
     cy.get("button").contains("Next").click();
     cy.get("#laterAmount").click();
     cy.get("button").contains("Next").click();
@@ -193,6 +213,8 @@ describe("vizsurvey", () => {
         cy.get("button").contains("Next").click();
         cy.get("#laterAmount").click();
         cy.get("button").contains("Next").click();
+        cy.get("#attention-check-strongly-disagree").click();
+        cy.get("button").contains("Next").click();
         cy.get("#earlierAmount").click();
         cy.get("button").contains("Next").click();
         cy.get("#earlierAmount").click();
@@ -207,6 +229,7 @@ describe("vizsurvey", () => {
       }
     );
   });
+  /*
   it("calendar bar", () => {
     visitTreatment(4);
     cy.tick(4000);
@@ -240,6 +263,7 @@ describe("vizsurvey", () => {
       cy.get("button").contains("Next").should("exist");
     }
   });
+*/
 });
 
 function calendar(id, treatmentNum, treatmentName) {

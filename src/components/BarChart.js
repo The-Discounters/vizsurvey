@@ -20,6 +20,7 @@ import {
   selectCurrentQuestion,
   setQuestionShownTimestamp,
   isLastTreatment,
+  isMiddleTreatment,
   answer,
 } from "../features/questionSlice";
 import { dateToState } from "../features/ConversionUtil";
@@ -31,7 +32,8 @@ function BarChart() {
   const q = useSelector(selectCurrentQuestion);
   const [choice, setChoice] = useState(AmountType.none);
   const [disableSubmit, setDisableSubmit] = useState(true);
-  const status = useSelector(isLastTreatment);
+  const isLastTreatmentQ = useSelector(isLastTreatment);
+  const isMiddleTreatmentQ = useSelector(isMiddleTreatment);
   const t = d3.transition().duration(500);
   const navigate = useNavigate();
   const stateRef = useRef();
@@ -368,8 +370,10 @@ function BarChart() {
                   choiceTimestamp: dateToState(DateTime.utc()),
                 })
               );
-              if (status) {
+              if (isLastTreatmentQ) {
                 navigate("/questionaire");
+              } else if (isMiddleTreatmentQ) {
+                navigate("/attentioncheck");
               } else {
                 setChoice(AmountType.none);
               }
