@@ -68,23 +68,19 @@ function postsurvey(expects) {
                 theEndShownTimestamp: 10000,
               },
               postsurvey: {
-                postsurveyfinanciallit: {
-                  fincanialLit: {
-                    q15vs30: "v15+",
-                    q50k6p: "v<50k",
-                    q100k5p: "v<120k",
-                    q200k5p: "v<20y",
-                  },
+                fincanialLit: {
+                  q15vs30: "v15+",
+                  q50k6p: "v<50k",
+                  q100k5p: "v<120k",
+                  q200k5p: "v<20y",
                 },
-                postsurveysenseofpurpose: {
-                  senseOfPurpose: {
-                    posdiff: "strongly-disagree",
-                    carbetplac: "strongly-disagree",
-                    servsoc: "strongly-disagree",
-                    thinkach: "strongly-disagree",
-                    descrpurp: "strongly-disagree",
-                    effort: "strongly-disagree",
-                  },
+                senseOfPurpose: {
+                  posdiff: "strongly-disagree",
+                  carbetplac: "strongly-disagree",
+                  servsoc: "strongly-disagree",
+                  thinkach: "strongly-disagree",
+                  descrpurp: "strongly-disagree",
+                  effort: "strongly-disagree",
                 },
               },
             });

@@ -206,21 +206,14 @@ export function PostSurvey() {
                       handle.exit();
                     dispatch(
                       setPostSurvey({
-                        data: surveys.reduce(
-                          (prev1, { questions, promptShort }, index1) => {
-                            prev1[promptShort] = questions.reduce(
-                              (prev, { question }, index) => {
-                                prev[question.textShort] =
-                                  qList2[index1][index];
-                                return prev;
-                              },
-                              {}
-                            );
-                            return prev1;
+                        data: surveys[0].questions.reduce(
+                          (prev, { question }, index) => {
+                            prev[question.textShort] = qList2[0][index];
+                            return prev;
                           },
                           {}
                         ),
-                        key: "postsurveysenseofpurpose",
+                        key: surveys[0].promptShort,
                       })
                     );
                     navigate("/debrief");
