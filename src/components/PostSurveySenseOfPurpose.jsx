@@ -20,7 +20,7 @@ import {
   setPostSurvey,
 } from "../features/questionSlice";
 import { dateToState } from "../features/ConversionUtil";
-import { POST_SURVEY_QUESTIONS } from "../features/postsurveyquestions";
+import { POST_SURVEY_QUESTIONS } from "../features/postsurveyquestionssenseofpurpose";
 import { styles, theme } from "./ScreenHelper";
 
 const useStyles = makeStyles((theme) => ({
@@ -205,8 +205,8 @@ export function PostSurvey() {
                     if (process.env.REACT_APP_FULLSCREEN === "enabled")
                       handle.exit();
                     dispatch(
-                      setPostSurvey(
-                        surveys.reduce(
+                      setPostSurvey({
+                        data: surveys.reduce(
                           (prev1, { questions, promptShort }, index1) => {
                             prev1[promptShort] = questions.reduce(
                               (prev, { question }, index) => {
@@ -219,8 +219,9 @@ export function PostSurvey() {
                             return prev1;
                           },
                           {}
-                        )
-                      )
+                        ),
+                        key: "postsurveysenseofpurpose",
+                      })
                     );
                     navigate("/debrief");
                   }, 400);

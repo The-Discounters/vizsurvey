@@ -182,7 +182,7 @@ export function MELForm() {
                   );
                   setChoice(null);
                   if (isLastTreatmentQ) {
-                    navigate("/questionaire");
+                    navigate("/postsurvey1");
                   } else if (isMiddleTreatmentQ) {
                     navigate("/attentioncheck");
                   }
