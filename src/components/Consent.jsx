@@ -157,7 +157,7 @@ export function Consent() {
         <Grid container style={styles.root} justifyContent="center">
           <Grid item xs={12}>
             <Typography variant="h5">
-              <b>Choices About Money?</b>
+              <b>Choices About Money</b>
               <br />
             </Typography>
             <hr
