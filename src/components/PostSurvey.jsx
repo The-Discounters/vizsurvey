@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { FullScreen, useFullScreenHandle } from "react-full-screen";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { DateTime } from "luxon";
 import {
@@ -38,6 +38,9 @@ export function PostSurvey() {
   const navigate = useNavigate();
   const handle = useFullScreenHandle();
 
+  const [searchParams, setSearchParams] = useSearchParams();
+  var postsurveyId = parseInt(searchParams.get("postsurvey_id"));
+  console.log(postsurveyId);
   useEffect(() => {
     dispatch(postSurveyQuestionsShown(dateToState(DateTime.utc())));
     if (process.env.REACT_APP_FULLSCREEN === "enabled") handle.exit();
@@ -46,8 +49,8 @@ export function PostSurvey() {
   const classes = useStyles();
 
   const [disableSubmit, setDisableSubmit] = React.useState(true);
-  let surveys = POST_SURVEY_QUESTIONS;
-  surveys = surveys.map((survey) => {
+  let postsurveyorig = POST_SURVEY_QUESTIONS;
+  let surveys = postsurveyorig.map((survey) => {
     survey["questions"] = survey.questions.filter(({ question }) => {
       if (question.disabled === true) {
         return false;
@@ -56,6 +59,9 @@ export function PostSurvey() {
       }
     });
     return survey;
+  });
+  surveys = surveys.filter((el, index) => {
+    return index === postsurveyId;
   });
 
   let qList2 = [];
@@ -222,7 +228,12 @@ export function PostSurvey() {
                         )
                       )
                     );
-                    navigate("/debrief");
+                    postsurveyId++;
+                    if (postsurveyId < postsurveyorig.length) {
+                      setSearchParams({ postsurvey_id: postsurveyId });
+                    } else {
+                      navigate("/debrief");
+                    }
                   }, 400);
                 }}
                 disabled={disableSubmit}
