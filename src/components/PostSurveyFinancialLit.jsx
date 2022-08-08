@@ -146,6 +146,9 @@ export function PostSurvey() {
                                 checked={
                                   qList2[index2][index] === option.textShort
                                 }
+                                style={{
+                                  width: "100%",
+                                }}
                                 control={<Radio />}
                                 label={option.textFull}
                                 onChange={(event) => {
@@ -169,6 +172,9 @@ export function PostSurvey() {
                                 value={option}
                                 id={question.textShort + "-" + option}
                                 checked={qList2[index2][index] === option}
+                                style={{
+                                  width: "100%",
+                                }}
                                 control={<Radio />}
                                 label={option.replace("-", " ")}
                                 onChange={(event) => {
