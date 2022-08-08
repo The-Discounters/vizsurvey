@@ -2,7 +2,8 @@ export const POST_SURVEY_QUESTIONS = [
   {
     promptShort: "senseOfPurpose",
     prompt:
-      "The following questions try to assess how strong your sense of purpose is. Please indicate your agreement or disagreement with the following statements.",
+      "The following questions ask you generally about your life. Please indicate your agreement or disagreement with the following statements.",
+    // "The following questions try to assess how strong your sense of purpose is. Please indicate your agreement or disagreement with the following statements.",
     questionsType: "multiple choice auto",
     questions: [
       {
