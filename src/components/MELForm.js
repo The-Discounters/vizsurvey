@@ -5,7 +5,6 @@ import { DateTime } from "luxon";
 import {
   Grid,
   Button,
-  FormLabel,
   FormControl,
   FormControlLabel,
   FormHelperText,
@@ -25,23 +24,20 @@ import {
 } from "../features/questionSlice";
 import { format } from "d3";
 import { dateToState } from "../features/ConversionUtil";
-import {
-  styles,
-  theme,
-  formControl,
-  formLabel,
-  formControlLabel,
-} from "./ScreenHelper";
+import { styles, theme, formControl } from "./ScreenHelper";
 
 const useStyles = makeStyles(() => ({
   btn: {
-    borderColor: "#ffffff",
-    "border-style": "solid",
-    "border-width": "5px",
+    backgroundColor: "steelblue",
     "border-radius": "20px",
+    "border-width": "0px",
+    color: "black",
     paddingRight: "10px",
     "&:hover": {
-      borderColor: "#000000",
+      backgroundColor: "lightblue",
+    },
+    "&:click": {
+      color: "red",
     },
   },
   qArea: {
@@ -50,6 +46,9 @@ const useStyles = makeStyles(() => ({
     "border-radius": "20px",
     padding: "10px",
     borderColor: "#000000",
+  },
+  qTitle: {
+    fontSize: "32px",
   },
 }));
 
@@ -105,9 +104,7 @@ export function MELForm() {
         <Grid item xs={12}>
           <form className={classes.qArea}>
             <FormControl sx={{ ...formControl }} required={false} error={error}>
-              <FormLabel sx={{ ...formLabel }} id="question-text">
-                {questionText()}
-              </FormLabel>
+              <p className={classes.qTitle}>{questionText()}</p>
               <FormHelperText>{helperText}</FormHelperText>
               <Box
                 component="span"
@@ -141,7 +138,7 @@ export function MELForm() {
                     },
                   ].map(({ key, label }) => (
                     <FormControlLabel
-                      sx={{ ...formControlLabel, mr: "100px" }}
+                      sx={{ mr: "100px" }}
                       key={key}
                       id={key}
                       value={key}
