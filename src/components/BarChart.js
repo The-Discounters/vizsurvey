@@ -371,7 +371,7 @@ function BarChart() {
                 })
               );
               if (isLastTreatmentQ) {
-                navigate("/questionaire");
+                navigate("/postsurvey1");
               } else if (isMiddleTreatmentQ) {
                 navigate("/attentioncheck");
               } else {

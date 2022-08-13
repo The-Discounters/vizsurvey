@@ -12,6 +12,8 @@ function postsurvey(expects) {
   cy.get("label").contains("Less than $50,000").click();
   cy.get("label").contains("Less than $120,000").click();
   cy.get("label").contains("Less than 20 years").click();
+  cy.get("button").contains("Next").click();
+  cy.tick(1000);
   cy.get("#posdiff-strongly-disagree").click();
   cy.get("#carbetplac-strongly-disagree").click();
   cy.get("#servsoc-strongly-disagree").click();
@@ -60,10 +62,10 @@ function postsurvey(expects) {
                 introductionCompletedTimestamp: 3000,
                 instructionsShownTimestamp: 3000,
                 instructionsCompletedTimestamp: 4000,
-                postSurveyQuestionsShownTimestamp: 8000,
-                debriefShownTimestamp: 9000,
-                debriefCompleted: 9000,
-                theEndShownTimestamp: 9000,
+                postSurveyQuestionsShownTimestamp: 9000,
+                debriefShownTimestamp: 10000,
+                debriefCompleted: 10000,
+                theEndShownTimestamp: 10000,
               },
               postsurvey: {
                 fincanialLit: {
