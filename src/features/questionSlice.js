@@ -25,7 +25,7 @@ export const questionSlice = createSlice({
     treatmentId: null,
     participantId: null,
     sessionId: null,
-    postsurvey: null,
+    postsurvey: {},
     countryOfResidence: null,
     firstLanguage: null,
     secondLanguage: null,
@@ -75,7 +75,7 @@ export const questionSlice = createSlice({
       state.status = StatusType.Introduction;
     },
     setPostSurvey(state, action) {
-      state.postsurvey = action.payload;
+      state.postsurvey[action.payload.key] = action.payload.data;
     },
     setAttentionCheck(state, action) {
       console.log("here " + action.payload);
