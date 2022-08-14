@@ -78,7 +78,6 @@ export const questionSlice = createSlice({
       state.postsurvey[action.payload.key] = action.payload.data;
     },
     setAttentionCheck(state, action) {
-      console.log("here " + action.payload);
       state.attentioncheck = action.payload;
     },
     loadTreatment(state) {
@@ -210,7 +209,6 @@ export const getPostSurvey = (state) => {
 };
 
 export const getAttentionCheck = (state) => {
-  console.log("here2 " + state.questions.attentioncheck);
   return state.questions.attentioncheck;
 };
 
