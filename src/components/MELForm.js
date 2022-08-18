@@ -26,90 +26,94 @@ import { format } from "d3";
 import { dateToState } from "../features/ConversionUtil";
 import { styles, theme, formControl } from "./ScreenHelper";
 
-let useStyles = makeStyles(() => ({
-  btn0: {
-    "border-style": "solid",
-    backgroundColor: "steelblue",
-    "border-radius": "20px",
-    "border-width": "5px",
-    borderColor: "#ffffff",
-    color: "black",
-    paddingRight: "10px",
-    "&:hover": {
-      backgroundColor: "lightblue",
+let useStyles;
+function resetUseStyles() {
+  useStyles = makeStyles(() => ({
+    btn0: {
+      "border-style": "solid",
+      backgroundColor: "steelblue",
+      "border-radius": "20px",
+      "border-width": "5px",
+      borderColor: "#ffffff",
+      color: "black",
+      paddingRight: "10px",
+      "&:hover": {
+        backgroundColor: "lightblue",
+      },
     },
-  },
-  btn0UnClicked: {
-    "border-style": "solid",
-    backgroundColor: "steelblue",
-    "border-radius": "20px",
-    "border-width": "5px",
-    borderColor: "#ffffff",
-    color: "black",
-    paddingRight: "10px",
-    "&:hover": {
-      backgroundColor: "lightblue",
+    btn0UnClicked: {
+      "border-style": "solid",
+      backgroundColor: "steelblue",
+      "border-radius": "20px",
+      "border-width": "5px",
+      borderColor: "#ffffff",
+      color: "black",
+      paddingRight: "10px",
+      "&:hover": {
+        backgroundColor: "lightblue",
+      },
     },
-  },
-  btn0Clicked: {
-    "border-style": "solid",
-    backgroundColor: "steelblue",
-    "border-radius": "20px",
-    "border-width": "5px",
-    borderColor: "#000000",
-    color: "black",
-    paddingRight: "10px",
-    "&:hover": {
-      backgroundColor: "lightblue",
+    btn0Clicked: {
+      "border-style": "solid",
+      backgroundColor: "steelblue",
+      "border-radius": "20px",
+      "border-width": "5px",
+      borderColor: "#000000",
+      color: "black",
+      paddingRight: "10px",
+      "&:hover": {
+        backgroundColor: "lightblue",
+      },
     },
-  },
-  btn1: {
-    "border-style": "solid",
-    backgroundColor: "steelblue",
-    "border-radius": "20px",
-    "border-width": "5px",
-    borderColor: "#ffffff",
-    color: "black",
-    paddingRight: "10px",
-    "&:hover": {
-      backgroundColor: "lightblue",
+    btn1: {
+      "border-style": "solid",
+      backgroundColor: "steelblue",
+      "border-radius": "20px",
+      "border-width": "5px",
+      borderColor: "#ffffff",
+      color: "black",
+      paddingRight: "10px",
+      "&:hover": {
+        backgroundColor: "lightblue",
+      },
     },
-  },
-  btn1UnClicked: {
-    "border-style": "solid",
-    backgroundColor: "steelblue",
-    "border-radius": "20px",
-    "border-width": "5px",
-    borderColor: "#ffffff",
-    color: "black",
-    paddingRight: "10px",
-    "&:hover": {
-      backgroundColor: "lightblue",
+    btn1UnClicked: {
+      "border-style": "solid",
+      backgroundColor: "steelblue",
+      "border-radius": "20px",
+      "border-width": "5px",
+      borderColor: "#ffffff",
+      color: "black",
+      paddingRight: "10px",
+      "&:hover": {
+        backgroundColor: "lightblue",
+      },
     },
-  },
-  btn1Clicked: {
-    "border-style": "solid",
-    backgroundColor: "steelblue",
-    "border-radius": "20px",
-    "border-width": "5px",
-    borderColor: "#000000",
-    color: "black",
-    paddingRight: "10px",
-    "&:hover": {
-      backgroundColor: "lightblue",
+    btn1Clicked: {
+      "border-style": "solid",
+      backgroundColor: "steelblue",
+      "border-radius": "20px",
+      "border-width": "5px",
+      borderColor: "#000000",
+      color: "black",
+      paddingRight: "10px",
+      "&:hover": {
+        backgroundColor: "lightblue",
+      },
     },
-  },
-  qArea: {
-    "border-style": "solid",
-    "border-width": "5px",
-    "border-radius": "20px",
-    padding: "10px",
-    borderColor: "#000000",
-  },
-  qTitle: {
-    fontSize: "32px",
-  },
-}));
+    qArea: {
+      "border-style": "solid",
+      "border-width": "5px",
+      "border-radius": "20px",
+      padding: "10px",
+      borderColor: "#000000",
+    },
+    qTitle: {
+      fontSize: "32px",
+    },
+  }));
+}
+resetUseStyles();
 
 // const boxDefault = {
 //   height: 100,
@@ -250,90 +254,7 @@ export function MELForm() {
                     navigate("/attentioncheck");
                   }
                 }, 400);
-                useStyles = makeStyles(() => ({
-                  btn0: {
-                    "border-style": "solid",
-                    backgroundColor: "steelblue",
-                    "border-radius": "20px",
-                    "border-width": "5px",
-                    borderColor: "#ffffff",
-                    color: "black",
-                    paddingRight: "10px",
-                    "&:hover": {
-                      backgroundColor: "lightblue",
-                    },
-                  },
-                  btn0UnClicked: {
-                    "border-style": "solid",
-                    backgroundColor: "steelblue",
-                    "border-radius": "20px",
-                    "border-width": "5px",
-                    borderColor: "#ffffff",
-                    color: "black",
-                    paddingRight: "10px",
-                    "&:hover": {
-                      backgroundColor: "lightblue",
-                    },
-                  },
-                  btn0Clicked: {
-                    "border-style": "solid",
-                    backgroundColor: "steelblue",
-                    "border-radius": "20px",
-                    "border-width": "5px",
-                    borderColor: "#000000",
-                    color: "black",
-                    paddingRight: "10px",
-                    "&:hover": {
-                      backgroundColor: "lightblue",
-                    },
-                  },
-                  btn1: {
-                    "border-style": "solid",
-                    backgroundColor: "steelblue",
-                    "border-radius": "20px",
-                    "border-width": "5px",
-                    borderColor: "#ffffff",
-                    color: "black",
-                    paddingRight: "10px",
-                    "&:hover": {
-                      backgroundColor: "lightblue",
-                    },
-                  },
-                  btn1UnClicked: {
-                    "border-style": "solid",
-                    backgroundColor: "steelblue",
-                    "border-radius": "20px",
-                    "border-width": "5px",
-                    borderColor: "#ffffff",
-                    color: "black",
-                    paddingRight: "10px",
-                    "&:hover": {
-                      backgroundColor: "lightblue",
-                    },
-                  },
-                  btn1Clicked: {
-                    "border-style": "solid",
-                    backgroundColor: "steelblue",
-                    "border-radius": "20px",
-                    "border-width": "5px",
-                    borderColor: "#000000",
-                    color: "black",
-                    paddingRight: "10px",
-                    "&:hover": {
-                      backgroundColor: "lightblue",
-                    },
-                  },
-                  qArea: {
-                    "border-style": "solid",
-                    "border-width": "5px",
-                    "border-radius": "20px",
-                    padding: "10px",
-                    borderColor: "#000000",
-                  },
-                  qTitle: {
-                    fontSize: "32px",
-                  },
-                }));
+                resetUseStyles();
               }
             }}
             disabled={disableSubmit}
