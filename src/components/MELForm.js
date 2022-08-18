@@ -46,35 +46,28 @@ function resetUseStyles() {
     },
     {}
   );
+  let part1 = ["btn0Clicked", "btn1Clicked"].reduce((result, key) => {
+    result[key] = {
+      "border-style": "solid",
+      backgroundColor: "steelblue",
+      "border-radius": "20px",
+      "border-width": "5px",
+      borderColor: "#000000",
+      color: "black",
+      paddingRight: "10px",
+      "&:hover": {
+        backgroundColor: "lightblue",
+      },
+    };
+    return result;
+  }, {});
   useStyles = makeStyles(() => ({
     btn0: part.btn0,
     btn0UnClicked: part.btn0UnClicked,
     btn1: part.btn1,
     btn1UnClicked: part.btn1UnClicked,
-    btn0Clicked: {
-      "border-style": "solid",
-      backgroundColor: "steelblue",
-      "border-radius": "20px",
-      "border-width": "5px",
-      borderColor: "#000000",
-      color: "black",
-      paddingRight: "10px",
-      "&:hover": {
-        backgroundColor: "lightblue",
-      },
-    },
-    btn1Clicked: {
-      "border-style": "solid",
-      backgroundColor: "steelblue",
-      "border-radius": "20px",
-      "border-width": "5px",
-      borderColor: "#000000",
-      color: "black",
-      paddingRight: "10px",
-      "&:hover": {
-        backgroundColor: "lightblue",
-      },
-    },
+    btn0Clicked: part1.btn0Clicked,
+    btn1Clicked: part1.btn1Clicked,
     qArea: {
       "border-style": "solid",
       "border-width": "5px",
