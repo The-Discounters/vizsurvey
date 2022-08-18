@@ -26,18 +26,77 @@ import { format } from "d3";
 import { dateToState } from "../features/ConversionUtil";
 import { styles, theme, formControl } from "./ScreenHelper";
 
-const useStyles = makeStyles(() => ({
-  btn: {
+let useStyles = makeStyles(() => ({
+  btn0: {
+    "border-style": "solid",
     backgroundColor: "steelblue",
     "border-radius": "20px",
-    "border-width": "0px",
+    "border-width": "5px",
+    borderColor: "#ffffff",
     color: "black",
     paddingRight: "10px",
     "&:hover": {
       backgroundColor: "lightblue",
     },
-    "&:click": {
-      color: "red",
+  },
+  btn0UnClicked: {
+    "border-style": "solid",
+    backgroundColor: "steelblue",
+    "border-radius": "20px",
+    "border-width": "5px",
+    borderColor: "#ffffff",
+    color: "black",
+    paddingRight: "10px",
+    "&:hover": {
+      backgroundColor: "lightblue",
+    },
+  },
+  btn0Clicked: {
+    "border-style": "solid",
+    backgroundColor: "steelblue",
+    "border-radius": "20px",
+    "border-width": "5px",
+    borderColor: "#000000",
+    color: "black",
+    paddingRight: "10px",
+    "&:hover": {
+      backgroundColor: "lightblue",
+    },
+  },
+  btn1: {
+    "border-style": "solid",
+    backgroundColor: "steelblue",
+    "border-radius": "20px",
+    "border-width": "5px",
+    borderColor: "#ffffff",
+    color: "black",
+    paddingRight: "10px",
+    "&:hover": {
+      backgroundColor: "lightblue",
+    },
+  },
+  btn1UnClicked: {
+    "border-style": "solid",
+    backgroundColor: "steelblue",
+    "border-radius": "20px",
+    "border-width": "5px",
+    borderColor: "#ffffff",
+    color: "black",
+    paddingRight: "10px",
+    "&:hover": {
+      backgroundColor: "lightblue",
+    },
+  },
+  btn1Clicked: {
+    "border-style": "solid",
+    backgroundColor: "steelblue",
+    "border-radius": "20px",
+    "border-width": "5px",
+    borderColor: "#000000",
+    color: "black",
+    paddingRight: "10px",
+    "&:hover": {
+      backgroundColor: "lightblue",
     },
   },
   qArea: {
@@ -122,6 +181,13 @@ export function MELForm() {
                   name={"question-radio-buttons-group"}
                   onChange={(event) => {
                     setChoice(event.target.value);
+                    if (event.target.value === AmountType.earlierAmount) {
+                      classes.btn0 = classes.btn0Clicked;
+                      classes.btn1 = classes.btn1UnClicked;
+                    } else if (event.target.value === AmountType.laterAmount) {
+                      classes.btn0 = classes.btn0UnClicked;
+                      classes.btn1 = classes.btn1Clicked;
+                    }
                     setHelperText("");
                     setError(false);
                   }}
@@ -136,7 +202,7 @@ export function MELForm() {
                       key: AmountType.laterAmount,
                       label: question2ndPartText(),
                     },
-                  ].map(({ key, label }) => (
+                  ].map(({ key, label }, index) => (
                     <FormControlLabel
                       sx={{ mr: "100px" }}
                       key={key}
@@ -145,7 +211,7 @@ export function MELForm() {
                       checked={choice === key}
                       control={<Radio />}
                       label={label}
-                      className={classes.btn}
+                      className={classes["btn" + index]}
                     />
                   ))}
                 </RadioGroup>
@@ -184,6 +250,90 @@ export function MELForm() {
                     navigate("/attentioncheck");
                   }
                 }, 400);
+                useStyles = makeStyles(() => ({
+                  btn0: {
+                    "border-style": "solid",
+                    backgroundColor: "steelblue",
+                    "border-radius": "20px",
+                    "border-width": "5px",
+                    borderColor: "#ffffff",
+                    color: "black",
+                    paddingRight: "10px",
+                    "&:hover": {
+                      backgroundColor: "lightblue",
+                    },
+                  },
+                  btn0UnClicked: {
+                    "border-style": "solid",
+                    backgroundColor: "steelblue",
+                    "border-radius": "20px",
+                    "border-width": "5px",
+                    borderColor: "#ffffff",
+                    color: "black",
+                    paddingRight: "10px",
+                    "&:hover": {
+                      backgroundColor: "lightblue",
+                    },
+                  },
+                  btn0Clicked: {
+                    "border-style": "solid",
+                    backgroundColor: "steelblue",
+                    "border-radius": "20px",
+                    "border-width": "5px",
+                    borderColor: "#000000",
+                    color: "black",
+                    paddingRight: "10px",
+                    "&:hover": {
+                      backgroundColor: "lightblue",
+                    },
+                  },
+                  btn1: {
+                    "border-style": "solid",
+                    backgroundColor: "steelblue",
+                    "border-radius": "20px",
+                    "border-width": "5px",
+                    borderColor: "#ffffff",
+                    color: "black",
+                    paddingRight: "10px",
+                    "&:hover": {
+                      backgroundColor: "lightblue",
+                    },
+                  },
+                  btn1UnClicked: {
+                    "border-style": "solid",
+                    backgroundColor: "steelblue",
+                    "border-radius": "20px",
+                    "border-width": "5px",
+                    borderColor: "#ffffff",
+                    color: "black",
+                    paddingRight: "10px",
+                    "&:hover": {
+                      backgroundColor: "lightblue",
+                    },
+                  },
+                  btn1Clicked: {
+                    "border-style": "solid",
+                    backgroundColor: "steelblue",
+                    "border-radius": "20px",
+                    "border-width": "5px",
+                    borderColor: "#000000",
+                    color: "black",
+                    paddingRight: "10px",
+                    "&:hover": {
+                      backgroundColor: "lightblue",
+                    },
+                  },
+                  qArea: {
+                    "border-style": "solid",
+                    "border-width": "5px",
+                    "border-radius": "20px",
+                    padding: "10px",
+                    borderColor: "#000000",
+                  },
+                  qTitle: {
+                    fontSize: "32px",
+                  },
+                }));
               }
             }}
             disabled={disableSubmit}

@@ -143,12 +143,23 @@ describe("vizsurvey", () => {
     function answerMELForm() {
       cy.get("#earlierAmount").should(
         "have.css",
-        "backgroundColor", "rgb(70, 130, 180)"
+        "backgroundColor",
+        "rgb(70, 130, 180)"
+      );
+      cy.get("#earlierAmount").should(
+        "have.css",
+        "borderColor",
+        "rgb(255, 255, 255)"
       );
       cy.get("#earlierAmount")
         .realHover()
         .should("have.css", "backgroundColor", "rgb(173, 216, 230)")
         .click();
+      cy.get("#earlierAmount").should(
+        "have.css",
+        "borderColor",
+        "rgb(0, 0, 0)"
+      );
       cy.get("button").realHover().click();
       cy.tick(1000);
     }
