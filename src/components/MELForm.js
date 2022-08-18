@@ -28,31 +28,24 @@ import { styles, theme, formControl } from "./ScreenHelper";
 
 let useStyles;
 function resetUseStyles() {
+  let part = ["btn0", "btn0UnClicked"].reduce((result, key) => {
+    result[key] = {
+      "border-style": "solid",
+      backgroundColor: "steelblue",
+      "border-radius": "20px",
+      "border-width": "5px",
+      borderColor: "#ffffff",
+      color: "black",
+      paddingRight: "10px",
+      "&:hover": {
+        backgroundColor: "lightblue",
+      },
+    };
+    return result;
+  }, {});
   useStyles = makeStyles(() => ({
-    btn0: {
-      "border-style": "solid",
-      backgroundColor: "steelblue",
-      "border-radius": "20px",
-      "border-width": "5px",
-      borderColor: "#ffffff",
-      color: "black",
-      paddingRight: "10px",
-      "&:hover": {
-        backgroundColor: "lightblue",
-      },
-    },
-    btn0UnClicked: {
-      "border-style": "solid",
-      backgroundColor: "steelblue",
-      "border-radius": "20px",
-      "border-width": "5px",
-      borderColor: "#ffffff",
-      color: "black",
-      paddingRight: "10px",
-      "&:hover": {
-        backgroundColor: "lightblue",
-      },
-    },
+    btn0: part.btn0,
+    btn0UnClicked: part.btn0UnClicked,
     btn0Clicked: {
       "border-style": "solid",
       backgroundColor: "steelblue",
