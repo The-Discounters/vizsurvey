@@ -26,31 +26,61 @@ import { format } from "d3";
 import { dateToState } from "../features/ConversionUtil";
 import { styles, theme, formControl } from "./ScreenHelper";
 
-const useStyles = makeStyles(() => ({
-  btn: {
-    backgroundColor: "steelblue",
-    "border-radius": "20px",
-    "border-width": "0px",
-    color: "black",
-    paddingRight: "10px",
-    "&:hover": {
-      backgroundColor: "lightblue",
+let useStyles;
+function resetUseStyles() {
+  let part = ["btn0", "btn0UnClicked", "btn1", "btn1UnClicked"].reduce(
+    (result, key) => {
+      result[key] = {
+        "border-style": "solid",
+        backgroundColor: "steelblue",
+        "border-radius": "20px",
+        "border-width": "5px",
+        borderColor: "#ffffff",
+        color: "black",
+        paddingRight: "10px",
+        "&:hover": {
+          backgroundColor: "lightblue",
+        },
+      };
+      return result;
     },
-    "&:click": {
-      color: "red",
+    {}
+  );
+  let part1 = ["btn0Clicked", "btn1Clicked"].reduce((result, key) => {
+    result[key] = {
+      "border-style": "solid",
+      backgroundColor: "steelblue",
+      "border-radius": "20px",
+      "border-width": "5px",
+      borderColor: "#000000",
+      color: "black",
+      paddingRight: "10px",
+      "&:hover": {
+        backgroundColor: "lightblue",
+      },
+    };
+    return result;
+  }, {});
+  useStyles = makeStyles(() => ({
+    btn0: part.btn0,
+    btn0UnClicked: part.btn0UnClicked,
+    btn1: part.btn1,
+    btn1UnClicked: part.btn1UnClicked,
+    btn0Clicked: part1.btn0Clicked,
+    btn1Clicked: part1.btn1Clicked,
+    qArea: {
+      "border-style": "solid",
+      "border-width": "5px",
+      "border-radius": "20px",
+      padding: "10px",
+      borderColor: "#000000",
     },
-  },
-  qArea: {
-    "border-style": "solid",
-    "border-width": "5px",
-    "border-radius": "20px",
-    padding: "10px",
-    borderColor: "#000000",
-  },
-  qTitle: {
-    fontSize: "32px",
-  },
-}));
+    qTitle: {
+      fontSize: "32px",
+    },
+  }));
+}
+resetUseStyles();
 
 // const boxDefault = {
 //   height: 100,
@@ -122,6 +152,13 @@ export function MELForm() {
                   name={"question-radio-buttons-group"}
                   onChange={(event) => {
                     setChoice(event.target.value);
+                    if (event.target.value === AmountType.earlierAmount) {
+                      classes.btn0 = classes.btn0Clicked;
+                      classes.btn1 = classes.btn1UnClicked;
+                    } else if (event.target.value === AmountType.laterAmount) {
+                      classes.btn0 = classes.btn0UnClicked;
+                      classes.btn1 = classes.btn1Clicked;
+                    }
                     setHelperText("");
                     setError(false);
                   }}
@@ -136,7 +173,7 @@ export function MELForm() {
                       key: AmountType.laterAmount,
                       label: question2ndPartText(),
                     },
-                  ].map(({ key, label }) => (
+                  ].map(({ key, label }, index) => (
                     <FormControlLabel
                       sx={{ mr: "100px" }}
                       key={key}
@@ -145,7 +182,7 @@ export function MELForm() {
                       checked={choice === key}
                       control={<Radio />}
                       label={label}
-                      className={classes.btn}
+                      className={classes["btn" + index]}
                     />
                   ))}
                 </RadioGroup>
@@ -184,6 +221,7 @@ export function MELForm() {
                     navigate("/attentioncheck");
                   }
                 }, 400);
+                resetUseStyles();
               }
             }}
             disabled={disableSubmit}
