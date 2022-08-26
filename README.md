@@ -44,7 +44,7 @@ cd into the test folder and also run `npm start` in a separate terminal if you w
 ### `npm run build; serve -s build`
 
 Runs the app in production mode.\
-http://localhost:3000/?participant_id=1&treatment_id=1&session_id=1 where you can edit the treatment_id value to load the treatment you want to test.
+http://localhost:3000/start?participant_id=1&treatment_id=1&session_id=1 where you can edit the treatment_id value to load the treatment you want to test.
 
 ### `npm test`
 

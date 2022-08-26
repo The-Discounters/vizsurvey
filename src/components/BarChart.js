@@ -190,7 +190,7 @@ function BarChart() {
                       .tickSize(6)
                   );
 
-                svg
+                chart
                   .selectAll(".x-axis-label")
                   .data([null])
                   .join("g")
@@ -224,7 +224,7 @@ function BarChart() {
                       .tickFormat(format("$,.0f"))
                   );
 
-                svg
+                chart
                   .selectAll(".y-axis-label")
                   .data([null])
                   .join("g")

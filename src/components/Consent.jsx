@@ -90,7 +90,8 @@ export function Consent() {
           Worcester Polytechnic Institute Institutional Review Board (WPI IRB)
           will be able to inspect and have access to confidential data that
           identify you by name. Any publication or presentation of the data will
-          not identify you.
+          not identify you. Your prolific ID will be recorded in the data soley
+          for the purpose of paying you and then will be deleted from the data.
         </Typography>
         <Typography paragraph>
           <b> Compensation or treatment in the event of injury:</b> There is
