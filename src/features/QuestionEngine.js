@@ -96,6 +96,12 @@ export class QuestionEngine {
     return state.currentQuestionIdx === state.treatments.length - 1;
   }
 
+  isMiddleTreatment(state) {
+    return Math.round(
+      state.currentQuestionIdx === (state.treatments.length - 1) / 2
+    );
+  }
+
   incNextQuestion(state) {
     if (this.isLastTreatment(state)) {
       state.status = StatusType.Questionaire;

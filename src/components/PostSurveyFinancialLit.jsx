@@ -1,9 +1,8 @@
 import React, { useEffect } from "react";
 import { FullScreen, useFullScreenHandle } from "react-full-screen";
 import { useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { DateTime } from "luxon";
-import { FileIOAdapter } from "../features/FileIOAdapter";
 import {
   Grid,
   Button,
@@ -17,15 +16,11 @@ import {
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import {
-  getParticipant,
-  getDemographics,
-  getTimestamps,
   postSurveyQuestionsShown,
-  selectAllQuestions,
-  writeAnswers,
+  setPostSurvey,
 } from "../features/questionSlice";
 import { dateToState } from "../features/ConversionUtil";
-import { POST_SURVEY_QUESTIONS } from "../features/postsurveyquestions";
+import { POST_SURVEY_QUESTIONS } from "../features/postsurveyquestionsfinanciallit";
 import { styles, theme } from "./ScreenHelper";
 
 const useStyles = makeStyles((theme) => ({
@@ -99,12 +94,6 @@ export function PostSurvey() {
     setter(event.target.value);
   };
 
-  const participantId = useSelector(getParticipant);
-  const answers = useSelector(selectAllQuestions);
-  const io = new FileIOAdapter();
-  const csv = io.convertToCSV(answers);
-  const demographics = useSelector(getDemographics);
-  const timestamps = useSelector(getTimestamps);
   return (
     <ThemeProvider theme={theme}>
       <div>
@@ -157,6 +146,9 @@ export function PostSurvey() {
                                 checked={
                                   qList2[index2][index] === option.textShort
                                 }
+                                style={{
+                                  width: "100%",
+                                }}
                                 control={<Radio />}
                                 label={option.textFull}
                                 onChange={(event) => {
@@ -180,6 +172,9 @@ export function PostSurvey() {
                                 value={option}
                                 id={question.textShort + "-" + option}
                                 checked={qList2[index2][index] === option}
+                                style={{
+                                  width: "100%",
+                                }}
                                 control={<Radio />}
                                 label={option.replace("-", " ")}
                                 onChange={(event) => {
@@ -216,29 +211,18 @@ export function PostSurvey() {
                     if (process.env.REACT_APP_FULLSCREEN === "enabled")
                       handle.exit();
                     dispatch(
-                      writeAnswers({
-                        csv: csv,
-                        participantId: participantId,
-                        postSurveyAnswers: surveys.reduce(
-                          (prev1, { questions, promptShort }, index1) => {
-                            prev1[promptShort] = questions.reduce(
-                              (prev, { question }, index) => {
-                                prev[question.textShort] =
-                                  qList2[index1][index];
-                                return prev;
-                              },
-                              {}
-                            );
-                            return prev1;
+                      setPostSurvey({
+                        data: surveys[0].questions.reduce(
+                          (prev, { question }, index) => {
+                            prev[question.textShort] = qList2[0][index];
+                            return prev;
                           },
-                          {
-                            demographics: demographics,
-                            timestamps: timestamps,
-                          }
+                          {}
                         ),
+                        key: surveys[0].promptShort,
                       })
                     );
-                    navigate("/debrief");
+                    navigate("/postsurvey2");
                   }, 400);
                 }}
                 disabled={disableSubmit}

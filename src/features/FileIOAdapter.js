@@ -30,6 +30,7 @@ const myBucket = new AWS.S3({
 });
 
 const uploadFileOffline = (name, data) => {
+  console.log("data: " + data);
   const requestOptions = {
     method: "POST",
     headers: { "Content-Type": "application/json" },

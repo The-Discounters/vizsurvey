@@ -25,6 +25,7 @@ export const questionSlice = createSlice({
     treatmentId: null,
     participantId: null,
     sessionId: null,
+    postsurvey: {},
     countryOfResidence: null,
     firstLanguage: null,
     secondLanguage: null,
@@ -33,6 +34,7 @@ export const questionSlice = createSlice({
     gender: null,
     selfDescribeGender: null,
     profession: null,
+    attentioncheck: null,
     consentShownTimestamp: null,
     introductionShowTimestamp: null,
     introductionCompletedTimestamp: null,
@@ -71,6 +73,12 @@ export const questionSlice = createSlice({
       state.selfDescribeGender = action.payload.selfDescribeGender;
       state.profession = action.payload.profession;
       state.status = StatusType.Introduction;
+    },
+    setPostSurvey(state, action) {
+      state.postsurvey[action.payload.key] = action.payload.data;
+    },
+    setAttentionCheck(state, action) {
+      state.attentioncheck = action.payload;
     },
     loadTreatment(state) {
       state.treatments = io.loadTreatment(state.treatmentId);
@@ -130,7 +138,9 @@ export const questionSlice = createSlice({
       state.treatmentId = null;
       state.articipantId = null;
       state.sessionId = null;
+      state.postsurvey = null;
       state.countryOfResidence = null;
+      state.attentioncheck = null;
       state.vizFamiliarity = null;
       state.age = null;
       state.gender = null;
@@ -171,6 +181,10 @@ export const isLastTreatment = (state) => {
   return qe.isLastTreatment(state.questions);
 };
 
+export const isMiddleTreatment = (state) => {
+  return qe.isMiddleTreatment(state.questions);
+};
+
 export const selectAllQuestions = (state) => {
   return qe.allQuestions(state.questions);
 };
@@ -188,6 +202,14 @@ export const getDemographics = (state) => {
     selfDescribeGender: state.questions.selfDescribeGender,
     profession: state.questions.profession,
   };
+};
+
+export const getPostSurvey = (state) => {
+  return state.questions.postsurvey;
+};
+
+export const getAttentionCheck = (state) => {
+  return state.questions.attentioncheck;
 };
 
 export const getTimestamps = (state) => {
@@ -249,6 +271,8 @@ export const {
   consentShown,
   consentCompleted,
   setDemographic,
+  setPostSurvey,
+  setAttentionCheck,
   instructionsShown,
   instructionsCompleted,
   introductionShown,

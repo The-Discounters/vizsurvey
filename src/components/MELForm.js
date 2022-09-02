@@ -5,7 +5,6 @@ import { DateTime } from "luxon";
 import {
   Grid,
   Button,
-  FormLabel,
   FormControl,
   FormControlLabel,
   FormHelperText,
@@ -16,42 +15,72 @@ import {
 } from "@mui/material";
 import { makeStyles } from "@material-ui/core/styles";
 import { AmountType } from "../features/AmountType";
-import { StatusType } from "../features/StatusType";
 import {
   selectCurrentQuestion,
-  fetchStatus,
+  isLastTreatment,
+  isMiddleTreatment,
   setQuestionShownTimestamp,
   answer,
 } from "../features/questionSlice";
 import { format } from "d3";
 import { dateToState } from "../features/ConversionUtil";
-import {
-  styles,
-  theme,
-  formControl,
-  formLabel,
-  formControlLabel,
-} from "./ScreenHelper";
+import { styles, theme, formControl } from "./ScreenHelper";
 
-const useStyles = makeStyles(() => ({
-  btn: {
-    borderColor: "#ffffff",
-    "border-style": "solid",
-    "border-width": "5px",
-    "border-radius": "20px",
-    paddingRight: "10px",
-    "&:hover": {
+let useStyles;
+function resetUseStyles() {
+  let part = ["btn0", "btn0UnClicked", "btn1", "btn1UnClicked"].reduce(
+    (result, key) => {
+      result[key] = {
+        "border-style": "solid",
+        backgroundColor: "steelblue",
+        "border-radius": "20px",
+        "border-width": "5px",
+        borderColor: "#ffffff",
+        color: "black",
+        paddingRight: "10px",
+        "&:hover": {
+          backgroundColor: "lightblue",
+        },
+      };
+      return result;
+    },
+    {}
+  );
+  let part1 = ["btn0Clicked", "btn1Clicked"].reduce((result, key) => {
+    result[key] = {
+      "border-style": "solid",
+      backgroundColor: "steelblue",
+      "border-radius": "20px",
+      "border-width": "5px",
+      borderColor: "#000000",
+      color: "black",
+      paddingRight: "10px",
+      "&:hover": {
+        backgroundColor: "lightblue",
+      },
+    };
+    return result;
+  }, {});
+  useStyles = makeStyles(() => ({
+    btn0: part.btn0,
+    btn0UnClicked: part.btn0UnClicked,
+    btn1: part.btn1,
+    btn1UnClicked: part.btn1UnClicked,
+    btn0Clicked: part1.btn0Clicked,
+    btn1Clicked: part1.btn1Clicked,
+    qArea: {
+      "border-style": "solid",
+      "border-width": "5px",
+      "border-radius": "20px",
+      padding: "10px",
       borderColor: "#000000",
     },
-  },
-  qArea: {
-    "border-style": "solid",
-    "border-width": "5px",
-    "border-radius": "20px",
-    padding: "10px",
-    borderColor: "#000000",
-  },
-}));
+    qTitle: {
+      fontSize: "32px",
+    },
+  }));
+}
+resetUseStyles();
 
 // const boxDefault = {
 //   height: 100,
@@ -63,7 +92,8 @@ const useStyles = makeStyles(() => ({
 export function MELForm() {
   const dispatch = useDispatch();
   const q = useSelector(selectCurrentQuestion);
-  const status = useSelector(fetchStatus);
+  const isLastTreatmentQ = useSelector(isLastTreatment);
+  const isMiddleTreatmentQ = useSelector(isMiddleTreatment);
   const navigate = useNavigate();
   const [disableSubmit, setDisableSubmit] = React.useState(true);
   const [choice, setChoice] = useState("");
@@ -104,9 +134,7 @@ export function MELForm() {
         <Grid item xs={12}>
           <form className={classes.qArea}>
             <FormControl sx={{ ...formControl }} required={false} error={error}>
-              <FormLabel sx={{ ...formLabel }} id="question-text">
-                {questionText()}
-              </FormLabel>
+              <p className={classes.qTitle}>{questionText()}</p>
               <FormHelperText>{helperText}</FormHelperText>
               <Box
                 component="span"
@@ -124,6 +152,13 @@ export function MELForm() {
                   name={"question-radio-buttons-group"}
                   onChange={(event) => {
                     setChoice(event.target.value);
+                    if (event.target.value === AmountType.earlierAmount) {
+                      classes.btn0 = classes.btn0Clicked;
+                      classes.btn1 = classes.btn1UnClicked;
+                    } else if (event.target.value === AmountType.laterAmount) {
+                      classes.btn0 = classes.btn0UnClicked;
+                      classes.btn1 = classes.btn1Clicked;
+                    }
                     setHelperText("");
                     setError(false);
                   }}
@@ -138,16 +173,16 @@ export function MELForm() {
                       key: AmountType.laterAmount,
                       label: question2ndPartText(),
                     },
-                  ].map(({ key, label }) => (
+                  ].map(({ key, label }, index) => (
                     <FormControlLabel
-                      sx={{ ...formControlLabel, mr: "100px" }}
+                      sx={{ mr: "100px" }}
                       key={key}
                       id={key}
                       value={key}
                       checked={choice === key}
                       control={<Radio />}
                       label={label}
-                      className={classes.btn}
+                      className={classes["btn" + index]}
                     />
                   ))}
                 </RadioGroup>
@@ -180,10 +215,13 @@ export function MELForm() {
                     })
                   );
                   setChoice(null);
-                  if (status === StatusType.Questionaire) {
-                    navigate("/questionaire");
+                  if (isLastTreatmentQ) {
+                    navigate("/postsurvey1");
+                  } else if (isMiddleTreatmentQ) {
+                    navigate("/attentioncheck");
                   }
                 }, 400);
+                resetUseStyles();
               }
             }}
             disabled={disableSubmit}

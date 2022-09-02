@@ -7,11 +7,7 @@ import {
   Box,
   Typography,
   ThemeProvider,
-  FormLabel,
-  FormControl,
   FormControlLabel,
-  Radio,
-  RadioGroup,
 } from "@material-ui/core";
 import FormGroup from "@mui/material/FormGroup";
 import Checkbox from "@mui/material/Checkbox";
@@ -42,82 +38,100 @@ export function Consent() {
     return (
       <React.Fragment>
         <Typography paragraph>
-          <b>The goal of this research is </b> to study how people make choices
-          about receiving money.
+          <b>Investigator: </b>Peter Cordone, Yahel Nachum, Ravit Heskiau, Lane
+          Harrison, Daniel Reichman
         </Typography>
         <Typography paragraph>
-          <b>Procedure: </b>You will be presented with a series of choices about
-          receiving money at different points in time.
-          <b>You will choose</b> either the earlier or later amount.{" "}
-        </Typography>
-        {/* For all parts, do NOT provide numerical answers, always think of words and expressions instead!  */}
-        <Typography paragraph>
-          <b>What you will get: </b> You will learn more about the goal of this
-          reasearch and how people make decisions about money.
+          <b>Contact Information: </b>
+          <a href={`mailto:pncordone@wpi.edu`}>pncordone@wpi.edu</a>
         </Typography>
         <Typography paragraph>
-          <b>Duration: </b> The experiment will take you about 10 minutes.
+          <b>Title of Research Study: </b>Choices About Money
         </Typography>
         <Typography paragraph>
-          <b>Privacy: </b> Your participation is anonymous and your responses
-          cannot be used to identify you.
+          <b>Sponsor: </b>
+          <a href={`mailto:dreichman@wpi.edu`}>
+            Prof. Daniel Reichman (dreichman@wpi.edu)
+          </a>
         </Typography>
         <Typography paragraph>
-          <b>Record keeping: </b>Records of your participation will be held
-          confidential so far as permitted by law. However, the study
-          investigators and, under certain circumstances, the Worcester
-          Polytechnic Institute Institutional Review Board (WPI IRB) will be
-          able to inspect and have access to this data. Any publication or
-          presentation of the data will not identify you.
+          <b>Introduction: </b>
+          You are being asked to participate in a research study. Before you
+          agree, however, you must be fully informed about the purpose of the
+          study, the procedures to be followed, and any benefits, risks or
+          discomfort that you may experience as a result of your participation.
+          This form presents information about the study so that you may make a
+          fully informed decision regarding your participation.
         </Typography>
         <Typography paragraph>
-          <b>Contact info: </b>
-          {[
-            { name: "Prof. Daniel Reichman", email: "dreichman@wpi.edi" },
-            {
-              name: "Prof. Ravit Heskiau",
-              email: "r.heskiau@northeastern.edu",
-            },
-            { name: "Prof. Lane Harrison", email: "ltharrison@wpi.edu" },
-            { name: "Peter Cordone", email: "pcordone@wpi.edu" },
-            { name: "Yahel Nachum", email: "ynachum@wpi.edu" },
-          ].map(({ name, email }, index) => {
-            return (
-              <span key={index}>
-                {name} &lt;
-                <a href={`mailto:${email}`}>{email}</a>&gt;
-                {index < 4 ? ", " : ""}
-              </span>
-            );
-          })}
+          <b>Purpose of the study: </b> To study how people make choices about
+          money.
         </Typography>
         <Typography paragraph>
-          <b>Your participation in this research is voluntary. </b> Your refusal
-          to participate will not result in any penalty to you or any loss of
-          benefits to which you may otherwise be entitled. You may decide to
-          stop participating in the research at any time without penalty or loss
-          of other benefits. The project investigators retain the right to
-          cancel or postpone the experimental procedures at any time they see
-          fit.
+          <b>Procedures to be followed: </b>You will be presented with a series
+          of choices about receiving money at different points in time.
+          &nbsp;&nbsp;<b>You will choose</b> either the earlier or later amount.
+          The study should take about 10 minutes to complete.
         </Typography>
         <Typography paragraph>
-          For more information about your rights as a research participant, or
-          any concerns related to this study, please contact the:
-          <br />
-          <br />
-          {[
-            {
-              name: "IRB Chair Professor Kent Rissmiller",
-              phone: "508-831-5019",
-              email: "kjr@wpi.edu",
-            },
-            {
-              name: "Human Protection Administrator Gabriel Johnson",
-              phone: "508-831-4989",
-              email: "gjohnson@wpi.edu",
-            },
-          ].map(({ name, phone, email }, index) => {
-            return (
+          <b>Risks to study participants:</b> To the best of the researchers
+          knowledge risks to you are minimal or nonexistent.
+        </Typography>
+        <Typography paragraph>
+          <b>Benefits to research participants and others: </b> You will learn
+          more about the goal of this reasearch and how people make decisions
+          about money at the end.
+        </Typography>
+        <Typography paragraph>
+          <b>Record keeping and confidentiality: </b>
+          Records of your participation in this study will be held confidential
+          so far as permitted by law. However, the study investigators, the
+          sponsor or it’s designee and, under certain circumstances, the
+          Worcester Polytechnic Institute Institutional Review Board (WPI IRB)
+          will be able to inspect and have access to confidential data that
+          identify you by name. Any publication or presentation of the data will
+          not identify you. Your prolific ID will be recorded in the data soley
+          for the purpose of paying you and then will be deleted from the data.
+        </Typography>
+        <Typography paragraph>
+          <b> Compensation or treatment in the event of injury:</b> There is
+          minimal or no risk of injury in tis research so there is no
+          compensation available for injury from the researchers. You do not
+          give up any of your legal rights by signing this statement.
+        </Typography>
+        <Typography paragraph>
+          <b>Cost/Payment:</b>
+          You will be compensated $10 (United States Dollars) for your
+          participation in completing this survey if you complete the survey in
+          its entirety. If you choose to end the survey before completion, you
+          will not be paid.
+        </Typography>
+        <Typography paragraph>
+          <b>
+            For more information about this research or about the rights of
+            research participants, or in case of research-related injury,
+            contact:
+          </b>
+        </Typography>
+        {[
+          {
+            name: "Peter Cordone",
+            phone: "617-678-5190",
+            email: "pncordone@wpi.edu",
+          },
+          {
+            name: "IRB Manager Ruth McKeogh",
+            phone: "508 831-6699",
+            email: "irb@wpi.edu",
+          },
+          {
+            name: "Human Protection Administrator Gabriel Johnson",
+            phone: "508-831-4989",
+            email: "gjohnson@wpi.edu",
+          },
+        ].map(({ name, phone, email }, index) => {
+          return (
+            <Typography key={index} paragraph>
               <span key={index}>
                 {name}
                 <br />
@@ -125,10 +139,19 @@ export function Consent() {
                 <br />
                 Email: &lt;<a href={`mailto:${email}`}>{email}</a>&gt;
                 <br />
-                {index < 1 ? <br /> : ""}
               </span>
-            );
-          })}
+            </Typography>
+          );
+        })}
+        <Typography paragraph>
+          <b>Your participation in this research is voluntary. </b>
+          Your refusal to participate will not result in any penalty to you or
+          any loss of benefits to which you may otherwise be entitled. You may
+          decide to stop participating in the research at any time without
+          penalty or loss of other benefits; however, you will not receive the
+          compensation of $10 USD unless you complete the survey in its
+          entirety. The project investigators retain the right to cancel or
+          postpone the experimental procedures at any time they see fit.
         </Typography>
       </React.Fragment>
     );
@@ -148,10 +171,6 @@ export function Consent() {
     setQList2.push(setQ);
   });
 
-  const handleFieldChange = (event, setter) => {
-    setter(event.target.value);
-  };
-
   return (
     <ThemeProvider theme={theme}>
       <div>
@@ -165,7 +184,7 @@ export function Consent() {
         <Grid container style={styles.root} justifyContent="center">
           <Grid item xs={12}>
             <Typography variant="h5">
-              <b>Choices About Money?</b>
+              <b>Informed Consent</b>
               <br />
             </Typography>
             <hr
@@ -175,10 +194,6 @@ export function Consent() {
                 height: 4,
               }}
             />
-            <Typography>
-              We often have to make choices about receiveing rewards at
-              different points in time.
-            </Typography>
             <Typography paragraph>
               <br />
               <i>
@@ -191,7 +206,11 @@ export function Consent() {
             </Typography>
             <ConsentTextEn />
             <Typography paragraph>
-              By clicking &ldquo;Next&ldquo;, you agree to participate.
+              <b>By selecting the checkbox and clicking &ldquo;Next&ldquo;</b>,
+              you acknowledge that you have been informed about and consent to
+              be a participant in the study described above. Make sure that your
+              questions are answered to your satisfaction before signing. You
+              are entitled to retain a copy of this consent agreement.
             </Typography>
           </Grid>
           <Grid item xs={12} style={{ margin: 0 }}>
@@ -214,52 +233,6 @@ export function Consent() {
                 }
               />
             </FormGroup>
-          </Grid>
-          <Grid item xs={12} style={{ margin: 0 }}>
-            {[
-              {
-                // Examples of Good (and Bad) Attention Check Questions in Surveys
-                // https://www.cloudresearch.com/resources/blog/attention-check-questions-in-surveys-examples/
-                question: {
-                  textShort: "attention-check",
-                  textFull:
-                    "Please select 'stongly agree' to show that you are paying attention to this question.",
-                },
-              },
-            ].map(({ question }, index) => (
-              <FormControl key={index} required>
-                <FormLabel id={question.textShort}>
-                  {index + 1 + ". " + question.textFull}
-                </FormLabel>
-                <RadioGroup
-                  row
-                  aria-labelledby={
-                    question.textShort + "-row-radio-buttons-group-label"
-                  }
-                  name={question.textShort + "-radio-buttons-group"}
-                >
-                  {[
-                    "strongly-disagree",
-                    "disagree",
-                    "neutral",
-                    "agree",
-                    "strongly-agree",
-                  ].map((option, index1) => (
-                    <FormControlLabel
-                      key={index1}
-                      value={option}
-                      id={"attention-check-" + option}
-                      checked={qList2[index] === option}
-                      control={<Radio />}
-                      label={option.replace("-", " ")}
-                      onChange={(event) => {
-                        handleFieldChange(event, setQList2[index]);
-                      }}
-                    />
-                  ))}
-                </RadioGroup>
-              </FormControl>
-            ))}
           </Grid>
           <Grid item xs={12} style={{ margin: 0 }}>
             <Button
