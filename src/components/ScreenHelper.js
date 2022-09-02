@@ -44,24 +44,17 @@ export const calcScreenValues = (q) => {
   var barAreaWidthUC;
   var barAreaHeightUC;
   var barWidth;
-  console.log("calcScreenValues: devicePixelRatio: " + window.devicePixelRatio);
-  console.log("calcScreenValues: width: " + window.screen.width);
-  console.log("calcScreenValues: height: " + window.screen.height);
-  console.log("calcScreenValues: inner width: " + window.innerWidth);
-  console.log("calcScreenValues: inner height: " + window.innerHeight);
   if (q.horizontalPixels && q.verticalPixels) {
-    console.log("calcScreenValues: if");
     totalUCWidth = q.horizontalPixels;
     totalUCHeight = q.verticalPixels;
     totalSVGWidth = `${totalUCWidth}px`;
     totalSVGHeight = `${totalUCHeight}px`;
-    leftOffSetUC = 150;
+    leftOffSetUC = 200;
     bottomOffSetUC = 100;
     barAreaWidthUC = totalUCWidth - leftOffSetUC;
     barAreaHeightUC = totalUCHeight - bottomOffSetUC;
     barWidth = 40;
   } else {
-    console.log("calcScreenValues: else");
     // SVG thinks the resolution is 96 ppi when macbook is 132 ppi so we need to adjust by device pixel ratio
     const minScreenRes = Math.min(window.innerHeight, window.innerWidth);
     totalUCWidth = minScreenRes;

@@ -11,6 +11,6 @@ test("renders learn react link", () => {
     </Provider>
   );
 
-  const linkElement = screen.getByText("<b>Money Earlier or Later?</b>");
+  const linkElement = screen.getByText("Informed Consent");
   expect(linkElement).toBeInTheDocument();
 });
