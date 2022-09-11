@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { DateTime } from "luxon";
 import {
   Grid,
+  Box,
   TextField,
   Button,
   Typography,
@@ -143,7 +144,7 @@ export function Consent() {
               </Typography>
             </div>
           </Grid>
-          <Grid item xs={12}>
+          <Grid item xs={3}>
             <FormControl
               className={classes.formControl}
               required
@@ -175,6 +176,8 @@ export function Consent() {
               </NativeSelect>
               <FormHelperText>The country you are living in now</FormHelperText>
             </FormControl>
+          </Grid>
+          <Grid item xs={3}>
             <FormControl
               className={classes.formControl}
               required
@@ -205,7 +208,9 @@ export function Consent() {
               </FormHelperText>
             </FormControl>
           </Grid>
-          <Grid item xs={12} style={{ margin: 0 }}>
+          <Grid item xs={3}></Grid>
+          <Grid item xs={3}></Grid>
+          <Grid item xs={3}>
             <TextField
               required
               className={classes.formControl}
@@ -223,6 +228,8 @@ export function Consent() {
                 }
               }}
             />
+          </Grid>
+          <Grid item xs={3}>
             <label style={{ marginRight: 20 }}> </label>
             <FormControl
               className={classes.formControl}
@@ -255,6 +262,8 @@ export function Consent() {
                 ))}
               </NativeSelect>
             </FormControl>
+          </Grid>
+          <Grid item xs={3}>
             <TextField
               required
               value={selfDescribeGender}
@@ -267,6 +276,8 @@ export function Consent() {
               disabled={disableSelfDescribe}
             />
             <label style={{ marginLeft: 25 }}> </label>
+          </Grid>
+          <Grid item xs={3}>
             <TextField
               required
               className={classes.formControl}
@@ -277,7 +288,7 @@ export function Consent() {
               }}
             />
           </Grid>
-          <Grid item xs={12} style={{ margin: 0 }}>
+          <Grid item xs={6}>
             <Button
               variant="contained"
               color="secondary"
@@ -285,23 +296,40 @@ export function Consent() {
               disableFocusRipple
               style={styles.button}
               onClick={() => {
-                dispatch(
-                  setDemographic({
-                    country: country,
-                    vizFamiliarity: vizFamiliarity,
-                    age: age,
-                    gender: gender,
-                    selfDescribeGender: selfDescribeGender,
-                    profession: profession,
-                  })
-                );
-                navigate("/introduction");
+                navigate("/consent");
               }}
-              disabled={disableSubmit}
             >
               {" "}
-              Next{" "}
+              Previous{" "}
             </Button>
+          </Grid>
+          <Grid item xs={6}>
+            <Box display="flex" justifyContent="flex-end">
+              <Button
+                variant="contained"
+                color="secondary"
+                disableRipple
+                disableFocusRipple
+                style={styles.button}
+                onClick={() => {
+                  dispatch(
+                    setDemographic({
+                      country: country,
+                      vizFamiliarity: vizFamiliarity,
+                      age: age,
+                      gender: gender,
+                      selfDescribeGender: selfDescribeGender,
+                      profession: profession,
+                    })
+                  );
+                  navigate("/introduction");
+                }}
+                disabled={disableSubmit}
+              >
+                {" "}
+                Next{" "}
+              </Button>
+            </Box>
           </Grid>
         </Grid>
       </div>

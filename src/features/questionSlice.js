@@ -121,6 +121,9 @@ export const questionSlice = createSlice({
     answer(state, action) {
       qe.answerCurrentQuestion(state, action);
     },
+    previousQuestion(state) {
+      qe.previousQuestion(state);
+    },
     postSurveyQuestionsShown(state, action) {
       state.postSurveyQuestionsShownTimestamp = action.payload;
     },
@@ -265,6 +268,7 @@ export const {
   startSurvey,
   setQuestionShownTimestamp,
   answer,
+  previousQuestion,
   setParticipantId,
   setTreatmentId,
   setSessionId,

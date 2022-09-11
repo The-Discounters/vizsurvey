@@ -1,7 +1,13 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { FullScreen, useFullScreenHandle } from "react-full-screen";
-import { Button, Grid, Typography, ThemeProvider } from "@material-ui/core";
+import {
+  Button,
+  Grid,
+  Box,
+  Typography,
+  ThemeProvider,
+} from "@material-ui/core";
 import { useSelector, useDispatch } from "react-redux";
 import { DateTime } from "luxon";
 import "../App.css";
@@ -100,25 +106,42 @@ const Instructions = () => {
           />
           {vizExplanation(treatment.viewType)}
         </Grid>
-        <Grid item xs={12}>
-          <FullScreen handle={handle}>
-            <Button
-              variant="contained"
-              color="secondary"
-              disableRipple
-              disableFocusRipple
-              style={styles.button}
-              onClick={() => {
-                dispatch(instructionsCompleted(dateToState(DateTime.utc())));
-                if (process.env.REACT_APP_FULLSCREEN === "enabled")
-                  handle.enter();
-                navigate("/survey");
-              }}
-            >
-              {" "}
-              Start{" "}
-            </Button>
-          </FullScreen>
+        <Grid item xs={6}>
+          <Button
+            variant="contained"
+            color="secondary"
+            disableRipple
+            disableFocusRipple
+            style={styles.button}
+            onClick={() => {
+              navigate("/introduction");
+            }}
+          >
+            {" "}
+            Previous{" "}
+          </Button>
+        </Grid>
+        <Grid item xs={6}>
+          <Box display="flex" justifyContent="flex-end">
+            <FullScreen handle={handle}>
+              <Button
+                variant="contained"
+                color="secondary"
+                disableRipple
+                disableFocusRipple
+                style={styles.button}
+                onClick={() => {
+                  dispatch(instructionsCompleted(dateToState(DateTime.utc())));
+                  if (process.env.REACT_APP_FULLSCREEN === "enabled")
+                    handle.enter();
+                  navigate("/survey");
+                }}
+              >
+                {" "}
+                Start{" "}
+              </Button>
+            </FullScreen>
+          </Box>
         </Grid>
       </Grid>
     </ThemeProvider>

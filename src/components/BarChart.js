@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import * as d3 from "d3";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { Grid, Button, ThemeProvider } from "@mui/material";
+import { Grid, Box, Button, ThemeProvider } from "@mui/material";
 import {
   axisBottom,
   axisLeft,
@@ -356,7 +356,8 @@ function BarChart() {
             )}
           ></svg>
         </Grid>
-        <Grid item xs={12} style={{ margin: 0 }}>
+
+        <Grid item xs={6}>
           <Button
             variant="contained"
             color="secondary"
@@ -378,11 +379,40 @@ function BarChart() {
                 setChoice(AmountType.none);
               }
             }}
-            disabled={disableSubmit}
           >
             {" "}
-            Next{" "}
+            Previous{" "}
           </Button>
+        </Grid>
+        <Grid item xs={6} style={{ margin: 0 }}>
+          <Box display="flex" justifyContent="flex-end">
+            <Button
+              variant="contained"
+              color="secondary"
+              disableRipple
+              disableFocusRipple
+              style={styles.button}
+              onClick={() => {
+                dispatch(
+                  answer({
+                    choice: choice,
+                    choiceTimestamp: dateToState(DateTime.utc()),
+                  })
+                );
+                if (isLastTreatmentQ) {
+                  navigate("/postsurvey1");
+                } else if (isMiddleTreatmentQ) {
+                  navigate("/attentioncheck");
+                } else {
+                  setChoice(AmountType.none);
+                }
+              }}
+              disabled={disableSubmit}
+            >
+              {" "}
+              Next{" "}
+            </Button>
+          </Box>
         </Grid>
       </Grid>
     </ThemeProvider>

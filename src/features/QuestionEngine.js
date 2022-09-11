@@ -27,6 +27,7 @@ export class QuestionEngine {
   }
 
   createNextAnswer(
+    currentQuestionIdx,
     treatment,
     answers,
     amountEarlier,
@@ -34,33 +35,40 @@ export class QuestionEngine {
     highup,
     lowdown
   ) {
-    const answer = Answer({
-      treatmentId: treatment.treatmentId,
-      position: treatment.position,
-      viewType: treatment.viewType,
-      interaction: treatment.interaction,
-      variableAmount: treatment.variableAmount,
-      amountEarlier: amountEarlier,
-      timeEarlier: treatment.timeEarlier,
-      dateEarlier: treatment.dateEarlier,
-      amountLater: amountLater,
-      timeLater: treatment.timeLater,
-      dateLater: treatment.dateLater,
-      maxAmount: treatment.maxAmount,
-      maxTime: treatment.maxTime,
-      verticalPixels: treatment.verticalPixels,
-      horizontalPixels: treatment.horizontalPixels,
-      leftMarginWidthIn: treatment.leftMarginWidthIn,
-      bottomMarginHeightIn: treatment.bottomMarginHeightIn,
-      graphWidthIn: treatment.graphWidthIn,
-      graphHeightIn: treatment.graphHeightIn,
-      widthIn: treatment.widthIn,
-      heightIn: treatment.heightIn,
-      choice: AmountType.unitialized,
-      highup: highup,
-      lowdown: lowdown,
-    });
-    answers.push(answer);
+    if (answers.length - 1 >= currentQuestionIdx) {
+      answers[currentQuestionIdx].amountEarlier = amountEarlier;
+      answers[currentQuestionIdx].amountLater = amountLater;
+      answers[currentQuestionIdx].highup = highup;
+      answers[currentQuestionIdx].lowdown = lowdown;
+    } else {
+      const answer = Answer({
+        treatmentId: treatment.treatmentId,
+        position: treatment.position,
+        viewType: treatment.viewType,
+        interaction: treatment.interaction,
+        variableAmount: treatment.variableAmount,
+        amountEarlier: amountEarlier,
+        timeEarlier: treatment.timeEarlier,
+        dateEarlier: treatment.dateEarlier,
+        amountLater: amountLater,
+        timeLater: treatment.timeLater,
+        dateLater: treatment.dateLater,
+        maxAmount: treatment.maxAmount,
+        maxTime: treatment.maxTime,
+        verticalPixels: treatment.verticalPixels,
+        horizontalPixels: treatment.horizontalPixels,
+        leftMarginWidthIn: treatment.leftMarginWidthIn,
+        bottomMarginHeightIn: treatment.bottomMarginHeightIn,
+        graphWidthIn: treatment.graphWidthIn,
+        graphHeightIn: treatment.graphHeightIn,
+        widthIn: treatment.widthIn,
+        heightIn: treatment.heightIn,
+        choice: AmountType.unitialized,
+        highup: highup,
+        lowdown: lowdown,
+      });
+      answers.push(answer);
+    }
   }
 
   allQuestions(state) {
@@ -76,6 +84,7 @@ export class QuestionEngine {
         : treatment.amountLater;
     state.lowdown = undefined;
     this.createNextAnswer(
+      state.currentQuestionIdx,
       treatment,
       state.answers,
       treatment.amountEarlier,
@@ -90,6 +99,10 @@ export class QuestionEngine {
     if (this.latestAnswer(state).shownTimestamp === null) {
       this.latestAnswer(state).shownTimestamp = action.payload;
     }
+  }
+
+  isFirstTreatment(state) {
+    return state.currentQuestionIdx === 0;
   }
 
   isLastTreatment(state) {
@@ -109,11 +122,18 @@ export class QuestionEngine {
       state.currentQuestionIdx += 1;
       const treatment = this.currentTreatment(state);
       this.createNextAnswer(
+        state.currentQuestionIdx,
         treatment,
         state.answers,
         treatment.amountEarlier,
         treatment.amountLater
       );
+    }
+  }
+
+  decPreviousQuestion(state) {
+    if (!this.isFirstTreatment(state)) {
+      state.currentQuestionIdx -= 1;
     }
   }
 
@@ -183,6 +203,10 @@ export class QuestionEngine {
     }
   }
 
+  previousQuestion(state) {
+    this.decPreviousQuestion(state);
+  }
+
   answerCurrentQuestion(state, action) {
     const { treatment, latestAnswer } =
       this.currentTreatmentAndLatestAnswer(state);
@@ -193,7 +217,6 @@ export class QuestionEngine {
       treatment.interaction === InteractionType.none ||
       treatment.interaction === InteractionType.drag
     ) {
-      console.log("incNextQuestion");
       this.incNextQuestion(state);
     } else if (treatment.interaction === InteractionType.titration) {
       const titrationAmount = this.calcTitrationAmount(
@@ -206,12 +229,12 @@ export class QuestionEngine {
       this.updateHighupOrLowdown(state);
       // TODO we need a termination condition for runaway titration
       if (state.lowdown - state.highup <= 10) {
-        console.log("incNextQuestion");
         this.incNextQuestion(state);
       } else {
         const newAmount = this.calcNewAmount(state, titrationAmount);
         if (treatment.variableAmount === AmountType.laterAmount) {
           this.createNextAnswer(
+            state.currentQuestionIdx,
             treatment,
             state.answers,
             treatment.amountEarlier,
@@ -219,6 +242,7 @@ export class QuestionEngine {
           );
         } else if (treatment.variableAmount === AmountType.earlierAmount) {
           this.createNextAnswer(
+            state.currentQuestionIdx,
             treatment,
             state.answers,
             newAmount,

@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import {
   Button,
   Grid,
+  Box,
   Typography,
   ThemeProvider,
   FormLabel,
@@ -11,7 +12,6 @@ import {
   FormHelperText,
   Radio,
   RadioGroup,
-  Box,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { useSelector, useDispatch } from "react-redux";
@@ -256,7 +256,7 @@ const Introduction = () => {
           />
           {treatment ? vizExplanation(treatment.viewType) : <p />}
         </Grid>
-        <Grid item xs={12}>
+        <Grid item xs={6}>
           <Button
             variant="contained"
             color="secondary"
@@ -264,24 +264,41 @@ const Introduction = () => {
             disableFocusRipple
             style={styles.button}
             onClick={() => {
-              if (
-                treatment.viewType === ViewType.word &&
-                choice !== "firstOption" &&
-                choice !== "secondOption"
-              ) {
-                setError(true);
-                setHelperText("You must choose one of the options below.");
-              } else {
-                dispatch(introductionCompleted(dateToState(DateTime.utc())));
-                dispatch(startSurvey());
-                navigate("/instruction");
-              }
+              navigate("/demographic");
             }}
-            disabled={disableSubmit && treatment.viewType === ViewType.word}
           >
             {" "}
-            Next{" "}
+            Previous{" "}
           </Button>
+        </Grid>
+        <Grid item xs={6}>
+          <Box display="flex" justifyContent="flex-end">
+            <Button
+              variant="contained"
+              color="secondary"
+              disableRipple
+              disableFocusRipple
+              style={styles.button}
+              onClick={() => {
+                if (
+                  treatment.viewType === ViewType.word &&
+                  choice !== "firstOption" &&
+                  choice !== "secondOption"
+                ) {
+                  setError(true);
+                  setHelperText("You must choose one of the options below.");
+                } else {
+                  dispatch(introductionCompleted(dateToState(DateTime.utc())));
+                  dispatch(startSurvey());
+                  navigate("/instruction");
+                }
+              }}
+              disabled={disableSubmit && treatment.viewType === ViewType.word}
+            >
+              {" "}
+              Next{" "}
+            </Button>
+          </Box>
         </Grid>
       </Grid>
     </ThemeProvider>
