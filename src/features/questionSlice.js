@@ -66,13 +66,16 @@ export const questionSlice = createSlice({
       return state;
     },
     setDemographic(state, action) {
-      state.countryOfResidence = action.payload.country;
+      state.countryOfResidence = action.payload.countryOfResidence;
       state.vizFamiliarity = action.payload.vizFamiliarity;
       state.age = action.payload.age;
       state.gender = action.payload.gender;
       state.selfDescribeGender = action.payload.selfDescribeGender;
       state.profession = action.payload.profession;
       state.status = StatusType.Introduction;
+    },
+    setSelfDescribeGender(state, action) {
+      state.selfDescribeGender = action.selfDescribeGender;
     },
     setPostSurvey(state, action) {
       state.postsurvey[action.payload.key] = action.payload.data;
@@ -196,15 +199,28 @@ export const getParticipant = (state) => {
   return state.questions.participantId;
 };
 
-export const getDemographics = (state) => {
-  return {
-    countryOfResidence: state.questions.countryOfResidence,
-    vizFamiliarity: state.questions.vizFamiliarity,
-    age: state.questions.age,
-    gender: state.questions.gender,
-    selfDescribeGender: state.questions.selfDescribeGender,
-    profession: state.questions.profession,
-  };
+export const getCountryOfResidence = (state) => {
+  return state.questions.countryOfResidence;
+};
+
+export const getvizFamiliarity = (state) => {
+  return state.questions.vizFamiliarity;
+};
+
+export const getAge = (state) => {
+  return state.questions.age;
+};
+
+export const getGender = (state) => {
+  return state.questions.gender;
+};
+
+export const getSelfDescribeGender = (state) => {
+  return state.questions.selfDescribeGender;
+};
+
+export const getProfession = (state) => {
+  return state.questions.profession;
 };
 
 export const getPostSurvey = (state) => {
@@ -275,6 +291,7 @@ export const {
   consentShown,
   consentCompleted,
   setDemographic,
+  setSelfDescribeGender,
   setPostSurvey,
   setAttentionCheck,
   instructionsShown,

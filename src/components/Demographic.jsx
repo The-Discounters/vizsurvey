@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { DateTime } from "luxon";
@@ -15,10 +14,20 @@ import InputLabel from "@material-ui/core/InputLabel";
 import FormHelperText from "@material-ui/core/FormHelperText";
 import FormControl from "@material-ui/core/FormControl";
 import NativeSelect from "@material-ui/core/NativeSelect";
-import { useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import * as countries from "./countries.json";
 import { dateToState } from "../features/ConversionUtil";
-import { consentShown, setDemographic } from "../features/questionSlice";
+import {
+  consentShown,
+  getCountryOfResidence,
+  getvizFamiliarity,
+  getAge,
+  getGender,
+  getSelfDescribeGender,
+  setSelfDescribeGender,
+  getProfession,
+  setDemographic,
+} from "../features/questionSlice";
 import { styles, theme } from "./ScreenHelper";
 import "../App.css";
 
@@ -42,19 +51,21 @@ export function Consent() {
   const classes = useStyles();
   const [disableSubmit, setDisableSubmit] = React.useState(true);
   const [disableSelfDescribe, setDisableSelfDescribe] = React.useState(true);
-  const [country, setCountry] = React.useState("");
-  const [vizFamiliarity, setVizFamiliarity] = React.useState("");
-  const [age, setAge] = React.useState("");
-  const [gender, setGender] = React.useState("");
-  const [selfDescribeGender, setSelfDescribeGender] = React.useState("");
-  const [profession, setProfession] = React.useState("");
+
+  const countryOfResidence = useSelector(getCountryOfResidence);
+  const vizFamiliarity = useSelector(getvizFamiliarity);
+  const age = useSelector(getAge);
+  const gender = useSelector(getGender);
+  const selfDescribeGender = useSelector(getSelfDescribeGender);
+  const profession = useSelector(getProfession);
 
   const navigate = useNavigate();
 
   useEffect(() => {
+    console.log("useEffect called");
     if (
-      country &&
-      country.length > 1 &&
+      countryOfResidence &&
+      countryOfResidence.length > 1 &&
       vizFamiliarity &&
       vizFamiliarity.length > 0 &&
       age &&
@@ -81,18 +92,13 @@ export function Consent() {
       setDisableSelfDescribe(true);
     }
   }, [
-    disableSelfDescribe,
-    country,
+    countryOfResidence,
     vizFamiliarity,
     age,
     gender,
     selfDescribeGender,
     profession,
   ]);
-
-  const handleFieldChange = (event, setter) => {
-    setter(event.target.value);
-  };
 
   const vizFamiliarityLevel = [
     {
@@ -154,10 +160,7 @@ export function Consent() {
                 Country of residence
               </InputLabel>
               <NativeSelect
-                value={country}
-                onChange={(event) => {
-                  handleFieldChange(event, setCountry);
-                }}
+                value={countryOfResidence}
                 inputProps={{
                   name: "country-of-origin",
                   id: "country-select-helper",
@@ -188,13 +191,9 @@ export function Consent() {
               </InputLabel>
               <NativeSelect
                 value={vizFamiliarity}
-                onChange={(event) => {
-                  handleFieldChange(event, setVizFamiliarity);
-                }}
                 name="familiarity-with-viz"
                 className={classes.selectEmpty}
                 inputProps={{ "aria-label": "Datavis experience" }}
-                helperText
               >
                 <option> </option>
                 {vizFamiliarityLevel.map((option) => (
@@ -223,8 +222,6 @@ export function Consent() {
                   +event.target.value <= 0
                 ) {
                   event.target.value = age;
-                } else {
-                  handleFieldChange(event, setAge);
                 }
               }}
             />
@@ -239,9 +236,6 @@ export function Consent() {
               <InputLabel htmlFor="gender-select-helper">Gender</InputLabel>
               <NativeSelect
                 value={gender}
-                onChange={(event) => {
-                  handleFieldChange(event, setGender);
-                }}
                 inputProps={{
                   name: "gender",
                   id: "gender-select-helper",
@@ -270,9 +264,6 @@ export function Consent() {
               className={classes.formControl}
               label="Self Describe Gender"
               id="Self-Describe-Gender"
-              onChange={(event) => {
-                handleFieldChange(event, setSelfDescribeGender);
-              }}
               disabled={disableSelfDescribe}
             />
             <label style={{ marginLeft: 25 }}> </label>
@@ -280,12 +271,10 @@ export function Consent() {
           <Grid item xs={3}>
             <TextField
               required
+              value={profession}
               className={classes.formControl}
               label="Current Profession"
               id="Current-Profession"
-              onChange={(event) => {
-                handleFieldChange(event, setProfession);
-              }}
             />
           </Grid>
           <Grid item xs={6}>
@@ -314,7 +303,7 @@ export function Consent() {
                 onClick={() => {
                   dispatch(
                     setDemographic({
-                      country: country,
+                      country: countryOfResidence,
                       vizFamiliarity: vizFamiliarity,
                       age: age,
                       gender: gender,

@@ -20,14 +20,22 @@ export class QuestionEngine {
     return { treatment, latestAnswer };
   }
 
+  // TODO change the name of this since it no longer just gets the latest answer.
   latestAnswer(state) {
-    return state.answers.length === 0
-      ? null
-      : state.answers[state.answers.length - 1];
+    // TODO this is not coded for titration type surveys.  I need to change the filter criteria to find the answer for the titration key values (probably highup, lowdown or something like that)
+    const treatment = this.currentTreatment(state);
+    const result =
+      state.answers.length === 0
+        ? null
+        : state.answers.filter(
+            (v) =>
+              v.treatmentId === treatment.treatmentId &&
+              v.position === treatment.position
+          );
+    return result.slice(-1);
   }
 
   createNextAnswer(
-    currentQuestionIdx,
     treatment,
     answers,
     amountEarlier,
@@ -35,40 +43,33 @@ export class QuestionEngine {
     highup,
     lowdown
   ) {
-    if (answers.length - 1 >= currentQuestionIdx) {
-      answers[currentQuestionIdx].amountEarlier = amountEarlier;
-      answers[currentQuestionIdx].amountLater = amountLater;
-      answers[currentQuestionIdx].highup = highup;
-      answers[currentQuestionIdx].lowdown = lowdown;
-    } else {
-      const answer = Answer({
-        treatmentId: treatment.treatmentId,
-        position: treatment.position,
-        viewType: treatment.viewType,
-        interaction: treatment.interaction,
-        variableAmount: treatment.variableAmount,
-        amountEarlier: amountEarlier,
-        timeEarlier: treatment.timeEarlier,
-        dateEarlier: treatment.dateEarlier,
-        amountLater: amountLater,
-        timeLater: treatment.timeLater,
-        dateLater: treatment.dateLater,
-        maxAmount: treatment.maxAmount,
-        maxTime: treatment.maxTime,
-        verticalPixels: treatment.verticalPixels,
-        horizontalPixels: treatment.horizontalPixels,
-        leftMarginWidthIn: treatment.leftMarginWidthIn,
-        bottomMarginHeightIn: treatment.bottomMarginHeightIn,
-        graphWidthIn: treatment.graphWidthIn,
-        graphHeightIn: treatment.graphHeightIn,
-        widthIn: treatment.widthIn,
-        heightIn: treatment.heightIn,
-        choice: AmountType.unitialized,
-        highup: highup,
-        lowdown: lowdown,
-      });
-      answers.push(answer);
-    }
+    const answer = Answer({
+      treatmentId: treatment.treatmentId,
+      position: treatment.position,
+      viewType: treatment.viewType,
+      interaction: treatment.interaction,
+      variableAmount: treatment.variableAmount,
+      amountEarlier: amountEarlier,
+      timeEarlier: treatment.timeEarlier,
+      dateEarlier: treatment.dateEarlier,
+      amountLater: amountLater,
+      timeLater: treatment.timeLater,
+      dateLater: treatment.dateLater,
+      maxAmount: treatment.maxAmount,
+      maxTime: treatment.maxTime,
+      verticalPixels: treatment.verticalPixels,
+      horizontalPixels: treatment.horizontalPixels,
+      leftMarginWidthIn: treatment.leftMarginWidthIn,
+      bottomMarginHeightIn: treatment.bottomMarginHeightIn,
+      graphWidthIn: treatment.graphWidthIn,
+      graphHeightIn: treatment.graphHeightIn,
+      widthIn: treatment.widthIn,
+      heightIn: treatment.heightIn,
+      choice: AmountType.unitialized,
+      highup: highup,
+      lowdown: lowdown,
+    });
+    answers.push(answer);
   }
 
   allQuestions(state) {
@@ -84,7 +85,6 @@ export class QuestionEngine {
         : treatment.amountLater;
     state.lowdown = undefined;
     this.createNextAnswer(
-      state.currentQuestionIdx,
       treatment,
       state.answers,
       treatment.amountEarlier,
@@ -122,7 +122,6 @@ export class QuestionEngine {
       state.currentQuestionIdx += 1;
       const treatment = this.currentTreatment(state);
       this.createNextAnswer(
-        state.currentQuestionIdx,
         treatment,
         state.answers,
         treatment.amountEarlier,
@@ -234,7 +233,6 @@ export class QuestionEngine {
         const newAmount = this.calcNewAmount(state, titrationAmount);
         if (treatment.variableAmount === AmountType.laterAmount) {
           this.createNextAnswer(
-            state.currentQuestionIdx,
             treatment,
             state.answers,
             treatment.amountEarlier,
@@ -242,7 +240,6 @@ export class QuestionEngine {
           );
         } else if (treatment.variableAmount === AmountType.earlierAmount) {
           this.createNextAnswer(
-            state.currentQuestionIdx,
             treatment,
             state.answers,
             newAmount,

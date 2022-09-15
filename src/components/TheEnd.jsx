@@ -8,7 +8,12 @@ import { styles, theme } from "./ScreenHelper";
 import {
   getParticipant,
   getPostSurvey,
-  getDemographics,
+  getCountryOfResidence,
+  getvizFamiliarity,
+  getAge,
+  getGender,
+  getSelfDescribeGender,
+  getProfession,
   getAttentionCheck,
   getTimestamps,
   selectAllQuestions,
@@ -28,7 +33,12 @@ const TheEnd = () => {
   const io = new FileIOAdapter();
   const csv = io.convertToCSV(answers);
   const postsurvey = useSelector(getPostSurvey);
-  const demographics = useSelector(getDemographics);
+  const countryOfResidence = useSelector(getCountryOfResidence);
+  const vizFamiliarity = useSelector(getvizFamiliarity);
+  const age = useSelector(getAge);
+  const gender = useSelector(getGender);
+  const selfDescribeGender = useSelector(getSelfDescribeGender);
+  const profession = useSelector(getProfession);
   const attentioncheck = useSelector(getAttentionCheck);
   const timestamps = useSelector(getTimestamps);
 
@@ -76,7 +86,14 @@ const TheEnd = () => {
                   participantId: participantId,
                   postSurveyAnswers: {
                     postsurvey: postsurvey,
-                    demographics: demographics,
+                    demographics: {
+                      countryOfResidence: countryOfResidence,
+                      vizFamiliarity: vizFamiliarity,
+                      age: age,
+                      gender: gender,
+                      selfDescribeGender: selfDescribeGender,
+                      profession: profession,
+                    },
                     attentioncheck: attentioncheck,
                     timestamps: timestamps,
                   },
