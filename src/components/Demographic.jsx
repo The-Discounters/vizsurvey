@@ -161,6 +161,8 @@ export function Consent() {
               </InputLabel>
               <NativeSelect
                 value={countryOfResidence}
+                // onChange={(event) => {
+                // }}
                 inputProps={{
                   name: "country-of-origin",
                   id: "country-select-helper",
