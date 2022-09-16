@@ -20,13 +20,17 @@ import { dateToState } from "../features/ConversionUtil";
 import {
   consentShown,
   getCountryOfResidence,
-  getvizFamiliarity,
+  getVizFamiliarity,
   getAge,
   getGender,
   getSelfDescribeGender,
-  setSelfDescribeGender,
   getProfession,
-  setDemographic,
+  setCountryOfResidence,
+  setVizFamiliarity,
+  setAge,
+  setGender,
+  setSelfDescribeGender,
+  setProfession,
 } from "../features/questionSlice";
 import { styles, theme } from "./ScreenHelper";
 import "../App.css";
@@ -53,7 +57,8 @@ export function Consent() {
   const [disableSelfDescribe, setDisableSelfDescribe] = React.useState(true);
 
   const countryOfResidence = useSelector(getCountryOfResidence);
-  const vizFamiliarity = useSelector(getvizFamiliarity);
+  console.log("countryOfResidence " + countryOfResidence);
+  const vizFamiliarity = useSelector(getVizFamiliarity);
   const age = useSelector(getAge);
   const gender = useSelector(getGender);
   const selfDescribeGender = useSelector(getSelfDescribeGender);
@@ -161,8 +166,9 @@ export function Consent() {
               </InputLabel>
               <NativeSelect
                 value={countryOfResidence}
-                // onChange={(event) => {
-                // }}
+                onChange={(event) => {
+                  dispatch(setCountryOfResidence(event.target.value));
+                }}
                 inputProps={{
                   name: "country-of-origin",
                   id: "country-select-helper",
@@ -193,6 +199,9 @@ export function Consent() {
               </InputLabel>
               <NativeSelect
                 value={vizFamiliarity}
+                onChange={(event) => {
+                  dispatch(setVizFamiliarity(event.target.value));
+                }}
                 name="familiarity-with-viz"
                 className={classes.selectEmpty}
                 inputProps={{ "aria-label": "Datavis experience" }}
@@ -218,12 +227,15 @@ export function Consent() {
               label="Age"
               type="number"
               id="Age"
+              value={age}
               onChange={(event) => {
                 if (
                   event.target.value.length != 0 &&
                   +event.target.value <= 0
                 ) {
                   event.target.value = age;
+                } else {
+                  dispatch(setAge(event.target.value));
                 }
               }}
             />
@@ -238,6 +250,9 @@ export function Consent() {
               <InputLabel htmlFor="gender-select-helper">Gender</InputLabel>
               <NativeSelect
                 value={gender}
+                onChange={(event) => {
+                  dispatch(setGender(event.target.value));
+                }}
                 inputProps={{
                   name: "gender",
                   id: "gender-select-helper",
@@ -263,6 +278,9 @@ export function Consent() {
             <TextField
               required
               value={selfDescribeGender}
+              onChange={(event) => {
+                dispatch(setSelfDescribeGender(event.target.value));
+              }}
               className={classes.formControl}
               label="Self Describe Gender"
               id="Self-Describe-Gender"
@@ -274,6 +292,9 @@ export function Consent() {
             <TextField
               required
               value={profession}
+              onChange={(event) => {
+                dispatch(setProfession(event.target.value));
+              }}
               className={classes.formControl}
               label="Current Profession"
               id="Current-Profession"
@@ -303,16 +324,6 @@ export function Consent() {
                 disableFocusRipple
                 style={styles.button}
                 onClick={() => {
-                  dispatch(
-                    setDemographic({
-                      country: countryOfResidence,
-                      vizFamiliarity: vizFamiliarity,
-                      age: age,
-                      gender: gender,
-                      selfDescribeGender: selfDescribeGender,
-                      profession: profession,
-                    })
-                  );
                   navigate("/introduction");
                 }}
                 disabled={disableSubmit}

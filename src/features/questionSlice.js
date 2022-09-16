@@ -74,8 +74,23 @@ export const questionSlice = createSlice({
       state.profession = action.payload.profession;
       state.status = StatusType.Introduction;
     },
+    setCountryOfResidence(state, action) {
+      state.countryOfResidence = action.payload;
+    },
+    setVizFamiliarity(state, action) {
+      state.vizFamiliarity = action.payload;
+    },
+    setAge(state, action) {
+      state.age = action.payload;
+    },
+    setGender(state, action) {
+      state.gender = action.payload;
+    },
     setSelfDescribeGender(state, action) {
-      state.selfDescribeGender = action.selfDescribeGender;
+      state.selfDescribeGender = action.payload;
+    },
+    setProfession(state, action) {
+      state.profession = action.payload;
     },
     setPostSurvey(state, action) {
       state.postsurvey[action.payload.key] = action.payload.data;
@@ -203,7 +218,7 @@ export const getCountryOfResidence = (state) => {
   return state.questions.countryOfResidence;
 };
 
-export const getvizFamiliarity = (state) => {
+export const getVizFamiliarity = (state) => {
   return state.questions.vizFamiliarity;
 };
 
@@ -291,7 +306,12 @@ export const {
   consentShown,
   consentCompleted,
   setDemographic,
+  setCountryOfResidence,
+  setVizFamiliarity,
+  setAge,
+  setGender,
   setSelfDescribeGender,
+  setProfession,
   setPostSurvey,
   setAttentionCheck,
   instructionsShown,

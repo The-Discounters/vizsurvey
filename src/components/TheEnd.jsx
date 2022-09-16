@@ -9,7 +9,7 @@ import {
   getParticipant,
   getPostSurvey,
   getCountryOfResidence,
-  getvizFamiliarity,
+  getVizFamiliarity,
   getAge,
   getGender,
   getSelfDescribeGender,
@@ -34,7 +34,7 @@ const TheEnd = () => {
   const csv = io.convertToCSV(answers);
   const postsurvey = useSelector(getPostSurvey);
   const countryOfResidence = useSelector(getCountryOfResidence);
-  const vizFamiliarity = useSelector(getvizFamiliarity);
+  const vizFamiliarity = useSelector(getVizFamiliarity);
   const age = useSelector(getAge);
   const gender = useSelector(getGender);
   const selfDescribeGender = useSelector(getSelfDescribeGender);
