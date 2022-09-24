@@ -57,7 +57,6 @@ export function Consent() {
   const [disableSelfDescribe, setDisableSelfDescribe] = React.useState(true);
 
   const countryOfResidence = useSelector(getCountryOfResidence);
-  console.log("countryOfResidence " + countryOfResidence);
   const vizFamiliarity = useSelector(getVizFamiliarity);
   const age = useSelector(getAge);
   const gender = useSelector(getGender);
@@ -67,7 +66,6 @@ export function Consent() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    console.log("useEffect called");
     if (
       countryOfResidence &&
       countryOfResidence.length > 1 &&

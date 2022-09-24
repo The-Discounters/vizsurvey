@@ -12,6 +12,7 @@ import {
   FormControlLabel,
   Radio,
   RadioGroup,
+  Box,
   ThemeProvider,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
@@ -197,7 +198,7 @@ export function PostSurvey() {
                 </div>
               ))}
             </Grid>
-            <Grid item xs={12} style={{ margin: 0 }}>
+            <Grid item xs={6}>
               <Button
                 variant="contained"
                 color="secondary"
@@ -205,31 +206,48 @@ export function PostSurvey() {
                 disableFocusRipple
                 style={styles.button}
                 onClick={() => {
-                  if (process.env.REACT_APP_FULLSCREEN === "enabled")
-                    handle.enter();
-                  setTimeout(() => {
-                    if (process.env.REACT_APP_FULLSCREEN === "enabled")
-                      handle.exit();
-                    dispatch(
-                      setPostSurvey({
-                        data: surveys[0].questions.reduce(
-                          (prev, { question }, index) => {
-                            prev[question.textShort] = qList2[0][index];
-                            return prev;
-                          },
-                          {}
-                        ),
-                        key: surveys[0].promptShort,
-                      })
-                    );
-                    navigate("/postsurvey2");
-                  }, 400);
+                  navigate("/survey");
                 }}
-                disabled={disableSubmit}
               >
                 {" "}
-                Next{" "}
+                Previous{" "}
               </Button>
+            </Grid>
+            <Grid item xs={6} style={{ margin: 0 }}>
+              <Box display="flex" justifyContent="flex-end">
+                <Button
+                  variant="contained"
+                  color="secondary"
+                  disableRipple
+                  disableFocusRipple
+                  style={styles.button}
+                  onClick={() => {
+                    if (process.env.REACT_APP_FULLSCREEN === "enabled")
+                      handle.enter();
+                    setTimeout(() => {
+                      if (process.env.REACT_APP_FULLSCREEN === "enabled")
+                        handle.exit();
+                      dispatch(
+                        setPostSurvey({
+                          data: surveys[0].questions.reduce(
+                            (prev, { question }, index) => {
+                              prev[question.textShort] = qList2[0][index];
+                              return prev;
+                            },
+                            {}
+                          ),
+                          key: surveys[0].promptShort,
+                        })
+                      );
+                      navigate("/postsurvey2");
+                    }, 400);
+                  }}
+                  disabled={disableSubmit}
+                >
+                  {" "}
+                  Next{" "}
+                </Button>
+              </Box>
             </Grid>
           </Grid>
         </FullScreen>

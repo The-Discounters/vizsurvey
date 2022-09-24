@@ -15,8 +15,11 @@ import {
 } from "@mui/material";
 import { makeStyles } from "@material-ui/core/styles";
 import { AmountType } from "../features/AmountType";
+import { DirectionType } from "../features/DirectionType";
 import {
   selectCurrentQuestion,
+  getCurrentQuestionIndex,
+  isFirstTreatment,
   isLastTreatment,
   isMiddleTreatment,
   setQuestionShownTimestamp,
@@ -79,6 +82,7 @@ function resetUseStyles() {
       fontSize: "32px",
     },
   }));
+  7;
 }
 resetUseStyles();
 
@@ -91,18 +95,24 @@ resetUseStyles();
 
 export function MELForm() {
   const dispatch = useDispatch();
-  const q = useSelector(selectCurrentQuestion);
+  let q = useSelector(selectCurrentQuestion);
+  const qi = useSelector(getCurrentQuestionIndex);
+  const isFirstTreatmentQ = useSelector(isFirstTreatment);
   const isLastTreatmentQ = useSelector(isLastTreatment);
   const isMiddleTreatmentQ = useSelector(isMiddleTreatment);
   const navigate = useNavigate();
   const [disableSubmit, setDisableSubmit] = React.useState(true);
-  const [choice, setChoice] = useState("");
+  const [choice, setChoice] = useState(q.choice);
+
+  console.log("choice " + choice);
+
   const [error, setError] = React.useState(false);
   const [helperText, setHelperText] = React.useState("");
+  const [answerChanged, setAnswerChanged] = React.useState(false);
 
   useEffect(() => {
     dispatch(dispatch(setQuestionShownTimestamp(dateToState(DateTime.utc()))));
-  }, []);
+  }, [qi]);
 
   useEffect(() => {
     if (choice && choice.length > 1) {
@@ -110,7 +120,7 @@ export function MELForm() {
     } else {
       setDisableSubmit(true);
     }
-  }, [choice]);
+  }, [choice, qi]);
 
   const todayText = (sooner_time) =>
     sooner_time === 0 ? "today" : `in ${sooner_time} months`;
@@ -161,6 +171,7 @@ export function MELForm() {
                     }
                     setHelperText("");
                     setError(false);
+                    setAnswerChanged(true);
                   }}
                   value={choice}
                 >
@@ -190,7 +201,7 @@ export function MELForm() {
             </FormControl>
           </form>
         </Grid>
-        <Grid item xs={12} style={{ margin: 0 }}>
+        <Grid item xs={6}>
           <Button
             variant="contained"
             color="secondary"
@@ -198,37 +209,66 @@ export function MELForm() {
             disableFocusRipple
             style={styles.button}
             onClick={() => {
-              if (
-                choice !== AmountType.earlierAmount &&
-                choice !== AmountType.laterAmount
-              ) {
-                setError(true);
-                setHelperText("Please choose one of the options below.");
+              if (isFirstTreatmentQ) {
+                navigate("/instruction");
               } else {
-                setError(false);
-                setHelperText("");
-                setTimeout(() => {
-                  dispatch(
-                    answer({
-                      choice: choice,
-                      choiceTimestamp: dateToState(DateTime.utc()),
-                    })
-                  );
-                  setChoice(null);
+                dispatch(
+                  answer({
+                    choice: choice,
+                    choiceTimestamp: dateToState(DateTime.utc()),
+                    direction: DirectionType.previous,
+                    answerChanged: answerChanged,
+                  })
+                );
+              }
+            }}
+          >
+            {" "}
+            Previous{" "}
+          </Button>
+        </Grid>
+        <Grid item xs={6} style={{ margin: 0 }}>
+          <Box display="flex" justifyContent="flex-end">
+            <Button
+              variant="contained"
+              color="secondary"
+              disableRipple
+              disableFocusRipple
+              style={styles.button}
+              onClick={() => {
+                if (
+                  choice !== AmountType.earlierAmount &&
+                  choice !== AmountType.laterAmount
+                ) {
+                  setError(true);
+                  setHelperText("Please choose one of the options below.");
+                } else {
+                  setError(false);
+                  setHelperText("");
+                  if (answerChanged) {
+                    dispatch(
+                      answer({
+                        choice: choice,
+                        choiceTimestamp: dateToState(DateTime.utc()),
+                        direction: DirectionType.next,
+                        answerChanged: answerChanged,
+                      })
+                    );
+                  }
                   if (isLastTreatmentQ) {
                     navigate("/postsurvey1");
                   } else if (isMiddleTreatmentQ) {
                     navigate("/attentioncheck");
                   }
-                }, 400);
-                resetUseStyles();
-              }
-            }}
-            disabled={disableSubmit}
-          >
-            {" "}
-            Next{" "}
-          </Button>
+                  resetUseStyles();
+                }
+              }}
+              disabled={disableSubmit}
+            >
+              {" "}
+              Next{" "}
+            </Button>
+          </Box>
         </Grid>
       </Grid>
     </ThemeProvider>

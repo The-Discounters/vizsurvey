@@ -2,6 +2,7 @@ import { StatusType } from "./StatusType";
 import { AmountType } from "./AmountType";
 import { InteractionType } from "./InteractionType";
 import { Answer } from "./Answer";
+import { DirectionType } from "./DirectionType";
 
 export const TIMESTAMP_FORMAT = "MM/dd/yyyy H:mm:ss:SSS ZZZZ";
 
@@ -20,19 +21,24 @@ export class QuestionEngine {
     return { treatment, latestAnswer };
   }
 
-  // TODO change the name of this since it no longer just gets the latest answer.
+  // TODO maybe change the name of this to be isLtestAnswerForTreatment since it was changed to get the latest answer for the current treatment
+  // I think it is currently overcomplicatd but still will work correctly so we have coded it for a future with more than one answer.
   latestAnswer(state) {
     // TODO this is not coded for titration type surveys.  I need to change the filter criteria to find the answer for the titration key values (probably highup, lowdown or something like that)
-    const treatment = this.currentTreatment(state);
-    const result =
-      state.answers.length === 0
-        ? null
-        : state.answers.filter(
-            (v) =>
-              v.treatmentId === treatment.treatmentId &&
-              v.position === treatment.position
-          );
-    return result.slice(-1);
+    return state.answers.length === 0
+      ? null
+      : state.answers[state.answers.length - 1];
+    // const treatment = this.currentTreatment(state);
+    // if (state.answers.length === 0) {
+    //   return null;
+    // }
+    // const result = state.answers.filter((v) => {
+    //   const value =
+    //     v.treatmentId === treatment.treatmentId &&
+    //     v.position === treatment.position;
+    //   return value;
+    // });
+    // return result.length === 0 ? null : result[result.length - 1];
   }
 
   createNextAnswer(
@@ -96,11 +102,13 @@ export class QuestionEngine {
   }
 
   setLatestAnswerShown(state, action) {
-    if (this.latestAnswer(state).shownTimestamp === null) {
-      this.latestAnswer(state).shownTimestamp = action.payload;
+    const latestAnswer = this.latestAnswer(state);
+    if (latestAnswer.shownTimestamp === null) {
+      latestAnswer.shownTimestamp = action.payload;
     }
   }
 
+  // TODO we should renames these xxxQuestion not treatment.
   isFirstTreatment(state) {
     return state.currentQuestionIdx === 0;
   }
@@ -120,20 +128,27 @@ export class QuestionEngine {
       state.status = StatusType.Questionaire;
     } else {
       state.currentQuestionIdx += 1;
-      const treatment = this.currentTreatment(state);
-      this.createNextAnswer(
-        treatment,
-        state.answers,
-        treatment.amountEarlier,
-        treatment.amountLater
-      );
+      if (this.latestAnswer(state) === null) {
+        const treatment = this.currentTreatment(state);
+        this.createNextAnswer(
+          treatment,
+          state.answers,
+          treatment.amountEarlier,
+          treatment.amountLater
+        );
+      }
     }
   }
 
   decPreviousQuestion(state) {
     if (!this.isFirstTreatment(state)) {
       state.currentQuestionIdx -= 1;
+      return true;
+    } else {
+      state.status = StatusType.Instructions;
     }
+
+    return false;
   }
 
   updateHighupOrLowdown(state) {
@@ -202,22 +217,27 @@ export class QuestionEngine {
     }
   }
 
-  previousQuestion(state) {
-    this.decPreviousQuestion(state);
-  }
-
   answerCurrentQuestion(state, action) {
     const { treatment, latestAnswer } =
       this.currentTreatmentAndLatestAnswer(state);
-    latestAnswer.choice = action.payload.choice;
-    latestAnswer.choiceTimestamp = action.payload.choiceTimestamp;
-    latestAnswer.dragAmount = action.payload.dragAmount;
+    const direction = action.payload.direction;
+    const answerChanged = action.payload.answerChanged;
+    if (answerChanged) {
+      latestAnswer.choice = action.payload.choice;
+      latestAnswer.choiceTimestamp = action.payload.choiceTimestamp;
+      latestAnswer.dragAmount = action.payload.dragAmount;
+    }
     if (
       treatment.interaction === InteractionType.none ||
       treatment.interaction === InteractionType.drag
     ) {
-      this.incNextQuestion(state);
+      if (direction === DirectionType.next) {
+        this.incNextQuestion(state);
+      } else {
+        this.decPreviousQuestion(state);
+      }
     } else if (treatment.interaction === InteractionType.titration) {
+      // TODO I did not incorporate previous logic into titration experiments since we aren't piloting with those.  This code needs to be modified to incorporate previous action.
       const titrationAmount = this.calcTitrationAmount(
         treatment.variableAmount === AmountType.laterAmount
           ? latestAnswer.amountLater

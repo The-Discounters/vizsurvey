@@ -2,6 +2,7 @@ import { DateTime } from "luxon";
 import { QuestionEngine } from "./QuestionEngine";
 import { ViewType } from "./ViewType";
 import { StatusType } from "./StatusType";
+import { DirectionType } from "./DirectionType";
 import { Question } from "./Question";
 import { InteractionType } from "./InteractionType";
 import { AmountType } from "./AmountType";
@@ -30,6 +31,23 @@ describe("QuestionEngine tests", () => {
 
   test("startSurvey should create a single answer entry for non titraiton question.", () => {
     const state = {
+      treatments: [
+        TestDataFactory.createQuestionNoTitrate(),
+        TestDataFactory.create2ndQuestionNoTitrate,
+      ],
+      answers: [],
+      currentQuestionIdx: 0,
+    };
+    const qe = new QuestionEngine();
+    qe.startSurvey(state);
+    expect(state.currentQuestionIdx).toBe(0);
+    expect(state.answers).not.toBeUndefined();
+    expect(state.answers.length).toBe(1);
+    expect(state.answers[0].amountEarlier).toBe(400);
+  });
+
+  test("answerCurrentQuestion should not create a single answer entry for non titraiton question with a single treatment question.", () => {
+    const state = {
       treatments: [TestDataFactory.createQuestionNoTitrate()],
       answers: [],
       currentQuestionIdx: 0,
@@ -40,6 +58,101 @@ describe("QuestionEngine tests", () => {
     expect(state.answers).not.toBeUndefined();
     expect(state.answers.length).toBe(1);
     expect(state.answers[0].amountEarlier).toBe(400);
+    qe.answerCurrentQuestion(state, {
+      payload: {
+        choice: AmountType.earlierAmount,
+        choiceTimestamp: dateToState(DateTime.utc()),
+        direction: DirectionType.next,
+        answerChanged: true,
+      },
+    });
+    expect(state.currentQuestionIdx).toBe(0);
+    expect(state.answers).not.toBeUndefined();
+    expect(state.answers.length).toBe(1);
+    expect(state.answers[0].choice).toBe(AmountType.earlierAmount);
+  });
+
+  test("answerCurrentQuestion should create a single answer entry for the next question answer for non titraiton question.", () => {
+    const state = {
+      treatments: [
+        TestDataFactory.createQuestionNoTitrate(),
+        TestDataFactory.create2ndQuestionNoTitrate,
+      ],
+      answers: [],
+      currentQuestionIdx: 0,
+    };
+    const qe = new QuestionEngine();
+    qe.startSurvey(state);
+    expect(state.currentQuestionIdx).toBe(0);
+    expect(state.answers).not.toBeUndefined();
+    expect(state.answers.length).toBe(1);
+    expect(state.answers[0].amountEarlier).toBe(400);
+    qe.answerCurrentQuestion(state, {
+      payload: {
+        choice: AmountType.earlierAmount,
+        choiceTimestamp: dateToState(DateTime.utc()),
+        direction: DirectionType.next,
+        answerChanged: true,
+      },
+    });
+    expect(state.currentQuestionIdx).toBe(1);
+    expect(state.answers).not.toBeUndefined();
+    expect(state.answers.length).toBe(2);
+    expect(state.answers[1].choice).toBeUndefined();
+  });
+
+  test("answerCurrentQuestion testing previous selection with no previous question.", () => {
+    const state = {
+      treatments: [TestDataFactory.createQuestionNoTitrate()],
+      answers: [],
+      currentQuestionIdx: 0,
+    };
+    const qe = new QuestionEngine();
+    qe.startSurvey(state);
+    expect(state.currentQuestionIdx).toBe(0);
+    expect(state.answers).not.toBeUndefined();
+    expect(state.answers.length).toBe(1);
+    expect(state.answers[0].amountEarlier).toBe(400);
+    qe.answerCurrentQuestion(state, {
+      payload: {
+        choice: AmountType.earlierAmount,
+        choiceTimestamp: dateToState(DateTime.utc()),
+        direction: DirectionType.previous,
+        answerChanged: true,
+      },
+    });
+    expect(state.currentQuestionIdx).toBe(0);
+    expect(state.answers).not.toBeUndefined();
+    expect(state.answers.length).toBe(1);
+    expect(state.answers[0].choice).toBe(AmountType.earlierAmount);
+    expect(state.status).toBe(StatusType.Instructions);
+  });
+
+  test("answerCurrentQuestion testing previous selection with single question.", () => {
+    const state = {
+      treatments: [TestDataFactory.createQuestionNoTitrate()],
+      answers: [],
+      currentQuestionIdx: 0,
+    };
+    const qe = new QuestionEngine();
+    qe.startSurvey(state);
+    expect(state.currentQuestionIdx).toBe(0);
+    expect(state.answers).not.toBeUndefined();
+    expect(state.answers.length).toBe(1);
+    expect(state.answers[0].amountEarlier).toBe(400);
+    qe.answerCurrentQuestion(state, {
+      payload: {
+        choice: AmountType.earlierAmount,
+        choiceTimestamp: dateToState(DateTime.utc()),
+        direction: DirectionType.next,
+        answerChanged: true,
+      },
+    });
+    expect(state.currentQuestionIdx).toBe(0);
+    expect(state.answers).not.toBeUndefined();
+    expect(state.answers.length).toBe(1);
+    expect(state.answers[0].choice).toBe(AmountType.earlierAmount);
+    expect(state.status).toBe(StatusType.Questionaire);
   });
 
   test("Test calculation methods using example for the values from Read 2001 paper.", () => {
@@ -125,6 +238,8 @@ describe("QuestionEngine tests", () => {
       payload: {
         choice: AmountType.earlierAmount,
         choiceTimestamp: dateToState(DateTime.utc()),
+        direction: DirectionType.next,
+        answerChanged: true,
       },
     });
     expect(state.currentQuestionIdx).toBe(0);
@@ -140,6 +255,8 @@ describe("QuestionEngine tests", () => {
       payload: {
         choice: AmountType.laterAmount,
         choiceTimestamp: dateToState(DateTime.utc()),
+        direction: DirectionType.next,
+        answerChanged: true,
       },
     });
     expect(state.currentQuestionIdx).toBe(0);
@@ -155,6 +272,8 @@ describe("QuestionEngine tests", () => {
       payload: {
         choice: AmountType.laterAmount,
         choiceTimestamp: dateToState(DateTime.utc()),
+        direction: DirectionType.next,
+        answerChanged: true,
       },
     });
     expect(state.currentQuestionIdx).toBe(0);
@@ -170,6 +289,8 @@ describe("QuestionEngine tests", () => {
       payload: {
         choice: AmountType.earlierAmount,
         choiceTimestamp: dateToState(DateTime.utc()),
+        direction: DirectionType.next,
+        answerChanged: true,
       },
     });
     expect(state.currentQuestionIdx).toBe(0);
@@ -185,6 +306,8 @@ describe("QuestionEngine tests", () => {
       payload: {
         choice: AmountType.laterAmount,
         choiceTimestamp: dateToState(DateTime.utc()),
+        direction: DirectionType.next,
+        answerChanged: true,
       },
     });
     expect(state.currentQuestionIdx).toBe(0);
@@ -203,6 +326,8 @@ describe("QuestionEngine tests", () => {
         // I derived from the earlier steps in the example.
         choice: AmountType.laterAmount,
         choiceTimestamp: dateToState(DateTime.utc()),
+        direction: DirectionType.next,
+        answerChanged: true,
       },
     });
     expect(state.currentQuestionIdx).toBe(0);
@@ -291,6 +416,33 @@ export class TestDataFactory {
       widthIn: 6.5,
       heightIn: 6.5,
       comment: "No titration test case.",
+    });
+  }
+
+  static create2ndQuestionNoTitrate() {
+    return Question({
+      treatmentId: 1,
+      position: 2,
+      viewType: ViewType.barchart,
+      interaction: InteractionType.none,
+      variableAmount: AmountType.laterAmount,
+      amountEarlier: 200,
+      timeEarlier: 2,
+      dateEarlier: undefined,
+      amountLater: 1000,
+      timeLater: 4,
+      dateLater: undefined,
+      maxAmount: 500,
+      maxTime: 8,
+      horizontalPixels: 480,
+      verticalPixels: 480,
+      leftMarginWidthIn: 0.5,
+      bottomMarginHeightIn: 0.5,
+      graphWidthIn: 6,
+      graphHeightIn: 6,
+      widthIn: 6.5,
+      heightIn: 6.5,
+      comment: "No titration test case second treatment.",
     });
   }
 }

@@ -26,14 +26,12 @@ export const questionSlice = createSlice({
     participantId: null,
     sessionId: null,
     postsurvey: {},
-    countryOfResidence: null,
-    firstLanguage: null,
-    secondLanguage: null,
-    vizFamiliarity: null,
-    age: null,
-    gender: null,
-    selfDescribeGender: null,
-    profession: null,
+    countryOfResidence: "",
+    vizFamiliarity: "",
+    age: "",
+    gender: "",
+    selfDescribeGender: "",
+    profession: "",
     attentioncheck: null,
     consentShownTimestamp: null,
     introductionShowTimestamp: null,
@@ -198,6 +196,10 @@ export const questionSlice = createSlice({
   },
 });
 
+export const isFirstTreatment = (state) => {
+  return qe.isFirstTreatment(state.questions);
+};
+
 export const isLastTreatment = (state) => {
   return qe.isLastTreatment(state.questions);
 };
@@ -261,6 +263,10 @@ export const getTimestamps = (state) => {
     debriefCompleted: state.questions.debriefCompleted,
     theEndShownTimestamp: state.questions.theEndShownTimestamp,
   };
+};
+
+export const getCurrentQuestionIndex = (state) => {
+  return state.currentQuestionIdx;
 };
 
 export const fetchCurrentTreatment = (state) => {
