@@ -25,20 +25,20 @@ export class QuestionEngine {
   // I think it is currently overcomplicatd but still will work correctly so we have coded it for a future with more than one answer.
   latestAnswer(state) {
     // TODO this is not coded for titration type surveys.  I need to change the filter criteria to find the answer for the titration key values (probably highup, lowdown or something like that)
-    return state.answers.length === 0
-      ? null
-      : state.answers[state.answers.length - 1];
-    // const treatment = this.currentTreatment(state);
-    // if (state.answers.length === 0) {
-    //   return null;
-    // }
-    // const result = state.answers.filter((v) => {
-    //   const value =
-    //     v.treatmentId === treatment.treatmentId &&
-    //     v.position === treatment.position;
-    //   return value;
-    // });
-    // return result.length === 0 ? null : result[result.length - 1];
+    // return state.answers.length === 0
+    //   ? null
+    //   : state.answers[state.answers.length - 1];
+    const treatment = this.currentTreatment(state);
+    if (state.answers.length === 0) {
+      return null;
+    }
+    const result = state.answers.filter((v) => {
+      const value =
+        v.treatmentId === treatment.treatmentId &&
+        v.position === treatment.position;
+      return value;
+    });
+    return result.length === 0 ? null : result[result.length - 1];
   }
 
   createNextAnswer(
