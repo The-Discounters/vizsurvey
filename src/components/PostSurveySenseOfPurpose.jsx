@@ -48,48 +48,35 @@ export function PostSurvey() {
 
   const [disableSubmit, setDisableSubmit] = React.useState(true);
   let surveys = POST_SURVEY_QUESTIONS;
-  surveys = surveys.map((survey) => {
-    survey["questions"] = survey.questions.filter(({ question }) => {
-      if (question.disabled === true) {
-        return false;
-      } else {
-        return true;
-      }
-    });
-    return survey;
+  surveys.questions = surveys.questions.filter(({ question }) => {
+    if (question.disabled === true) {
+      return false;
+    } else {
+      return true;
+    }
   });
 
-  let qList2 = [];
-  let qList2Flat = [];
-  let setQList2 = [];
-  surveys.forEach(({ questions }) => {
-    let qList = [];
-    let setQList = [];
-    questions.forEach(() => {
-      const [q, setQ] = React.useState("");
-      qList.push(q);
-      qList2Flat.push(q);
-      setQList.push(setQ);
-    });
-    qList2.push(qList);
-    setQList2.push(setQList);
+  let qList = [];
+  let setQList = [];
+  surveys.questions.forEach(() => {
+    const [q, setQ] = React.useState("");
+    qList.push(q);
+    setQList.push(setQ);
   });
 
   const checkEnableSubmit = () => {
     let result = false;
-    qList2.forEach((qList) => {
-      qList.forEach((q) => {
-        if (q.length <= 0) {
-          result = true;
-        }
-      });
+    qList.forEach((q) => {
+      if (q.length <= 0) {
+        result = true;
+      }
     });
     setDisableSubmit(result);
   };
 
   useEffect(() => {
     checkEnableSubmit();
-  }, qList2Flat);
+  }, qList);
 
   const handleFieldChange = (event, setter) => {
     setter(event.target.value);
@@ -120,83 +107,73 @@ export function PostSurvey() {
               />
             </Grid>
             <Grid item xs={12}>
-              {surveys.map(({ prompt, questionsType, questions }, index2) => (
-                <div key={index2}>
-                  <Typography paragraph>{prompt}</Typography>
-                  {questions.map(({ question, options }, index) => (
-                    <FormControl
-                      key={index}
-                      className={classes.formControl}
-                      required
+              <div>
+                <Typography paragraph>{surveys.prompt}</Typography>
+                {surveys.questions.map(({ question, options }, index) => (
+                  <FormControl
+                    key={index}
+                    className={classes.formControl}
+                    required
+                  >
+                    <FormLabel id={question.textShort}>
+                      {index + 1 + ". " + question.textFull}
+                    </FormLabel>
+                    <RadioGroup
+                      row
+                      aria-labelledby={
+                        question.textShort + "-row-radio-buttons-group-label"
+                      }
+                      name={question.textShort + "-radio-buttons-group"}
                     >
-                      <FormLabel id={question.textShort}>
-                        {index + 1 + ". " + question.textFull}
-                      </FormLabel>
-                      <RadioGroup
-                        row
-                        aria-labelledby={
-                          question.textShort + "-row-radio-buttons-group-label"
-                        }
-                        name={question.textShort + "-radio-buttons-group"}
-                      >
-                        {questionsType === "multiple choice"
-                          ? options.map((option, index1) => (
-                              <FormControlLabel
-                                key={index1}
-                                value={option.textShort}
-                                checked={
-                                  qList2[index2][index] === option.textShort
-                                }
-                                style={{
-                                  width: "100%",
-                                }}
-                                control={<Radio />}
-                                label={option.textFull}
-                                onChange={(event) => {
-                                  handleFieldChange(
-                                    event,
-                                    setQList2[index2][index]
-                                  );
-                                }}
-                              />
-                            ))
-                          : [
-                              "prefer not to answer",
-                              "strongly-disagree",
-                              "disagree",
-                              "neutral",
-                              "agree",
-                              "strongly-agree",
-                            ].map((option, index1) => (
-                              <FormControlLabel
-                                key={index1}
-                                value={option}
-                                id={question.textShort + "-" + option}
-                                checked={qList2[index2][index] === option}
-                                style={{
-                                  width: "100%",
-                                }}
-                                control={<Radio />}
-                                label={option.replace("-", " ")}
-                                onChange={(event) => {
-                                  handleFieldChange(
-                                    event,
-                                    setQList2[index2][index]
-                                  );
-                                }}
-                              />
-                            ))}
-                      </RadioGroup>
-                    </FormControl>
-                  ))}
-                  <hr
-                    style={{
-                      backgroundColor: "#aaaaaa",
-                      height: 4,
-                    }}
-                  />
-                </div>
-              ))}
+                      {surveys.questionsType === "multiple choice"
+                        ? options.map((option, index1) => (
+                            <FormControlLabel
+                              key={index1}
+                              value={option.textShort}
+                              checked={qList[index] === option.textShort}
+                              style={{
+                                width: "100%",
+                              }}
+                              control={<Radio />}
+                              label={option.textFull}
+                              onChange={(event) => {
+                                handleFieldChange(event, setQList[index]);
+                              }}
+                            />
+                          ))
+                        : [
+                            "prefer not to answer",
+                            "strongly-disagree",
+                            "disagree",
+                            "neutral",
+                            "agree",
+                            "strongly-agree",
+                          ].map((option, index1) => (
+                            <FormControlLabel
+                              key={index1}
+                              value={option}
+                              id={question.textShort + "-" + option}
+                              checked={qList[index] === option}
+                              style={{
+                                width: "100%",
+                              }}
+                              control={<Radio />}
+                              label={option.replace("-", " ")}
+                              onChange={(event) => {
+                                handleFieldChange(event, setQList[index]);
+                              }}
+                            />
+                          ))}
+                    </RadioGroup>
+                  </FormControl>
+                ))}
+                <hr
+                  style={{
+                    backgroundColor: "#aaaaaa",
+                    height: 4,
+                  }}
+                />
+              </div>
             </Grid>
             <Grid item xs={6}>
               <Button
@@ -206,7 +183,7 @@ export function PostSurvey() {
                 disableFocusRipple
                 style={styles.button}
                 onClick={() => {
-                  navigate("/postsurvey1");
+                  navigate("/survey");
                 }}
               >
                 {" "}
@@ -229,14 +206,14 @@ export function PostSurvey() {
                         handle.exit();
                       dispatch(
                         setPostSurvey({
-                          data: surveys[0].questions.reduce(
+                          data: surveys.questions.reduce(
                             (prev, { question }, index) => {
-                              prev[question.textShort] = qList2[0][index];
+                              prev[question.textShort] = qList[index];
                               return prev;
                             },
                             {}
                           ),
-                          key: surveys[0].promptShort,
+                          key: surveys.promptShort,
                         })
                       );
                       navigate("/debrief");
