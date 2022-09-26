@@ -138,7 +138,10 @@ export const questionSlice = createSlice({
       qe.answerCurrentQuestion(state, action);
     },
     previousQuestion(state) {
-      qe.previousQuestion(state);
+      qe.decPreviousQuestion(state);
+    },
+    nextQuestion(state) {
+      qe.incNextQuestion(state);
     },
     postSurveyQuestionsShown(state, action) {
       state.postSurveyQuestionsShownTimestamp = action.payload;
@@ -204,10 +207,6 @@ export const isLastTreatment = (state) => {
   return qe.isLastTreatment(state.questions);
 };
 
-export const isMiddleTreatment = (state) => {
-  return qe.isMiddleTreatment(state.questions);
-};
-
 export const selectAllQuestions = (state) => {
   return qe.allQuestions(state.questions);
 };
@@ -266,7 +265,7 @@ export const getTimestamps = (state) => {
 };
 
 export const getCurrentQuestionIndex = (state) => {
-  return state.currentQuestionIdx;
+  return state.questions.currentQuestionIdx;
 };
 
 export const fetchCurrentTreatment = (state) => {
@@ -278,11 +277,15 @@ export const fetchAllTreatments = (state) => {
   return state.questions.allTreatments;
 };
 
-export const selectCurrentQuestion = (state) => {
+export const getCurrentQuestion = (state) => {
   return qe.latestAnswer(state.questions);
 };
 
-export const fetchStatus = (state) => {
+export const getCurrentChoice = (state) => {
+  return qe.latestAnswer(state.questions).choice;
+};
+
+export const getStatus = (state) => {
   return state.questions.status;
 };
 
@@ -306,6 +309,7 @@ export const {
   setQuestionShownTimestamp,
   answer,
   previousQuestion,
+  nextQuestion,
   setParticipantId,
   setTreatmentId,
   setSessionId,

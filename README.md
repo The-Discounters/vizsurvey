@@ -92,7 +92,7 @@ Change the participant_id to the value for the person taking the survey.
 
 ### `npm run cypress-open`
 
-Opens cypress window to select and run cypress tests. Make sure to already have the app running with `npm start`.
+Opens cypress window to selenct and run cypress tests. Make sure to already have the app running with `npm start`.
 https://docs.cypress.io/guides/guides/command-line
 
 ### `npm run cypress-run`

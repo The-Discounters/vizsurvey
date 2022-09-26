@@ -2,7 +2,6 @@ import { DateTime } from "luxon";
 import { QuestionEngine } from "./QuestionEngine";
 import { ViewType } from "./ViewType";
 import { StatusType } from "./StatusType";
-import { DirectionType } from "./DirectionType";
 import { Question } from "./Question";
 import { InteractionType } from "./InteractionType";
 import { AmountType } from "./AmountType";
@@ -40,119 +39,113 @@ describe("QuestionEngine tests", () => {
     };
     const qe = new QuestionEngine();
     qe.startSurvey(state);
+    expect(state.status).toBe(StatusType.Instructions);
     expect(state.currentQuestionIdx).toBe(0);
     expect(state.answers).not.toBeUndefined();
     expect(state.answers.length).toBe(1);
     expect(state.answers[0].amountEarlier).toBe(400);
   });
 
-  test("answerCurrentQuestion should not create a single answer entry for non titraiton question with a single treatment question.", () => {
+  test("answerCurrentQuestion for non titration single treatment question and answer should update the current answer choice and not create more answer entries.", () => {
     const state = {
       treatments: [TestDataFactory.createQuestionNoTitrate()],
-      answers: [],
+      answers: [TestDataFactory.createAnswer(1, 1)],
       currentQuestionIdx: 0,
+      status: StatusType.Survey,
     };
     const qe = new QuestionEngine();
-    qe.startSurvey(state);
-    expect(state.currentQuestionIdx).toBe(0);
-    expect(state.answers).not.toBeUndefined();
-    expect(state.answers.length).toBe(1);
-    expect(state.answers[0].amountEarlier).toBe(400);
     qe.answerCurrentQuestion(state, {
       payload: {
         choice: AmountType.earlierAmount,
         choiceTimestamp: dateToState(DateTime.utc()),
-        direction: DirectionType.next,
-        answerChanged: true,
       },
     });
     expect(state.currentQuestionIdx).toBe(0);
     expect(state.answers).not.toBeUndefined();
     expect(state.answers.length).toBe(1);
     expect(state.answers[0].choice).toBe(AmountType.earlierAmount);
+    expect(state.status).toBe(StatusType.Survey);
   });
 
-  test("answerCurrentQuestion should create a single answer entry for the next question answer for non titraiton question.", () => {
+  test("answerCurrentQuestion for non titration multiple treatment questions single answer should update the current answer choice and not create more answer entries.", () => {
     const state = {
       treatments: [
         TestDataFactory.createQuestionNoTitrate(),
         TestDataFactory.create2ndQuestionNoTitrate,
       ],
-      answers: [],
+      answers: [TestDataFactory.createAnswer(1, 1)],
       currentQuestionIdx: 0,
+      status: StatusType.Survey,
     };
     const qe = new QuestionEngine();
-    qe.startSurvey(state);
-    expect(state.currentQuestionIdx).toBe(0);
-    expect(state.answers).not.toBeUndefined();
-    expect(state.answers.length).toBe(1);
-    expect(state.answers[0].amountEarlier).toBe(400);
     qe.answerCurrentQuestion(state, {
       payload: {
         choice: AmountType.earlierAmount,
         choiceTimestamp: dateToState(DateTime.utc()),
-        direction: DirectionType.next,
-        answerChanged: true,
       },
     });
+    expect(state.currentQuestionIdx).toBe(0);
+    expect(state.answers).not.toBeUndefined();
+    expect(state.answers.length).toBe(1);
+    expect(state.answers[0].choice).toBe(AmountType.earlierAmount);
+    expect(state.status).toBe(StatusType.Survey);
+  });
+
+  test("incNextQuestion for two treatment should increment question index and stay in survey state.", () => {
+    const state = {
+      treatments: [
+        TestDataFactory.createQuestionNoTitrate(),
+        TestDataFactory.create2ndQuestionNoTitrate,
+      ],
+      answers: [TestDataFactory.createAnswer(1, 1)],
+      currentQuestionIdx: 0,
+      status: StatusType.Survey,
+    };
+    const qe = new QuestionEngine();
+    qe.incNextQuestion(state);
     expect(state.currentQuestionIdx).toBe(1);
     expect(state.answers).not.toBeUndefined();
     expect(state.answers.length).toBe(2);
-    expect(state.answers[1].choice).toBeUndefined();
+    expect(state.answers[1].choice).toBe(AmountType.none);
+    expect(state.status).toBe(StatusType.Survey);
   });
 
-  test("answerCurrentQuestion testing previous selection with no previous question.", () => {
+  test("decPreviousQuestion for single treatment should update state to post survey.", () => {
     const state = {
       treatments: [TestDataFactory.createQuestionNoTitrate()],
-      answers: [],
+      answers: [TestDataFactory.createAnswer(1, 1)],
       currentQuestionIdx: 0,
     };
     const qe = new QuestionEngine();
-    qe.startSurvey(state);
+    qe.decPreviousQuestion(state);
     expect(state.currentQuestionIdx).toBe(0);
     expect(state.answers).not.toBeUndefined();
     expect(state.answers.length).toBe(1);
-    expect(state.answers[0].amountEarlier).toBe(400);
-    qe.answerCurrentQuestion(state, {
-      payload: {
-        choice: AmountType.earlierAmount,
-        choiceTimestamp: dateToState(DateTime.utc()),
-        direction: DirectionType.previous,
-        answerChanged: true,
-      },
-    });
-    expect(state.currentQuestionIdx).toBe(0);
-    expect(state.answers).not.toBeUndefined();
-    expect(state.answers.length).toBe(1);
-    expect(state.answers[0].choice).toBe(AmountType.earlierAmount);
+    expect(state.answers[0].choice).toBe(AmountType.none);
     expect(state.status).toBe(StatusType.Instructions);
   });
 
-  test("answerCurrentQuestion testing previous selection with single question.", () => {
+  test("decPreviousQuestion for two treatment when on the 2nd treatment should decrement question and stay in survey state.", () => {
+    const answer1 = TestDataFactory.createAnswer(1, 1);
+    answer1.choice = AmountType.earlierAmount;
+    const answer2 = TestDataFactory.createAnswer(1, 2);
+    answer2.choice = AmountType.laterAmount;
     const state = {
-      treatments: [TestDataFactory.createQuestionNoTitrate()],
-      answers: [],
-      currentQuestionIdx: 0,
+      treatments: [
+        TestDataFactory.createQuestionNoTitrate(),
+        TestDataFactory.create2ndQuestionNoTitrate,
+      ],
+      answers: [answer1, answer2],
+      currentQuestionIdx: 1,
+      status: StatusType.Survey,
     };
     const qe = new QuestionEngine();
-    qe.startSurvey(state);
+    qe.decPreviousQuestion(state);
     expect(state.currentQuestionIdx).toBe(0);
     expect(state.answers).not.toBeUndefined();
-    expect(state.answers.length).toBe(1);
-    expect(state.answers[0].amountEarlier).toBe(400);
-    qe.answerCurrentQuestion(state, {
-      payload: {
-        choice: AmountType.earlierAmount,
-        choiceTimestamp: dateToState(DateTime.utc()),
-        direction: DirectionType.next,
-        answerChanged: true,
-      },
-    });
-    expect(state.currentQuestionIdx).toBe(0);
-    expect(state.answers).not.toBeUndefined();
-    expect(state.answers.length).toBe(1);
+    expect(state.answers.length).toBe(2);
     expect(state.answers[0].choice).toBe(AmountType.earlierAmount);
-    expect(state.status).toBe(StatusType.Questionaire);
+    expect(state.status).toBe(StatusType.Survey);
   });
 
   // TODO Titration functionality is broken.  I have not coded previous button to work with it.
@@ -371,9 +364,10 @@ export class TestDataFactory {
     });
   }
 
-  static createInitialAnswerTitrate() {
+  static createAnswer(treatmentId, positionId) {
     return Answer({
-      treatmentId: 1,
+      treatmentId: treatmentId,
+      position: positionId,
       viewType: ViewType.barchart,
       amountEarlier: 500,
       timeEarlier: 1,

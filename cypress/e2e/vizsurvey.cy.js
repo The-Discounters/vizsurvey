@@ -127,11 +127,12 @@ function visitTreatment(treatmentId, width = 1200, height = 700) {
 
   cy.tick(1000);
   if (treatmentId === 1) {
-    cy.get("button").should("be.disabled");
+    cy.get("button").contains("Next").should("be.disabled");
+    cy.get("button").contains("Previous").should("not.be.disabled");
     cy.get("label").contains("First option").click();
-    cy.get("button").should("not.be.disabled").click();
+    cy.get("button").contains("Next").should("not.be.disabled").click();
   } else {
-    cy.get("button").click();
+    cy.get("button").contains("Next").click();
   }
 
   cy.tick(1000);

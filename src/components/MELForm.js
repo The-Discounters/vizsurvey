@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { DateTime } from "luxon";
@@ -15,14 +15,15 @@ import {
 } from "@mui/material";
 import { makeStyles } from "@material-ui/core/styles";
 import { AmountType } from "../features/AmountType";
-import { DirectionType } from "../features/DirectionType";
+import { StatusType } from "../features/StatusType";
 import {
-  selectCurrentQuestion,
+  getCurrentQuestion,
+  getCurrentChoice,
   getCurrentQuestionIndex,
-  isFirstTreatment,
-  isLastTreatment,
-  isMiddleTreatment,
+  getStatus,
   setQuestionShownTimestamp,
+  nextQuestion,
+  previousQuestion,
   answer,
 } from "../features/questionSlice";
 import { format } from "d3";
@@ -95,20 +96,18 @@ resetUseStyles();
 
 export function MELForm() {
   const dispatch = useDispatch();
-  let q = useSelector(selectCurrentQuestion);
-  const qi = useSelector(getCurrentQuestionIndex);
-  const isFirstTreatmentQ = useSelector(isFirstTreatment);
-  const isLastTreatmentQ = useSelector(isLastTreatment);
-  const isMiddleTreatmentQ = useSelector(isMiddleTreatment);
   const navigate = useNavigate();
+
+  let q = useSelector(getCurrentQuestion);
+  const qi = useSelector(getCurrentQuestionIndex);
+  const status = useSelector(getStatus);
+  const choice = useSelector(getCurrentChoice);
+
   const [disableSubmit, setDisableSubmit] = React.useState(true);
-  const [choice, setChoice] = useState(q.choice);
-
-  console.log("choice " + choice);
-
   const [error, setError] = React.useState(false);
   const [helperText, setHelperText] = React.useState("");
-  const [answerChanged, setAnswerChanged] = React.useState(false);
+
+  console.log("variables reset qi=" + qi + ", q=" + JSON.stringify(q));
 
   useEffect(() => {
     dispatch(dispatch(setQuestionShownTimestamp(dateToState(DateTime.utc()))));
@@ -121,6 +120,20 @@ export function MELForm() {
       setDisableSubmit(true);
     }
   }, [choice, qi]);
+
+  useEffect(() => {
+    switch (status) {
+      case StatusType.Instructions:
+        navigate("/instruction");
+        break;
+      case StatusType.Questionaire:
+        navigate("/postsurvey1");
+        break;
+      case StatusType.Attention:
+        navigate("/attentioncheck");
+        break;
+    }
+  }, [status]);
 
   const todayText = (sooner_time) =>
     sooner_time === 0 ? "today" : `in ${sooner_time} months`;
@@ -161,7 +174,12 @@ export function MELForm() {
                   }
                   name={"question-radio-buttons-group"}
                   onChange={(event) => {
-                    setChoice(event.target.value);
+                    dispatch(
+                      answer({
+                        choice: event.target.value,
+                        choiceTimestamp: dateToState(DateTime.utc()),
+                      })
+                    );
                     if (event.target.value === AmountType.earlierAmount) {
                       classes.btn0 = classes.btn0Clicked;
                       classes.btn1 = classes.btn1UnClicked;
@@ -171,7 +189,6 @@ export function MELForm() {
                     }
                     setHelperText("");
                     setError(false);
-                    setAnswerChanged(true);
                   }}
                   value={choice}
                 >
@@ -209,18 +226,7 @@ export function MELForm() {
             disableFocusRipple
             style={styles.button}
             onClick={() => {
-              if (isFirstTreatmentQ) {
-                navigate("/instruction");
-              } else {
-                dispatch(
-                  answer({
-                    choice: choice,
-                    choiceTimestamp: dateToState(DateTime.utc()),
-                    direction: DirectionType.previous,
-                    answerChanged: answerChanged,
-                  })
-                );
-              }
+              dispatch(previousQuestion());
             }}
           >
             {" "}
@@ -245,21 +251,7 @@ export function MELForm() {
                 } else {
                   setError(false);
                   setHelperText("");
-                  if (answerChanged) {
-                    dispatch(
-                      answer({
-                        choice: choice,
-                        choiceTimestamp: dateToState(DateTime.utc()),
-                        direction: DirectionType.next,
-                        answerChanged: answerChanged,
-                      })
-                    );
-                  }
-                  if (isLastTreatmentQ) {
-                    navigate("/postsurvey1");
-                  } else if (isMiddleTreatmentQ) {
-                    navigate("/attentioncheck");
-                  }
+                  dispatch(nextQuestion());
                   resetUseStyles();
                 }
               }}

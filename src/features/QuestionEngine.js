@@ -2,7 +2,6 @@ import { StatusType } from "./StatusType";
 import { AmountType } from "./AmountType";
 import { InteractionType } from "./InteractionType";
 import { Answer } from "./Answer";
-import { DirectionType } from "./DirectionType";
 
 export const TIMESTAMP_FORMAT = "MM/dd/yyyy H:mm:ss:SSS ZZZZ";
 
@@ -17,7 +16,6 @@ export class QuestionEngine {
   currentTreatmentAndLatestAnswer(state) {
     const treatment = this.currentTreatment(state);
     const latestAnswer = this.latestAnswer(state);
-
     return { treatment, latestAnswer };
   }
 
@@ -71,7 +69,7 @@ export class QuestionEngine {
       graphHeightIn: treatment.graphHeightIn,
       widthIn: treatment.widthIn,
       heightIn: treatment.heightIn,
-      choice: AmountType.unitialized,
+      choice: AmountType.none,
       highup: highup,
       lowdown: lowdown,
     });
@@ -137,18 +135,20 @@ export class QuestionEngine {
           treatment.amountLater
         );
       }
+      if (this.isMiddleTreatment(state)) {
+        state.status = StatusType.Attention;
+      } else if (state.status === StatusType.Attention) {
+        state.status = StatusType.Survey;
+      }
     }
   }
 
   decPreviousQuestion(state) {
     if (!this.isFirstTreatment(state)) {
       state.currentQuestionIdx -= 1;
-      return true;
     } else {
       state.status = StatusType.Instructions;
     }
-
-    return false;
   }
 
   updateHighupOrLowdown(state) {
@@ -220,58 +220,46 @@ export class QuestionEngine {
   answerCurrentQuestion(state, action) {
     const { treatment, latestAnswer } =
       this.currentTreatmentAndLatestAnswer(state);
-    const direction = action.payload.direction;
-    const answerChanged = action.payload.answerChanged;
-    if (answerChanged) {
-      latestAnswer.choice = action.payload.choice;
-      latestAnswer.choiceTimestamp = action.payload.choiceTimestamp;
-      latestAnswer.dragAmount = action.payload.dragAmount;
-    }
-    if (
-      treatment.interaction === InteractionType.none ||
-      treatment.interaction === InteractionType.drag
-    ) {
-      if (direction === DirectionType.next) {
-        this.incNextQuestion(state);
-      } else {
-        this.decPreviousQuestion(state);
-      }
-    } else if (treatment.interaction === InteractionType.titration) {
+    latestAnswer.choice = action.payload.choice;
+    latestAnswer.choiceTimestamp = action.payload.choiceTimestamp;
+    latestAnswer.dragAmount = action.payload.dragAmount;
+    if (treatment.interaction === InteractionType.titration) {
+      throw new Error("Tirtration experiments not supported");
       // TODO I did not incorporate previous logic into titration experiments since we aren't piloting with those.  This code needs to be modified to incorporate previous action.
-      const titrationAmount = this.calcTitrationAmount(
-        treatment.variableAmount === AmountType.laterAmount
-          ? latestAnswer.amountLater
-          : latestAnswer.amountEarlier,
-        state.highup,
-        latestAnswer.length === 1 ? state.highup : null
-      );
-      this.updateHighupOrLowdown(state);
-      // TODO we need a termination condition for runaway titration
-      if (state.lowdown - state.highup <= 10) {
-        this.incNextQuestion(state);
-      } else {
-        const newAmount = this.calcNewAmount(state, titrationAmount);
-        if (treatment.variableAmount === AmountType.laterAmount) {
-          this.createNextAnswer(
-            treatment,
-            state.answers,
-            treatment.amountEarlier,
-            newAmount
-          );
-        } else if (treatment.variableAmount === AmountType.earlierAmount) {
-          this.createNextAnswer(
-            treatment,
-            state.answers,
-            newAmount,
-            treatment.amountLater
-          );
-        } else {
-          console.assert(
-            true,
-            "Titration not set to amountEarlier or amountLater before calling answerCurrentQuestion"
-          );
-        }
-      }
+      //   const titrationAmount = this.calcTitrationAmount(
+      //     treatment.variableAmount === AmountType.laterAmount
+      //       ? latestAnswer.amountLater
+      //       : latestAnswer.amountEarlier,
+      //     state.highup,
+      //     latestAnswer.length === 1 ? state.highup : null
+      //   );
+      //   this.updateHighupOrLowdown(state);
+      //   // TODO we need a termination condition for runaway titration
+      //   if (state.lowdown - state.highup <= 10) {
+      //     this.incNextQuestion(state);
+      //   } else {
+      //     const newAmount = this.calcNewAmount(state, titrationAmount);
+      //     if (treatment.variableAmount === AmountType.laterAmount) {
+      //       this.createNextAnswer(
+      //         treatment,
+      //         state.answers,
+      //         treatment.amountEarlier,
+      //         newAmount
+      //       );
+      //     } else if (treatment.variableAmount === AmountType.earlierAmount) {
+      //       this.createNextAnswer(
+      //         treatment,
+      //         state.answers,
+      //         newAmount,
+      //         treatment.amountLater
+      //       );
+      //     } else {
+      //       console.assert(
+      //         true,
+      //         "Titration not set to amountEarlier or amountLater before calling answerCurrentQuestion"
+      //       );
+      //     }
+      //   }
     }
   }
 }

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import * as d3 from "d3";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
@@ -16,11 +16,12 @@ import { DateTime } from "luxon";
 import { useD3 } from "../hooks/useD3";
 import { InteractionType } from "../features/InteractionType";
 import { AmountType } from "../features/AmountType";
+import { StatusType } from "../features/StatusType";
 import {
-  selectCurrentQuestion,
+  getCurrentQuestion,
+  getCurrentChoice,
+  getStatus,
   setQuestionShownTimestamp,
-  isLastTreatment,
-  isMiddleTreatment,
   answer,
 } from "../features/questionSlice";
 import { dateToState } from "../features/ConversionUtil";
@@ -29,14 +30,15 @@ import { styles, theme } from "./ScreenHelper";
 
 function BarChart() {
   const dispatch = useDispatch();
-  const q = useSelector(selectCurrentQuestion);
-  const [choice, setChoice] = useState(AmountType.none);
-  const [disableSubmit, setDisableSubmit] = useState(true);
-  const isLastTreatmentQ = useSelector(isLastTreatment);
-  const isMiddleTreatmentQ = useSelector(isMiddleTreatment);
-  const t = d3.transition().duration(500);
   const navigate = useNavigate();
-  const stateRef = useRef();
+
+  const q = useSelector(getCurrentQuestion);
+  const status = useSelector(getStatus);
+  const choice = useSelector(getCurrentChoice);
+
+  const [disableSubmit, setDisableSubmit] = useState(true);
+
+  const t = d3.transition().duration(500);
 
   useEffect(() => {
     dispatch(setQuestionShownTimestamp(dateToState(DateTime.utc())));
@@ -62,6 +64,20 @@ function BarChart() {
         d3.select("#earlierAmount").transition(t).attr("stroke", "none");
     }
   }, [choice]);
+
+  useEffect(() => {
+    switch (status) {
+      case StatusType.Instructions:
+        navigate("/instruction");
+        break;
+      case StatusType.Questionaire:
+        navigate("/postsurvey1");
+        break;
+      case StatusType.Attention:
+        navigate("/attentioncheck");
+        break;
+    }
+  }, [status]);
 
   const {
     totalUCWidth,
@@ -275,23 +291,12 @@ function BarChart() {
                       q.interaction === InteractionType.titration ||
                       q.interaction === InteractionType.none
                     ) {
-                      if (
-                        d.target.__data__.barType === AmountType.earlierAmount
-                      ) {
-                        if (stateRef.choice === AmountType.earlierAmount) {
-                          setChoice(AmountType.none);
-                        } else {
-                          setChoice(AmountType.earlierAmount);
-                        }
-                      } else if (
-                        d.target.__data__.barType === AmountType.laterAmount
-                      ) {
-                        if (stateRef.choice === AmountType.laterAmount) {
-                          setChoice(AmountType.none);
-                        } else {
-                          setChoice(AmountType.laterAmount);
-                        }
-                      }
+                      dispatch(
+                        answer({
+                          choice: d.target.__data__.barType,
+                          choiceTimestamp: dateToState(DateTime.utc()),
+                        })
+                      );
                     }
                   });
 
@@ -364,21 +369,7 @@ function BarChart() {
             disableRipple
             disableFocusRipple
             style={styles.button}
-            onClick={() => {
-              dispatch(
-                answer({
-                  choice: choice,
-                  choiceTimestamp: dateToState(DateTime.utc()),
-                })
-              );
-              if (isLastTreatmentQ) {
-                navigate("/postsurvey1");
-              } else if (isMiddleTreatmentQ) {
-                navigate("/attentioncheck");
-              } else {
-                setChoice(AmountType.none);
-              }
-            }}
+            onClick={() => {}}
           >
             {" "}
             Previous{" "}
@@ -392,21 +383,7 @@ function BarChart() {
               disableRipple
               disableFocusRipple
               style={styles.button}
-              onClick={() => {
-                dispatch(
-                  answer({
-                    choice: choice,
-                    choiceTimestamp: dateToState(DateTime.utc()),
-                  })
-                );
-                if (isLastTreatmentQ) {
-                  navigate("/postsurvey1");
-                } else if (isMiddleTreatmentQ) {
-                  navigate("/attentioncheck");
-                } else {
-                  setChoice(AmountType.none);
-                }
-              }}
+              onClick={() => {}}
               disabled={disableSubmit}
             >
               {" "}

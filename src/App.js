@@ -23,7 +23,7 @@ import InvalidSurveyLink from "./components/InvalidSurveyLink";
 import {
   loadAllTreatments,
   fetchAllTreatments,
-  fetchStatus,
+  getStatus,
   clearState,
   genRandomTreatment,
   fetchTreatmentId,
@@ -130,7 +130,7 @@ const DevHome = () => {
     dispatch(loadAllTreatments());
   }, []);
 
-  const status = useSelector(fetchStatus);
+  const status = useSelector(getStatus);
   const allTreatments = useSelector(fetchAllTreatments);
 
   function testLinks() {
