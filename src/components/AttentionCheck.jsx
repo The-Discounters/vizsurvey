@@ -32,30 +32,33 @@ export function AttentionCheck() {
   }, []);
 
   const [disableSubmit, setDisableSubmit] = React.useState(true);
-  let qList2 = [];
-  let setQList2 = [];
   const [q, setQ] = React.useState("");
-  qList2.push(q);
-  setQList2.push(setQ);
 
   const checkEnableSubmit = () => {
     let result = false;
-    qList2.forEach((q) => {
-      if (q.length <= 0) {
-        result = true;
-      }
-    });
+    if (q.length <= 0) {
+      result = true;
+    }
     setDisableSubmit(result);
   };
 
   useEffect(() => {
     checkEnableSubmit();
-  }, qList2);
+  }, [q]);
 
   const handleFieldChange = (event, setter) => {
     setter(event.target.value);
   };
 
+  const question0 = {
+    // Examples of Good (and Bad) Attention Check Questions in Surveys
+    // https://www.cloudresearch.com/resources/blog/attention-check-questions-in-surveys-examples/
+    question: {
+      textShort: "attention-check",
+      textFull:
+        "Please select 'stongly agree' to show that you are paying attention to this question.",
+    },
+  };
   return (
     <ThemeProvider theme={theme}>
       <div>
@@ -82,50 +85,39 @@ export function AttentionCheck() {
               />
             </Grid>
             <Grid item xs={12} style={{ margin: 0 }}>
-              {[
-                {
-                  // Examples of Good (and Bad) Attention Check Questions in Surveys
-                  // https://www.cloudresearch.com/resources/blog/attention-check-questions-in-surveys-examples/
-                  question: {
-                    textShort: "attention-check",
-                    textFull:
-                      "Please select 'stongly agree' to show that you are paying attention to this question.",
-                  },
-                },
-              ].map(({ question }, index) => (
-                <FormControl key={index} required>
-                  <FormLabel id={question.textShort}>
-                    {index + 1 + ". " + question.textFull}
-                  </FormLabel>
-                  <RadioGroup
-                    row
-                    aria-labelledby={
-                      question.textShort + "-row-radio-buttons-group-label"
-                    }
-                    name={question.textShort + "-radio-buttons-group"}
-                  >
-                    {[
-                      "strongly-disagree",
-                      "disagree",
-                      "neutral",
-                      "agree",
-                      "strongly-agree",
-                    ].map((option, index1) => (
-                      <FormControlLabel
-                        key={index1}
-                        value={option}
-                        id={"attention-check-" + option}
-                        checked={qList2[index] === option}
-                        control={<Radio />}
-                        label={option.replace("-", " ")}
-                        onChange={(event) => {
-                          handleFieldChange(event, setQList2[index]);
-                        }}
-                      />
-                    ))}
-                  </RadioGroup>
-                </FormControl>
-              ))}
+              <FormControl required>
+                <FormLabel id={question0.question.textShort}>
+                  {"1. " + question0.question.textFull}
+                </FormLabel>
+                <RadioGroup
+                  row
+                  aria-labelledby={
+                    question0.question.textShort +
+                    "-row-radio-buttons-group-label"
+                  }
+                  name={question0.question.textShort + "-radio-buttons-group"}
+                >
+                  {[
+                    "strongly-disagree",
+                    "disagree",
+                    "neutral",
+                    "agree",
+                    "strongly-agree",
+                  ].map((option, index1) => (
+                    <FormControlLabel
+                      key={index1}
+                      value={option}
+                      id={"attention-check-" + option}
+                      checked={q === option}
+                      control={<Radio />}
+                      label={option.replace("-", " ")}
+                      onChange={(event) => {
+                        handleFieldChange(event, setQ);
+                      }}
+                    />
+                  ))}
+                </RadioGroup>
+              </FormControl>
             </Grid>
             <Grid item xs={12} style={{ margin: 0 }}>
               <Button
@@ -135,7 +127,7 @@ export function AttentionCheck() {
                 disableFocusRipple
                 style={styles.button}
                 onClick={() => {
-                  dispatch(setAttentionCheck(qList2[0]));
+                  dispatch(setAttentionCheck(q));
                   navigate("/survey");
                 }}
                 disabled={disableSubmit}
