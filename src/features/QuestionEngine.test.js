@@ -110,6 +110,29 @@ describe("QuestionEngine tests", () => {
     expect(state.status).toBe(StatusType.Survey);
   });
 
+  test("incNextQuestion for three treatment should increment question index and enter attention state then back to survey state.", () => {
+    const state = {
+      treatments: [
+        TestDataFactory.createQuestionNoTitrate(),
+        TestDataFactory.create2ndQuestionNoTitrate,
+        (TestDataFactory.create2ndQuestionNoTitrate.position = 3),
+      ],
+      answers: [TestDataFactory.createAnswer(1, 1)],
+      currentQuestionIdx: 0,
+      status: StatusType.Survey,
+    };
+    const qe = new QuestionEngine();
+    qe.incNextQuestion(state);
+    expect(state.currentQuestionIdx).toBe(1);
+    expect(state.status).toBe(StatusType.Attention);
+    qe.incNextQuestion(state);
+    expect(state.currentQuestionIdx).toBe(2);
+    expect(state.status).toBe(StatusType.Survey);
+    qe.incNextQuestion(state);
+    expect(state.currentQuestionIdx).toBe(2);
+    expect(state.status).toBe(StatusType.Questionaire);
+  });
+
   test("decPreviousQuestion for single treatment should update state to post survey.", () => {
     const state = {
       treatments: [TestDataFactory.createQuestionNoTitrate()],
@@ -146,6 +169,62 @@ describe("QuestionEngine tests", () => {
     expect(state.answers.length).toBe(2);
     expect(state.answers[0].choice).toBe(AmountType.earlierAmount);
     expect(state.status).toBe(StatusType.Survey);
+  });
+
+  test("decPreviousQuestion for two treatment when on the 2nd treatment should decrement question and stay in survey state.", () => {
+    const state = {
+      treatments: [
+        TestDataFactory.createQuestionNoTitrate(),
+        TestDataFactory.create2ndQuestionNoTitrate,
+        (TestDataFactory.create2ndQuestionNoTitrate.position = 1),
+      ],
+      currentQuestionIdx: 2,
+      status: StatusType.Survey,
+    };
+    const qe = new QuestionEngine();
+    qe.decPreviousQuestion(state);
+    expect(state.currentQuestionIdx).toBe(1);
+    expect(state.status).toBe(StatusType.Attention);
+    qe.decPreviousQuestion(state);
+    expect(state.currentQuestionIdx).toBe(0);
+    expect(state.status).toBe(StatusType.Survey);
+    qe.decPreviousQuestion(state);
+    expect(state.currentQuestionIdx).toBe(0);
+    expect(state.status).toBe(StatusType.Instructions);
+  });
+
+  test("isMiddleTreatment for one treatment should return false for single treatment configuration.", () => {
+    const state = {
+      treatments: [TestDataFactory.createQuestionNoTitrate()],
+      currentQuestionIdx: 0,
+    };
+    const qe = new QuestionEngine();
+    expect(qe.isMiddleTreatment(state)).toBe(false);
+  });
+
+  test("isMiddleTreatment for two treatment should return false.", () => {
+    const state = {
+      treatments: [
+        TestDataFactory.createQuestionNoTitrate(),
+        TestDataFactory.create2ndQuestionNoTitrate,
+      ],
+      currentQuestionIdx: 1,
+    };
+    const qe = new QuestionEngine();
+    expect(qe.isMiddleTreatment(state)).toBe(false);
+  });
+
+  test("isMiddleTreatment for three treatments should return false.", () => {
+    const state = {
+      treatments: [
+        TestDataFactory.createQuestionNoTitrate(),
+        TestDataFactory.create2ndQuestionNoTitrate,
+        (TestDataFactory.create2ndQuestionNoTitrate.position = 3),
+      ],
+      currentQuestionIdx: 1,
+    };
+    const qe = new QuestionEngine();
+    expect(qe.isMiddleTreatment(state)).toBe(true);
   });
 
   // TODO Titration functionality is broken.  I have not coded previous button to work with it.

@@ -95,6 +95,7 @@ export const questionSlice = createSlice({
     },
     setAttentionCheck(state, action) {
       state.attentioncheck = action.payload;
+      state.status = StatusType.Survey;
     },
     loadTreatment(state) {
       state.treatments = io.loadTreatment(state.treatmentId);
