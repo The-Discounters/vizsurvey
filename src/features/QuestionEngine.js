@@ -125,38 +125,38 @@ export class QuestionEngine {
   }
 
   incNextQuestion(state) {
-    if (this.isLastTreatment(state)) {
-      state.status = StatusType.Questionaire;
-    } else {
-      state.currentQuestionIdx += 1;
-      if (this.latestAnswer(state) === null) {
-        const treatment = this.currentTreatment(state);
-        this.createNextAnswer(
-          treatment,
-          state.answers,
-          treatment.amountEarlier,
-          treatment.amountLater
-        );
-      }
-      if (this.isMiddleTreatment(state)) {
-        state.status = StatusType.Attention;
-      } else {
-        state.status = StatusType.Survey;
+    const onLastTreatment = this.isLastTreatment(state);
+    if (
+      state.status === StatusType.Survey ||
+      state.status === StatusType.Attention
+    ) {
+      if (!onLastTreatment) {
+        state.currentQuestionIdx += 1;
+        if (this.latestAnswer(state) === null) {
+          const treatment = this.currentTreatment(state);
+          this.createNextAnswer(
+            treatment,
+            state.answers,
+            treatment.amountEarlier,
+            treatment.amountLater
+          );
+        }
       }
     }
+    state.status = this.nextStatus(state, onLastTreatment);
   }
 
   decPreviousQuestion(state) {
-    if (!this.isFirstTreatment(state)) {
-      state.currentQuestionIdx -= 1;
-      if (this.isMiddleTreatment(state)) {
-        state.status = StatusType.Attention;
-      } else {
-        state.status = StatusType.Survey;
+    const onFirstTreatment = this.isFirstTreatment(state);
+    if (
+      state.status === StatusType.Survey ||
+      state.status === StatusType.Attention
+    ) {
+      if (!onFirstTreatment) {
+        state.currentQuestionIdx -= 1;
       }
-    } else {
-      state.status = StatusType.Instructions;
     }
+    state.status = this.previousStatus(state, onFirstTreatment);
   }
 
   updateHighupOrLowdown(state) {
@@ -268,6 +268,84 @@ export class QuestionEngine {
       //       );
       //     }
       //   }
+    }
+  }
+
+  nextStatus(state, onLastTreatment) {
+    switch (state.status) {
+      case StatusType.Unitialized:
+        return StatusType.Fetching;
+      case StatusType.Fetching:
+        return StatusType.Fetched;
+      case StatusType.Fetched:
+        return StatusType.Consent;
+      case StatusType.Consent:
+        return StatusType.Introduction;
+      case StatusType.Introduction:
+        return StatusType.Instructions;
+      case StatusType.Instructions:
+        return StatusType.Survey;
+      case StatusType.Survey:
+        if (this.isLastTreatment(state) && onLastTreatment) {
+          return StatusType.FinancialQuestionaire;
+        } else {
+          if (this.isMiddleTreatment(state)) {
+            return StatusType.Attention;
+          } else {
+            return StatusType.Survey;
+          }
+        }
+      case StatusType.Attention:
+        return StatusType.Survey;
+      case StatusType.FinancialQuestionaire:
+        return StatusType.PurposeQuestionaire;
+      case StatusType.PurposeQuestionaire:
+        return StatusType.Debrief;
+      case StatusType.Debrief:
+        return StatusType.Done;
+      case StatusType.Done:
+        return StatusType.Done;
+      case StatusType.Error:
+        return StatusType.Error;
+    }
+  }
+
+  previousStatus(state, onFirstTreatment) {
+    switch (state.status) {
+      case StatusType.Unitialized:
+        return StatusType.Unitialized;
+      case StatusType.Fetching:
+        return StatusType.Unitialized;
+      case StatusType.Fetched:
+        return StatusType.Fetching;
+      case StatusType.Consent:
+        return StatusType.Fetched;
+      case StatusType.Introduction:
+        return StatusType.Consent;
+      case StatusType.Instructions:
+        return StatusType.Introduction;
+      case StatusType.Survey:
+        if (this.isFirstTreatment(state) && onFirstTreatment) {
+          return StatusType.Instructions;
+        } else {
+          if (this.isMiddleTreatment(state)) {
+            return StatusType.Attention;
+          } else {
+            return StatusType.Survey;
+          }
+        }
+      case StatusType.Attention:
+        return StatusType.Survey;
+      case StatusType.FinancialQuestionaire:
+        return StatusType.Survey;
+      case StatusType.PurposeQuestionaire:
+        return StatusType.FinancialQuestionaire;
+      case StatusType.Debrief:
+        return StatusType.PurposeQuestionaire;
+      case StatusType.Done:
+        return StatusType.Done;
+      case StatusType.Error:
+        return StatusType.Error;
     }
   }
 }

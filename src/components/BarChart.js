@@ -70,8 +70,8 @@ function BarChart() {
       case StatusType.Instructions:
         navigate("/instruction");
         break;
-      case StatusType.Questionaire:
-        navigate("/postsurvey1");
+      case StatusType.FinancialQuestionaire:
+        navigate("/financialquestionaire");
         break;
       case StatusType.Attention:
         navigate("/attentioncheck");

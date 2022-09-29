@@ -98,13 +98,15 @@ export const questionSlice = createSlice({
       state.status = StatusType.Survey;
     },
     loadTreatment(state) {
+      state.status = StatusType.Fetching;
       state.treatments = io.loadTreatment(state.treatmentId);
-      state.status = StatusType.Fetched;
+      qe.nextStatus(state, false);
       return state;
     },
     loadAllTreatments(state) {
+      state.status = StatusType.Fetching;
       state.allTreatments = io.loadAllTreatments();
-      state.status = StatusType.Fetched;
+      qe.nextStatus(state, false);
       return state;
     },
     consentShown(state, action) {
@@ -196,6 +198,12 @@ export const questionSlice = createSlice({
         allTreatments[0].treatmentId
       );
       state.treatmentId = getRandomIntInclusive(min, max);
+    },
+    nextStatus(state) {
+      qe.nextStatus(state);
+    },
+    previousStatus(state) {
+      qe.previousStatus(state);
     },
   },
 });

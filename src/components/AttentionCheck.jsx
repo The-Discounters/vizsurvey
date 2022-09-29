@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { FullScreen, useFullScreenHandle } from "react-full-screen";
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { DateTime } from "luxon";
 import {
   Grid,
@@ -15,24 +15,29 @@ import {
   ThemeProvider,
 } from "@material-ui/core";
 import {
+  getStatus,
   postSurveyQuestionsShown,
   setAttentionCheck,
+  previousQuestion,
+  nextQuestion,
 } from "../features/questionSlice";
 import { dateToState } from "../features/ConversionUtil";
 import { styles, theme } from "./ScreenHelper";
+import { StatusType } from "../features/StatusType";
 
 export function AttentionCheck() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const handle = useFullScreenHandle();
 
+  const status = useSelector(getStatus);
+  const [disableSubmit, setDisableSubmit] = React.useState(true);
+  const [q, setQ] = React.useState("");
+
   useEffect(() => {
     dispatch(postSurveyQuestionsShown(dateToState(DateTime.utc())));
     if (process.env.REACT_APP_FULLSCREEN === "enabled") handle.exit();
   }, []);
-
-  const [disableSubmit, setDisableSubmit] = React.useState(true);
-  const [q, setQ] = React.useState("");
 
   const checkEnableSubmit = () => {
     let result = false;
@@ -45,6 +50,17 @@ export function AttentionCheck() {
   useEffect(() => {
     checkEnableSubmit();
   }, [q]);
+
+  useEffect(() => {
+    switch (status) {
+      case StatusType.Survey:
+        navigate("/survey");
+        break;
+      case StatusType.Attention:
+        navigate("/attentioncheck");
+        break;
+    }
+  }, [status]);
 
   const handleFieldChange = (event, setter) => {
     setter(event.target.value);
@@ -119,7 +135,22 @@ export function AttentionCheck() {
                 </RadioGroup>
               </FormControl>
             </Grid>
-            <Grid item xs={12} style={{ margin: 0 }}>
+            <Grid item xs={6}>
+              <Button
+                variant="contained"
+                color="secondary"
+                disableRipple
+                disableFocusRipple
+                style={styles.button}
+                onClick={() => {
+                  dispatch(previousQuestion());
+                }}
+              >
+                {" "}
+                Previous{" "}
+              </Button>
+            </Grid>
+            <Grid item xs={6} style={{ margin: 0 }}>
               <Button
                 variant="contained"
                 color="secondary"
@@ -128,7 +159,7 @@ export function AttentionCheck() {
                 style={styles.button}
                 onClick={() => {
                   dispatch(setAttentionCheck(q));
-                  navigate("/survey");
+                  dispatch(nextQuestion());
                 }}
                 disabled={disableSubmit}
               >

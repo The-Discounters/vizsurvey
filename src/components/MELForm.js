@@ -107,8 +107,6 @@ export function MELForm() {
   const [error, setError] = React.useState(false);
   const [helperText, setHelperText] = React.useState("");
 
-  console.log("variables reset qi=" + qi + ", q=" + JSON.stringify(q));
-
   useEffect(() => {
     dispatch(dispatch(setQuestionShownTimestamp(dateToState(DateTime.utc()))));
   }, [qi]);
@@ -126,9 +124,13 @@ export function MELForm() {
       case StatusType.Instructions:
         navigate("/instruction");
         break;
-      case StatusType.Questionaire:
-        navigate("/postsurvey1");
+      case StatusType.FinancialQuestionaire:
+        navigate("/financialquestionaire");
         break;
+      case StatusType.PurposeQuestionaire:
+        navigate("/financialquestionaire");
+        break;
+
       case StatusType.Attention:
         navigate("/attentioncheck");
         break;

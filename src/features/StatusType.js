@@ -1,16 +1,17 @@
 export const StatusType = {
-  Unitialized: "Unitialized",
-  Fetching: "Fetching",
-  Fetched: "Fetched",
-  Complete: "Complete",
-  Consent: "Consent",
+  Unitialized: "unitialized",
+  Fetching: "fetching",
+  Fetched: "fetched",
+  Consent: "consent",
   Introduction: "introduction",
   Instructions: "instruction",
   Survey: "survey",
   Attention: "attention",
-  Questionaire: "questionaire",
+  FinancialQuestionaire: "financialquestionaire",
+  PurposeQuestionaire: "purposequestionaire",
   Debrief: "debrief",
-  Error: "Error",
+  Done: "done",
+  Error: "error",
 };
 
 Object.freeze(StatusType);

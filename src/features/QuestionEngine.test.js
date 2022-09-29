@@ -9,6 +9,100 @@ import { Answer } from "./Answer";
 import { dateToState } from "./ConversionUtil";
 
 describe("QuestionEngine tests", () => {
+  test("nextStatus testing state transitions.", () => {
+    const state = {
+      treatments: [
+        TestDataFactory.createQuestionNoTitrate(),
+        TestDataFactory.create2ndQuestionNoTitrate,
+        (TestDataFactory.create2ndQuestionNoTitrate.position = 3),
+      ],
+      currentQuestionIdx: 0,
+      status: StatusType.Unitialized,
+    };
+    const qe = new QuestionEngine();
+    expect((state.status = qe.nextStatus(state, false))).toBe(
+      StatusType.Fetching
+    );
+    expect((state.status = qe.nextStatus(state, false))).toBe(
+      StatusType.Fetched
+    );
+    expect((state.status = qe.nextStatus(state, false))).toBe(
+      StatusType.Consent
+    );
+    expect((state.status = qe.nextStatus(state, false))).toBe(
+      StatusType.Introduction
+    );
+    expect((state.status = qe.nextStatus(state, false))).toBe(
+      StatusType.Instructions
+    );
+    expect((state.status = qe.nextStatus(state, false))).toBe(
+      StatusType.Survey
+    );
+    state.currentQuestionIdx = 1;
+    expect((state.status = qe.nextStatus(state, false))).toBe(
+      StatusType.Attention
+    );
+    state.currentQuestionIdx = 2;
+    expect((state.status = qe.nextStatus(state, false))).toBe(
+      StatusType.Survey
+    );
+    expect((state.status = qe.nextStatus(state, true))).toBe(
+      StatusType.FinancialQuestionaire
+    );
+    expect((state.status = qe.nextStatus(state, true))).toBe(
+      StatusType.PurposeQuestionaire
+    );
+    expect((state.status = qe.nextStatus(state, false))).toBe(
+      StatusType.Debrief
+    );
+    expect((state.status = qe.nextStatus(state, false))).toBe(StatusType.Done);
+    expect(qe.nextStatus(state, false)).toBe(StatusType.Done);
+  });
+
+  test("previousStatus testing state transitions.", () => {
+    const state = {
+      treatments: [
+        TestDataFactory.createQuestionNoTitrate(),
+        TestDataFactory.create2ndQuestionNoTitrate,
+        (TestDataFactory.create2ndQuestionNoTitrate.position = 3),
+      ],
+      currentQuestionIdx: 2,
+      status: StatusType.Done,
+    };
+    const qe = new QuestionEngine();
+    expect(qe.previousStatus(state, false)).toBe(StatusType.Done);
+    state.status = StatusType.Debrief;
+    expect((state.status = qe.previousStatus(state, false))).toBe(
+      StatusType.PurposeQuestionaire
+    );
+    expect((state.status = qe.previousStatus(state, false))).toBe(
+      StatusType.FinancialQuestionaire
+    );
+    expect((state.status = qe.previousStatus(state, false))).toBe(
+      StatusType.Survey
+    );
+    state.currentQuestionIdx = 1;
+    expect((state.status = qe.previousStatus(state, false))).toBe(
+      StatusType.Attention
+    );
+    state.currentQuestionIdx = 0;
+    expect((state.status = qe.previousStatus(state, false))).toBe(
+      StatusType.Survey
+    );
+    expect((state.status = qe.previousStatus(state, true))).toBe(
+      StatusType.Instructions
+    );
+    expect((state.status = qe.previousStatus(state, false))).toBe(
+      StatusType.Introduction
+    );
+    expect((state.status = qe.previousStatus(state, false))).toBe(
+      StatusType.Consent
+    );
+    expect((state.status = qe.previousStatus(state))).toBe(StatusType.Fetched);
+    expect((state.status = qe.previousStatus(state))).toBe(StatusType.Fetching);
+    expect(qe.previousStatus(state)).toBe(StatusType.Unitialized);
+  });
+
   test("startSurvey should create a single answer entry for titration question.", () => {
     const state = {
       treatments: [TestDataFactory.createQuestionLaterTitrate()],
@@ -130,7 +224,7 @@ describe("QuestionEngine tests", () => {
     expect(state.status).toBe(StatusType.Survey);
     qe.incNextQuestion(state);
     expect(state.currentQuestionIdx).toBe(2);
-    expect(state.status).toBe(StatusType.Questionaire);
+    expect(state.status).toBe(StatusType.FinancialQuestionaire);
   });
 
   test("decPreviousQuestion for single treatment should update state to post survey.", () => {
@@ -138,6 +232,7 @@ describe("QuestionEngine tests", () => {
       treatments: [TestDataFactory.createQuestionNoTitrate()],
       answers: [TestDataFactory.createAnswer(1, 1)],
       currentQuestionIdx: 0,
+      status: StatusType.Survey,
     };
     const qe = new QuestionEngine();
     qe.decPreviousQuestion(state);

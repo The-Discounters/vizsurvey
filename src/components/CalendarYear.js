@@ -225,7 +225,7 @@ export function Calendar() {
     </div>
   );
 
-  if (status === StatusType.Questionaire) {
+  if (status === StatusType.FinancialQuestionaire) {
     navigate("/questionaire");
   } else {
     dispatch(setQuestionShownTimestamp(dateToState(DateTime.utc())));

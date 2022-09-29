@@ -79,11 +79,11 @@ const App = () => {
               <Route path={"instruction"} element={<Instructions />} />
               <Route path={"survey"} element={<Survey />} />
               <Route
-                path={"postsurvey1"}
+                path={"financialquestionaire"}
                 element={<PostSurveyFinancialLit />}
               />
               <Route
-                path={"postsurvey2"}
+                path={"purposequestionaire"}
                 element={<PostSurveySenseOfPurpose />}
               />
               <Route path={"attentioncheck"} element={<AttentionCheck />} />

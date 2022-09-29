@@ -1,7 +1,8 @@
+/* eslint-disable no-unused-vars */
 import React, { useEffect } from "react";
 import { FullScreen, useFullScreenHandle } from "react-full-screen";
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { DateTime } from "luxon";
 import {
   Grid,
@@ -16,8 +17,12 @@ import {
   ThemeProvider,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
+import { StatusType } from "../features/StatusType";
 import {
+  getStatus,
   postSurveyQuestionsShown,
+  nextQuestion,
+  previousQuestion,
   setPostSurvey,
 } from "../features/questionSlice";
 import { dateToState } from "../features/ConversionUtil";
@@ -37,17 +42,29 @@ const useStyles = makeStyles((theme) => ({
 export function PostSurvey() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const classes = useStyles();
   const handle = useFullScreenHandle();
+  let surveys = POST_SURVEY_QUESTIONS;
+
+  const [disableSubmit, setDisableSubmit] = React.useState(true);
+  const status = useSelector(getStatus);
 
   useEffect(() => {
     dispatch(postSurveyQuestionsShown(dateToState(DateTime.utc())));
     if (process.env.REACT_APP_FULLSCREEN === "enabled") handle.exit();
   }, []);
 
-  const classes = useStyles();
+  useEffect(() => {
+    switch (status) {
+      case StatusType.Survey:
+        navigate("/survey");
+        break;
+      case StatusType.PurposeQuestionaire:
+        navigate("/purposequestionaire");
+        break;
+    }
+  }, [status]);
 
-  const [disableSubmit, setDisableSubmit] = React.useState(true);
-  let surveys = POST_SURVEY_QUESTIONS;
   surveys.questions = surveys.questions.filter(({ question }) => {
     if (question.disabled === true) {
       return false;
@@ -183,7 +200,7 @@ export function PostSurvey() {
                 disableFocusRipple
                 style={styles.button}
                 onClick={() => {
-                  navigate("/survey");
+                  dispatch(previousQuestion());
                 }}
               >
                 {" "}
@@ -204,19 +221,21 @@ export function PostSurvey() {
                     setTimeout(() => {
                       if (process.env.REACT_APP_FULLSCREEN === "enabled")
                         handle.exit();
-                      dispatch(
-                        setPostSurvey({
-                          data: surveys.questions.reduce(
-                            (prev, { question }, index) => {
-                              prev[question.textShort] = qList[index];
-                              return prev;
-                            },
-                            {}
-                          ),
-                          key: surveys.promptShort,
-                        })
-                      );
-                      navigate("/postsurvey2");
+                      dispatch(nextQuestion());
+
+                      // setPostSurvey({
+                      //   data: surveys.questions.reduce(
+                      //     (prev, { question }, index) => {
+                      //       prev[question.textShort] = qList[index];
+                      //       return prev;
+                      //     },
+                      //     {}
+                      //   ),
+                      //   key: surveys.promptShort,
+                      // })
+                      //);
+
+                      navigate("/purposequestionaire");
                     }, 400);
                   }}
                   disabled={disableSubmit}
