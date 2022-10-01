@@ -70,7 +70,9 @@ describe("QuestionEngine tests", () => {
       status: StatusType.Done,
     };
     const qe = new QuestionEngine();
-    expect(qe.previousStatus(state, false)).toBe(StatusType.Done);
+    expect((state.status = qe.previousStatus(state, false))).toBe(
+      StatusType.Debrief
+    );
     state.status = StatusType.Debrief;
     expect((state.status = qe.previousStatus(state, false))).toBe(
       StatusType.PurposeQuestionaire

@@ -343,7 +343,7 @@ export class QuestionEngine {
       case StatusType.Debrief:
         return StatusType.PurposeQuestionaire;
       case StatusType.Done:
-        return StatusType.Done;
+        return StatusType.Debrief;
       case StatusType.Error:
         return StatusType.Error;
     }
