@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import React, { useEffect } from "react";
 import { FullScreen, useFullScreenHandle } from "react-full-screen";
 import { useNavigate } from "react-router-dom";
@@ -20,10 +19,12 @@ import { makeStyles } from "@material-ui/core/styles";
 import { StatusType } from "../features/StatusType";
 import {
   getStatus,
-  postSurveyQuestionsShown,
+  financialLitSurveyQuestionsShown,
   nextQuestion,
   previousQuestion,
-  setPostSurvey,
+  initFinancialLitSurveyQuestion,
+  setFinancialLitSurveyQuestion,
+  getFinancialLitSurveyQuestion,
 } from "../features/questionSlice";
 import { dateToState } from "../features/ConversionUtil";
 import { POST_SURVEY_QUESTIONS } from "../features/postsurveyquestionsfinanciallit";
@@ -45,12 +46,29 @@ export function PostSurvey() {
   const classes = useStyles();
   const handle = useFullScreenHandle();
   let surveys = POST_SURVEY_QUESTIONS;
-
-  const [disableSubmit, setDisableSubmit] = React.useState(true);
   const status = useSelector(getStatus);
 
+  const [disableSubmit, setDisableSubmit] = React.useState(true);
+
+  surveys.questions = surveys.questions.filter(({ question }) => {
+    if (question.disabled === true) {
+      return false;
+    } else {
+      return true;
+    }
+  });
+
+  let qList = [];
+  surveys.questions.forEach((q) => {
+    dispatch(initFinancialLitSurveyQuestion(q.question.textShort));
+    const value = useSelector(
+      getFinancialLitSurveyQuestion(q.question.textShort)
+    );
+    qList.push(value);
+  });
+
   useEffect(() => {
-    dispatch(postSurveyQuestionsShown(dateToState(DateTime.utc())));
+    dispatch(financialLitSurveyQuestionsShown(dateToState(DateTime.utc())));
     if (process.env.REACT_APP_FULLSCREEN === "enabled") handle.exit();
   }, []);
 
@@ -65,21 +83,9 @@ export function PostSurvey() {
     }
   }, [status]);
 
-  surveys.questions = surveys.questions.filter(({ question }) => {
-    if (question.disabled === true) {
-      return false;
-    } else {
-      return true;
-    }
-  });
-
-  let qList = [];
-  let setQList = [];
-  surveys.questions.forEach(() => {
-    const [q, setQ] = React.useState("");
-    qList.push(q);
-    setQList.push(setQ);
-  });
+  useEffect(() => {
+    checkEnableSubmit();
+  }, qList);
 
   const checkEnableSubmit = () => {
     let result = false;
@@ -89,14 +95,6 @@ export function PostSurvey() {
       }
     });
     setDisableSubmit(result);
-  };
-
-  useEffect(() => {
-    checkEnableSubmit();
-  }, qList);
-
-  const handleFieldChange = (event, setter) => {
-    setter(event.target.value);
   };
 
   return (
@@ -154,7 +152,13 @@ export function PostSurvey() {
                               control={<Radio />}
                               label={option.textFull}
                               onChange={(event) => {
-                                handleFieldChange(event, setQList[index]);
+                                dispatch(
+                                  setFinancialLitSurveyQuestion({
+                                    key: surveys.questions[index].question
+                                      .textShort,
+                                    value: event.target.value,
+                                  })
+                                );
                               }}
                             />
                           ))
@@ -177,7 +181,13 @@ export function PostSurvey() {
                               control={<Radio />}
                               label={option.replace("-", " ")}
                               onChange={(event) => {
-                                handleFieldChange(event, setQList[index]);
+                                dispatch(
+                                  setFinancialLitSurveyQuestion({
+                                    key: surveys.questions[index].question
+                                      .textShort,
+                                    value: event.target.value,
+                                  })
+                                );
                               }}
                             />
                           ))}
@@ -222,20 +232,6 @@ export function PostSurvey() {
                       if (process.env.REACT_APP_FULLSCREEN === "enabled")
                         handle.exit();
                       dispatch(nextQuestion());
-
-                      // setPostSurvey({
-                      //   data: surveys.questions.reduce(
-                      //     (prev, { question }, index) => {
-                      //       prev[question.textShort] = qList[index];
-                      //       return prev;
-                      //     },
-                      //     {}
-                      //   ),
-                      //   key: surveys.promptShort,
-                      // })
-                      //);
-
-                      navigate("/purposequestionaire");
                     }, 400);
                   }}
                   disabled={disableSubmit}

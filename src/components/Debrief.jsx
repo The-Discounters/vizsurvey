@@ -1,23 +1,44 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { DateTime } from "luxon";
-import { Grid, Button, Typography, ThemeProvider } from "@material-ui/core";
 import {
+  Grid,
+  Box,
+  Button,
+  Typography,
+  ThemeProvider,
+} from "@material-ui/core";
+import { StatusType } from "../features/StatusType";
+import {
+  getStatus,
   debriefShownTimestamp,
   debriefCompleted,
+  nextQuestion,
+  previousQuestion,
 } from "../features/questionSlice";
 import { dateToState } from "../features/ConversionUtil";
 import { styles, theme } from "./ScreenHelper";
 
 const Debrief = () => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const status = useSelector(getStatus);
+
   useEffect(() => {
     dispatch(debriefShownTimestamp(dateToState(DateTime.utc())));
   }, []);
 
-  const navigate = useNavigate();
-
-  const dispatch = useDispatch();
+  useEffect(() => {
+    switch (status) {
+      case StatusType.PurposeQuestionaire:
+        navigate("/purposequestionaire");
+        break;
+      case StatusType.Done:
+        navigate("/theend");
+        break;
+    }
+  }, [status]);
 
   return (
     <ThemeProvider theme={theme}>
@@ -56,7 +77,24 @@ const Debrief = () => {
             of choosing the longer-term option.
           </Typography>
         </Grid>
-        <Grid item xs={12} style={{ margin: 0 }}>
+        <Grid item xs={6}>
+          <Button
+            variant="contained"
+            color="secondary"
+            disableRipple
+            disableFocusRipple
+            style={styles.button}
+            onClick={() => {
+              dispatch(previousQuestion());
+            }}
+          >
+            {" "}
+            Previous{" "}
+          </Button>
+        </Grid>
+      </Grid>
+      <Grid item xs={12} style={{ margin: 0 }}>
+        <Box display="flex" justifyContent="flex-end">
           <Button
             variant="contained"
             color="secondary"
@@ -65,13 +103,13 @@ const Debrief = () => {
             style={styles.button}
             onClick={() => {
               dispatch(debriefCompleted(dateToState(DateTime.utc())));
-              navigate("/theend");
+              dispatch(nextQuestion());
             }}
           >
             {" "}
             Next{" "}
           </Button>
-        </Grid>
+        </Box>
       </Grid>
     </ThemeProvider>
   );

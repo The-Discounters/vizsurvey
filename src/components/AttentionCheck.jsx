@@ -6,6 +6,7 @@ import { DateTime } from "luxon";
 import {
   Grid,
   Button,
+  Box,
   Typography,
   FormLabel,
   FormControl,
@@ -16,7 +17,7 @@ import {
 } from "@material-ui/core";
 import {
   getStatus,
-  postSurveyQuestionsShown,
+  financialLitSurveyQuestionsShown,
   setAttentionCheck,
   previousQuestion,
   nextQuestion,
@@ -35,7 +36,7 @@ export function AttentionCheck() {
   const [q, setQ] = React.useState("");
 
   useEffect(() => {
-    dispatch(postSurveyQuestionsShown(dateToState(DateTime.utc())));
+    dispatch(financialLitSurveyQuestionsShown(dateToState(DateTime.utc())));
     if (process.env.REACT_APP_FULLSCREEN === "enabled") handle.exit();
   }, []);
 
@@ -151,21 +152,23 @@ export function AttentionCheck() {
               </Button>
             </Grid>
             <Grid item xs={6} style={{ margin: 0 }}>
-              <Button
-                variant="contained"
-                color="secondary"
-                disableRipple
-                disableFocusRipple
-                style={styles.button}
-                onClick={() => {
-                  dispatch(setAttentionCheck(q));
-                  dispatch(nextQuestion());
-                }}
-                disabled={disableSubmit}
-              >
-                {" "}
-                Next{" "}
-              </Button>
+              <Box display="flex" justifyContent="flex-end">
+                <Button
+                  variant="contained"
+                  color="secondary"
+                  disableRipple
+                  disableFocusRipple
+                  style={styles.button}
+                  onClick={() => {
+                    dispatch(setAttentionCheck(q));
+                    dispatch(nextQuestion());
+                  }}
+                  disabled={disableSubmit}
+                >
+                  {" "}
+                  Next{" "}
+                </Button>
+              </Box>
             </Grid>
           </Grid>
         </FullScreen>

@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { FullScreen, useFullScreenHandle } from "react-full-screen";
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { DateTime } from "luxon";
 import {
   Grid,
@@ -16,9 +16,15 @@ import {
   ThemeProvider,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
+import { StatusType } from "../features/StatusType";
 import {
-  postSurveyQuestionsShown,
-  setPostSurvey,
+  getStatus,
+  purposeSurveyQuestionsShown,
+  nextQuestion,
+  previousQuestion,
+  initPurposeSurveyQuestion,
+  setPurposeSurveyQuestion,
+  getPurposeSurveyQuestion,
 } from "../features/questionSlice";
 import { dateToState } from "../features/ConversionUtil";
 import { POST_SURVEY_QUESTIONS } from "../features/postsurveyquestionssenseofpurpose";
@@ -37,17 +43,12 @@ const useStyles = makeStyles((theme) => ({
 export function PostSurvey() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const handle = useFullScreenHandle();
-
-  useEffect(() => {
-    dispatch(postSurveyQuestionsShown(dateToState(DateTime.utc())));
-    if (process.env.REACT_APP_FULLSCREEN === "enabled") handle.exit();
-  }, []);
-
   const classes = useStyles();
+  const handle = useFullScreenHandle();
+  let surveys = POST_SURVEY_QUESTIONS;
+  const status = useSelector(getStatus);
 
   const [disableSubmit, setDisableSubmit] = React.useState(true);
-  let surveys = POST_SURVEY_QUESTIONS;
   surveys.questions = surveys.questions.filter(({ question }) => {
     if (question.disabled === true) {
       return false;
@@ -57,12 +58,31 @@ export function PostSurvey() {
   });
 
   let qList = [];
-  let setQList = [];
-  surveys.questions.forEach(() => {
-    const [q, setQ] = React.useState("");
-    qList.push(q);
-    setQList.push(setQ);
+  surveys.questions.forEach((q) => {
+    dispatch(initPurposeSurveyQuestion(q.question.textShort));
+    const value = useSelector(getPurposeSurveyQuestion(q.question.textShort));
+    qList.push(value);
   });
+
+  useEffect(() => {
+    dispatch(purposeSurveyQuestionsShown(dateToState(DateTime.utc())));
+    if (process.env.REACT_APP_FULLSCREEN === "enabled") handle.exit();
+  }, []);
+
+  useEffect(() => {
+    switch (status) {
+      case StatusType.FinancialQuestionaire:
+        navigate("/financialquestionaire");
+        break;
+      case StatusType.Debrief:
+        navigate("/debrief");
+        break;
+    }
+  }, [status]);
+
+  useEffect(() => {
+    checkEnableSubmit();
+  }, qList);
 
   const checkEnableSubmit = () => {
     let result = false;
@@ -72,14 +92,6 @@ export function PostSurvey() {
       }
     });
     setDisableSubmit(result);
-  };
-
-  useEffect(() => {
-    checkEnableSubmit();
-  }, qList);
-
-  const handleFieldChange = (event, setter) => {
-    setter(event.target.value);
   };
 
   return (
@@ -137,7 +149,13 @@ export function PostSurvey() {
                               control={<Radio />}
                               label={option.textFull}
                               onChange={(event) => {
-                                handleFieldChange(event, setQList[index]);
+                                dispatch(
+                                  setPurposeSurveyQuestion({
+                                    key: surveys.questions[index].question
+                                      .textShort,
+                                    value: event.target.value,
+                                  })
+                                );
                               }}
                             />
                           ))
@@ -160,7 +178,13 @@ export function PostSurvey() {
                               control={<Radio />}
                               label={option.replace("-", " ")}
                               onChange={(event) => {
-                                handleFieldChange(event, setQList[index]);
+                                dispatch(
+                                  setPurposeSurveyQuestion({
+                                    key: surveys.questions[index].question
+                                      .textShort,
+                                    value: event.target.value,
+                                  })
+                                );
                               }}
                             />
                           ))}
@@ -183,7 +207,7 @@ export function PostSurvey() {
                 disableFocusRipple
                 style={styles.button}
                 onClick={() => {
-                  navigate("/survey");
+                  dispatch(previousQuestion());
                 }}
               >
                 {" "}
@@ -204,19 +228,7 @@ export function PostSurvey() {
                     setTimeout(() => {
                       if (process.env.REACT_APP_FULLSCREEN === "enabled")
                         handle.exit();
-                      dispatch(
-                        setPostSurvey({
-                          data: surveys.questions.reduce(
-                            (prev, { question }, index) => {
-                              prev[question.textShort] = qList[index];
-                              return prev;
-                            },
-                            {}
-                          ),
-                          key: surveys.promptShort,
-                        })
-                      );
-                      navigate("/debrief");
+                      dispatch(nextQuestion());
                     }, 400);
                   }}
                   disabled={disableSubmit}

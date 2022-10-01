@@ -7,7 +7,7 @@ import { dateToState } from "../features/ConversionUtil";
 import { styles, theme } from "./ScreenHelper";
 import {
   getParticipant,
-  getPostSurvey,
+  getFinancialLitSurvey,
   getCountryOfResidence,
   getVizFamiliarity,
   getAge,
@@ -32,7 +32,7 @@ const TheEnd = () => {
   const answers = useSelector(selectAllQuestions);
   const io = new FileIOAdapter();
   const csv = io.convertToCSV(answers);
-  const postsurvey = useSelector(getPostSurvey);
+  const postsurvey = useSelector(getFinancialLitSurvey);
   const countryOfResidence = useSelector(getCountryOfResidence);
   const vizFamiliarity = useSelector(getVizFamiliarity);
   const age = useSelector(getAge);

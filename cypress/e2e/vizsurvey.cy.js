@@ -62,7 +62,7 @@ function postsurvey(expects) {
                 introductionCompletedTimestamp: 3000,
                 instructionsShownTimestamp: 3000,
                 instructionsCompletedTimestamp: 4000,
-                postSurveyQuestionsShownTimestamp: 9000,
+                financialLitSurveyQuestionsShownTimestamp: 9000,
                 debriefShownTimestamp: 10000,
                 debriefCompleted: 10000,
                 theEndShownTimestamp: 10000,

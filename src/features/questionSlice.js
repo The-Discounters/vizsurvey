@@ -25,7 +25,8 @@ export const questionSlice = createSlice({
     treatmentId: null,
     participantId: null,
     sessionId: null,
-    postsurvey: {},
+    financialLitSurvey: {},
+    purposeSurvey: {},
     countryOfResidence: "",
     vizFamiliarity: "",
     age: "",
@@ -38,7 +39,8 @@ export const questionSlice = createSlice({
     introductionCompletedTimestamp: null,
     instructionsShownTimestamp: null,
     instructionsCompletedTimestamp: null,
-    postSurveyQuestionsShownTimestamp: null,
+    financialLitSurveyQuestionsShownTimestamp: null,
+    purposeSurveyQuestionsShownTimestamp: null,
     debriefShownTimestamp: null,
     debriefCompleted: null,
     theEndShownTimestamp: null,
@@ -90,8 +92,21 @@ export const questionSlice = createSlice({
     setProfession(state, action) {
       state.profession = action.payload;
     },
-    setPostSurvey(state, action) {
-      state.postsurvey[action.payload.key] = action.payload.data;
+    initFinancialLitSurveyQuestion(state, action) {
+      if (state.financialLitSurvey[action.payload] == undefined) {
+        state.financialLitSurvey[action.payload] = "";
+      }
+    },
+    setFinancialLitSurveyQuestion(state, action) {
+      state.financialLitSurvey[action.payload.key] = action.payload.value;
+    },
+    initPurposeSurveyQuestion(state, action) {
+      if (state.purposeSurvey[action.payload] == undefined) {
+        state.purposeSurvey[action.payload] = "";
+      }
+    },
+    setPurposeSurveyQuestion(state, action) {
+      state.purposeSurvey[action.payload.key] = action.payload.value;
     },
     setAttentionCheck(state, action) {
       state.attentioncheck = action.payload;
@@ -146,8 +161,11 @@ export const questionSlice = createSlice({
     nextQuestion(state) {
       qe.incNextQuestion(state);
     },
-    postSurveyQuestionsShown(state, action) {
-      state.postSurveyQuestionsShownTimestamp = action.payload;
+    financialLitSurveyQuestionsShown(state, action) {
+      state.financialLitSurveyQuestionsShownTimestamp = action.payload;
+    },
+    purposeSurveyQuestionsShown(state, action) {
+      state.purposeSurveyQuestionsShownTimestamp = action.payload;
     },
     debriefShownTimestamp(state, action) {
       state.debriefShownTimestamp = action.payload;
@@ -163,21 +181,23 @@ export const questionSlice = createSlice({
       state.treatmentId = null;
       state.articipantId = null;
       state.sessionId = null;
-      state.postsurvey = null;
-      state.countryOfResidence = null;
+      state.financialLitSurvey = {};
+      state.purposeSurvey = {};
+      state.countryOfResidence = "";
+      state.vizFamiliarity = "";
+      state.age = "";
+      state.gender = "";
+      state.selfDescribeGender = "";
+      state.profession = "";
       state.attentioncheck = null;
-      state.vizFamiliarity = null;
-      state.age = null;
-      state.gender = null;
-      state.selfDescribeGender = null;
-      state.profession = null;
       state.consentShownTimestamp = null;
       state.consentCompletedTimestamp = null;
       state.introductionShowTimestamp = null;
       state.introductionCompletedTimestamp = null;
       state.instructionsShownTimestamp = null;
       state.instructionsCompletedTimestamp = null;
-      state.postSurveyQuestionsShownTimestamp = null;
+      state.financialLitSurveyQuestionsShownTimestamp = null;
+      state.purposeSurveyQuestionsShownTimestamp = null;
       state.debriefShownTimestamp = null;
       state.treatments = [];
       state.answers = [];
@@ -208,53 +228,42 @@ export const questionSlice = createSlice({
   },
 });
 
-export const isFirstTreatment = (state) => {
-  return qe.isFirstTreatment(state.questions);
+export const isFirstTreatment = (state) => qe.isFirstTreatment(state.questions);
+
+export const isLastTreatment = (state) => qe.isLastTreatment(state.questions);
+
+export const selectAllQuestions = (state) => qe.allQuestions(state.questions);
+
+export const getParticipant = (state) => state.questions.participantId;
+
+export const getCountryOfResidence = (state) =>
+  state.questions.countryOfResidence;
+
+export const getVizFamiliarity = (state) => state.questions.vizFamiliarity;
+
+export const getAge = (state) => state.questions.age;
+
+export const getGender = (state) => state.questions.gender;
+
+export const getSelfDescribeGender = (state) =>
+  state.questions.selfDescribeGender;
+
+export const getProfession = (state) => state.questions.profession;
+
+export const getFinancialLitSurveyQuestion = (questionId) => (state) => {
+  return state.questions.financialLitSurvey[questionId];
 };
 
-export const isLastTreatment = (state) => {
-  return qe.isLastTreatment(state.questions);
+export const getPurposeSurveyQuestion = (questionId) => (state) => {
+  return state.questions.purposeSurvey[questionId];
 };
 
-export const selectAllQuestions = (state) => {
-  return qe.allQuestions(state.questions);
-};
+export const getFinancialLitSurvey = (state) =>
+  state.questions.getFinancialLitSurvey;
 
-export const getParticipant = (state) => {
-  return state.questions.participantId;
-};
+export const getPurposeSurvey = (state) => state.questions.getPurposeSurvey;
 
-export const getCountryOfResidence = (state) => {
-  return state.questions.countryOfResidence;
-};
-
-export const getVizFamiliarity = (state) => {
-  return state.questions.vizFamiliarity;
-};
-
-export const getAge = (state) => {
-  return state.questions.age;
-};
-
-export const getGender = (state) => {
-  return state.questions.gender;
-};
-
-export const getSelfDescribeGender = (state) => {
-  return state.questions.selfDescribeGender;
-};
-
-export const getProfession = (state) => {
-  return state.questions.profession;
-};
-
-export const getPostSurvey = (state) => {
-  return state.questions.postsurvey;
-};
-
-export const getAttentionCheck = (state) => {
-  return state.questions.attentioncheck;
-};
+export const getAttentionCheck = (state) => state.questions.attentioncheck;
 
 export const getTimestamps = (state) => {
   return {
@@ -265,50 +274,36 @@ export const getTimestamps = (state) => {
     instructionsShownTimestamp: state.questions.instructionsShownTimestamp,
     instructionsCompletedTimestamp:
       state.questions.instructionsCompletedTimestamp,
-    postSurveyQuestionsShownTimestamp:
-      state.questions.postSurveyQuestionsShownTimestamp,
+    financialLitSurveyQuestionsShownTimestamp:
+      state.questions.financialLitSurveyQuestionsShownTimestamp,
+    purposeSurveyQuestionsShownTimestamp:
+      state.questions.purposeSurveyQuestionsShownTimestamp,
     debriefShownTimestamp: state.questions.debriefShownTimestamp,
     debriefCompleted: state.questions.debriefCompleted,
     theEndShownTimestamp: state.questions.theEndShownTimestamp,
   };
 };
 
-export const getCurrentQuestionIndex = (state) => {
-  return state.questions.currentQuestionIdx;
-};
+export const getCurrentQuestionIndex = (state) =>
+  state.questions.currentQuestionIdx;
 
-export const fetchCurrentTreatment = (state) => {
-  const result = qe.currentTreatment(state.questions);
-  return result;
-};
+export const fetchCurrentTreatment = (state) =>
+  qe.currentTreatment(state.questions);
 
-export const fetchAllTreatments = (state) => {
-  return state.questions.allTreatments;
-};
+export const fetchAllTreatments = (state) => state.questions.allTreatments;
 
-export const getCurrentQuestion = (state) => {
-  return qe.latestAnswer(state.questions);
-};
+export const getCurrentQuestion = (state) => qe.latestAnswer(state.questions);
 
-export const getCurrentChoice = (state) => {
-  return qe.latestAnswer(state.questions).choice;
-};
+export const getCurrentChoice = (state) =>
+  qe.latestAnswer(state.questions).choice;
 
-export const getStatus = (state) => {
-  return state.questions.status;
-};
+export const getStatus = (state) => state.questions.status;
 
-export const fetchTreatmentId = (state) => {
-  return state.questions.treatmentId;
-};
+export const fetchTreatmentId = (state) => state.questions.treatmentId;
 
-export const fetchParticipantId = (state) => {
-  return state.questions.participantId;
-};
+export const fetchParticipantId = (state) => state.questions.participantId;
 
-export const fetchSessionId = (state) => {
-  return state.questions.sessionId;
-};
+export const fetchSessionId = (state) => state.questions.sessionId;
 
 // Action creators are generated for each case reducer function
 export const {
@@ -331,13 +326,17 @@ export const {
   setGender,
   setSelfDescribeGender,
   setProfession,
-  setPostSurvey,
+  initFinancialLitSurveyQuestion,
+  setFinancialLitSurveyQuestion,
+  initPurposeSurveyQuestion,
+  setPurposeSurveyQuestion,
   setAttentionCheck,
   instructionsShown,
   instructionsCompleted,
   introductionShown,
   introductionCompleted,
-  postSurveyQuestionsShown,
+  financialLitSurveyQuestionsShown,
+  purposeSurveyQuestionsShown,
   debriefShownTimestamp,
   debriefCompleted,
   theEndShownTimestamp,
