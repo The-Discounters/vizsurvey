@@ -63,11 +63,13 @@ function postsurvey(expects) {
                 introductionCompletedTimestamp: 3000,
                 instructionsShownTimestamp: 3000,
                 instructionsCompletedTimestamp: 4000,
-                financialLitSurveyQuestionsShownTimestamp: 9000,
-                debriefShownTimestamp: 10000,
-                debriefCompleted: 10000,
-                theEndShownTimestamp: 10000,
+                financialLitSurveyQuestionsShownTimestamp: 5000,
+                purposeSurveyQuestionsShownTimestamp: 8000,
+                debriefShownTimestamp: 9000,
+                debriefCompleted: 9000,
+                theEndShownTimestamp: 9000,
               },
+/*
               postsurvey: {
                 fincanialLit: {
                   q15vs30: "v15+",
@@ -84,6 +86,7 @@ function postsurvey(expects) {
                   effort: "strongly-disagree",
                 },
               },
+*/
             });
             fetching1 = false;
           });
