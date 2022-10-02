@@ -20,8 +20,11 @@ import { StatusType } from "../features/StatusType";
 import {
   getCurrentQuestion,
   getCurrentChoice,
+  getCurrentQuestionIndex,
   getStatus,
   setQuestionShownTimestamp,
+  nextQuestion,
+  previousQuestion,
   answer,
 } from "../features/questionSlice";
 import { dateToState } from "../features/ConversionUtil";
@@ -33,16 +36,16 @@ function BarChart() {
   const navigate = useNavigate();
 
   const q = useSelector(getCurrentQuestion);
+  const qi = useSelector(getCurrentQuestionIndex);
   const status = useSelector(getStatus);
   const choice = useSelector(getCurrentChoice);
-
   const [disableSubmit, setDisableSubmit] = useState(true);
 
   const t = d3.transition().duration(500);
 
   useEffect(() => {
-    dispatch(setQuestionShownTimestamp(dateToState(DateTime.utc())));
-  }, []);
+    dispatch(dispatch(setQuestionShownTimestamp(dateToState(DateTime.utc()))));
+  }, [qi]);
 
   useEffect(() => {
     switch (choice) {
@@ -265,6 +268,12 @@ function BarChart() {
                     return d.barType;
                   })
                   .attr("fill", "steelblue")
+                  .attr("stroke", (d) => {
+                    return d.barType === choice ? "black" : null;
+                  })
+                  .attr("stroke-width", (d) => {
+                    return d.barType === choice ? "3" : null;
+                  })
                   .attr("class", "bar")
                   .attr("x", (d) => x(d.time) - barWidth / 2)
                   .attr("y", (d) => y(d.amount))
@@ -369,7 +378,9 @@ function BarChart() {
             disableRipple
             disableFocusRipple
             style={styles.button}
-            onClick={() => {}}
+            onClick={() => {
+              dispatch(previousQuestion());
+            }}
           >
             {" "}
             Previous{" "}
@@ -383,7 +394,9 @@ function BarChart() {
               disableRipple
               disableFocusRipple
               style={styles.button}
-              onClick={() => {}}
+              onClick={() => {
+                dispatch(nextQuestion());
+              }}
               disabled={disableSubmit}
             >
               {" "}

@@ -127,10 +127,6 @@ export function MELForm() {
       case StatusType.FinancialQuestionaire:
         navigate("/financialquestionaire");
         break;
-      case StatusType.PurposeQuestionaire:
-        navigate("/financialquestionaire");
-        break;
-
       case StatusType.Attention:
         navigate("/attentioncheck");
         break;
