@@ -276,6 +276,7 @@ const Introduction = () => {
             <Button
               variant="contained"
               color="secondary"
+              id="buttonNext"
               disableRipple
               disableFocusRipple
               style={styles.button}

@@ -22,6 +22,7 @@ function postsurvey(expects) {
   cy.get("#effort-strongly-disagree").click();
   cy.get("button").contains("Next").click();
   cy.tick(1000);
+  cy.wait(1000);
   cy.get("h4").contains("Study Explanation").should("exist");
   cy.get("button").contains("Next").click();
   cy.get("p").contains("You have completed the survey").should("exist");
@@ -62,11 +63,13 @@ function postsurvey(expects) {
                 introductionCompletedTimestamp: 3000,
                 instructionsShownTimestamp: 3000,
                 instructionsCompletedTimestamp: 4000,
-                financialLitSurveyQuestionsShownTimestamp: 9000,
-                debriefShownTimestamp: 10000,
-                debriefCompleted: 10000,
-                theEndShownTimestamp: 10000,
+                financialLitSurveyQuestionsShownTimestamp: 5000,
+                purposeSurveyQuestionsShownTimestamp: 8000,
+                debriefShownTimestamp: 9000,
+                debriefCompleted: 9000,
+                theEndShownTimestamp: 9000,
               },
+/*
               postsurvey: {
                 fincanialLit: {
                   q15vs30: "v15+",
@@ -83,6 +86,7 @@ function postsurvey(expects) {
                   effort: "strongly-disagree",
                 },
               },
+*/
             });
             fetching1 = false;
           });
@@ -127,7 +131,7 @@ function visitTreatment(treatmentId, width = 1200, height = 700) {
 
   cy.tick(1000);
   if (treatmentId === 1) {
-    cy.get("button").contains("Next").should("be.disabled");
+    cy.get("#buttonNext").should("be.disabled");
     cy.get("button").contains("Previous").should("not.be.disabled");
     cy.get("label").contains("First option").click();
     cy.get("button").contains("Next").should("not.be.disabled").click();
@@ -161,10 +165,9 @@ describe("vizsurvey", () => {
         "borderColor",
         "rgb(0, 0, 0)"
       );
-      cy.get("button").realHover().click();
+      cy.get("button").contains("Next").realHover().click();
       cy.tick(1000);
     }
-    answerMELForm();
     answerMELForm();
 
     cy.get("#attention-check-strongly-disagree").click();
@@ -184,8 +187,6 @@ describe("vizsurvey", () => {
     cy.get("#earlierAmount").click();
     cy.get("button").contains("Next").click();
     cy.tick(4000);
-    cy.get("#laterAmount").click();
-    cy.get("button").contains("Next").click();
     cy.get("#attention-check-strongly-disagree").click();
     cy.get("button").contains("Next").click();
     cy.get("#laterAmount").click();
@@ -222,8 +223,6 @@ describe("vizsurvey", () => {
         cy.get("button").contains("Next").click();
         cy.get("#earlierAmount").click();
         cy.tick(4000);
-        cy.get("#laterAmount").click();
-        cy.get("button").contains("Next").click();
         cy.get("#laterAmount").click();
         cy.get("button").contains("Next").click();
         cy.get("#attention-check-strongly-disagree").click();
