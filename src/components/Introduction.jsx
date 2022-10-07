@@ -25,7 +25,61 @@ import {
   fetchCurrentTreatment,
   startSurvey,
 } from "../features/questionSlice";
-import { styles, theme, formControlLabel } from "./ScreenHelper";
+import { styles, theme, formControl } from "./ScreenHelper";
+
+let useStyles;
+function resetUseStyles() {
+  let part = ["btn0", "btn0UnClicked", "btn1", "btn1UnClicked"].reduce(
+    (result, key) => {
+      result[key] = {
+        "border-style": "solid",
+        backgroundColor: "steelblue",
+        "border-radius": "20px",
+        "border-width": "5px",
+        borderColor: "#ffffff",
+        color: "black",
+        paddingRight: "10px",
+        "&:hover": {
+          backgroundColor: "lightblue",
+        },
+      };
+      return result;
+    },
+    {}
+  );
+  let part1 = ["btn0Clicked", "btn1Clicked"].reduce((result, key) => {
+    result[key] = {
+      "border-style": "solid",
+      backgroundColor: "steelblue",
+      "border-radius": "20px",
+      "border-width": "5px",
+      borderColor: "#000000",
+      color: "black",
+      paddingRight: "10px",
+      "&:hover": {
+        backgroundColor: "lightblue",
+      },
+    };
+    return result;
+  }, {});
+  useStyles = makeStyles(() => ({
+    btn0: part.btn0,
+    btn0UnClicked: part.btn0UnClicked,
+    btn1: part.btn1,
+    btn1UnClicked: part.btn1UnClicked,
+    btn0Clicked: part1.btn0Clicked,
+    btn1Clicked: part1.btn1Clicked,
+    qArea: {
+      "border-style": "solid",
+      "border-width": "5px",
+      "border-radius": "20px",
+      padding: "10px",
+      borderColor: "#000000",
+    },
+  }));
+  7;
+}
+resetUseStyles();
 
 const Introduction = () => {
   const dispatch = useDispatch();
@@ -56,30 +110,6 @@ const Introduction = () => {
     }
   }, [choice]);
 
-  const useStyles = makeStyles((theme) => ({
-    formControl: {
-      margin: theme.spacing(1),
-      minWidth: 120,
-    },
-    selectEmpty: {
-      marginTop: theme.spacing(2),
-    },
-    formLabel: {
-      fontSize: 24,
-      color: "black",
-    },
-    btn: {
-      borderColor: "#ffffff",
-      "border-style": "solid",
-      "border-width": "5px",
-      "border-radius": "20px",
-      paddingRight: "10px",
-      "&:hover": {
-        borderColor: "#000000",
-      },
-    },
-  }));
-
   const classes = useStyles();
 
   const radioBtnExp = () => {
@@ -102,11 +132,7 @@ const Introduction = () => {
         </Typography>
 
         <form onSubmit={() => {}}>
-          <FormControl
-            className={classes.formControl}
-            required={false}
-            error={error}
-          >
+          <FormControl sx={{ ...formControl }} required={false} error={error}>
             <FormLabel className={classes.formLabel} id="question-text">
               Select one of the options below by clicking on the circle and then
               click the Next button to proceed.
@@ -122,10 +148,17 @@ const Introduction = () => {
             >
               <RadioGroup
                 row
-                aria-labelledby="row-radio-buttons-group-label"
-                name="question-radio-buttons-group"
+                aria-labelledby="introduction-question-row-radio-buttons-group-label"
+                name={"question-radio-buttons-group"}
                 onChange={(event) => {
                   setChoice(event.target.value);
+                  if (event.target.value === "firstOption") {
+                    classes.btn0 = classes.btn0Clicked;
+                    classes.btn1 = classes.btn1UnClicked;
+                  } else if (event.target.value === "secondOption") {
+                    classes.btn0 = classes.btn0UnClicked;
+                    classes.btn1 = classes.btn1Clicked;
+                  }
                   setHelperText("");
                   setError(false);
                 }}
@@ -140,15 +173,16 @@ const Introduction = () => {
                     key: "secondOption",
                     label: "Second option.",
                   },
-                ].map(({ key, label }) => (
+                ].map(({ key, label }, index) => (
                   <FormControlLabel
-                    sx={{ ...formControlLabel, mr: "100px" }}
+                    sx={{ mr: "100px" }}
                     key={key}
+                    id={key}
                     value={key}
                     checked={choice === key}
                     control={<Radio />}
                     label={label}
-                    className={classes.btn}
+                    className={classes["btn" + index]}
                   />
                 ))}
               </RadioGroup>
