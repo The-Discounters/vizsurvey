@@ -6,7 +6,6 @@ import {
   Box,
   Typography,
   ThemeProvider,
-  FormLabel,
   FormControl,
   FormControlLabel,
   FormHelperText,
@@ -27,16 +26,36 @@ import {
 } from "../features/questionSlice";
 import { styles, theme, formControl } from "./ScreenHelper";
 
-let useStyles;
-function resetUseStyles() {
-  let part = ["btn0", "btn0UnClicked", "btn1", "btn1UnClicked"].reduce(
-    (result, key) => {
+const Introduction = () => {
+  let useStyles;
+
+  function resetUseStyles() {
+    let part = ["btn0", "btn0UnClicked", "btn1", "btn1UnClicked"].reduce(
+      (result, key) => {
+        result[key] = {
+          "border-style": "solid",
+          backgroundColor: "steelblue",
+          "border-radius": "20px",
+          "border-width": "5px",
+          borderColor: "#ffffff",
+          color: "black",
+          paddingRight: "10px",
+          "&:hover": {
+            backgroundColor: "lightblue",
+          },
+        };
+        return result;
+      },
+      {}
+    );
+
+    let part1 = ["btn0Clicked", "btn1Clicked"].reduce((result, key) => {
       result[key] = {
         "border-style": "solid",
         backgroundColor: "steelblue",
         "border-radius": "20px",
         "border-width": "5px",
-        borderColor: "#ffffff",
+        borderColor: "#000000",
         color: "black",
         paddingRight: "10px",
         "&:hover": {
@@ -44,44 +63,29 @@ function resetUseStyles() {
         },
       };
       return result;
-    },
-    {}
-  );
-  let part1 = ["btn0Clicked", "btn1Clicked"].reduce((result, key) => {
-    result[key] = {
-      "border-style": "solid",
-      backgroundColor: "steelblue",
-      "border-radius": "20px",
-      "border-width": "5px",
-      borderColor: "#000000",
-      color: "black",
-      paddingRight: "10px",
-      "&:hover": {
-        backgroundColor: "lightblue",
-      },
-    };
-    return result;
-  }, {});
-  useStyles = makeStyles(() => ({
-    btn0: part.btn0,
-    btn0UnClicked: part.btn0UnClicked,
-    btn1: part.btn1,
-    btn1UnClicked: part.btn1UnClicked,
-    btn0Clicked: part1.btn0Clicked,
-    btn1Clicked: part1.btn1Clicked,
-    qArea: {
-      "border-style": "solid",
-      "border-width": "5px",
-      "border-radius": "20px",
-      padding: "10px",
-      borderColor: "#000000",
-    },
-  }));
-  7;
-}
-resetUseStyles();
+    }, {});
 
-const Introduction = () => {
+    useStyles = makeStyles(() => ({
+      btn0: part.btn0,
+      btn0UnClicked: part.btn0UnClicked,
+      btn1: part.btn1,
+      btn1UnClicked: part.btn1UnClicked,
+      btn0Clicked: part1.btn0Clicked,
+      btn1Clicked: part1.btn1Clicked,
+      qArea: {
+        "border-style": "solid",
+        "border-width": "5px",
+        "border-radius": "20px",
+        padding: "10px",
+        borderColor: "#000000",
+      },
+      qTitle: {
+        fontSize: "32px",
+      },
+    }));
+  }
+  resetUseStyles();
+
   const dispatch = useDispatch();
   const treatment = useSelector(fetchCurrentTreatment);
   const navigate = useNavigate();
@@ -112,31 +116,38 @@ const Introduction = () => {
 
   const classes = useStyles();
 
+  const radioButtonGif = new Array(
+    "instructions-radio-button-earlier.gif",
+    "instructions-radio-button-later.gif"
+  );
+
   const radioBtnExp = () => {
     return (
       <React.Fragment>
-        <Typography>
-          <b>
-            {" "}
-            <span style={{ fontSize: 20 }}>&#8226;</span> Radio Buttons:{" "}
-          </b>
-          Radio buttons allow a user to pick one of two options as shown in the
-          video clip below.
+        <Typography paragraph>
+          <b>Radio Buttons: </b>
+          Radio buttons represent information where a left button represents one
+          option, and the right button represents a second option.
         </Typography>
-        <img src="radio-buttons.gif" alt="Radio button example"></img>
-        <Typography>
-          <b>
-            {" "}
-            <span style={{ fontSize: 20 }}>&#8226;</span>&nbsp;Try it out below:
-          </b>
+        <img
+          width="100%"
+          src={
+            radioButtonGif[Math.floor(Math.random() * radioButtonGif.length)]
+          }
+          alt="Radio button example"
+        ></img>
+        <Typography paragraph></Typography>
+        <Typography paragraph>
+          <b>Try it out below:</b> In the example below, the left button
+          represents one choice of receiving money and the right button
+          represents another choice of receiving money. In this case the choice
+          is to receive $300 in two months or $700 in five months.
         </Typography>
-
-        <form onSubmit={() => {}}>
+        <form className={classes.qArea}>
           <FormControl sx={{ ...formControl }} required={false} error={error}>
-            <FormLabel className={classes.formLabel} id="question-text">
-              Select one of the options below by clicking on the circle and then
-              click the Next button to proceed.
-            </FormLabel>
+            <p className={classes.qTitle}>
+              Make a choice to receive $300 in 2 months or $700 in 7 months
+            </p>
             <FormHelperText>{helperText}</FormHelperText>
             <Box
               component="span"
@@ -152,10 +163,10 @@ const Introduction = () => {
                 name={"question-radio-buttons-group"}
                 onChange={(event) => {
                   setChoice(event.target.value);
-                  if (event.target.value === "firstOption") {
+                  if (event.target.value === "300") {
                     classes.btn0 = classes.btn0Clicked;
                     classes.btn1 = classes.btn1UnClicked;
-                  } else if (event.target.value === "secondOption") {
+                  } else if (event.target.value === "700") {
                     classes.btn0 = classes.btn0UnClicked;
                     classes.btn1 = classes.btn1Clicked;
                   }
@@ -166,12 +177,12 @@ const Introduction = () => {
               >
                 {[
                   {
-                    key: "firstOption",
-                    label: "First option.",
+                    key: "300",
+                    label: "$300 in 2 months",
                   },
                   {
-                    key: "secondOption",
-                    label: "Second option.",
+                    key: "700",
+                    label: "$700 in 7 months",
                   },
                 ].map(({ key, label }, index) => (
                   <FormControlLabel
@@ -278,7 +289,7 @@ const Introduction = () => {
 
   return (
     <ThemeProvider theme={theme}>
-      <Grid container style={styles.root}>
+      <Grid container style={styles.root} justifyContent="center">
         <Grid item xs={12}>
           <Typography variant="h4">Introduction</Typography>
           <hr
@@ -288,6 +299,8 @@ const Introduction = () => {
               height: 4,
             }}
           />
+        </Grid>
+        <Grid item xs={12}>
           {treatment ? vizExplanation(treatment.viewType) : <p />}
         </Grid>
         <Grid item xs={6}>
@@ -317,8 +330,8 @@ const Introduction = () => {
               onClick={() => {
                 if (
                   treatment.viewType === ViewType.word &&
-                  choice !== "firstOption" &&
-                  choice !== "secondOption"
+                  choice !== "300" &&
+                  choice !== "700"
                 ) {
                   setError(true);
                   setHelperText("You must choose one of the options below.");

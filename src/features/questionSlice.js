@@ -115,13 +115,13 @@ export const questionSlice = createSlice({
     loadTreatment(state) {
       state.status = StatusType.Fetching;
       state.treatments = io.loadTreatment(state.treatmentId);
-      qe.nextStatus(state, false);
+      state.status = qe.nextStatus(state, false);
       return state;
     },
     loadAllTreatments(state) {
       state.status = StatusType.Fetching;
       state.allTreatments = io.loadAllTreatments();
-      qe.nextStatus(state, false);
+      state.status = qe.nextStatus(state, false);
       return state;
     },
     consentShown(state, action) {

@@ -20,7 +20,6 @@ import {
   financialLitSurveyQuestionsShown,
   setAttentionCheck,
   previousQuestion,
-  nextQuestion,
 } from "../features/questionSlice";
 import { dateToState } from "../features/ConversionUtil";
 import { styles, theme } from "./ScreenHelper";
@@ -161,7 +160,6 @@ export function AttentionCheck() {
                   style={styles.button}
                   onClick={() => {
                     dispatch(setAttentionCheck(q));
-                    dispatch(nextQuestion());
                   }}
                   disabled={disableSubmit}
                 >

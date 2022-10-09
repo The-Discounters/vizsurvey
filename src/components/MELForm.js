@@ -31,6 +31,7 @@ import { dateToState } from "../features/ConversionUtil";
 import { styles, theme, formControl } from "./ScreenHelper";
 
 let useStyles;
+
 function resetUseStyles() {
   let part = ["btn0", "btn0UnClicked", "btn1", "btn1UnClicked"].reduce(
     (result, key) => {
@@ -50,6 +51,7 @@ function resetUseStyles() {
     },
     {}
   );
+
   let part1 = ["btn0Clicked", "btn1Clicked"].reduce((result, key) => {
     result[key] = {
       "border-style": "solid",
@@ -65,6 +67,7 @@ function resetUseStyles() {
     };
     return result;
   }, {});
+
   useStyles = makeStyles(() => ({
     btn0: part.btn0,
     btn0UnClicked: part.btn0UnClicked,
@@ -85,14 +88,8 @@ function resetUseStyles() {
   }));
   7;
 }
-resetUseStyles();
 
-// const boxDefault = {
-//   height: 100,
-//   //display: "flex",
-//   border: "1px solid black",
-//   padding: 2,
-// };
+resetUseStyles();
 
 export function MELForm() {
   const dispatch = useDispatch();
