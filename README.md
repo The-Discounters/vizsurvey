@@ -92,7 +92,7 @@ Change the participant_id to the value for the person taking the survey.
 
 ### `npm run cypress-open`
 
-Opens cypress window to select and run cypress tests. Make sure to already have the app running with `npm start`.
+Opens cypress window to selenct and run cypress tests. Make sure to already have the app running with `npm start`.
 https://docs.cypress.io/guides/guides/command-line
 
 ### `npm run cypress-run`
@@ -129,6 +129,10 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 ### `npm run build` fails to minify
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+
+### Creating animaged gif files for instruction and introduction
+
+I used the sceenshot tool that comes with OSX to screen capture the rario button group as I selected the buttons. I converted the .mov file to an animated gif with Drop to GIF.
 
 ### links I found useful while developing
 

@@ -5,8 +5,8 @@ import { Formik, Form } from "formik";
 import { Button } from "react-bootstrap";
 import { DateTime } from "luxon";
 import {
-  selectCurrentQuestion,
-  fetchStatus,
+  getCurrentQuestion,
+  getStatus,
   setQuestionShownTimestamp,
   answer,
 } from "../features/questionSlice";
@@ -19,8 +19,8 @@ import { dateToState, stateToDate } from "../features/ConversionUtil";
 
 export function Calendar() {
   const dispatch = useDispatch();
-  const q = useSelector(selectCurrentQuestion);
-  const status = useSelector(fetchStatus);
+  const q = useSelector(getCurrentQuestion);
+  const status = useSelector(getStatus);
   const navigate = useNavigate();
 
   var dragAmount = null;
@@ -88,7 +88,7 @@ export function Calendar() {
     </div>
   );
 
-  if (status === StatusType.Questionaire) {
+  if (status === StatusType.FinancialQuestionaire) {
     navigate("/questionaire");
   } else {
     dispatch(setQuestionShownTimestamp(dateToState(DateTime.utc())));

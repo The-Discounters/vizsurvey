@@ -1,36 +1,66 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { DateTime } from "luxon";
-import { Grid, Typography, ThemeProvider, Button } from "@material-ui/core";
+import {
+  Grid,
+  Box,
+  Typography,
+  ThemeProvider,
+  Button,
+} from "@material-ui/core";
 import { theEndShownTimestamp } from "../features/questionSlice";
 import { dateToState } from "../features/ConversionUtil";
 import { styles, theme } from "./ScreenHelper";
 import {
+  getStatus,
   getParticipant,
-  getPostSurvey,
-  getDemographics,
+  getFinancialLitSurvey,
+  previousQuestion,
+  getCountryOfResidence,
+  getVizFamiliarity,
+  getAge,
+  getGender,
+  getSelfDescribeGender,
+  getProfession,
   getAttentionCheck,
   getTimestamps,
   selectAllQuestions,
   writeAnswers,
 } from "../features/questionSlice";
+import { StatusType } from "../features/StatusType";
 import { FileIOAdapter } from "../features/FileIOAdapter";
 
 const TheEnd = () => {
-  useEffect(() => {
-    dispatch(theEndShownTimestamp(dateToState(DateTime.utc())));
-  }, []);
-
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const participantId = useSelector(getParticipant);
   const answers = useSelector(selectAllQuestions);
   const io = new FileIOAdapter();
   const csv = io.convertToCSV(answers);
-  const postsurvey = useSelector(getPostSurvey);
-  const demographics = useSelector(getDemographics);
+  const postsurvey = useSelector(getFinancialLitSurvey);
+  const countryOfResidence = useSelector(getCountryOfResidence);
+  const vizFamiliarity = useSelector(getVizFamiliarity);
+  const age = useSelector(getAge);
+  const gender = useSelector(getGender);
+  const selfDescribeGender = useSelector(getSelfDescribeGender);
+  const profession = useSelector(getProfession);
   const attentioncheck = useSelector(getAttentionCheck);
   const timestamps = useSelector(getTimestamps);
+  const status = useSelector(getStatus);
+
+  useEffect(() => {
+    dispatch(theEndShownTimestamp(dateToState(DateTime.utc())));
+  }, []);
+
+  useEffect(() => {
+    switch (status) {
+      case StatusType.Debrief:
+        navigate("/debrief");
+        break;
+    }
+  }, [status]);
 
   return (
     <ThemeProvider theme={theme}>
@@ -62,7 +92,7 @@ const TheEnd = () => {
             You can now close this browser window.
           </Typography>
         </Grid>
-        <Grid item xs={12} style={{ margin: 0 }}>
+        <Grid item xs={6}>
           <Button
             variant="contained"
             color="secondary"
@@ -70,27 +100,51 @@ const TheEnd = () => {
             disableFocusRipple
             style={styles.button}
             onClick={() => {
-              dispatch(
-                writeAnswers({
-                  csv: csv,
-                  participantId: participantId,
-                  postSurveyAnswers: {
-                    postsurvey: postsurvey,
-                    demographics: demographics,
-                    attentioncheck: attentioncheck,
-                    timestamps: timestamps,
-                  },
-                })
-              );
-              setTimeout(() => {
-                window.open("about:blank", "_self");
-                window.close();
-              }, 400);
+              dispatch(previousQuestion());
             }}
           >
             {" "}
-            Submit and Exit{" "}
+            Previous{" "}
           </Button>
+        </Grid>
+        <Grid item xs={6} style={{ margin: 0 }}>
+          <Box display="flex" justifyContent="flex-end">
+            <Button
+              variant="contained"
+              color="secondary"
+              disableRipple
+              disableFocusRipple
+              style={styles.button}
+              onClick={() => {
+                dispatch(
+                  writeAnswers({
+                    csv: csv,
+                    participantId: participantId,
+                    postSurveyAnswers: {
+                      postsurvey: postsurvey,
+                      demographics: {
+                        countryOfResidence: countryOfResidence,
+                        vizFamiliarity: vizFamiliarity,
+                        age: age,
+                        gender: gender,
+                        selfDescribeGender: selfDescribeGender,
+                        profession: profession,
+                      },
+                      attentioncheck: attentioncheck,
+                      timestamps: timestamps,
+                    },
+                  })
+                );
+                setTimeout(() => {
+                  window.open("about:blank", "_self");
+                  window.close();
+                }, 400);
+              }}
+            >
+              {" "}
+              Submit and Exit{" "}
+            </Button>
+          </Box>
         </Grid>
       </Grid>
     </ThemeProvider>

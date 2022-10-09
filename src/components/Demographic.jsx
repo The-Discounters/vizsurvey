@@ -1,9 +1,9 @@
-/* eslint-disable no-unused-vars */
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { DateTime } from "luxon";
 import {
   Grid,
+  Box,
   TextField,
   Button,
   Typography,
@@ -14,10 +14,24 @@ import InputLabel from "@material-ui/core/InputLabel";
 import FormHelperText from "@material-ui/core/FormHelperText";
 import FormControl from "@material-ui/core/FormControl";
 import NativeSelect from "@material-ui/core/NativeSelect";
-import { useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import * as countries from "./countries.json";
 import { dateToState } from "../features/ConversionUtil";
-import { consentShown, setDemographic } from "../features/questionSlice";
+import {
+  consentShown,
+  getCountryOfResidence,
+  getVizFamiliarity,
+  getAge,
+  getGender,
+  getSelfDescribeGender,
+  getProfession,
+  setCountryOfResidence,
+  setVizFamiliarity,
+  setAge,
+  setGender,
+  setSelfDescribeGender,
+  setProfession,
+} from "../features/questionSlice";
 import { styles, theme } from "./ScreenHelper";
 import "../App.css";
 
@@ -41,19 +55,20 @@ export function Consent() {
   const classes = useStyles();
   const [disableSubmit, setDisableSubmit] = React.useState(true);
   const [disableSelfDescribe, setDisableSelfDescribe] = React.useState(true);
-  const [country, setCountry] = React.useState("");
-  const [vizFamiliarity, setVizFamiliarity] = React.useState("");
-  const [age, setAge] = React.useState("");
-  const [gender, setGender] = React.useState("");
-  const [selfDescribeGender, setSelfDescribeGender] = React.useState("");
-  const [profession, setProfession] = React.useState("");
+
+  const countryOfResidence = useSelector(getCountryOfResidence);
+  const vizFamiliarity = useSelector(getVizFamiliarity);
+  const age = useSelector(getAge);
+  const gender = useSelector(getGender);
+  const selfDescribeGender = useSelector(getSelfDescribeGender);
+  const profession = useSelector(getProfession);
 
   const navigate = useNavigate();
 
   useEffect(() => {
     if (
-      country &&
-      country.length > 1 &&
+      countryOfResidence &&
+      countryOfResidence.length > 1 &&
       vizFamiliarity &&
       vizFamiliarity.length > 0 &&
       age &&
@@ -80,18 +95,13 @@ export function Consent() {
       setDisableSelfDescribe(true);
     }
   }, [
-    disableSelfDescribe,
-    country,
+    countryOfResidence,
     vizFamiliarity,
     age,
     gender,
     selfDescribeGender,
     profession,
   ]);
-
-  const handleFieldChange = (event, setter) => {
-    setter(event.target.value);
-  };
 
   const vizFamiliarityLevel = [
     {
@@ -143,7 +153,7 @@ export function Consent() {
               </Typography>
             </div>
           </Grid>
-          <Grid item xs={12}>
+          <Grid item xs={3}>
             <FormControl
               className={classes.formControl}
               required
@@ -153,9 +163,9 @@ export function Consent() {
                 Country of residence
               </InputLabel>
               <NativeSelect
-                value={country}
+                value={countryOfResidence}
                 onChange={(event) => {
-                  handleFieldChange(event, setCountry);
+                  dispatch(setCountryOfResidence(event.target.value));
                 }}
                 inputProps={{
                   name: "country-of-origin",
@@ -175,6 +185,8 @@ export function Consent() {
               </NativeSelect>
               <FormHelperText>The country you are living in now</FormHelperText>
             </FormControl>
+          </Grid>
+          <Grid item xs={3}>
             <FormControl
               className={classes.formControl}
               required
@@ -186,12 +198,11 @@ export function Consent() {
               <NativeSelect
                 value={vizFamiliarity}
                 onChange={(event) => {
-                  handleFieldChange(event, setVizFamiliarity);
+                  dispatch(setVizFamiliarity(event.target.value));
                 }}
                 name="familiarity-with-viz"
                 className={classes.selectEmpty}
                 inputProps={{ "aria-label": "Datavis experience" }}
-                helperText
               >
                 <option> </option>
                 {vizFamiliarityLevel.map((option) => (
@@ -205,13 +216,16 @@ export function Consent() {
               </FormHelperText>
             </FormControl>
           </Grid>
-          <Grid item xs={12} style={{ margin: 0 }}>
+          <Grid item xs={3}></Grid>
+          <Grid item xs={3}></Grid>
+          <Grid item xs={3}>
             <TextField
               required
               className={classes.formControl}
               label="Age"
               type="number"
               id="Age"
+              value={age}
               onChange={(event) => {
                 if (
                   event.target.value.length != 0 &&
@@ -219,10 +233,12 @@ export function Consent() {
                 ) {
                   event.target.value = age;
                 } else {
-                  handleFieldChange(event, setAge);
+                  dispatch(setAge(event.target.value));
                 }
               }}
             />
+          </Grid>
+          <Grid item xs={3}>
             <label style={{ marginRight: 20 }}> </label>
             <FormControl
               className={classes.formControl}
@@ -233,7 +249,7 @@ export function Consent() {
               <NativeSelect
                 value={gender}
                 onChange={(event) => {
-                  handleFieldChange(event, setGender);
+                  dispatch(setGender(event.target.value));
                 }}
                 inputProps={{
                   name: "gender",
@@ -255,29 +271,34 @@ export function Consent() {
                 ))}
               </NativeSelect>
             </FormControl>
+          </Grid>
+          <Grid item xs={3}>
             <TextField
               required
               value={selfDescribeGender}
+              onChange={(event) => {
+                dispatch(setSelfDescribeGender(event.target.value));
+              }}
               className={classes.formControl}
               label="Self Describe Gender"
               id="Self-Describe-Gender"
-              onChange={(event) => {
-                handleFieldChange(event, setSelfDescribeGender);
-              }}
               disabled={disableSelfDescribe}
             />
             <label style={{ marginLeft: 25 }}> </label>
+          </Grid>
+          <Grid item xs={3}>
             <TextField
               required
+              value={profession}
+              onChange={(event) => {
+                dispatch(setProfession(event.target.value));
+              }}
               className={classes.formControl}
               label="Current Profession"
               id="Current-Profession"
-              onChange={(event) => {
-                handleFieldChange(event, setProfession);
-              }}
             />
           </Grid>
-          <Grid item xs={12} style={{ margin: 0 }}>
+          <Grid item xs={6}>
             <Button
               variant="contained"
               color="secondary"
@@ -285,23 +306,30 @@ export function Consent() {
               disableFocusRipple
               style={styles.button}
               onClick={() => {
-                dispatch(
-                  setDemographic({
-                    country: country,
-                    vizFamiliarity: vizFamiliarity,
-                    age: age,
-                    gender: gender,
-                    selfDescribeGender: selfDescribeGender,
-                    profession: profession,
-                  })
-                );
-                navigate("/introduction");
+                navigate("/consent");
               }}
-              disabled={disableSubmit}
             >
               {" "}
-              Next{" "}
+              Previous{" "}
             </Button>
+          </Grid>
+          <Grid item xs={6}>
+            <Box display="flex" justifyContent="flex-end">
+              <Button
+                variant="contained"
+                color="secondary"
+                disableRipple
+                disableFocusRipple
+                style={styles.button}
+                onClick={() => {
+                  navigate("/introduction");
+                }}
+                disabled={disableSubmit}
+              >
+                {" "}
+                Next{" "}
+              </Button>
+            </Box>
           </Grid>
         </Grid>
       </div>

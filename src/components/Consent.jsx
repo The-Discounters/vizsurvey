@@ -234,22 +234,25 @@ export function Consent() {
               />
             </FormGroup>
           </Grid>
-          <Grid item xs={12} style={{ margin: 0 }}>
-            <Button
-              variant="contained"
-              color="secondary"
-              disableRipple
-              disableFocusRipple
-              style={styles.button}
-              onClick={() => {
-                dispatch(consentCompleted(dateToState(DateTime.utc())));
-                navigate("/demographic");
-              }}
-              disabled={disableSubmit}
-            >
-              {" "}
-              Next{" "}
-            </Button>
+          <Grid item xs={6}></Grid>
+          <Grid item xs={6} style={{ margin: 0 }}>
+            <Box display="flex" justifyContent="flex-end">
+              <Button
+                variant="contained"
+                color="secondary"
+                disableRipple
+                disableFocusRipple
+                style={styles.button}
+                onClick={() => {
+                  dispatch(consentCompleted(dateToState(DateTime.utc())));
+                  navigate("/demographic");
+                }}
+                disabled={disableSubmit}
+              >
+                {" "}
+                Next{" "}
+              </Button>
+            </Box>
           </Grid>
         </Grid>
       </div>
