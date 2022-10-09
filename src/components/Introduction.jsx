@@ -26,36 +26,17 @@ import {
 } from "../features/questionSlice";
 import { styles, theme, formControl } from "./ScreenHelper";
 
-const Introduction = () => {
-  let useStyles;
+let useStyles;
 
-  function resetUseStyles() {
-    let part = ["btn0", "btn0UnClicked", "btn1", "btn1UnClicked"].reduce(
-      (result, key) => {
-        result[key] = {
-          "border-style": "solid",
-          backgroundColor: "steelblue",
-          "border-radius": "20px",
-          "border-width": "5px",
-          borderColor: "#ffffff",
-          color: "black",
-          paddingRight: "10px",
-          "&:hover": {
-            backgroundColor: "lightblue",
-          },
-        };
-        return result;
-      },
-      {}
-    );
-
-    let part1 = ["btn0Clicked", "btn1Clicked"].reduce((result, key) => {
+function resetUseStyles() {
+  let part = ["btn0", "btn0UnClicked", "btn1", "btn1UnClicked"].reduce(
+    (result, key) => {
       result[key] = {
         "border-style": "solid",
         backgroundColor: "steelblue",
         "border-radius": "20px",
         "border-width": "5px",
-        borderColor: "#000000",
+        borderColor: "#ffffff",
         color: "black",
         paddingRight: "10px",
         "&:hover": {
@@ -63,29 +44,48 @@ const Introduction = () => {
         },
       };
       return result;
-    }, {});
+    },
+    {}
+  );
 
-    useStyles = makeStyles(() => ({
-      btn0: part.btn0,
-      btn0UnClicked: part.btn0UnClicked,
-      btn1: part.btn1,
-      btn1UnClicked: part.btn1UnClicked,
-      btn0Clicked: part1.btn0Clicked,
-      btn1Clicked: part1.btn1Clicked,
-      qArea: {
-        "border-style": "solid",
-        "border-width": "5px",
-        "border-radius": "20px",
-        padding: "10px",
-        borderColor: "#000000",
+  let part1 = ["btn0Clicked", "btn1Clicked"].reduce((result, key) => {
+    result[key] = {
+      "border-style": "solid",
+      backgroundColor: "steelblue",
+      "border-radius": "20px",
+      "border-width": "5px",
+      borderColor: "#000000",
+      color: "black",
+      paddingRight: "10px",
+      "&:hover": {
+        backgroundColor: "lightblue",
       },
-      qTitle: {
-        fontSize: "32px",
-      },
-    }));
-  }
-  resetUseStyles();
+    };
+    return result;
+  }, {});
 
+  useStyles = makeStyles(() => ({
+    btn0: part.btn0,
+    btn0UnClicked: part.btn0UnClicked,
+    btn1: part.btn1,
+    btn1UnClicked: part.btn1UnClicked,
+    btn0Clicked: part1.btn0Clicked,
+    btn1Clicked: part1.btn1Clicked,
+    qArea: {
+      "border-style": "solid",
+      "border-width": "5px",
+      "border-radius": "20px",
+      padding: "10px",
+      borderColor: "#000000",
+    },
+    qTitle: {
+      fontSize: "32px",
+    },
+  }));
+}
+resetUseStyles();
+
+const Introduction = () => {
   const dispatch = useDispatch();
   const treatment = useSelector(fetchCurrentTreatment);
   const navigate = useNavigate();
@@ -99,6 +99,14 @@ const Introduction = () => {
 
   useEffect(() => {
     dispatch(introductionShown(dateToState(DateTime.utc())));
+    setChoice("");
+    if (event.target.value === "300") {
+      classes.btn0 = classes.btn0Clicked;
+      classes.btn1 = classes.btn1UnClicked;
+    } else if (event.target.value === "700") {
+      classes.btn0 = classes.btn0UnClicked;
+      classes.btn1 = classes.btn1Clicked;
+    }
     if (!treatment) navigate("/invalidlink");
   }, []);
 
