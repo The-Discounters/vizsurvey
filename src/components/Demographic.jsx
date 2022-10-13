@@ -298,6 +298,14 @@ export function Consent() {
               id="Current-Profession"
             />
           </Grid>
+          <Grid item xs={12}>
+            <hr
+              style={{
+                backgroundColor: "#aaaaaa",
+                height: 4,
+              }}
+            />
+          </Grid>
           <Grid item xs={6}>
             <Button
               variant="contained"

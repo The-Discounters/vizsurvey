@@ -76,6 +76,12 @@ const Debrief = () => {
             can be used in the time (horizontal) axis to increase the likelihood
             of choosing the longer-term option.
           </Typography>
+          <hr
+            style={{
+              backgroundColor: "#aaaaaa",
+              height: 4,
+            }}
+          />
         </Grid>
         <Grid item xs={6}>
           <Button
@@ -92,24 +98,24 @@ const Debrief = () => {
             Previous{" "}
           </Button>
         </Grid>
-      </Grid>
-      <Grid item xs={12} style={{ margin: 0 }}>
-        <Box display="flex" justifyContent="flex-end">
-          <Button
-            variant="contained"
-            color="secondary"
-            disableRipple
-            disableFocusRipple
-            style={styles.button}
-            onClick={() => {
-              dispatch(debriefCompleted(dateToState(DateTime.utc())));
-              dispatch(nextQuestion());
-            }}
-          >
-            {" "}
-            Next{" "}
-          </Button>
-        </Box>
+        <Grid item xs={6}>
+          <Box display="flex" justifyContent="flex-end">
+            <Button
+              variant="contained"
+              color="secondary"
+              disableRipple
+              disableFocusRipple
+              style={styles.button}
+              onClick={() => {
+                dispatch(debriefCompleted(dateToState(DateTime.utc())));
+                dispatch(nextQuestion());
+              }}
+            >
+              {" "}
+              Next{" "}
+            </Button>
+          </Box>
+        </Grid>
       </Grid>
     </ThemeProvider>
   );

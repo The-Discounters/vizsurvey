@@ -109,10 +109,10 @@ export function MELForm() {
   }, [qi]);
 
   useEffect(() => {
-    if (choice && choice.length > 1) {
-      setDisableSubmit(false);
-    } else {
+    if (choice === "none") {
       setDisableSubmit(true);
+    } else {
+      setDisableSubmit(false);
     }
   }, [choice, qi]);
 
@@ -156,6 +156,7 @@ export function MELForm() {
               <FormHelperText>{helperText}</FormHelperText>
               <Box
                 component="span"
+                sx={{ width: 1 }}
                 m={1}
                 display="flex"
                 justifyContent="space-between"
@@ -212,6 +213,12 @@ export function MELForm() {
               </Box>
             </FormControl>
           </form>
+          <hr
+            style={{
+              backgroundColor: "#aaaaaa",
+              height: 4,
+            }}
+          />
         </Grid>
         <Grid item xs={6}>
           <Button

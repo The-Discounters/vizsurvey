@@ -233,6 +233,12 @@ export function Consent() {
                 }
               />
             </FormGroup>
+            <hr
+              style={{
+                backgroundColor: "#aaaaaa",
+                height: 4,
+              }}
+            />
           </Grid>
           <Grid item xs={6}></Grid>
           <Grid item xs={6} style={{ margin: 0 }}>

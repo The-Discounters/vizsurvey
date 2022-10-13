@@ -64,7 +64,7 @@ const TheEnd = () => {
 
   return (
     <ThemeProvider theme={theme}>
-      <Grid container style={styles.root}>
+      <Grid container style={styles.root} justifyContent="center">
         <Grid item xs={12}>
           <Typography variant="h4">Thank You and The End</Typography>
           <hr
@@ -91,6 +91,12 @@ const TheEnd = () => {
           <Typography paragraph>
             You can now close this browser window.
           </Typography>
+          <hr
+            style={{
+              backgroundColor: "#aaaaaa",
+              height: 4,
+            }}
+          />
         </Grid>
         <Grid item xs={6}>
           <Button

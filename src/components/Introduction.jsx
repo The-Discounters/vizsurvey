@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
@@ -97,18 +98,28 @@ const Introduction = () => {
   const [error, setError] = React.useState(false);
   const [helperText, setHelperText] = React.useState("");
 
+  const [showNextPrevious, setShowNextPrevious] = useState(false);
+
   useEffect(() => {
     dispatch(introductionShown(dateToState(DateTime.utc())));
     setChoice("");
     if (event.target.value === "300") {
       classes.btn0 = classes.btn0Clicked;
       classes.btn1 = classes.btn1UnClicked;
-    } else if (event.target.value === "700") {
+    } else if (event.target.value === "50") {
       classes.btn0 = classes.btn0UnClicked;
       classes.btn1 = classes.btn1Clicked;
     }
     if (!treatment) navigate("/invalidlink");
   }, []);
+
+  useEffect(() => {
+    const nextButtonContentHeight =
+      document.querySelector("#buttonNext").scrollHeight;
+    const nextButtonHintArrow = document.querySelector("#nextButtonHintArrow");
+    if (nextButtonHintArrow)
+      nextButtonHintArrow.height = nextButtonContentHeight;
+  }, [showNextPrevious]);
 
   useEffect(() => {
     if (treatment.viewType === ViewType.word) {
@@ -125,8 +136,8 @@ const Introduction = () => {
   const classes = useStyles();
 
   const radioButtonGif = new Array(
-    "instructions-radio-button-earlier.gif",
-    "instructions-radio-button-later.gif"
+    "introduction-radio-button-earlier.gif",
+    "introduction-radio-button-later.gif"
   );
 
   const radioBtnExp = () => {
@@ -135,7 +146,12 @@ const Introduction = () => {
         <Typography paragraph>
           <b>Radio Buttons: </b>
           Radio buttons represent information where a left button represents one
-          option, and the right button represents a second option.
+          option, and the right button represents a second option. You will be
+          presented with a series of questoins where you will make a choice of
+          receiving an amount of money earlier or a different amount of money
+          later. All amounts are in US dollars and the time of receiving the
+          money is in months from the present. Select one of the options by
+          clicking on the circle for your choice.
         </Typography>
         <img
           width="100%"
@@ -149,12 +165,12 @@ const Introduction = () => {
           <b>Try it out below:</b> In the example below, the left button
           represents one choice of receiving money and the right button
           represents another choice of receiving money. In this case the choice
-          is to receive $300 in two months or $700 in five months.
+          is to receive $50 in two months or $300 in seven months.
         </Typography>
         <form className={classes.qArea}>
           <FormControl sx={{ ...formControl }} required={false} error={error}>
             <p className={classes.qTitle}>
-              Make a choice to receive $300 in 2 months or $700 in 7 months
+              Make a choice to receive $50 in 2 months or $300 in 7 months
             </p>
             <FormHelperText>{helperText}</FormHelperText>
             <Box
@@ -171,13 +187,14 @@ const Introduction = () => {
                 name={"question-radio-buttons-group"}
                 onChange={(event) => {
                   setChoice(event.target.value);
-                  if (event.target.value === "300") {
+                  if (event.target.value === "50") {
                     classes.btn0 = classes.btn0Clicked;
                     classes.btn1 = classes.btn1UnClicked;
-                  } else if (event.target.value === "700") {
+                  } else if (event.target.value === "300") {
                     classes.btn0 = classes.btn0UnClicked;
                     classes.btn1 = classes.btn1Clicked;
                   }
+                  setShowNextPrevious(true);
                   setHelperText("");
                   setError(false);
                 }}
@@ -185,12 +202,12 @@ const Introduction = () => {
               >
                 {[
                   {
-                    key: "300",
-                    label: "$300 in 2 months",
+                    key: "50",
+                    label: "$50 in 2 months",
                   },
                   {
-                    key: "700",
-                    label: "$700 in 7 months",
+                    key: "300",
+                    label: "$300 in 7 months",
                   },
                 ].map(({ key, label }, index) => (
                   <FormControlLabel
@@ -208,6 +225,17 @@ const Introduction = () => {
             </Box>
           </FormControl>
         </form>
+        {showNextPrevious && (
+          <>
+            <Typography paragraph></Typography>
+            <Typography paragraph>
+              <b>Next Question: </b>
+              Once you have made your selection, the Next button will be enabled
+              to allow you to advance to the next question. You must make a
+              selection to proceed onto the next question.
+            </Typography>
+          </>
+        )}
       </React.Fragment>
     );
   };
@@ -310,6 +338,12 @@ const Introduction = () => {
         </Grid>
         <Grid item xs={12}>
           {treatment ? vizExplanation(treatment.viewType) : <p />}
+          <hr
+            style={{
+              backgroundColor: "#aaaaaa",
+              height: 4,
+            }}
+          />
         </Grid>
         <Grid item xs={6}>
           <Button
@@ -327,7 +361,16 @@ const Introduction = () => {
           </Button>
         </Grid>
         <Grid item xs={6}>
-          <Box display="flex" justifyContent="flex-end">
+          <Box display="flex" justifyContent="flex-end" alignItems="center">
+            {showNextPrevious && (
+              <img
+                id="nextButtonHintArrow"
+                width="auto"
+                src="arrow.png"
+                alt="Click next button after making selection."
+              ></img>
+            )}
+
             <Button
               variant="contained"
               color="secondary"
@@ -338,8 +381,8 @@ const Introduction = () => {
               onClick={() => {
                 if (
                   treatment.viewType === ViewType.word &&
-                  choice !== "300" &&
-                  choice !== "700"
+                  choice !== "50" &&
+                  choice !== "300"
                 ) {
                   setError(true);
                   setHelperText("You must choose one of the options below.");
