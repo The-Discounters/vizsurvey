@@ -59,15 +59,15 @@ function postsurvey(expects) {
               attentioncheck: "strongly-disagree",
               timestamps: {
                 consentShownTimestamp: 1000,
-                introductionShowTimestamp: 2000,
-                introductionCompletedTimestamp: 3000,
-                instructionsShownTimestamp: 3000,
-                instructionsCompletedTimestamp: 4000,
-                financialLitSurveyQuestionsShownTimestamp: 6000,
-                purposeSurveyQuestionsShownTimestamp: 9000,
-                debriefShownTimestamp: 10000,
-                debriefCompleted: 10000,
-                theEndShownTimestamp: 10000,
+                introductionShowTimestamp: 4000,
+                introductionCompletedTimestamp: 4000,
+                instructionsShownTimestamp: 4000,
+                instructionsCompletedTimestamp: 6000,
+                financialLitSurveyQuestionsShownTimestamp: 8000,
+                purposeSurveyQuestionsShownTimestamp: 11000,
+                debriefShownTimestamp: 12000,
+                debriefCompleted: 12000,
+                theEndShownTimestamp: 12000,
               },
               /*
               postsurvey: {
@@ -117,6 +117,45 @@ function demographic() {
   cy.get("button").contains("Next").click();
 }
 
+function answerMELForm() {
+  cy.get("#earlierAmount").should(
+    "have.css",
+    "backgroundColor",
+    "rgb(70, 130, 180)"
+  );
+  cy.get("#earlierAmount").should(
+    "have.css",
+    "borderColor",
+    "rgb(255, 255, 255)"
+  );
+  cy.get("#earlierAmount")
+    .realHover()
+    .should("have.css", "backgroundColor", "rgb(173, 216, 230)")
+    .click();
+  cy.get("#earlierAmount").should("have.css", "borderColor", "rgb(0, 0, 0)");
+  cy.get("button")
+    .contains("Next")
+    .realHover()
+    .should("not.be.disabled")
+    .click();
+  cy.tick(1000);
+}
+
+function introduction(treatmentId) {
+  if (treatmentId === 1) {
+    cy.get("#buttonNext").should("be.disabled");
+    cy.get("button").contains("Previous").should("not.be.disabled");
+    answerMELForm();
+  } else {
+    cy.get("button").contains("Next").click();
+  }
+}
+
+function instruction() {
+  cy.tick(1000);
+  cy.get("button").contains("Start").click();
+}
+
 function visitTreatment(treatmentId, width = 1200, height = 700) {
   cy.clock();
   cy.viewport(width, height);
@@ -128,60 +167,17 @@ function visitTreatment(treatmentId, width = 1200, height = 700) {
   cy.get("#checkConsent").click();
   cy.get("button").contains("Next").click();
   demographic();
-
-  cy.tick(1000);
-  if (treatmentId === 1) {
-    cy.get("#buttonNext").should("be.disabled");
-    cy.get("button").contains("Previous").should("not.be.disabled");
-    cy.get("#earlierAmount").should(
-      "have.css",
-      "backgroundColor",
-      "rgb(70, 130, 180)"
-    );
-    cy.get("#earlierAmount").should(
-      "have.css",
-      "borderColor",
-      "rgb(255, 255, 255)"
-    );
-    cy.get("#earlierAmount")
-      .realHover()
-      .should("have.css", "backgroundColor", "rgb(173, 216, 230)")
-      .click();
-    cy.get("#earlierAmount").should("have.css", "borderColor", "rgb(0, 0, 0)");
-    cy.get("button").contains("Next").should("not.be.disabled").click();
-  } else {
-    cy.get("button").contains("Next").click();
-  }
-
-  cy.tick(1000);
-  cy.get("button").contains("Start").click();
+  introduction(treatmentId);
+  instruction();
 }
 describe("vizsurvey", () => {
   it("word", () => {
-    visitTreatment(1);
-    function answerMELForm() {
-      cy.get("#earlierAmount").should(
-        "have.css",
-        "backgroundColor",
-        "rgb(70, 130, 180)"
-      );
-      cy.get("#earlierAmount").should(
-        "have.css",
-        "borderColor",
-        "rgb(255, 255, 255)"
-      );
-      cy.get("#earlierAmount")
-        .realHover()
-        .should("have.css", "backgroundColor", "rgb(173, 216, 230)")
-        .click();
-      cy.get("#earlierAmount").should(
-        "have.css",
-        "borderColor",
-        "rgb(0, 0, 0)"
-      );
-      cy.get("button").contains("Next").realHover().click();
-      cy.tick(1000);
-    }
+    let treatmentId = 1;
+    visitTreatment(treatmentId);
+    cy.get("button").contains("Previous").click(); // goes back to instruction
+    cy.get("button").contains("Previous").click(); // goes back to introduction
+    introduction(treatmentId);
+    instruction();
     answerMELForm();
 
     cy.get("#attention-check-strongly-disagree").click();

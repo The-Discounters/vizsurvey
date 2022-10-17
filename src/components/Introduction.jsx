@@ -346,6 +346,8 @@ const Introduction = () => {
                   setError(true);
                   setHelperText("You must choose one of the options below.");
                 } else {
+                  classes.btn0 = classes.btn0UnClicked;
+                  classes.btn1 = classes.btn1UnClicked;
                   dispatch(introductionCompleted(dateToState(DateTime.utc())));
                   dispatch(startSurvey());
                   navigate("/instruction");
