@@ -63,13 +63,13 @@ function postsurvey(expects) {
                 introductionCompletedTimestamp: 3000,
                 instructionsShownTimestamp: 3000,
                 instructionsCompletedTimestamp: 4000,
-                financialLitSurveyQuestionsShownTimestamp: 5000,
-                purposeSurveyQuestionsShownTimestamp: 8000,
-                debriefShownTimestamp: 9000,
-                debriefCompleted: 9000,
-                theEndShownTimestamp: 9000,
+                financialLitSurveyQuestionsShownTimestamp: 6000,
+                purposeSurveyQuestionsShownTimestamp: 9000,
+                debriefShownTimestamp: 10000,
+                debriefCompleted: 10000,
+                theEndShownTimestamp: 10000,
               },
-/*
+              /*
               postsurvey: {
                 fincanialLit: {
                   q15vs30: "v15+",
@@ -133,7 +133,21 @@ function visitTreatment(treatmentId, width = 1200, height = 700) {
   if (treatmentId === 1) {
     cy.get("#buttonNext").should("be.disabled");
     cy.get("button").contains("Previous").should("not.be.disabled");
-    cy.get("label").contains("First option").click();
+    cy.get("#earlierAmount").should(
+      "have.css",
+      "backgroundColor",
+      "rgb(70, 130, 180)"
+    );
+    cy.get("#earlierAmount").should(
+      "have.css",
+      "borderColor",
+      "rgb(255, 255, 255)"
+    );
+    cy.get("#earlierAmount")
+      .realHover()
+      .should("have.css", "backgroundColor", "rgb(173, 216, 230)")
+      .click();
+    cy.get("#earlierAmount").should("have.css", "borderColor", "rgb(0, 0, 0)");
     cy.get("button").contains("Next").should("not.be.disabled").click();
   } else {
     cy.get("button").contains("Next").click();
@@ -174,6 +188,7 @@ describe("vizsurvey", () => {
     cy.get("button").contains("Next").click();
 
     answerMELForm();
+    answerMELForm();
     cy.tick(1000);
 
     postsurvey([
@@ -188,6 +203,8 @@ describe("vizsurvey", () => {
     cy.get("button").contains("Next").click();
     cy.tick(4000);
     cy.get("#attention-check-strongly-disagree").click();
+    cy.get("button").contains("Next").click();
+    cy.get("#earlierAmount").click();
     cy.get("button").contains("Next").click();
     cy.get("#laterAmount").click();
     cy.get("button").contains("Next").click();
