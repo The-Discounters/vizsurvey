@@ -202,18 +202,20 @@ const Introduction = () => {
               >
                 {[
                   {
-                    key: "50",
-                    label: "$50 in 2 months",
+                    key: "300",
+                    id: "earlierAmount",
+                    label: "$300 in 2 months",
                   },
                   {
                     key: "300",
+                    id: "laterAmount",
                     label: "$300 in 7 months",
                   },
-                ].map(({ key, label }, index) => (
+                ].map(({ key, id, label }, index) => (
                   <FormControlLabel
                     sx={{ mr: "100px" }}
                     key={key}
-                    id={key}
+                    id={id}
                     value={key}
                     checked={choice === key}
                     control={<Radio />}
@@ -393,6 +395,8 @@ const Introduction = () => {
                   setError(true);
                   setHelperText("You must choose one of the options below.");
                 } else {
+                  classes.btn0 = classes.btn0UnClicked;
+                  classes.btn1 = classes.btn1UnClicked;
                   dispatch(introductionCompleted(dateToState(DateTime.utc())));
                   dispatch(startSurvey());
                   navigate("/instruction");
