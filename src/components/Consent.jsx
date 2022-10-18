@@ -8,7 +8,7 @@ import {
   Typography,
   ThemeProvider,
   FormControlLabel,
-} from "@material-ui/core";
+} from "@mui/material";
 import FormGroup from "@mui/material/FormGroup";
 import Checkbox from "@mui/material/Checkbox";
 import { useDispatch } from "react-redux";

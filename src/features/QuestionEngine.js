@@ -148,15 +148,13 @@ export class QuestionEngine {
 
   decPreviousQuestion(state) {
     const onFirstTreatment = this.isFirstTreatment(state);
-    if (
-      state.status === StatusType.Survey ||
-      state.status === StatusType.Attention
-    ) {
-      if (!onFirstTreatment) {
-        state.currentQuestionIdx -= 1;
-      }
+    if (state.status === StatusType.Attention) {
+      state.status = this.previousStatus(state, onFirstTreatment);
+    } else if (state.status === StatusType.Survey && !onFirstTreatment) {
+      state.currentQuestionIdx -= 1;
+    } else {
+      state.status = this.previousStatus(state, onFirstTreatment);
     }
-    state.status = this.previousStatus(state, onFirstTreatment);
   }
 
   updateHighupOrLowdown(state) {

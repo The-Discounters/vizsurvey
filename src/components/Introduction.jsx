@@ -227,6 +227,12 @@ const Introduction = () => {
         </form>
         {showNextPrevious && (
           <>
+            <hr
+              style={{
+                backgroundColor: "#aaaaaa",
+                height: 4,
+              }}
+            />
             <Typography paragraph></Typography>
             <Typography paragraph>
               <b>Next Question: </b>

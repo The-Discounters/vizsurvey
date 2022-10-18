@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { DateTime } from "luxon";
 import {
-  Grid,
   Button,
   FormControl,
   FormControlLabel,
@@ -13,6 +12,8 @@ import {
   Box,
   ThemeProvider,
 } from "@mui/material";
+
+import Grid from "@mui/material/Unstable_Grid2";
 import { makeStyles } from "@material-ui/core/styles";
 import { AmountType } from "../features/AmountType";
 import { StatusType } from "../features/StatusType";

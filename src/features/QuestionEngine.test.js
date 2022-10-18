@@ -281,7 +281,7 @@ describe("QuestionEngine tests", () => {
     const qe = new QuestionEngine();
     qe.decPreviousQuestion(state);
     expect(state.currentQuestionIdx).toBe(1);
-    expect(state.status).toBe(StatusType.Attention);
+    expect(state.status).toBe(StatusType.Survey);
     qe.decPreviousQuestion(state);
     expect(state.currentQuestionIdx).toBe(0);
     expect(state.status).toBe(StatusType.Survey);
@@ -311,7 +311,7 @@ describe("QuestionEngine tests", () => {
     expect(qe.isMiddleTreatment(state)).toBe(false);
   });
 
-  test("isMiddleTreatment for three treatments should return false.", () => {
+  test("isMiddleTreatment for three treatments should return true.", () => {
     const state = {
       treatments: [
         TestDataFactory.createQuestionNoTitrate(),
