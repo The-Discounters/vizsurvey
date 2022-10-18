@@ -106,7 +106,7 @@ const Introduction = () => {
     if (event.target.value === "300") {
       classes.btn0 = classes.btn0Clicked;
       classes.btn1 = classes.btn1UnClicked;
-    } else if (event.target.value === "50") {
+    } else if (event.target.value === "700") {
       classes.btn0 = classes.btn0UnClicked;
       classes.btn1 = classes.btn1Clicked;
     }
@@ -165,12 +165,12 @@ const Introduction = () => {
           <b>Try it out below:</b> In the example below, the left button
           represents one choice of receiving money and the right button
           represents another choice of receiving money. In this case the choice
-          is to receive $50 in two months or $300 in seven months.
+          is to receive $300 in two months or $700 in seven months.
         </Typography>
         <form className={classes.qArea}>
           <FormControl sx={{ ...formControl }} required={false} error={error}>
             <p className={classes.qTitle}>
-              Make a choice to receive $50 in 2 months or $300 in 7 months
+              Make a choice to receive $300 in 2 months or $700 in 7 months
             </p>
             <FormHelperText>{helperText}</FormHelperText>
             <Box
@@ -187,12 +187,15 @@ const Introduction = () => {
                 name={"question-radio-buttons-group"}
                 onChange={(event) => {
                   setChoice(event.target.value);
-                  if (event.target.value === "50") {
+                  if (event.target.value === "300") {
                     classes.btn0 = classes.btn0Clicked;
                     classes.btn1 = classes.btn1UnClicked;
-                  } else if (event.target.value === "300") {
+                  } else if (event.target.value === "700") {
                     classes.btn0 = classes.btn0UnClicked;
                     classes.btn1 = classes.btn1Clicked;
+                  } else {
+                    classes.btn0 = classes.btn0UnClicked;
+                    classes.btn1 = classes.btn0UnClicked;
                   }
                   setShowNextPrevious(true);
                   setHelperText("");
@@ -207,9 +210,9 @@ const Introduction = () => {
                     label: "$300 in 2 months",
                   },
                   {
-                    key: "300",
+                    key: "700",
                     id: "laterAmount",
-                    label: "$300 in 7 months",
+                    label: "$700 in 7 months",
                   },
                 ].map(({ key, id, label }, index) => (
                   <FormControlLabel
@@ -261,7 +264,7 @@ const Introduction = () => {
           horizontal a second. In the chart below, the height represents the
           amount of money is US dollars and the position on the horizontal axis
           the delay in months of when that money is received. In this case the
-          choice is to receive $300 in two months or $700 in five months.
+          choice is to receive $300 in two months or $700 in seven months.
         </Typography>
         <img
           src="barchart-introduction-760x280.png"
@@ -361,6 +364,7 @@ const Introduction = () => {
             disableFocusRipple
             style={styles.button}
             onClick={() => {
+              setChoice("");
               navigate("/demographic");
             }}
           >
@@ -389,8 +393,8 @@ const Introduction = () => {
               onClick={() => {
                 if (
                   treatment.viewType === ViewType.word &&
-                  choice !== "50" &&
-                  choice !== "300"
+                  choice !== "300" &&
+                  choice !== "700"
                 ) {
                   setError(true);
                   setHelperText("You must choose one of the options below.");
@@ -399,6 +403,7 @@ const Introduction = () => {
                   classes.btn1 = classes.btn1UnClicked;
                   dispatch(introductionCompleted(dateToState(DateTime.utc())));
                   dispatch(startSurvey());
+                  setChoice("");
                   navigate("/instruction");
                 }
               }}
