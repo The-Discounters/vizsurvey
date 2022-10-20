@@ -72,7 +72,7 @@ export const questionSlice = createSlice({
       state.gender = action.payload.gender;
       state.selfDescribeGender = action.payload.selfDescribeGender;
       state.profession = action.payload.profession;
-      state.status = StatusType.Introduction;
+      state.status = qe.nextStatus(state, false);
     },
     setCountryOfResidence(state, action) {
       state.countryOfResidence = action.payload;
@@ -110,7 +110,7 @@ export const questionSlice = createSlice({
     },
     setAttentionCheck(state, action) {
       state.attentioncheck = action.payload;
-      state.status = StatusType.Survey;
+      state.status = qe.nextStatus(state, false);
     },
     loadTreatment(state) {
       state.status = StatusType.Fetching;
@@ -129,6 +129,7 @@ export const questionSlice = createSlice({
     },
     consentCompleted(state, action) {
       state.consentCompletedTimestamp = action.payload;
+      state.status = qe.nextStatus(state, false);
     },
     introductionShown(state, action) {
       state.introductionShowTimestamp = action.payload;
@@ -141,7 +142,7 @@ export const questionSlice = createSlice({
     },
     instructionsCompleted(state, action) {
       state.instructionsCompletedTimestamp = action.payload;
-      state.status = StatusType.Survey;
+      state.status = qe.nextStatus(state, false);
     },
     startSurvey(state) {
       qe.startSurvey(state);

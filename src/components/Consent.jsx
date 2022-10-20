@@ -11,9 +11,14 @@ import {
 } from "@mui/material";
 import FormGroup from "@mui/material/FormGroup";
 import Checkbox from "@mui/material/Checkbox";
-import { useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { dateToState } from "../features/ConversionUtil";
-import { consentShown, consentCompleted } from "../features/questionSlice";
+import {
+  consentShown,
+  consentCompleted,
+  getStatus,
+} from "../features/questionSlice";
+import { StatusType } from "../features/StatusType";
 import { styles, theme } from "./ScreenHelper";
 import "../App.css";
 
@@ -22,6 +27,7 @@ export function Consent() {
 
   const [disableSubmit, setDisableSubmit] = React.useState(true);
   const [checked, setChecked] = React.useState(false);
+  const status = useSelector(getStatus);
 
   const handleChange = (event) => {
     setChecked(event.target.checked);
@@ -31,6 +37,14 @@ export function Consent() {
   useEffect(() => {
     dispatch(consentShown(dateToState(DateTime.utc())));
   }, []);
+
+  useEffect(() => {
+    switch (status) {
+      case StatusType.Demographic:
+        navigate("/demographic");
+        break;
+    }
+  }, [status]);
 
   const navigate = useNavigate();
 
@@ -251,7 +265,6 @@ export function Consent() {
                 style={styles.button}
                 onClick={() => {
                   dispatch(consentCompleted(dateToState(DateTime.utc())));
-                  navigate("/demographic");
                 }}
                 disabled={disableSubmit}
               >

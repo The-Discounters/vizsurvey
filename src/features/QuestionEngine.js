@@ -274,10 +274,10 @@ export class QuestionEngine {
       case StatusType.Unitialized:
         return StatusType.Fetching;
       case StatusType.Fetching:
-        return StatusType.Fetched;
-      case StatusType.Fetched:
         return StatusType.Consent;
       case StatusType.Consent:
+        return StatusType.Demographic;
+      case StatusType.Demographic:
         return StatusType.Introduction;
       case StatusType.Introduction:
         return StatusType.Instructions;
@@ -314,12 +314,12 @@ export class QuestionEngine {
         return StatusType.Unitialized;
       case StatusType.Fetching:
         return StatusType.Unitialized;
-      case StatusType.Fetched:
-        return StatusType.Fetching;
       case StatusType.Consent:
-        return StatusType.Fetched;
-      case StatusType.Introduction:
+        return StatusType.Fetching;
+      case StatusType.Demographic:
         return StatusType.Consent;
+      case StatusType.Introduction:
+        return StatusType.Demographic;
       case StatusType.Instructions:
         return StatusType.Introduction;
       case StatusType.Survey:

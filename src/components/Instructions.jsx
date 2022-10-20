@@ -8,25 +8,39 @@ import {
   Typography,
   ThemeProvider,
 } from "@material-ui/core";
-import { useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { DateTime } from "luxon";
 import "../App.css";
 import {
   instructionsShown,
   instructionsCompleted,
+  getStatus,
+  previousQuestion,
 } from "../features/questionSlice";
+import { StatusType } from "../features/StatusType";
 import { dateToState } from "../features/ConversionUtil";
 import { styles, theme } from "./ScreenHelper";
 
 const Instructions = () => {
   const dispatch = useDispatch();
   var handle = useFullScreenHandle();
+  const status = useSelector(getStatus);
+  const navigate = useNavigate();
 
   useEffect(() => {
     dispatch(instructionsShown(dateToState(DateTime.utc())));
   }, []);
 
-  const navigate = useNavigate();
+  useEffect(() => {
+    switch (status) {
+      case StatusType.Introduction:
+        navigate("/introduction");
+        break;
+      case StatusType.Survey:
+        navigate("/survey");
+        break;
+    }
+  }, [status]);
 
   return (
     <ThemeProvider theme={theme}>
@@ -75,7 +89,7 @@ const Instructions = () => {
             disableFocusRipple
             style={styles.button}
             onClick={() => {
-              navigate("/introduction");
+              dispatch(previousQuestion());
             }}
           >
             {" "}
@@ -95,7 +109,6 @@ const Instructions = () => {
                   dispatch(instructionsCompleted(dateToState(DateTime.utc())));
                   if (process.env.REACT_APP_FULLSCREEN === "enabled")
                     handle.enter();
-                  navigate("/survey");
                 }}
               >
                 {" "}

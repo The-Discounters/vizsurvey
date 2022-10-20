@@ -23,9 +23,12 @@ import {
   introductionShown,
   introductionCompleted,
   fetchCurrentTreatment,
+  getStatus,
   startSurvey,
+  previousQuestion,
 } from "../features/questionSlice";
 import { styles, theme, formControl } from "./ScreenHelper";
+import { StatusType } from "../features/StatusType";
 
 let useStyles;
 
@@ -97,8 +100,8 @@ const Introduction = () => {
   );
   const [error, setError] = React.useState(false);
   const [helperText, setHelperText] = React.useState("");
-
   const [showNextPrevious, setShowNextPrevious] = useState(false);
+  const status = useSelector(getStatus);
 
   useEffect(() => {
     dispatch(introductionShown(dateToState(DateTime.utc())));
@@ -107,6 +110,7 @@ const Introduction = () => {
       classes.btn0 = classes.btn0Clicked;
       classes.btn1 = classes.btn1UnClicked;
     } else if (event.target.value === "700") {
+      setChoice("");
       classes.btn0 = classes.btn0UnClicked;
       classes.btn1 = classes.btn1Clicked;
     }
@@ -132,6 +136,20 @@ const Introduction = () => {
       setDisableSubmit(false);
     }
   }, [choice]);
+
+  useEffect(() => {
+    classes.btn0 = classes.btn0UnClicked;
+    classes.btn1 = classes.btn0UnClicked;
+    setChoice("");
+    switch (status) {
+      case StatusType.Instructions:
+        navigate("/instruction");
+        break;
+      case StatusType.Demographic:
+        navigate("/demographic");
+        break;
+    }
+  }, [status]);
 
   const classes = useStyles();
 
@@ -193,9 +211,6 @@ const Introduction = () => {
                   } else if (event.target.value === "700") {
                     classes.btn0 = classes.btn0UnClicked;
                     classes.btn1 = classes.btn1Clicked;
-                  } else {
-                    classes.btn0 = classes.btn0UnClicked;
-                    classes.btn1 = classes.btn0UnClicked;
                   }
                   setShowNextPrevious(true);
                   setHelperText("");
@@ -364,8 +379,7 @@ const Introduction = () => {
             disableFocusRipple
             style={styles.button}
             onClick={() => {
-              setChoice("");
-              navigate("/demographic");
+              dispatch(previousQuestion());
             }}
           >
             {" "}
@@ -403,8 +417,6 @@ const Introduction = () => {
                   classes.btn1 = classes.btn1UnClicked;
                   dispatch(introductionCompleted(dateToState(DateTime.utc())));
                   dispatch(startSurvey());
-                  setChoice("");
-                  navigate("/instruction");
                 }
               }}
               disabled={disableSubmit && treatment.viewType === ViewType.word}

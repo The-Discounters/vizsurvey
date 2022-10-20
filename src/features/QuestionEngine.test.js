@@ -24,10 +24,10 @@ describe("QuestionEngine tests", () => {
       StatusType.Fetching
     );
     expect((state.status = qe.nextStatus(state, false))).toBe(
-      StatusType.Fetched
+      StatusType.Consent
     );
     expect((state.status = qe.nextStatus(state, false))).toBe(
-      StatusType.Consent
+      StatusType.Demographic
     );
     expect((state.status = qe.nextStatus(state, false))).toBe(
       StatusType.Introduction
@@ -98,9 +98,11 @@ describe("QuestionEngine tests", () => {
       StatusType.Introduction
     );
     expect((state.status = qe.previousStatus(state, false))).toBe(
+      StatusType.Demographic
+    );
+    expect((state.status = qe.previousStatus(state, false))).toBe(
       StatusType.Consent
     );
-    expect((state.status = qe.previousStatus(state))).toBe(StatusType.Fetched);
     expect((state.status = qe.previousStatus(state))).toBe(StatusType.Fetching);
     expect(qe.previousStatus(state)).toBe(StatusType.Unitialized);
   });
