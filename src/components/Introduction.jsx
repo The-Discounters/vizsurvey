@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
@@ -7,13 +6,7 @@ import {
   Box,
   Typography,
   ThemeProvider,
-  FormControl,
-  FormControlLabel,
-  FormHelperText,
-  Radio,
-  RadioGroup,
 } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
 import { useSelector, useDispatch } from "react-redux";
 import { DateTime } from "luxon";
 import "../App.css";
@@ -27,67 +20,10 @@ import {
   startSurvey,
   previousQuestion,
 } from "../features/questionSlice";
-import { styles, theme, formControl } from "./ScreenHelper";
+import { styles, theme } from "./ScreenHelper";
 import { StatusType } from "../features/StatusType";
-
-let useStyles;
-
-function resetUseStyles() {
-  let part = ["btn0", "btn0UnClicked", "btn1", "btn1UnClicked"].reduce(
-    (result, key) => {
-      result[key] = {
-        "border-style": "solid",
-        backgroundColor: "steelblue",
-        "border-radius": "20px",
-        "border-width": "5px",
-        borderColor: "#ffffff",
-        color: "black",
-        paddingRight: "10px",
-        "&:hover": {
-          backgroundColor: "lightblue",
-        },
-      };
-      return result;
-    },
-    {}
-  );
-
-  let part1 = ["btn0Clicked", "btn1Clicked"].reduce((result, key) => {
-    result[key] = {
-      "border-style": "solid",
-      backgroundColor: "steelblue",
-      "border-radius": "20px",
-      "border-width": "5px",
-      borderColor: "#000000",
-      color: "black",
-      paddingRight: "10px",
-      "&:hover": {
-        backgroundColor: "lightblue",
-      },
-    };
-    return result;
-  }, {});
-
-  useStyles = makeStyles(() => ({
-    btn0: part.btn0,
-    btn0UnClicked: part.btn0UnClicked,
-    btn1: part.btn1,
-    btn1UnClicked: part.btn1UnClicked,
-    btn0Clicked: part1.btn0Clicked,
-    btn1Clicked: part1.btn1Clicked,
-    qArea: {
-      "border-style": "solid",
-      "border-width": "5px",
-      "border-radius": "20px",
-      padding: "10px",
-      borderColor: "#000000",
-    },
-    qTitle: {
-      fontSize: "32px",
-    },
-  }));
-}
-resetUseStyles();
+import { AmountType } from "../features/AmountType";
+import { MELSelectionForm } from "./MELSelectionForm";
 
 const Introduction = () => {
   const dispatch = useDispatch();
@@ -106,14 +42,6 @@ const Introduction = () => {
   useEffect(() => {
     dispatch(introductionShown(dateToState(DateTime.utc())));
     setChoice("");
-    if (event.target.value === "300") {
-      classes.btn0 = classes.btn0Clicked;
-      classes.btn1 = classes.btn1UnClicked;
-    } else if (event.target.value === "700") {
-      setChoice("");
-      classes.btn0 = classes.btn0UnClicked;
-      classes.btn1 = classes.btn1Clicked;
-    }
     if (!treatment) navigate("/invalidlink");
   }, []);
 
@@ -138,8 +66,6 @@ const Introduction = () => {
   }, [choice]);
 
   useEffect(() => {
-    classes.btn0 = classes.btn0UnClicked;
-    classes.btn1 = classes.btn0UnClicked;
     setChoice("");
     switch (status) {
       case StatusType.Instructions:
@@ -151,7 +77,12 @@ const Introduction = () => {
     }
   }, [status]);
 
-  const classes = useStyles();
+  const onClickCallback = (value) => {
+    setChoice(value);
+    setShowNextPrevious(true);
+    setHelperText("");
+    setError(false);
+  };
 
   const radioButtonGif = new Array(
     "introduction-radio-button-earlier.gif",
@@ -185,66 +116,19 @@ const Introduction = () => {
           represents another choice of receiving money. In this case the choice
           is to receive $300 in two months or $700 in seven months.
         </Typography>
-        <form className={classes.qArea}>
-          <FormControl sx={{ ...formControl }} required={false} error={error}>
-            <p className={classes.qTitle}>
-              Make a choice to receive $300 in 2 months or $700 in 7 months
-            </p>
-            <FormHelperText>{helperText}</FormHelperText>
-            <Box
-              component="span"
-              m={1}
-              display="flex"
-              justifyContent="space-between"
-              alignItems="center"
-              border="1"
-            >
-              <RadioGroup
-                row
-                aria-labelledby="introduction-question-row-radio-buttons-group-label"
-                name={"question-radio-buttons-group"}
-                onChange={(event) => {
-                  setChoice(event.target.value);
-                  if (event.target.value === "300") {
-                    classes.btn0 = classes.btn0Clicked;
-                    classes.btn1 = classes.btn1UnClicked;
-                  } else if (event.target.value === "700") {
-                    classes.btn0 = classes.btn0UnClicked;
-                    classes.btn1 = classes.btn1Clicked;
-                  }
-                  setShowNextPrevious(true);
-                  setHelperText("");
-                  setError(false);
-                }}
-                value={choice}
-              >
-                {[
-                  {
-                    key: "300",
-                    id: "earlierAmount",
-                    label: "$300 in 2 months",
-                  },
-                  {
-                    key: "700",
-                    id: "laterAmount",
-                    label: "$700 in 7 months",
-                  },
-                ].map(({ key, id, label }, index) => (
-                  <FormControlLabel
-                    sx={{ mr: "100px" }}
-                    key={key}
-                    id={id}
-                    value={key}
-                    checked={choice === key}
-                    control={<Radio />}
-                    label={label}
-                    className={classes["btn" + index]}
-                  />
-                ))}
-              </RadioGroup>
-            </Box>
-          </FormControl>
-        </form>
+
+        <MELSelectionForm
+          textShort={"textShort"}
+          error={error}
+          amountEarlier={300}
+          timeEarlier={2}
+          amountLater={700}
+          timeLater={7}
+          helperText={helperText}
+          onClickCallback={onClickCallback}
+          choice={choice}
+        />
+
         {showNextPrevious && (
           <>
             <hr
@@ -407,14 +291,12 @@ const Introduction = () => {
               onClick={() => {
                 if (
                   treatment.viewType === ViewType.word &&
-                  choice !== "300" &&
-                  choice !== "700"
+                  choice !== AmountType.earlierAmount &&
+                  choice !== AmountType.laterAmount
                 ) {
                   setError(true);
                   setHelperText("You must choose one of the options below.");
                 } else {
-                  classes.btn0 = classes.btn0UnClicked;
-                  classes.btn1 = classes.btn1UnClicked;
                   dispatch(introductionCompleted(dateToState(DateTime.utc())));
                   dispatch(startSurvey());
                 }
