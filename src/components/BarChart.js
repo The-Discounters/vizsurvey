@@ -1,8 +1,8 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import * as d3 from "d3";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { Grid, Button, ThemeProvider } from "@mui/material";
+import { Grid, Box, Button, ThemeProvider } from "@mui/material";
 import {
   axisBottom,
   axisLeft,
@@ -16,11 +16,15 @@ import { DateTime } from "luxon";
 import { useD3 } from "../hooks/useD3";
 import { InteractionType } from "../features/InteractionType";
 import { AmountType } from "../features/AmountType";
+import { StatusType } from "../features/StatusType";
 import {
-  selectCurrentQuestion,
+  getCurrentQuestion,
+  getCurrentChoice,
+  getCurrentQuestionIndex,
+  getStatus,
   setQuestionShownTimestamp,
-  isLastTreatment,
-  isMiddleTreatment,
+  nextQuestion,
+  previousQuestion,
   answer,
 } from "../features/questionSlice";
 import { dateToState } from "../features/ConversionUtil";
@@ -29,18 +33,19 @@ import { styles, theme } from "./ScreenHelper";
 
 function BarChart() {
   const dispatch = useDispatch();
-  const q = useSelector(selectCurrentQuestion);
-  const [choice, setChoice] = useState(AmountType.none);
-  const [disableSubmit, setDisableSubmit] = useState(true);
-  const isLastTreatmentQ = useSelector(isLastTreatment);
-  const isMiddleTreatmentQ = useSelector(isMiddleTreatment);
-  const t = d3.transition().duration(500);
   const navigate = useNavigate();
-  const stateRef = useRef();
+
+  const q = useSelector(getCurrentQuestion);
+  const qi = useSelector(getCurrentQuestionIndex);
+  const status = useSelector(getStatus);
+  const choice = useSelector(getCurrentChoice);
+  const [disableSubmit, setDisableSubmit] = useState(true);
+
+  const t = d3.transition().duration(500);
 
   useEffect(() => {
-    dispatch(setQuestionShownTimestamp(dateToState(DateTime.utc())));
-  }, []);
+    dispatch(dispatch(setQuestionShownTimestamp(dateToState(DateTime.utc()))));
+  }, [qi]);
 
   useEffect(() => {
     switch (choice) {
@@ -62,6 +67,20 @@ function BarChart() {
         d3.select("#earlierAmount").transition(t).attr("stroke", "none");
     }
   }, [choice]);
+
+  useEffect(() => {
+    switch (status) {
+      case StatusType.Instructions:
+        navigate("/instruction");
+        break;
+      case StatusType.FinancialQuestionaire:
+        navigate("/financialquestionaire");
+        break;
+      case StatusType.Attention:
+        navigate("/attentioncheck");
+        break;
+    }
+  }, [status]);
 
   const {
     totalUCWidth,
@@ -249,6 +268,12 @@ function BarChart() {
                     return d.barType;
                   })
                   .attr("fill", "steelblue")
+                  .attr("stroke", (d) => {
+                    return d.barType === choice ? "black" : null;
+                  })
+                  .attr("stroke-width", (d) => {
+                    return d.barType === choice ? "3" : null;
+                  })
                   .attr("class", "bar")
                   .attr("x", (d) => x(d.time) - barWidth / 2)
                   .attr("y", (d) => y(d.amount))
@@ -275,23 +300,12 @@ function BarChart() {
                       q.interaction === InteractionType.titration ||
                       q.interaction === InteractionType.none
                     ) {
-                      if (
-                        d.target.__data__.barType === AmountType.earlierAmount
-                      ) {
-                        if (stateRef.choice === AmountType.earlierAmount) {
-                          setChoice(AmountType.none);
-                        } else {
-                          setChoice(AmountType.earlierAmount);
-                        }
-                      } else if (
-                        d.target.__data__.barType === AmountType.laterAmount
-                      ) {
-                        if (stateRef.choice === AmountType.laterAmount) {
-                          setChoice(AmountType.none);
-                        } else {
-                          setChoice(AmountType.laterAmount);
-                        }
-                      }
+                      dispatch(
+                        answer({
+                          choice: d.target.__data__.barType,
+                          choiceTimestamp: dateToState(DateTime.utc()),
+                        })
+                      );
                     }
                   });
 
@@ -356,7 +370,8 @@ function BarChart() {
             )}
           ></svg>
         </Grid>
-        <Grid item xs={12} style={{ margin: 0 }}>
+
+        <Grid item xs={6}>
           <Button
             variant="contained"
             color="secondary"
@@ -364,25 +379,30 @@ function BarChart() {
             disableFocusRipple
             style={styles.button}
             onClick={() => {
-              dispatch(
-                answer({
-                  choice: choice,
-                  choiceTimestamp: dateToState(DateTime.utc()),
-                })
-              );
-              if (isLastTreatmentQ) {
-                navigate("/postsurvey1");
-              } else if (isMiddleTreatmentQ) {
-                navigate("/attentioncheck");
-              } else {
-                setChoice(AmountType.none);
-              }
+              dispatch(previousQuestion());
             }}
-            disabled={disableSubmit}
           >
             {" "}
-            Next{" "}
+            Previous{" "}
           </Button>
+        </Grid>
+        <Grid item xs={6} style={{ margin: 0 }}>
+          <Box display="flex" justifyContent="flex-end">
+            <Button
+              variant="contained"
+              color="secondary"
+              disableRipple
+              disableFocusRipple
+              style={styles.button}
+              onClick={() => {
+                dispatch(nextQuestion());
+              }}
+              disabled={disableSubmit}
+            >
+              {" "}
+              Next{" "}
+            </Button>
+          </Box>
         </Grid>
       </Grid>
     </ThemeProvider>

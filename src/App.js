@@ -23,7 +23,7 @@ import InvalidSurveyLink from "./components/InvalidSurveyLink";
 import {
   loadAllTreatments,
   fetchAllTreatments,
-  fetchStatus,
+  getStatus,
   clearState,
   genRandomTreatment,
   fetchTreatmentId,
@@ -79,11 +79,11 @@ const App = () => {
               <Route path={"instruction"} element={<Instructions />} />
               <Route path={"survey"} element={<Survey />} />
               <Route
-                path={"postsurvey1"}
+                path={"financialquestionaire"}
                 element={<PostSurveyFinancialLit />}
               />
               <Route
-                path={"postsurvey2"}
+                path={"purposequestionaire"}
                 element={<PostSurveySenseOfPurpose />}
               />
               <Route path={"attentioncheck"} element={<AttentionCheck />} />
@@ -130,7 +130,7 @@ const DevHome = () => {
     dispatch(loadAllTreatments());
   }, []);
 
-  const status = useSelector(fetchStatus);
+  const status = useSelector(getStatus);
   const allTreatments = useSelector(fetchAllTreatments);
 
   function testLinks() {

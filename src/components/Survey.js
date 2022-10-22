@@ -4,11 +4,11 @@ import Calendar from "./Calendar";
 import CalendarYear from "./CalendarYear";
 import { useSelector } from "react-redux";
 import { ViewType } from "../features/ViewType";
-import { selectCurrentQuestion } from "../features/questionSlice";
+import { getCurrentQuestion } from "../features/questionSlice";
 import { stateToDate } from "../features/ConversionUtil";
 
 export function Survey() {
-  const q = useSelector(selectCurrentQuestion);
+  const q = useSelector(getCurrentQuestion);
 
   // Got from https://stackoverflow.com/questions/31217268/center-div-on-the-middle-of-screen
   const divCenterContentStyle = {
