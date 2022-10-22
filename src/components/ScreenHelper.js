@@ -34,7 +34,14 @@ export const formControlLabel = {
   ".MuiTypography-root": { fontSize: 32 },
 };
 
-export const calcScreenValues = (q) => {
+export const calcScreenValues = (
+  horizontalPixels,
+  verticalPixels,
+  leftMarginWidthIn,
+  graphWidthIn,
+  bottomMarginHeightIn,
+  graphHeightIn
+) => {
   var totalUCWidth;
   var totalUCHeight;
   var totalSVGWidth;
@@ -44,9 +51,9 @@ export const calcScreenValues = (q) => {
   var barAreaWidthUC;
   var barAreaHeightUC;
   var barWidth;
-  if (q.horizontalPixels && q.verticalPixels) {
-    totalUCWidth = q.horizontalPixels;
-    totalUCHeight = q.verticalPixels;
+  if (horizontalPixels && verticalPixels) {
+    totalUCWidth = horizontalPixels;
+    totalUCHeight = verticalPixels;
     totalSVGWidth = `${totalUCWidth}px`;
     totalSVGHeight = `${totalUCHeight}px`;
     leftOffSetUC = 200;
@@ -60,19 +67,30 @@ export const calcScreenValues = (q) => {
     totalUCWidth = minScreenRes;
     totalUCHeight = minScreenRes;
     const pixelRatioScale = window.devicePixelRatio >= 2 ? 132 / 96 : 1;
-    const totalSVGWidthIn = q.leftMarginWidthIn + q.graphWidthIn;
-    const totalSVGHeightIn = q.bottomMarginHeightIn + q.graphHeightIn;
+    const totalSVGWidthIn = leftMarginWidthIn + graphWidthIn;
+    const totalSVGHeightIn = bottomMarginHeightIn + graphHeightIn;
     const scaleHorizUCPerIn = minScreenRes / totalSVGWidthIn;
     const scaleVertUCPerIn = minScreenRes / totalSVGHeightIn;
 
     totalSVGWidth = `${totalSVGWidthIn * pixelRatioScale}in`;
     totalSVGHeight = `${totalSVGHeightIn * pixelRatioScale}in`;
-    leftOffSetUC = scaleHorizUCPerIn * q.leftMarginWidthIn;
-    bottomOffSetUC = scaleVertUCPerIn * q.bottomMarginHeightIn;
+    leftOffSetUC = scaleHorizUCPerIn * leftMarginWidthIn;
+    bottomOffSetUC = scaleVertUCPerIn * bottomMarginHeightIn;
     barAreaWidthUC = minScreenRes - leftOffSetUC;
     barAreaHeightUC = minScreenRes - bottomOffSetUC;
     barWidth = 0.5 * scaleHorizUCPerIn; // bars are 0.1 inch wide
   }
+  console.log("In helper class");
+  console.log("totalUCWidth=" + totalUCWidth);
+  console.log("totalUCHeight=" + totalUCHeight);
+  console.log("totalSVGWidth=" + totalSVGWidth);
+  console.log("totalSVGHeight=" + totalSVGHeight);
+  console.log("leftOffSetUC=" + leftOffSetUC);
+  console.log("bottomOffSetUC=" + bottomOffSetUC);
+  console.log("barAreaWidthUC=" + barAreaWidthUC);
+  console.log("barAreaHeightUC=" + barAreaHeightUC);
+  console.log("barWidth=" + barWidth);
+  console.log("");
   return {
     totalUCWidth,
     totalUCHeight,
