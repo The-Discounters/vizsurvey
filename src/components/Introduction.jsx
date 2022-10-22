@@ -39,6 +39,7 @@ function resetUseStyles() {
         borderColor: "#ffffff",
         color: "black",
         paddingRight: "10px",
+        "margin-right": "100px",
         "&:hover": {
           backgroundColor: "lightblue",
         },
@@ -57,6 +58,7 @@ function resetUseStyles() {
       borderColor: "#000000",
       color: "black",
       paddingRight: "10px",
+      "margin-right": "100px",
       "&:hover": {
         backgroundColor: "lightblue",
       },
