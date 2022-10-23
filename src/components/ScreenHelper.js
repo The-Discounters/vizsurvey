@@ -42,6 +42,14 @@ export const calcScreenValues = (
   bottomMarginHeightIn,
   graphHeightIn
 ) => {
+  console.log("inputs");
+  console.log("horizontalPixels=" + horizontalPixels);
+  console.log("verticalPixels=" + verticalPixels);
+  console.log("leftMarginWidthIn=" + leftMarginWidthIn);
+  console.log("graphWidthIn=" + graphWidthIn);
+  console.log("bottomMarginHeightIn=" + bottomMarginHeightIn);
+  console.log("graphHeightIn=" + graphHeightIn);
+
   var totalUCWidth;
   var totalUCHeight;
   var totalSVGWidth;
