@@ -44,6 +44,15 @@ export const calcScreenValues = (q) => {
   var barAreaWidthUC;
   var barAreaHeightUC;
   var barWidth;
+
+  console.log("inputs");
+  console.log("horizontalPixels=" + q.horizontalPixels);
+  console.log("verticalPixels=" + q.verticalPixels);
+  console.log("leftMarginWidthIn=" + q.leftMarginWidthIn);
+  console.log("graphWidthIn=" + q.graphWidthIn);
+  console.log("bottomMarginHeightIn=" + q.bottomMarginHeightIn);
+  console.log("graphHeightIn=" + q.bottomMarginHeightIn);
+
   if (q.horizontalPixels && q.verticalPixels) {
     totalUCWidth = q.horizontalPixels;
     totalUCHeight = q.verticalPixels;
