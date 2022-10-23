@@ -51,7 +51,7 @@ export const calcScreenValues = (q) => {
   console.log("leftMarginWidthIn=" + q.leftMarginWidthIn);
   console.log("graphWidthIn=" + q.graphWidthIn);
   console.log("bottomMarginHeightIn=" + q.bottomMarginHeightIn);
-  console.log("graphHeightIn=" + q.bottomMarginHeightIn);
+  console.log("graphHeightIn=" + q.graphHeightIn);
 
   if (q.horizontalPixels && q.verticalPixels) {
     totalUCWidth = q.horizontalPixels;
