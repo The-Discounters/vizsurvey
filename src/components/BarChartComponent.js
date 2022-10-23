@@ -28,8 +28,8 @@ export const drawBarChart = ({
   verticalPixels: verticalPixels,
   leftMarginWidthIn: leftMarginWidthIn,
   graphWidthIn: graphWidthIn,
-  graphWidthIn: bottomMarginHeightIn,
-  graphWidthIn: graphHeightIn,
+  bottomMarginHeightIn: bottomMarginHeightIn,
+  graphHeightIn: graphHeightIn,
 }) => {
   const t = d3.transition().duration(500);
 
@@ -49,16 +49,6 @@ export const drawBarChart = ({
     bottomMarginHeightIn,
     graphHeightIn
   );
-
-  console.log("In barchart class");
-  console.log("totalUCWidth=" + totalUCWidth);
-  console.log("totalUCHeight=" + totalUCHeight);
-  console.log("leftOffSetUC=" + leftOffSetUC);
-  console.log("bottomOffSetUC=" + bottomOffSetUC);
-  console.log("barAreaWidthUC=" + barAreaWidthUC);
-  console.log("barAreaHeightUC=" + barAreaHeightUC);
-  console.log("barWidth=" + barWidth);
-  console.log("");
 
   const TickType = {
     major: "major",
