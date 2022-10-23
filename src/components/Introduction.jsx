@@ -8,6 +8,7 @@ import {
   ThemeProvider,
 } from "@material-ui/core";
 import { useSelector, useDispatch } from "react-redux";
+import { useD3 } from "../hooks/useD3";
 import { DateTime } from "luxon";
 import "../App.css";
 import { ViewType } from "../features/ViewType";
@@ -20,10 +21,12 @@ import {
   startSurvey,
   previousQuestion,
 } from "../features/questionSlice";
-import { styles, theme } from "./ScreenHelper";
+import { styles, theme, calcScreenValues } from "./ScreenHelper";
 import { StatusType } from "../features/StatusType";
 import { AmountType } from "../features/AmountType";
 import { MELSelectionForm } from "./MELSelectionForm";
+import { drawBarChart } from "./BarChartComponent";
+import { InteractionType } from "../features/InteractionType";
 
 const Introduction = () => {
   const dispatch = useDispatch();
@@ -89,6 +92,11 @@ const Introduction = () => {
     "introduction-radio-button-later.gif"
   );
 
+  const barchartGif = new Array(
+    "instruction-barchart-later.gif",
+    "instruction-barchart-earlier.gif"
+  );
+
   const radioBtnExp = () => {
     return (
       <React.Fragment>
@@ -103,7 +111,6 @@ const Introduction = () => {
           clicking on the circle for your choice.
         </Typography>
         <img
-          width="100%"
           src={
             radioButtonGif[Math.floor(Math.random() * radioButtonGif.length)]
           }
@@ -128,29 +135,22 @@ const Introduction = () => {
           onClickCallback={onClickCallback}
           choice={choice}
         />
-
-        {showNextPrevious && (
-          <>
-            <hr
-              style={{
-                backgroundColor: "#aaaaaa",
-                height: 4,
-              }}
-            />
-            <Typography paragraph></Typography>
-            <Typography paragraph>
-              <b>Next Question: </b>
-              Once you have made your selection, the Next button will be enabled
-              to allow you to advance to the next question. You must make a
-              selection to proceed onto the next question.
-            </Typography>
-          </>
-        )}
       </React.Fragment>
     );
   };
 
   const barchartExp = () => {
+    const horizontalPixels = 800;
+    const verticalPixels = 400;
+    const { totalSVGWidth, totalSVGHeight, totalUCWidth, totalUCHeight } =
+      calcScreenValues(
+        horizontalPixels,
+        verticalPixels,
+        null,
+        null,
+        null,
+        null
+      );
     return (
       <React.Fragment>
         <Typography paragraph>
@@ -166,9 +166,46 @@ const Introduction = () => {
           choice is to receive $300 in two months or $700 in seven months.
         </Typography>
         <img
-          src="barchart-introduction-760x280.png"
-          alt="Barchart example"
+          src={barchartGif[Math.floor(Math.random() * radioButtonGif.length)]}
+          alt="Radio button example"
         ></img>
+        <Typography paragraph></Typography>
+        <Typography paragraph>
+          <b>Try it out below:</b> In the example below, the left bar represents
+          one choice of receiving money and the right bar represents another
+          choice of receiving money. In this case the choice is to receive $300
+          in two months or $700 in seven months.
+        </Typography>
+
+        <svg
+          width={totalSVGWidth}
+          height={totalSVGHeight}
+          viewBox={`0 0 ${totalUCWidth} ${totalUCHeight}`}
+          ref={useD3(
+            (svg) => {
+              drawBarChart({
+                svg: svg,
+                maxTime: 8,
+                maxAmount: 1000,
+                interaction: InteractionType.none,
+                variableAmount: AmountType.none,
+                amountEarlier: 300,
+                timeEarlier: 2,
+                amountLater: 700,
+                timeLater: 7,
+                onClickCallback: onClickCallback,
+                choice: choice,
+                horizontalPixels: horizontalPixels,
+                verticalPixels: verticalPixels,
+                leftMarginWidthIn: null,
+                graphWidthIn: null,
+                bottomMarginHeightIn: null,
+                graphHeightIn: null,
+              });
+            },
+            [choice]
+          )}
+        ></svg>
       </React.Fragment>
     );
   };
@@ -248,6 +285,23 @@ const Introduction = () => {
         </Grid>
         <Grid item xs={12}>
           {treatment ? vizExplanation(treatment.viewType) : <p />}
+          {showNextPrevious && (
+            <>
+              <hr
+                style={{
+                  backgroundColor: "#aaaaaa",
+                  height: 4,
+                }}
+              />
+              <Typography paragraph></Typography>
+              <Typography paragraph>
+                <b>Next Question: </b>
+                Once you have made your selection, the Next button will be
+                enabled to allow you to advance to the next question. You must
+                make a selection to proceed onto the next question.
+              </Typography>
+            </>
+          )}
           <hr
             style={{
               backgroundColor: "#aaaaaa",
