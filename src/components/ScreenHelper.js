@@ -88,7 +88,7 @@ export const calcScreenValues = (
     barAreaHeightUC = minScreenRes - bottomOffSetUC;
     barWidth = 0.5 * scaleHorizUCPerIn; // bars are 0.1 inch wide
   }
-  console.log("In helper class");
+  console.log("Calcd values in helper class");
   console.log("totalUCWidth=" + totalUCWidth);
   console.log("totalUCHeight=" + totalUCHeight);
   console.log("totalSVGWidth=" + totalSVGWidth);
