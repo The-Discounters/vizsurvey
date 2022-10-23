@@ -42,14 +42,6 @@ export const calcScreenValues = (
   bottomMarginHeightIn,
   graphHeightIn
 ) => {
-  console.log("inputs");
-  console.log("horizontalPixels=" + horizontalPixels);
-  console.log("verticalPixels=" + verticalPixels);
-  console.log("leftMarginWidthIn=" + leftMarginWidthIn);
-  console.log("graphWidthIn=" + graphWidthIn);
-  console.log("bottomMarginHeightIn=" + bottomMarginHeightIn);
-  console.log("graphHeightIn=" + graphHeightIn);
-
   var totalUCWidth;
   var totalUCHeight;
   var totalSVGWidth;
@@ -88,17 +80,6 @@ export const calcScreenValues = (
     barAreaHeightUC = minScreenRes - bottomOffSetUC;
     barWidth = 0.5 * scaleHorizUCPerIn; // bars are 0.1 inch wide
   }
-  console.log("Calcd values in helper class");
-  console.log("totalUCWidth=" + totalUCWidth);
-  console.log("totalUCHeight=" + totalUCHeight);
-  console.log("totalSVGWidth=" + totalSVGWidth);
-  console.log("totalSVGHeight=" + totalSVGHeight);
-  console.log("leftOffSetUC=" + leftOffSetUC);
-  console.log("bottomOffSetUC=" + bottomOffSetUC);
-  console.log("barAreaWidthUC=" + barAreaWidthUC);
-  console.log("barAreaHeightUC=" + barAreaHeightUC);
-  console.log("barWidth=" + barWidth);
-  console.log("");
   return {
     totalUCWidth,
     totalUCHeight,
