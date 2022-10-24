@@ -1,8 +1,8 @@
 export const StatusType = {
   Unitialized: "unitialized",
   Fetching: "fetching",
-  Fetched: "fetched",
   Consent: "consent",
+  Demographic: "demographic",
   Introduction: "introduction",
   Instructions: "instruction",
   Survey: "survey",

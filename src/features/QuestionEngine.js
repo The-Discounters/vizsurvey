@@ -148,6 +148,42 @@ export class QuestionEngine {
 
   decPreviousQuestion(state) {
     const onFirstTreatment = this.isFirstTreatment(state);
+    if (state.status === StatusType.Attention) {
+      state.status = this.previousStatus(state, onFirstTreatment);
+    } else if (state.status === StatusType.Survey && !onFirstTreatment) {
+      state.currentQuestionIdx -= 1;
+    } else {
+      state.status = this.previousStatus(state, onFirstTreatment);
+    }
+    const calc = (state.treatments.length - 1) / 2;
+    const result = state.currentQuestionIdx === calc;
+    return result;
+  }
+
+  incNextQuestion(state) {
+    const onLastTreatment = this.isLastTreatment(state);
+    if (
+      state.status === StatusType.Survey ||
+      state.status === StatusType.Attention
+    ) {
+      if (!onLastTreatment) {
+        state.currentQuestionIdx += 1;
+        if (this.latestAnswer(state) === null) {
+          const treatment = this.currentTreatment(state);
+          this.createNextAnswer(
+            treatment,
+            state.answers,
+            treatment.amountEarlier,
+            treatment.amountLater
+          );
+        }
+      }
+    }
+    state.status = this.nextStatus(state, onLastTreatment);
+  }
+
+  decPreviousQuestion(state) {
+    const onFirstTreatment = this.isFirstTreatment(state);
     if (
       state.status === StatusType.Survey ||
       state.status === StatusType.Attention
@@ -276,10 +312,10 @@ export class QuestionEngine {
       case StatusType.Unitialized:
         return StatusType.Fetching;
       case StatusType.Fetching:
-        return StatusType.Fetched;
-      case StatusType.Fetched:
         return StatusType.Consent;
       case StatusType.Consent:
+        return StatusType.Demographic;
+      case StatusType.Demographic:
         return StatusType.Introduction;
       case StatusType.Introduction:
         return StatusType.Instructions;
@@ -316,12 +352,12 @@ export class QuestionEngine {
         return StatusType.Unitialized;
       case StatusType.Fetching:
         return StatusType.Unitialized;
-      case StatusType.Fetched:
-        return StatusType.Fetching;
       case StatusType.Consent:
-        return StatusType.Fetched;
-      case StatusType.Introduction:
+        return StatusType.Fetching;
+      case StatusType.Demographic:
         return StatusType.Consent;
+      case StatusType.Introduction:
+        return StatusType.Demographic;
       case StatusType.Instructions:
         return StatusType.Introduction;
       case StatusType.Survey:

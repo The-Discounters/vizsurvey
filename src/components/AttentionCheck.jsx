@@ -134,6 +134,12 @@ export function AttentionCheck() {
                   ))}
                 </RadioGroup>
               </FormControl>
+              <hr
+                style={{
+                  backgroundColor: "#aaaaaa",
+                  height: 4,
+                }}
+              />
             </Grid>
             <Grid item xs={6}>
               <Button

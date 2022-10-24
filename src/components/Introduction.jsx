@@ -6,14 +6,9 @@ import {
   Box,
   Typography,
   ThemeProvider,
-  FormControl,
-  FormControlLabel,
-  FormHelperText,
-  Radio,
-  RadioGroup,
 } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
 import { useSelector, useDispatch } from "react-redux";
+import { useD3 } from "../hooks/useD3";
 import { DateTime } from "luxon";
 import "../App.css";
 import { ViewType } from "../features/ViewType";
@@ -22,68 +17,16 @@ import {
   introductionShown,
   introductionCompleted,
   fetchCurrentTreatment,
+  getStatus,
   startSurvey,
+  previousQuestion,
 } from "../features/questionSlice";
-import { styles, theme, formControl } from "./ScreenHelper";
-
-let useStyles;
-
-function resetUseStyles() {
-  let part = ["btn0", "btn0UnClicked", "btn1", "btn1UnClicked"].reduce(
-    (result, key) => {
-      result[key] = {
-        "border-style": "solid",
-        backgroundColor: "steelblue",
-        "border-radius": "20px",
-        "border-width": "5px",
-        borderColor: "#ffffff",
-        color: "black",
-        paddingRight: "10px",
-        "&:hover": {
-          backgroundColor: "lightblue",
-        },
-      };
-      return result;
-    },
-    {}
-  );
-
-  let part1 = ["btn0Clicked", "btn1Clicked"].reduce((result, key) => {
-    result[key] = {
-      "border-style": "solid",
-      backgroundColor: "steelblue",
-      "border-radius": "20px",
-      "border-width": "5px",
-      borderColor: "#000000",
-      color: "black",
-      paddingRight: "10px",
-      "&:hover": {
-        backgroundColor: "lightblue",
-      },
-    };
-    return result;
-  }, {});
-
-  useStyles = makeStyles(() => ({
-    btn0: part.btn0,
-    btn0UnClicked: part.btn0UnClicked,
-    btn1: part.btn1,
-    btn1UnClicked: part.btn1UnClicked,
-    btn0Clicked: part1.btn0Clicked,
-    btn1Clicked: part1.btn1Clicked,
-    qArea: {
-      "border-style": "solid",
-      "border-width": "5px",
-      "border-radius": "20px",
-      padding: "10px",
-      borderColor: "#000000",
-    },
-    qTitle: {
-      fontSize: "32px",
-    },
-  }));
-}
-resetUseStyles();
+import { styles, theme, calcScreenValues } from "./ScreenHelper";
+import { StatusType } from "../features/StatusType";
+import { AmountType } from "../features/AmountType";
+import { MELSelectionForm } from "./MELSelectionForm";
+import { drawBarChart } from "./BarChartComponent";
+import { InteractionType } from "../features/InteractionType";
 
 const Introduction = () => {
   const dispatch = useDispatch();
@@ -96,19 +39,22 @@ const Introduction = () => {
   );
   const [error, setError] = React.useState(false);
   const [helperText, setHelperText] = React.useState("");
+  const [showNextPrevious, setShowNextPrevious] = useState(false);
+  const status = useSelector(getStatus);
 
   useEffect(() => {
     dispatch(introductionShown(dateToState(DateTime.utc())));
     setChoice("");
-    if (event.target.value === "300") {
-      classes.btn0 = classes.btn0Clicked;
-      classes.btn1 = classes.btn1UnClicked;
-    } else if (event.target.value === "700") {
-      classes.btn0 = classes.btn0UnClicked;
-      classes.btn1 = classes.btn1Clicked;
-    }
     if (!treatment) navigate("/invalidlink");
   }, []);
+
+  useEffect(() => {
+    const nextButtonContentHeight =
+      document.querySelector("#buttonNext").scrollHeight;
+    const nextButtonHintArrow = document.querySelector("#nextButtonHintArrow");
+    if (nextButtonHintArrow)
+      nextButtonHintArrow.height = nextButtonContentHeight;
+  }, [showNextPrevious]);
 
   useEffect(() => {
     if (treatment.viewType === ViewType.word) {
@@ -122,7 +68,34 @@ const Introduction = () => {
     }
   }, [choice]);
 
-  const classes = useStyles();
+  useEffect(() => {
+    setChoice("");
+    switch (status) {
+      case StatusType.Instructions:
+        navigate("/instruction");
+        break;
+      case StatusType.Demographic:
+        navigate("/demographic");
+        break;
+    }
+  }, [status]);
+
+  const onClickCallback = (value) => {
+    setChoice(value);
+    setShowNextPrevious(true);
+    setHelperText("");
+    setError(false);
+  };
+
+  const radioButtonGif = new Array(
+    "introduction-radio-button-earlier.gif",
+    "introduction-radio-button-later.gif"
+  );
+
+  const barchartGif = new Array(
+    "instruction-barchart-later.gif",
+    "instruction-barchart-earlier.gif"
+  );
 
   const radioButtonGif = new Array(
     "instructions-radio-button-earlier.gif",
@@ -135,10 +108,14 @@ const Introduction = () => {
         <Typography paragraph>
           <b>Radio Buttons: </b>
           Radio buttons represent information where a left button represents one
-          option, and the right button represents a second option.
+          option, and the right button represents a second option. You will be
+          presented with a series of questoins where you will make a choice of
+          receiving an amount of money earlier or a different amount of money
+          later. All amounts are in US dollars and the time of receiving the
+          money is in months from the present. Select one of the options by
+          clicking on the circle for your choice.
         </Typography>
         <img
-          width="100%"
           src={
             radioButtonGif[Math.floor(Math.random() * radioButtonGif.length)]
           }
@@ -149,72 +126,36 @@ const Introduction = () => {
           <b>Try it out below:</b> In the example below, the left button
           represents one choice of receiving money and the right button
           represents another choice of receiving money. In this case the choice
-          is to receive $300 in two months or $700 in five months.
+          is to receive $300 in two months or $700 in seven months.
         </Typography>
-        <form className={classes.qArea}>
-          <FormControl sx={{ ...formControl }} required={false} error={error}>
-            <p className={classes.qTitle}>
-              Make a choice to receive $300 in 2 months or $700 in 7 months
-            </p>
-            <FormHelperText>{helperText}</FormHelperText>
-            <Box
-              component="span"
-              m={1}
-              display="flex"
-              justifyContent="space-between"
-              alignItems="center"
-              border="1"
-            >
-              <RadioGroup
-                row
-                aria-labelledby="introduction-question-row-radio-buttons-group-label"
-                name={"question-radio-buttons-group"}
-                onChange={(event) => {
-                  setChoice(event.target.value);
-                  if (event.target.value === "300") {
-                    classes.btn0 = classes.btn0Clicked;
-                    classes.btn1 = classes.btn1UnClicked;
-                  } else if (event.target.value === "700") {
-                    classes.btn0 = classes.btn0UnClicked;
-                    classes.btn1 = classes.btn1Clicked;
-                  }
-                  setHelperText("");
-                  setError(false);
-                }}
-                value={choice}
-              >
-                {[
-                  {
-                    key: "300",
-                    id: "earlierAmount",
-                    label: "$300 in 2 months",
-                  },
-                  {
-                    key: "700",
-                    id: "laterAmount",
-                    label: "$700 in 7 months",
-                  },
-                ].map(({ key, id, label }, index) => (
-                  <FormControlLabel
-                    sx={{ mr: "100px" }}
-                    key={key}
-                    id={id}
-                    value={key}
-                    checked={choice === key}
-                    control={<Radio />}
-                    label={label}
-                    className={classes["btn" + index]}
-                  />
-                ))}
-              </RadioGroup>
-            </Box>
-          </FormControl>
-        </form>
+
+        <MELSelectionForm
+          textShort={"textShort"}
+          error={error}
+          amountEarlier={300}
+          timeEarlier={2}
+          amountLater={700}
+          timeLater={7}
+          helperText={helperText}
+          onClickCallback={onClickCallback}
+          choice={choice}
+        />
       </React.Fragment>
     );
   };
 
   const barchartExp = () => {
+    const horizontalPixels = 800;
+    const verticalPixels = 400;
+    const { totalSVGWidth, totalSVGHeight, totalUCWidth, totalUCHeight } =
+      calcScreenValues(
+        horizontalPixels,
+        verticalPixels,
+        null,
+        null,
+        null,
+        null
+      );
     return (
       <React.Fragment>
         <Typography paragraph>
@@ -227,12 +168,49 @@ const Introduction = () => {
           horizontal a second. In the chart below, the height represents the
           amount of money is US dollars and the position on the horizontal axis
           the delay in months of when that money is received. In this case the
-          choice is to receive $300 in two months or $700 in five months.
+          choice is to receive $300 in two months or $700 in seven months.
         </Typography>
         <img
-          src="barchart-introduction-760x280.png"
-          alt="Barchart example"
+          src={barchartGif[Math.floor(Math.random() * radioButtonGif.length)]}
+          alt="Radio button example"
         ></img>
+        <Typography paragraph></Typography>
+        <Typography paragraph>
+          <b>Try it out below:</b> In the example below, the left bar represents
+          one choice of receiving money and the right bar represents another
+          choice of receiving money. In this case the choice is to receive $300
+          in two months or $700 in seven months.
+        </Typography>
+
+        <svg
+          width={totalSVGWidth}
+          height={totalSVGHeight}
+          viewBox={`0 0 ${totalUCWidth} ${totalUCHeight}`}
+          ref={useD3(
+            (svg) => {
+              drawBarChart({
+                svg: svg,
+                maxTime: 8,
+                maxAmount: 1000,
+                interaction: InteractionType.none,
+                variableAmount: AmountType.none,
+                amountEarlier: 300,
+                timeEarlier: 2,
+                amountLater: 700,
+                timeLater: 7,
+                onClickCallback: onClickCallback,
+                choice: choice,
+                horizontalPixels: horizontalPixels,
+                verticalPixels: verticalPixels,
+                leftMarginWidthIn: null,
+                graphWidthIn: null,
+                bottomMarginHeightIn: null,
+                graphHeightIn: null,
+              });
+            },
+            [choice]
+          )}
+        ></svg>
       </React.Fragment>
     );
   };
@@ -312,6 +290,29 @@ const Introduction = () => {
         </Grid>
         <Grid item xs={12}>
           {treatment ? vizExplanation(treatment.viewType) : <p />}
+          {showNextPrevious && (
+            <>
+              <hr
+                style={{
+                  backgroundColor: "#aaaaaa",
+                  height: 4,
+                }}
+              />
+              <Typography paragraph></Typography>
+              <Typography paragraph>
+                <b>Next Question: </b>
+                Once you have made your selection, the Next button will be
+                enabled to allow you to advance to the next question. You must
+                make a selection to proceed onto the next question.
+              </Typography>
+            </>
+          )}
+          <hr
+            style={{
+              backgroundColor: "#aaaaaa",
+              height: 4,
+            }}
+          />
         </Grid>
         <Grid item xs={6}>
           <Button
@@ -321,7 +322,7 @@ const Introduction = () => {
             disableFocusRipple
             style={styles.button}
             onClick={() => {
-              navigate("/demographic");
+              dispatch(previousQuestion());
             }}
           >
             {" "}
@@ -329,7 +330,16 @@ const Introduction = () => {
           </Button>
         </Grid>
         <Grid item xs={6}>
-          <Box display="flex" justifyContent="flex-end">
+          <Box display="flex" justifyContent="flex-end" alignItems="center">
+            {showNextPrevious && (
+              <img
+                id="nextButtonHintArrow"
+                width="auto"
+                src="arrow.png"
+                alt="Click next button after making selection."
+              ></img>
+            )}
+
             <Button
               variant="contained"
               color="secondary"
@@ -340,17 +350,14 @@ const Introduction = () => {
               onClick={() => {
                 if (
                   treatment.viewType === ViewType.word &&
-                  choice !== "300" &&
-                  choice !== "700"
+                  choice !== AmountType.earlierAmount &&
+                  choice !== AmountType.laterAmount
                 ) {
                   setError(true);
                   setHelperText("You must choose one of the options below.");
                 } else {
-                  classes.btn0 = classes.btn0UnClicked;
-                  classes.btn1 = classes.btn1UnClicked;
                   dispatch(introductionCompleted(dateToState(DateTime.utc())));
                   dispatch(startSurvey());
-                  navigate("/instruction");
                 }
               }}
               disabled={disableSubmit && treatment.viewType === ViewType.word}

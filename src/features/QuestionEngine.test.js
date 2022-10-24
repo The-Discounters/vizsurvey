@@ -24,10 +24,10 @@ describe("QuestionEngine tests", () => {
       StatusType.Fetching
     );
     expect((state.status = qe.nextStatus(state, false))).toBe(
-      StatusType.Fetched
+      StatusType.Consent
     );
     expect((state.status = qe.nextStatus(state, false))).toBe(
-      StatusType.Consent
+      StatusType.Demographic
     );
     expect((state.status = qe.nextStatus(state, false))).toBe(
       StatusType.Introduction
@@ -98,9 +98,11 @@ describe("QuestionEngine tests", () => {
       StatusType.Introduction
     );
     expect((state.status = qe.previousStatus(state, false))).toBe(
+      StatusType.Demographic
+    );
+    expect((state.status = qe.previousStatus(state, false))).toBe(
       StatusType.Consent
     );
-    expect((state.status = qe.previousStatus(state))).toBe(StatusType.Fetched);
     expect((state.status = qe.previousStatus(state))).toBe(StatusType.Fetching);
     expect(qe.previousStatus(state)).toBe(StatusType.Unitialized);
   });
@@ -281,7 +283,7 @@ describe("QuestionEngine tests", () => {
     const qe = new QuestionEngine();
     qe.decPreviousQuestion(state);
     expect(state.currentQuestionIdx).toBe(1);
-    expect(state.status).toBe(StatusType.Attention);
+    expect(state.status).toBe(StatusType.Survey);
     qe.decPreviousQuestion(state);
     expect(state.currentQuestionIdx).toBe(0);
     expect(state.status).toBe(StatusType.Survey);
@@ -311,7 +313,7 @@ describe("QuestionEngine tests", () => {
     expect(qe.isMiddleTreatment(state)).toBe(false);
   });
 
-  test("isMiddleTreatment for three treatments should return false.", () => {
+  test("isMiddleTreatment for three treatments should return true.", () => {
     const state = {
       treatments: [
         TestDataFactory.createQuestionNoTitrate(),

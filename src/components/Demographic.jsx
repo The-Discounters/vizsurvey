@@ -31,7 +31,11 @@ import {
   setGender,
   setSelfDescribeGender,
   setProfession,
+  nextQuestion,
+  previousQuestion,
+  getStatus,
 } from "../features/questionSlice";
+import { StatusType } from "../features/StatusType";
 import { styles, theme } from "./ScreenHelper";
 import "../App.css";
 
@@ -47,11 +51,6 @@ const useStyles = makeStyles((theme) => ({
 
 export function Consent() {
   const dispatch = useDispatch();
-
-  useEffect(() => {
-    dispatch(consentShown(dateToState(DateTime.utc())));
-  }, []);
-
   const classes = useStyles();
   const [disableSubmit, setDisableSubmit] = React.useState(true);
   const [disableSelfDescribe, setDisableSelfDescribe] = React.useState(true);
@@ -62,8 +61,24 @@ export function Consent() {
   const gender = useSelector(getGender);
   const selfDescribeGender = useSelector(getSelfDescribeGender);
   const profession = useSelector(getProfession);
+  const status = useSelector(getStatus);
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    dispatch(consentShown(dateToState(DateTime.utc())));
+  }, []);
+
+  useEffect(() => {
+    switch (status) {
+      case StatusType.Consent:
+        navigate("/consent");
+        break;
+      case StatusType.Introduction:
+        navigate("/introduction");
+        break;
+    }
+  }, [status]);
 
   useEffect(() => {
     if (
@@ -298,6 +313,14 @@ export function Consent() {
               id="Current-Profession"
             />
           </Grid>
+          <Grid item xs={12}>
+            <hr
+              style={{
+                backgroundColor: "#aaaaaa",
+                height: 4,
+              }}
+            />
+          </Grid>
           <Grid item xs={6}>
             <Button
               variant="contained"
@@ -306,7 +329,7 @@ export function Consent() {
               disableFocusRipple
               style={styles.button}
               onClick={() => {
-                navigate("/consent");
+                dispatch(previousQuestion());
               }}
             >
               {" "}
@@ -322,7 +345,7 @@ export function Consent() {
                 disableFocusRipple
                 style={styles.button}
                 onClick={() => {
-                  navigate("/introduction");
+                  dispatch(nextQuestion());
                 }}
                 disabled={disableSubmit}
               >
