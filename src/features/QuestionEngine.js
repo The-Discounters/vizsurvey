@@ -160,28 +160,6 @@ export class QuestionEngine {
     return result;
   }
 
-  incNextQuestion(state) {
-    const onLastTreatment = this.isLastTreatment(state);
-    if (
-      state.status === StatusType.Survey ||
-      state.status === StatusType.Attention
-    ) {
-      if (!onLastTreatment) {
-        state.currentQuestionIdx += 1;
-        if (this.latestAnswer(state) === null) {
-          const treatment = this.currentTreatment(state);
-          this.createNextAnswer(
-            treatment,
-            state.answers,
-            treatment.amountEarlier,
-            treatment.amountLater
-          );
-        }
-      }
-    }
-    state.status = this.nextStatus(state, onLastTreatment);
-  }
-
   decPreviousQuestion(state) {
     const onFirstTreatment = this.isFirstTreatment(state);
     if (
