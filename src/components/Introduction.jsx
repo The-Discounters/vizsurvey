@@ -97,11 +97,6 @@ const Introduction = () => {
     "instruction-barchart-earlier.gif"
   );
 
-  const radioButtonGif = new Array(
-    "instructions-radio-button-earlier.gif",
-    "instructions-radio-button-later.gif"
-  );
-
   const radioBtnExp = () => {
     return (
       <React.Fragment>
