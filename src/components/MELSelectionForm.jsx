@@ -175,12 +175,6 @@ export function MELSelectionForm(props) {
           </Box>
         </FormControl>
       </form>
-      <hr
-        style={{
-          backgroundColor: "#aaaaaa",
-          height: 4,
-        }}
-      />
     </Grid>
   );
 }
