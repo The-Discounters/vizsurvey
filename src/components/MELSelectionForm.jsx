@@ -1,5 +1,3 @@
-import React, { useState } from "react";
-
 import {
   FormControl,
   FormControlLabel,
@@ -16,8 +14,6 @@ import { formControl } from "./ScreenHelper";
 import { format } from "d3";
 
 export function MELSelectionForm(props) {
-  const [choice, setChoice] = useState(props.choice);
-
   const todayText = (sooner_time) =>
     sooner_time === 0 ? "today" : `in ${sooner_time} months`;
 
@@ -140,9 +136,8 @@ export function MELSelectionForm(props) {
                   classes.btn1 = classes.btn1Clicked;
                 }
                 props.onClickCallback(event.target.value);
-                setChoice(event.target.value);
               }}
-              value={choice}
+              value={props.choice}
             >
               {[
                 {
@@ -165,7 +160,7 @@ export function MELSelectionForm(props) {
                   key={key}
                   id={key}
                   value={key}
-                  checked={choice === key}
+                  checked={props.choice === key}
                   control={<Radio />}
                   label={label}
                   className={classes["btn" + index]}
