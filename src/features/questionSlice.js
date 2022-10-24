@@ -112,44 +112,6 @@ export const questionSlice = createSlice({
       state.attentioncheck = action.payload;
       state.status = qe.nextStatus(state, false);
     },
-    setCountryOfResidence(state, action) {
-      state.countryOfResidence = action.payload;
-    },
-    setVizFamiliarity(state, action) {
-      state.vizFamiliarity = action.payload;
-    },
-    setAge(state, action) {
-      state.age = action.payload;
-    },
-    setGender(state, action) {
-      state.gender = action.payload;
-    },
-    setSelfDescribeGender(state, action) {
-      state.selfDescribeGender = action.payload;
-    },
-    setProfession(state, action) {
-      state.profession = action.payload;
-    },
-    initFinancialLitSurveyQuestion(state, action) {
-      if (state.financialLitSurvey[action.payload] == undefined) {
-        state.financialLitSurvey[action.payload] = "";
-      }
-    },
-    setFinancialLitSurveyQuestion(state, action) {
-      state.financialLitSurvey[action.payload.key] = action.payload.value;
-    },
-    initPurposeSurveyQuestion(state, action) {
-      if (state.purposeSurvey[action.payload] == undefined) {
-        state.purposeSurvey[action.payload] = "";
-      }
-    },
-    setPurposeSurveyQuestion(state, action) {
-      state.purposeSurvey[action.payload.key] = action.payload.value;
-    },
-    setAttentionCheck(state, action) {
-      state.attentioncheck = action.payload;
-      state.status = StatusType.Survey;
-    },
     loadTreatment(state) {
       state.status = StatusType.Fetching;
       state.treatments = io.loadTreatment(state.treatmentId);
