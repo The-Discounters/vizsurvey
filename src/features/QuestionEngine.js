@@ -155,22 +155,6 @@ export class QuestionEngine {
     } else {
       state.status = this.previousStatus(state, onFirstTreatment);
     }
-    const calc = (state.treatments.length - 1) / 2;
-    const result = state.currentQuestionIdx === calc;
-    return result;
-  }
-
-  decPreviousQuestion(state) {
-    const onFirstTreatment = this.isFirstTreatment(state);
-    if (
-      state.status === StatusType.Survey ||
-      state.status === StatusType.Attention
-    ) {
-      if (!onFirstTreatment) {
-        state.currentQuestionIdx -= 1;
-      }
-    }
-    state.status = this.previousStatus(state, onFirstTreatment);
   }
 
   updateHighupOrLowdown(state) {
