@@ -298,11 +298,11 @@ export class QuestionEngine {
       case StatusType.FinancialQuestionaire:
         return StatusType.PurposeQuestionaire;
       case StatusType.PurposeQuestionaire:
-        return StatusType.Debrief;
-      case StatusType.Debrief:
         return StatusType.Done;
       case StatusType.Done:
-        return StatusType.Done;
+        return StatusType.Debrief;
+      case StatusType.Debrief:
+        return StatusType.Debrief;
       case StatusType.Error:
         return StatusType.Error;
     }
@@ -338,10 +338,10 @@ export class QuestionEngine {
         return StatusType.Survey;
       case StatusType.PurposeQuestionaire:
         return StatusType.FinancialQuestionaire;
-      case StatusType.Debrief:
-        return StatusType.PurposeQuestionaire;
       case StatusType.Done:
-        return StatusType.Debrief;
+        return StatusType.PurposeQuestionaire;
+      case StatusType.Debrief:
+        return StatusType.Debrief; // once they have submitted answers, don't let them go back.
       case StatusType.Error:
         return StatusType.Error;
     }

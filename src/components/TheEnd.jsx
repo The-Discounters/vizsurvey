@@ -17,6 +17,7 @@ import {
   getParticipant,
   getFinancialLitSurvey,
   previousQuestion,
+  nextQuestion,
   getCountryOfResidence,
   getVizFamiliarity,
   getAge,
@@ -56,6 +57,9 @@ const TheEnd = () => {
 
   useEffect(() => {
     switch (status) {
+      case StatusType.PurposeQuestionaire:
+        navigate("/purposequestionaire");
+        break;
       case StatusType.Debrief:
         navigate("/debrief");
         break;
@@ -75,17 +79,11 @@ const TheEnd = () => {
             }}
           />
           <Typography paragraph>
-            <b>Click the Submit and Exit button to complete the survey!</b> We
-            hope you have enjoyed taking this survey and welcome any feedback
-            and/or questions through email by clicking&nbsp;
-            <a
-              href={`mailto:pncordone@wpi.edu?subject=Survey Feedback&body=${encodeURIComponent(
-                "Enter your feedback here."
-              )}`}
-            >
-              here
-            </a>
-            . Please click the button below to submit your answers.
+            <b>
+              Click the Submit Your Answers button to complete the survey and
+              have your answers recorded! You must do this step to get paid.
+            </b>{" "}
+            Please click the button below to submit your answers.
           </Typography>
           <hr
             style={{
@@ -137,14 +135,11 @@ const TheEnd = () => {
                     },
                   })
                 );
-                setTimeout(() => {
-                  window.open("about:blank", "_self");
-                  window.close();
-                }, 400);
+                dispatch(nextQuestion());
               }}
             >
               {" "}
-              Submit and Exit{" "}
+              Submit Your Answers{" "}
             </Button>
           </Box>
         </Grid>

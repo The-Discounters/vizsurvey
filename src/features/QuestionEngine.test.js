@@ -52,11 +52,11 @@ describe("QuestionEngine tests", () => {
     expect((state.status = qe.nextStatus(state, true))).toBe(
       StatusType.PurposeQuestionaire
     );
+    expect((state.status = qe.nextStatus(state, false))).toBe(StatusType.Done);
     expect((state.status = qe.nextStatus(state, false))).toBe(
       StatusType.Debrief
     );
-    expect((state.status = qe.nextStatus(state, false))).toBe(StatusType.Done);
-    expect(qe.nextStatus(state, false)).toBe(StatusType.Done);
+    expect(qe.nextStatus(state, false)).toBe(StatusType.Debrief);
   });
 
   test("previousStatus testing state transitions.", () => {
@@ -67,13 +67,14 @@ describe("QuestionEngine tests", () => {
         (TestDataFactory.create2ndQuestionNoTitrate.position = 3),
       ],
       currentQuestionIdx: 2,
-      status: StatusType.Done,
+      status: StatusType.Debrief,
     };
     const qe = new QuestionEngine();
+    // we can't go back once we hit Debrief status
     expect((state.status = qe.previousStatus(state, false))).toBe(
       StatusType.Debrief
     );
-    state.status = StatusType.Debrief;
+    state.status = StatusType.Done;
     expect((state.status = qe.previousStatus(state, false))).toBe(
       StatusType.PurposeQuestionaire
     );

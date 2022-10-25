@@ -74,8 +74,8 @@ export function PostSurvey() {
       case StatusType.FinancialQuestionaire:
         navigate("/financialquestionaire");
         break;
-      case StatusType.Debrief:
-        navigate("/debrief");
+      case StatusType.Done:
+        navigate("/theend");
         break;
     }
   }, [status]);

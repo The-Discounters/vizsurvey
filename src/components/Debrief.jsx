@@ -14,8 +14,6 @@ import {
   getStatus,
   debriefShownTimestamp,
   debriefCompleted,
-  nextQuestion,
-  previousQuestion,
 } from "../features/questionSlice";
 import { dateToState } from "../features/ConversionUtil";
 import { styles, theme } from "./ScreenHelper";
@@ -76,6 +74,20 @@ const Debrief = () => {
             can be used in the time (horizontal) axis to increase the likelihood
             of choosing the longer-term option.
           </Typography>
+          <Typography paragraph>
+            <b>Your answers have been submitted and you will be compensated.</b>
+            We hope you have enjoyed taking this survey and welcome any feedback
+            and/or questions through email by clicking&nbsp;
+            <a
+              href={`mailto:pncordone@wpi.edu?subject=Survey Feedback&body=${encodeURIComponent(
+                "Enter your feedback here."
+              )}`}
+            >
+              here
+            </a>
+            . Click the Exit button to close the browser.{" "}
+          </Typography>
+
           <hr
             style={{
               backgroundColor: "#aaaaaa",
@@ -83,21 +95,7 @@ const Debrief = () => {
             }}
           />
         </Grid>
-        <Grid item xs={6}>
-          <Button
-            variant="contained"
-            color="secondary"
-            disableRipple
-            disableFocusRipple
-            style={styles.button}
-            onClick={() => {
-              dispatch(previousQuestion());
-            }}
-          >
-            {" "}
-            Previous{" "}
-          </Button>
-        </Grid>
+        <Grid item xs={6}></Grid>
         <Grid item xs={6}>
           <Box display="flex" justifyContent="flex-end">
             <Button
@@ -108,11 +106,14 @@ const Debrief = () => {
               style={styles.button}
               onClick={() => {
                 dispatch(debriefCompleted(dateToState(DateTime.utc())));
-                dispatch(nextQuestion());
+                setTimeout(() => {
+                  window.open("about:blank", "_self");
+                  window.close();
+                }, 400);
               }}
             >
               {" "}
-              Next{" "}
+              Exit{" "}
             </Button>
           </Box>
         </Grid>
