@@ -87,8 +87,8 @@ const App = () => {
                 element={<PostSurveySenseOfPurpose />}
               />
               <Route path={"attentioncheck"} element={<AttentionCheck />} />
-              <Route path={"debrief"} element={<Debrief />} />
               <Route path={"theend"} element={<TheEnd />} />
+              <Route path={"debrief"} element={<Debrief />} />
               <Route path={"invalidlink"} element={<InvalidSurveyLink />} />
               <Route path="*" element={<InvalidSurveyLink />} />
             </Routes>
