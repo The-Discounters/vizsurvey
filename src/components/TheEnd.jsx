@@ -66,7 +66,7 @@ const TheEnd = () => {
     <ThemeProvider theme={theme}>
       <Grid container style={styles.root} justifyContent="center">
         <Grid item xs={12}>
-          <Typography variant="h4">Thank You and The End</Typography>
+          <Typography variant="h4">Submit Your Answers</Typography>
           <hr
             style={{
               color: "#ea3433",
@@ -75,9 +75,9 @@ const TheEnd = () => {
             }}
           />
           <Typography paragraph>
-            You have completed the survey. We hope you have enjoyed taking this
-            survey and welcome any feedback and/or questions through email by
-            clicking&nbsp;
+            <b>Click the Submit and Exit button to complete the survey!</b> We
+            hope you have enjoyed taking this survey and welcome any feedback
+            and/or questions through email by clicking&nbsp;
             <a
               href={`mailto:pncordone@wpi.edu?subject=Survey Feedback&body=${encodeURIComponent(
                 "Enter your feedback here."
@@ -85,11 +85,7 @@ const TheEnd = () => {
             >
               here
             </a>
-            . Please click the button below to submit your answers and exit this
-            tab.
-          </Typography>
-          <Typography paragraph>
-            You can now close this browser window.
+            . Please click the button below to submit your answers.
           </Typography>
           <hr
             style={{

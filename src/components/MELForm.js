@@ -40,10 +40,13 @@ function MELForm() {
   }, [qi]);
 
   useEffect(() => {
-    if (choice === "none") {
-      setDisableSubmit(true);
-    } else {
+    if (
+      choice === AmountType.earlierAmount ||
+      choice === AmountType.laterAmount
+    ) {
       setDisableSubmit(false);
+    } else {
+      setDisableSubmit(true);
     }
   }, [choice, qi]);
 
@@ -86,7 +89,14 @@ function MELForm() {
           onClickCallback={onClickCallback}
           choice={choice}
         />
-
+        <Grid item xs={12}>
+          <hr
+            style={{
+              backgroundColor: "#aaaaaa",
+              height: 4,
+            }}
+          />
+        </Grid>
         <Grid item xs={6}>
           <Button
             variant="contained"

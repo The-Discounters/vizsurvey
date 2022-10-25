@@ -33,10 +33,8 @@ const Introduction = () => {
   const treatment = useSelector(fetchCurrentTreatment);
   const navigate = useNavigate();
 
-  const [choice, setChoice] = useState("");
-  const [disableSubmit, setDisableSubmit] = React.useState(
-    treatment.viewType === ViewType.word ? true : false
-  );
+  const [choice, setChoice] = useState(AmountType.none);
+  const [disableSubmit, setDisableSubmit] = React.useState(true);
   const [error, setError] = React.useState(false);
   const [helperText, setHelperText] = React.useState("");
   const [showNextPrevious, setShowNextPrevious] = useState(false);
@@ -57,14 +55,13 @@ const Introduction = () => {
   }, [showNextPrevious]);
 
   useEffect(() => {
-    if (treatment.viewType === ViewType.word) {
-      if (choice && choice.length > 1) {
-        setDisableSubmit(false);
-      } else {
-        setDisableSubmit(true);
-      }
-    } else {
+    if (
+      choice === AmountType.earlierAmount ||
+      choice === AmountType.laterAmount
+    ) {
       setDisableSubmit(false);
+    } else {
+      setDisableSubmit(true);
     }
   }, [choice]);
 
@@ -355,7 +352,7 @@ const Introduction = () => {
                   dispatch(startSurvey());
                 }
               }}
-              disabled={disableSubmit && treatment.viewType === ViewType.word}
+              disabled={disableSubmit}
             >
               {" "}
               Next{" "}
