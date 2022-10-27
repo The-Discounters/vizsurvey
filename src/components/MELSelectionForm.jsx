@@ -7,6 +7,7 @@ import {
   Box,
 } from "@mui/material";
 
+import React, { useState } from "react";
 import Grid from "@mui/material/Unstable_Grid2";
 import { makeStyles } from "@material-ui/core/styles";
 import { AmountType } from "../features/AmountType";
@@ -35,24 +36,21 @@ export function MELSelectionForm(props) {
   let useStyles;
 
   function resetUseStyles() {
-    let part = ["btn0", "btn0UnClicked", "btn1", "btn1UnClicked"].reduce(
-      (result, key) => {
-        result[key] = {
-          "border-style": "solid",
-          backgroundColor: "steelblue",
-          "border-radius": "20px",
-          "border-width": "5px",
-          borderColor: "#ffffff",
-          color: "black",
-          paddingRight: "10px",
-          "&:hover": {
-            backgroundColor: "lightblue",
-          },
-        };
-        return result;
-      },
-      {}
-    );
+    let part = ["btn0", "btn1"].reduce((result, key) => {
+      result[key] = {
+        "border-style": "solid",
+        backgroundColor: "steelblue",
+        "border-radius": "20px",
+        "border-width": "5px",
+        borderColor: "#ffffff",
+        color: "black",
+        paddingRight: "10px",
+        "&:hover": {
+          backgroundColor: "lightblue",
+        },
+      };
+      return result;
+    }, {});
 
     let part1 = ["btn0Clicked", "btn1Clicked"].reduce((result, key) => {
       result[key] = {
@@ -72,9 +70,7 @@ export function MELSelectionForm(props) {
 
     useStyles = makeStyles(() => ({
       btn0: part.btn0,
-      btn0UnClicked: part.btn0UnClicked,
       btn1: part.btn1,
-      btn1UnClicked: part.btn1UnClicked,
       btn0Clicked: part1.btn0Clicked,
       btn1Clicked: part1.btn1Clicked,
       qArea: {
@@ -95,6 +91,7 @@ export function MELSelectionForm(props) {
 
   const classes = useStyles();
 
+  const [clickIndex, setClickIndex] = useState(-1);
   return (
     <Grid item xs={12}>
       <form className={classes.qArea}>
@@ -129,11 +126,9 @@ export function MELSelectionForm(props) {
               name={"question-radio-buttons-group"}
               onChange={(event) => {
                 if (event.target.value === AmountType.earlierAmount) {
-                  classes.btn0 = classes.btn0Clicked;
-                  classes.btn1 = classes.btn1UnClicked;
+                  setClickIndex(0);
                 } else if (event.target.value === AmountType.laterAmount) {
-                  classes.btn0 = classes.btn0UnClicked;
-                  classes.btn1 = classes.btn1Clicked;
+                  setClickIndex(1);
                 }
                 props.onClickCallback(event.target.value);
               }}
@@ -163,7 +158,11 @@ export function MELSelectionForm(props) {
                   checked={props.choice === key}
                   control={<Radio />}
                   label={label}
-                  className={classes["btn" + index]}
+                  className={
+                    classes[
+                      "btn" + (index === clickIndex ? index + "Clicked" : index)
+                    ]
+                  }
                 />
               ))}
             </RadioGroup>
