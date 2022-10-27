@@ -104,8 +104,8 @@ const Instructions = () => {
               style={styles.button}
               onClick={() => {
                 dispatch(instructionsCompleted(dateToState(DateTime.utc())));
-                //if (process.env.REACT_APP_FULLSCREEN === "enabled")
-                document.body.requestFullscreen();
+                if (process.env.REACT_APP_FULLSCREEN === "enabled")
+                  document.body.requestFullscreen();
               }}
             >
               {" "}
