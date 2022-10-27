@@ -7,7 +7,6 @@ import {
   Box,
 } from "@mui/material";
 
-import React, { useState } from "react";
 import Grid from "@mui/material/Unstable_Grid2";
 import { makeStyles } from "@material-ui/core/styles";
 import { AmountType } from "../features/AmountType";
@@ -91,7 +90,6 @@ export function MELSelectionForm(props) {
 
   const classes = useStyles();
 
-  const [clickIndex, setClickIndex] = useState(-1);
   return (
     <Grid item xs={12}>
       <form className={classes.qArea}>
@@ -125,11 +123,6 @@ export function MELSelectionForm(props) {
               }
               name={"question-radio-buttons-group"}
               onChange={(event) => {
-                if (event.target.value === AmountType.earlierAmount) {
-                  setClickIndex(0);
-                } else if (event.target.value === AmountType.laterAmount) {
-                  setClickIndex(1);
-                }
                 props.onClickCallback(event.target.value);
               }}
               value={props.choice}
@@ -160,7 +153,7 @@ export function MELSelectionForm(props) {
                   label={label}
                   className={
                     classes[
-                      "btn" + (index === clickIndex ? index + "Clicked" : index)
+                      "btn" + (props.choice === key ? index + "Clicked" : index)
                     ]
                   }
                 />
