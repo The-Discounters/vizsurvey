@@ -90,8 +90,8 @@ const Introduction = () => {
   );
 
   const barchartGif = new Array(
-    "instruction-barchart-later.gif",
-    "instruction-barchart-earlier.gif"
+    "introduction-barchart-later.gif",
+    "introduction-barchart-earlier.gif"
   );
 
   const radioBtnExp = () => {
@@ -165,7 +165,7 @@ const Introduction = () => {
         </Typography>
         <img
           src={barchartGif[Math.floor(Math.random() * radioButtonGif.length)]}
-          alt="Radio button example"
+          alt="Barchart example"
         ></img>
         <Typography paragraph></Typography>
         <Typography paragraph>
