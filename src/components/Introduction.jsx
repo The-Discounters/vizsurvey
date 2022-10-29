@@ -115,10 +115,11 @@ const Introduction = () => {
         ></img>
         <Typography paragraph></Typography>
         <Typography paragraph>
-          <b>Try it out below:</b> In the example below, the left button
-          represents one choice of receiving money and the right button
-          represents another choice of receiving money. In this case the choice
-          is to receive $300 in two months or $700 in seven months.
+          <b>Try it out below: </b>
+          In the example below, the left button represents the choice of
+          receiving $300 in two months and the right button $700 in seven
+          months. Select one of the options below by clicking on the circle of
+          your choice and then click the Next button to proceed.
         </Typography>
 
         <MELSelectionForm
