@@ -90,8 +90,8 @@ const Introduction = () => {
   );
 
   const barchartGif = new Array(
-    "instruction-barchart-later.gif",
-    "instruction-barchart-earlier.gif"
+    "introduction-barchart-later.gif",
+    "introduction-barchart-earlier.gif"
   );
 
   const radioBtnExp = () => {
@@ -101,7 +101,7 @@ const Introduction = () => {
           <b>Radio Buttons: </b>
           Radio buttons represent information where a left button represents one
           option, and the right button represents a second option. You will be
-          presented with a series of questoins where you will make a choice of
+          presented with a series of questions where you will make a choice of
           receiving an amount of money earlier or a different amount of money
           later. All amounts are in US dollars and the time of receiving the
           money is in months from the present. Select one of the options by
@@ -115,10 +115,11 @@ const Introduction = () => {
         ></img>
         <Typography paragraph></Typography>
         <Typography paragraph>
-          <b>Try it out below:</b> In the example below, the left button
-          represents one choice of receiving money and the right button
-          represents another choice of receiving money. In this case the choice
-          is to receive $300 in two months or $700 in seven months.
+          <b>Try it out below: </b>
+          In the example below, the left button represents the choice of
+          receiving $300 in two months and the right button $700 in seven
+          months. Select one of the options by clicking on the circle for your
+          choice.
         </Typography>
 
         <MELSelectionForm
@@ -155,23 +156,28 @@ const Introduction = () => {
             {" "}
             <span style={{ fontSize: 20 }}>&#8226;</span> Bar chart:{" "}
           </b>
-          A bar chart is a pictoral representation of information where the
-          height of the bar represents one value and the position of the bar
-          horizontal a second. In the chart below, the height represents the
-          amount of money is US dollars and the position on the horizontal axis
-          the delay in months of when that money is received. In this case the
-          choice is to receive $300 in two months or $700 in seven months.
+          Bar charts represent information where the height of the bar
+          represents one value and the position of the bar a second. In the
+          chart below, the height represents the amount of money is US dollars
+          and the position on the horizontal axis the delay in months of when
+          that money is received. You will be presented with a series of
+          questions where you will make a choice of receiving an amount of money
+          earlier or a different amount of money later. All amounts are in US
+          dollars and the time of receiving the money is in months from the
+          present. In this case the choice is to receive $300 in two months or
+          $700 in seven months. Select one of the options by clicking on the bar
+          that represents your choice.
         </Typography>
         <img
           src={barchartGif[Math.floor(Math.random() * radioButtonGif.length)]}
-          alt="Radio button example"
+          alt="Barchart example"
         ></img>
         <Typography paragraph></Typography>
         <Typography paragraph>
           <b>Try it out below:</b> In the example below, the left bar represents
-          one choice of receiving money and the right bar represents another
-          choice of receiving money. In this case the choice is to receive $300
-          in two months or $700 in seven months.
+          the choice of receiving $300 in two months and the right bar $700 in
+          seven months. Select one of the bars by clicking on the in for your
+          choice.
         </Typography>
 
         <svg
@@ -292,7 +298,6 @@ const Introduction = () => {
               />
               <Typography paragraph></Typography>
               <Typography paragraph>
-                <b>Next Question: </b>
                 Once you have made your selection, the Next button will be
                 enabled to allow you to advance to the next question. You must
                 make a selection to proceed onto the next question.

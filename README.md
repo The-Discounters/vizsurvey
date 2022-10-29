@@ -2,24 +2,19 @@
 
 I created VisSurvey out of a need to have a tool with survey questions with an accompanying visualization that could be data driven for my masters thesis reasearch. I had originally investigated using survey monkey and other tools; however, they lack the ability to embed visualizations or could't find any with a REST API that would allow me to make the visualizations driven off the survey questions, so I wrote VizHub.
 
-The application is written in react using redux and axios. It fetches the survey question data in csv format from gist and will write back the survey questions to gist as well, so hosting question data and answers can be done for free. The application retrieves the survey questionaire data, and renders the questions in a click through format making the data avialable to the react component that wraps the D3 visualization.
+The application is written in react using redux. Treatments are configured in CSV format in one of the code files. The application retloads the treatments for the survey questionaire data, and renders the questions in a click through format making the data avialable to the react component that wraps the D3 visualization.
 
 I hope you find it useful.
 
 # Architecture
 
-The application is written in react using redux and axios. It fetches the survey question data in csv format from gist and will write back the survey questions to gist as well, so hosting question data and answers can be done for free. The application retrieves the survey questionaire data, and renders the questions in a click through format making the data avialable to the react component that wraps the D3 visualization.
+Architecture is straight forward as a React SPA with redux using react router. The next and previous buttons on each page update a status redux field and routing is driven in the react component off of the value of that field. A sing redux slice currently contains all the application logic.
 
 # Reference
 
 We looked at code from https://supp-exp-en.netlify.app/ for examples of how to style and implement the application.
 
 # Setup
-
-## Github Gist Setup
-
-1. Follow the instructions at https://docs.github.com/en/developers/apps/building-oauth-apps/creating-an-oauth-app to register you application to get a token.
-2.
 
 # Getting Started with Create React App
 
@@ -70,6 +65,14 @@ If you aren’t satisfied with the build tool and configuration choices, you can
 Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
 
 You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+
+### Production URLs
+
+Below are the production urls for each treatment.
+
+https://release.d2ptxb5fbsc082.amplifyapp.com/start?participant_id=1&treatment_id=1&session_id=1
+https://release.d2ptxb5fbsc082.amplifyapp.com/start?participant_id=1&treatment_id=2&session_id=1
+https://release.d2ptxb5fbsc082.amplifyapp.com/start?participant_id=1&treatment_id=3&session_id=1
 
 ### Local URL
 
