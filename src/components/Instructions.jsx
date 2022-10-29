@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { FullScreen, useFullScreenHandle } from "react-full-screen";
 import {
   Button,
   Grid,
@@ -23,7 +22,6 @@ import { styles, theme } from "./ScreenHelper";
 
 const Instructions = () => {
   const dispatch = useDispatch();
-  var handle = useFullScreenHandle();
   const status = useSelector(getStatus);
   const navigate = useNavigate();
 
@@ -98,23 +96,21 @@ const Instructions = () => {
         </Grid>
         <Grid item xs={6}>
           <Box display="flex" justifyContent="flex-end">
-            <FullScreen handle={handle}>
-              <Button
-                variant="contained"
-                color="secondary"
-                disableRipple
-                disableFocusRipple
-                style={styles.button}
-                onClick={() => {
-                  dispatch(instructionsCompleted(dateToState(DateTime.utc())));
-                  if (process.env.REACT_APP_FULLSCREEN === "enabled")
-                    handle.enter();
-                }}
-              >
-                {" "}
-                Start{" "}
-              </Button>
-            </FullScreen>
+            <Button
+              variant="contained"
+              color="secondary"
+              disableRipple
+              disableFocusRipple
+              style={styles.button}
+              onClick={() => {
+                dispatch(instructionsCompleted(dateToState(DateTime.utc())));
+                if (process.env.REACT_APP_FULLSCREEN === "enabled")
+                  document.body.requestFullscreen();
+              }}
+            >
+              {" "}
+              Start{" "}
+            </Button>
           </Box>
         </Grid>
       </Grid>
