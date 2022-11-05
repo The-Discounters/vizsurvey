@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-import { FullScreen, useFullScreenHandle } from "react-full-screen";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { DateTime } from "luxon";
@@ -28,7 +27,6 @@ import { StatusType } from "../features/StatusType";
 export function AttentionCheck() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const handle = useFullScreenHandle();
 
   const status = useSelector(getStatus);
   const [disableSubmit, setDisableSubmit] = React.useState(true);
@@ -36,7 +34,6 @@ export function AttentionCheck() {
 
   useEffect(() => {
     dispatch(financialLitSurveyQuestionsShown(dateToState(DateTime.utc())));
-    if (process.env.REACT_APP_FULLSCREEN === "enabled") handle.exit();
   }, []);
 
   const checkEnableSubmit = () => {
@@ -78,70 +75,85 @@ export function AttentionCheck() {
   return (
     <ThemeProvider theme={theme}>
       <div>
-        <FullScreen handle={handle}>
-          <Grid container style={styles.root} justifyContent="center">
-            <Grid item xs={12}>
-              <Typography variant="h4">Attention Check</Typography>
-              <hr
-                style={{
-                  color: "#ea3433",
-                  backgroundColor: "#ea3433",
-                  height: 4,
-                }}
-              />
-              <Typography paragraph>
-                The middle step in this survey is to answer the attention check
-                question below.
-              </Typography>
-              <hr
-                style={{
-                  backgroundColor: "#aaaaaa",
-                  height: 4,
-                }}
-              />
-            </Grid>
-            <Grid item xs={12} style={{ margin: 0 }}>
-              <FormControl required>
-                <FormLabel id={question0.question.textShort}>
-                  {"1. " + question0.question.textFull}
-                </FormLabel>
-                <RadioGroup
-                  row
-                  aria-labelledby={
-                    question0.question.textShort +
-                    "-row-radio-buttons-group-label"
-                  }
-                  name={question0.question.textShort + "-radio-buttons-group"}
-                >
-                  {[
-                    "strongly-disagree",
-                    "disagree",
-                    "neutral",
-                    "agree",
-                    "strongly-agree",
-                  ].map((option, index1) => (
-                    <FormControlLabel
-                      key={index1}
-                      value={option}
-                      id={"attention-check-" + option}
-                      checked={q === option}
-                      control={<Radio />}
-                      label={option.replace("-", " ")}
-                      onChange={(event) => {
-                        handleFieldChange(event, setQ);
-                      }}
-                    />
-                  ))}
-                </RadioGroup>
-              </FormControl>
-              <hr
-                style={{
-                  backgroundColor: "#aaaaaa",
-                  height: 4,
-                }}
-              />
-            </Grid>
-            <Grid item xs={6}>
+        <Grid container style={styles.root} justifyContent="center">
+          <Grid item xs={12}>
+            <Typography variant="h4">Attention Check</Typography>
+            <hr
+              style={{
+                color: "#ea3433",
+                backgroundColor: "#ea3433",
+                height: 4,
+              }}
+            />
+            <Typography paragraph>
+              The middle step in this survey is to answer the attention check
+              question below.
+            </Typography>
+            <hr
+              style={{
+                backgroundColor: "#aaaaaa",
+                height: 4,
+              }}
+            />
+          </Grid>
+          <Grid item xs={12} style={{ margin: 0 }}>
+            <FormControl required>
+              <FormLabel id={question0.question.textShort}>
+                {"1. " + question0.question.textFull}
+              </FormLabel>
+              <RadioGroup
+                row
+                aria-labelledby={
+                  question0.question.textShort +
+                  "-row-radio-buttons-group-label"
+                }
+                name={question0.question.textShort + "-radio-buttons-group"}
+              >
+                {[
+                  "strongly-disagree",
+                  "disagree",
+                  "neutral",
+                  "agree",
+                  "strongly-agree",
+                ].map((option, index1) => (
+                  <FormControlLabel
+                    key={index1}
+                    value={option}
+                    id={"attention-check-" + option}
+                    checked={q === option}
+                    control={<Radio />}
+                    label={option.replace("-", " ")}
+                    onChange={(event) => {
+                      handleFieldChange(event, setQ);
+                    }}
+                  />
+                ))}
+              </RadioGroup>
+            </FormControl>
+            <hr
+              style={{
+                backgroundColor: "#aaaaaa",
+                height: 4,
+              }}
+            />
+          </Grid>
+          <Grid item xs={6}>
+            <Button
+              variant="contained"
+              color="secondary"
+              disableRipple
+              disableFocusRipple
+              style={styles.button}
+              onClick={() => {
+                dispatch(previousQuestion());
+              }}
+            >
+              {" "}
+              Previous{" "}
+            </Button>
+          </Grid>
+          <Grid item xs={6} style={{ margin: 0 }}>
+            <Box display="flex" justifyContent="flex-end">
               <Button
                 variant="contained"
                 color="secondary"
@@ -149,33 +161,16 @@ export function AttentionCheck() {
                 disableFocusRipple
                 style={styles.button}
                 onClick={() => {
-                  dispatch(previousQuestion());
+                  dispatch(setAttentionCheck(q));
                 }}
+                disabled={disableSubmit}
               >
                 {" "}
-                Previous{" "}
+                Next{" "}
               </Button>
-            </Grid>
-            <Grid item xs={6} style={{ margin: 0 }}>
-              <Box display="flex" justifyContent="flex-end">
-                <Button
-                  variant="contained"
-                  color="secondary"
-                  disableRipple
-                  disableFocusRipple
-                  style={styles.button}
-                  onClick={() => {
-                    dispatch(setAttentionCheck(q));
-                  }}
-                  disabled={disableSubmit}
-                >
-                  {" "}
-                  Next{" "}
-                </Button>
-              </Box>
-            </Grid>
+            </Box>
           </Grid>
-        </FullScreen>
+        </Grid>
       </div>
     </ThemeProvider>
   );

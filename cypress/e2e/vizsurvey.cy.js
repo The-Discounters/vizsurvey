@@ -23,8 +23,8 @@ function postsurvey(expects) {
   cy.get("button").contains("Next").click();
   cy.tick(1000);
   cy.wait(1000);
-  cy.get("h4").contains("Study Explanation").should("exist");
-  cy.get("button").contains("Next").click();
+  cy.get("h4").contains("Submit Your Answers").should("exist");
+  cy.get("button").contains("Submit Your Answers").click();
   cy.get("p").contains("You have completed the survey").should("exist");
   cy.get("button")
     .contains("Submit and Exit")
@@ -123,16 +123,20 @@ function answerMELForm() {
     "backgroundColor",
     "rgb(70, 130, 180)"
   );
+  cy.wait(100);
   cy.get("#earlierAmount").should(
     "have.css",
     "borderColor",
     "rgb(255, 255, 255)"
   );
+  cy.wait(100);
   cy.get("#earlierAmount")
     .realHover()
     .should("have.css", "backgroundColor", "rgb(173, 216, 230)")
     .click();
+  cy.wait(100);
   cy.get("#earlierAmount").should("have.css", "borderColor", "rgb(0, 0, 0)");
+  cy.wait(100);
   cy.get("button")
     .contains("Next")
     .realHover()
