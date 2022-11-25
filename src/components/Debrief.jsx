@@ -75,7 +75,12 @@ const Debrief = () => {
             of choosing the longer-term option.
           </Typography>
           <Typography paragraph>
-            <b>Your answers have been submitted and you will be compensated.</b>
+            <b>
+              Your answers have been submitted and you will be compensated $
+              {process.env.REACT_APP_PAYMENT_AMOUT} USD.
+            </b>
+          </Typography>
+          <Typography paragraph>
             We hope you have enjoyed taking this survey and welcome any feedback
             and/or questions through email by clicking&nbsp;
             <a
@@ -95,9 +100,8 @@ const Debrief = () => {
             }}
           />
         </Grid>
-        <Grid item xs={6}></Grid>
-        <Grid item xs={6}>
-          <Box display="flex" justifyContent="flex-end">
+        <Grid item xs={12}>
+          <Box display="flex" justifyContent="center">
             <Button
               variant="contained"
               color="secondary"

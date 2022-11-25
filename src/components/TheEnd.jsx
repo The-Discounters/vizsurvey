@@ -16,7 +16,6 @@ import {
   getStatus,
   getParticipant,
   getFinancialLitSurvey,
-  previousQuestion,
   nextQuestion,
   getCountryOfResidence,
   getVizFamiliarity,
@@ -81,7 +80,8 @@ const TheEnd = () => {
           <Typography paragraph>
             <b>
               Click the Submit Your Answers button to complete the survey and
-              have your answers recorded! You must do this step to get paid.
+              have your answers recorded! You must do this step to get paid $
+              {process.env.REACT_APP_PAYMENT_AMOUT} USD.
             </b>{" "}
             Please click the button below to submit your answers.
           </Typography>
@@ -92,23 +92,8 @@ const TheEnd = () => {
             }}
           />
         </Grid>
-        <Grid item xs={6}>
-          <Button
-            variant="contained"
-            color="secondary"
-            disableRipple
-            disableFocusRipple
-            style={styles.button}
-            onClick={() => {
-              dispatch(previousQuestion());
-            }}
-          >
-            {" "}
-            Previous{" "}
-          </Button>
-        </Grid>
-        <Grid item xs={6} style={{ margin: 0 }}>
-          <Box display="flex" justifyContent="flex-end">
+        <Grid item xs={12} style={{ margin: 0 }}>
+          <Box display="flex" justifyContent="center">
             <Button
               variant="contained"
               color="secondary"

@@ -14,7 +14,6 @@ import {
   instructionsShown,
   instructionsCompleted,
   getStatus,
-  previousQuestion,
 } from "../features/questionSlice";
 import { StatusType } from "../features/StatusType";
 import { dateToState } from "../features/ConversionUtil";
@@ -79,23 +78,8 @@ const Instructions = () => {
             }}
           />
         </Grid>
-        <Grid item xs={6}>
-          <Button
-            variant="contained"
-            color="secondary"
-            disableRipple
-            disableFocusRipple
-            style={styles.button}
-            onClick={() => {
-              dispatch(previousQuestion());
-            }}
-          >
-            {" "}
-            Previous{" "}
-          </Button>
-        </Grid>
-        <Grid item xs={6}>
-          <Box display="flex" justifyContent="flex-end">
+        <Grid item xs={12}>
+          <Box display="flex" justifyContent="center">
             <Button
               variant="contained"
               color="secondary"

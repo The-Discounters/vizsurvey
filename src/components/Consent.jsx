@@ -115,10 +115,14 @@ export function Consent() {
         </Typography>
         <Typography paragraph>
           <b>Cost/Payment:</b>
-          You will be compensated $10 (United States Dollars) for your
-          participation in completing this survey if you complete the survey in
-          its entirety. If you choose to end the survey before completion, you
-          will not be paid.
+          <b>
+            <i>
+              You will be compensated ${process.env.REACT_APP_PAYMENT_AMOUT}{" "}
+              (United States Dollars) for your participation in completing this
+              survey if you complete the survey in its entirety. If you choose
+              to end the survey before completion, you will not be paid.
+            </i>
+          </b>
         </Typography>
         <Typography paragraph>
           <b>
@@ -254,9 +258,8 @@ export function Consent() {
               }}
             />
           </Grid>
-          <Grid item xs={6}></Grid>
-          <Grid item xs={6} style={{ margin: 0 }}>
-            <Box display="flex" justifyContent="flex-end">
+          <Grid item xs={12} style={{ margin: 0 }}>
+            <Box display="flex" justifyContent="center">
               <Button
                 variant="contained"
                 color="secondary"

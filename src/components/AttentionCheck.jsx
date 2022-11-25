@@ -18,7 +18,6 @@ import {
   getStatus,
   financialLitSurveyQuestionsShown,
   setAttentionCheck,
-  previousQuestion,
 } from "../features/questionSlice";
 import { dateToState } from "../features/ConversionUtil";
 import { styles, theme } from "./ScreenHelper";
@@ -137,23 +136,8 @@ export function AttentionCheck() {
               }}
             />
           </Grid>
-          <Grid item xs={6}>
-            <Button
-              variant="contained"
-              color="secondary"
-              disableRipple
-              disableFocusRipple
-              style={styles.button}
-              onClick={() => {
-                dispatch(previousQuestion());
-              }}
-            >
-              {" "}
-              Previous{" "}
-            </Button>
-          </Grid>
-          <Grid item xs={6} style={{ margin: 0 }}>
-            <Box display="flex" justifyContent="flex-end">
+          <Grid item xs={12} style={{ margin: 0 }}>
+            <Box display="flex" justifyContent="center">
               <Button
                 variant="contained"
                 color="secondary"

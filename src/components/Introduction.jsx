@@ -19,7 +19,6 @@ import {
   fetchCurrentTreatment,
   getStatus,
   startSurvey,
-  previousQuestion,
 } from "../features/questionSlice";
 import { styles, theme, calcScreenValues } from "./ScreenHelper";
 import { StatusType } from "../features/StatusType";
@@ -311,23 +310,8 @@ const Introduction = () => {
             }}
           />
         </Grid>
-        <Grid item xs={6}>
-          <Button
-            variant="contained"
-            color="secondary"
-            disableRipple
-            disableFocusRipple
-            style={styles.button}
-            onClick={() => {
-              dispatch(previousQuestion());
-            }}
-          >
-            {" "}
-            Previous{" "}
-          </Button>
-        </Grid>
-        <Grid item xs={6}>
-          <Box display="flex" justifyContent="flex-end" alignItems="center">
+        <Grid item xs={12}>
+          <Box display="flex" justifyContent="center" alignItems="center">
             {showNextPrevious && (
               <img
                 id="nextButtonHintArrow"
