@@ -195,12 +195,8 @@ export const drawBarChart = ({
     .attr("id", (d) => {
       return d.barType;
     })
-    .attr("fill", "steelblue")
-    .attr("stroke", (d) => {
-      return d.barType === choice ? "black" : null;
-    })
-    .attr("stroke-width", (d) => {
-      return d.barType === choice ? "3" : null;
+    .attr("fill", (d) => {
+      return d.barType === choice ? "lightblue" : "steelblue";
     })
     .attr("class", "bar")
     .attr("x", (d) => x(d.time) - barWidth / 2)
@@ -210,15 +206,11 @@ export const drawBarChart = ({
     .attr("height", (d) => y(0) - y(d.amount))
     .on("mouseover", function () {
       d3.select(this).attr("fill", "lightblue");
-      //d3.select(this).attr("stroke", "black");
-      //d3.select(this).attr("stroke-width", "3");
     })
     .on("mouseout", function () {
-      d3.select(this).attr("fill", "steelblue");
-      // if (d.target.__data__.barType !== stateRef.choice) {
-      //   d3.select(this).transition().duration(250);
-      //   d3.select(this).attr("stroke", "none");
-      // }
+      d3.select(this).attr("fill", (d) => {
+        return d.barType === choice ? "lightblue" : "steelblue";
+      });
     })
     .on("click", function (d) {
       if (
