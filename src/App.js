@@ -165,6 +165,12 @@ const DevHome = () => {
               type of stimulus is like.
             </p>
             <p>
+              <b>
+                Teest treatments are listed below for the different
+                configuraiton scenarios.
+              </b>
+            </p>
+            <p>
               <Link
                 id="1"
                 to="/start?participant_id=1&treatment_id=1&session_id=1"
@@ -420,7 +426,46 @@ const DevHome = () => {
               >
                 {
                   allTreatments.filter(
-                    (d) => d.treatmentId === 18 && d.position === 1
+                    (d) => d.treatmentId === 19 && d.position === 1
+                  )[0].comment
+                }
+              </Link>
+            </p>
+            <p>
+              <b>Production treatments are listed below.</b>
+            </p>
+            <p>
+              <Link
+                id="20"
+                to="/start?participant_id=1&treatment_id=20&session_id=1"
+              >
+                {
+                  allTreatments.filter(
+                    (d) => d.treatmentId === 20 && d.position === 1
+                  )[0].comment
+                }
+              </Link>
+            </p>
+            <p>
+              <Link
+                id="21"
+                to="/start?participant_id=1&treatment_id=21&session_id=1"
+              >
+                {
+                  allTreatments.filter(
+                    (d) => d.treatmentId === 21 && d.position === 1
+                  )[0].comment
+                }
+              </Link>
+            </p>
+            <p>
+              <Link
+                id="22"
+                to="/start?participant_id=1&treatment_id=22&session_id=1"
+              >
+                {
+                  allTreatments.filter(
+                    (d) => d.treatmentId === 22 && d.position === 1
                   )[0].comment
                 }
               </Link>
