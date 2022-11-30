@@ -9,6 +9,7 @@ import {
   ThemeProvider,
   Button,
 } from "@material-ui/core";
+import TextField from "@mui/material/TextField";
 import { theEndShownTimestamp } from "../features/questionSlice";
 import { dateToState } from "../features/ConversionUtil";
 import { styles, theme } from "./ScreenHelper";
@@ -25,6 +26,7 @@ import {
   getProfession,
   getAttentionCheck,
   getTimestamps,
+  getFeedback,
   selectAllQuestions,
   writeAnswers,
 } from "../features/questionSlice";
@@ -49,6 +51,7 @@ const TheEnd = () => {
   const attentioncheck = useSelector(getAttentionCheck);
   const timestamps = useSelector(getTimestamps);
   const status = useSelector(getStatus);
+  const feedback = useSelector(getFeedback);
 
   useEffect(() => {
     dispatch(theEndShownTimestamp(dateToState(DateTime.utc())));
@@ -77,13 +80,31 @@ const TheEnd = () => {
               height: 4,
             }}
           />
+        </Grid>
+        <Grid item xs={12}>
+          <Typography paragraph>
+            We hope you have enjoyed taking this survey and welcome any feedback
+            or questions by filling out the text box below. If you encountered
+            any technical problems please let us know.
+          </Typography>
+        </Grid>
+        <Grid item xs={12}>
+          <TextField
+            id="Feedback"
+            fullWidth
+            value={feedback}
+            multiline
+            rows={8}
+            label="Feedback"
+          />
+        </Grid>
+        <Grid item xs={12}>
           <Typography paragraph>
             <b>
-              Click the Submit Your Answers button to complete the survey and
-              have your answers recorded! You must do this step to get paid $
-              {process.env.REACT_APP_PAYMENT_AMOUT} USD.
+              Click the &quot;Submit Your Answers&quot; button to complete the
+              survey and have your answers recorded! You must do this step to
+              get paid ${process.env.REACT_APP_PAYMENT_AMOUT} USD.
             </b>{" "}
-            Please click the button below to submit your answers.
           </Typography>
           <hr
             style={{
@@ -117,6 +138,7 @@ const TheEnd = () => {
                       },
                       attentioncheck: attentioncheck,
                       timestamps: timestamps,
+                      feedback: feedback,
                     },
                   })
                 );

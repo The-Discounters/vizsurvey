@@ -20,6 +20,8 @@ We looked at code from https://supp-exp-en.netlify.app/ for examples of how to s
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+### Installing Dependencies
+
 ## Available Scripts
 
 In the project directory, you can run:

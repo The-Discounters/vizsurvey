@@ -155,8 +155,7 @@ const DevHome = () => {
             </a>
             <p>
               The prolific url is:
-              https://release.d2ptxb5fbsc082.amplifyapp.com/instructions?participant_id=&#123;&#123;%PROLIFIC_PID%&#125;&#125;&treatment_id=&#123;&#123;%STUDY_ID%&#125;&#125;&session_id=&#123;&#123;%SESSION_ID%&#125;&#125;
-              ?PROLIFIC_PID=&#123;&#123;%PROLIFIC_PID%&#125;&#125;&STUDY_ID=&#123;&#123;%STUDY_ID%&#125;&#125;&SESSION_ID=&#123;&#123;%SESSION_ID%&#125;&#125;
+              https://release.d2ptxb5fbsc082.amplifyapp.com/start?PROLIFIC_PID=&#123;&#123;%PROLIFIC_PID%&#125;&#125;&STUDY_ID=&#123;&#123;%STUDY_ID%&#125;&#125;&SESSION_ID=&#123;&#123;%SESSION_ID%&#125;&#125;+
             </p>
             <p>
               Click a link below to launch one of the experiments. The

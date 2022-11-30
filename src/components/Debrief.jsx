@@ -50,6 +50,14 @@ const Debrief = () => {
               height: 4,
             }}
           />
+        </Grid>
+        <Grid item xs={12}>
+          <Typography paragraph>
+            <b>
+              Your answers have been submitted and you will be compensated $
+              {process.env.REACT_APP_PAYMENT_AMOUT} USD.
+            </b>
+          </Typography>
           <Typography paragraph>
             When it comes to decisions between payoffs sooner or later in time,
             people tend to place less value on the later reward and choose the
@@ -74,25 +82,6 @@ const Debrief = () => {
             can be used in the time (horizontal) axis to increase the likelihood
             of choosing the longer-term option.
           </Typography>
-          <Typography paragraph>
-            <b>
-              Your answers have been submitted and you will be compensated $
-              {process.env.REACT_APP_PAYMENT_AMOUT} USD.
-            </b>
-          </Typography>
-          <Typography paragraph>
-            We hope you have enjoyed taking this survey and welcome any feedback
-            and/or questions through email by clicking&nbsp;
-            <a
-              href={`mailto:pncordone@wpi.edu?subject=Survey Feedback&body=${encodeURIComponent(
-                "Enter your feedback here."
-              )}`}
-            >
-              here
-            </a>
-            . Click the Exit button to close the browser.{" "}
-          </Typography>
-
           <hr
             style={{
               backgroundColor: "#aaaaaa",

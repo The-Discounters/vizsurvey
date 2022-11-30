@@ -70,7 +70,7 @@ describe("FileIOAdapter tests", () => {
   test("Validate loadAllTreatments loads all treatments correctly.", async () => {
     const io = new FileIOAdapter();
     var questions = await io.loadAllTreatments();
-    expect(questions.length).toBe(41);
+    expect(questions.length).toBe(65);
   });
 
   test("Validate answer CSV fields are written correctly.", async () => {

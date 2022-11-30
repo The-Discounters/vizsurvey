@@ -43,6 +43,7 @@ export const questionSlice = createSlice({
     purposeSurveyQuestionsShownTimestamp: null,
     debriefShownTimestamp: null,
     debriefCompleted: null,
+    feedback: null,
     theEndShownTimestamp: null,
     treatments: [],
     answers: [],
@@ -305,6 +306,8 @@ export const fetchTreatmentId = (state) => state.questions.treatmentId;
 export const fetchParticipantId = (state) => state.questions.participantId;
 
 export const fetchSessionId = (state) => state.questions.sessionId;
+
+export const getFeedback = (state) => state.questions.feedback;
 
 // Action creators are generated for each case reducer function
 export const {
