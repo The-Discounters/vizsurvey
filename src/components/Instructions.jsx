@@ -51,6 +51,8 @@ const Instructions = () => {
               height: 4,
             }}
           />
+        </Grid>
+        <Grid item xs={12}>
           <Typography paragraph>
             <b>Survey questions: </b>
             After making your money choice selections, you will be presented

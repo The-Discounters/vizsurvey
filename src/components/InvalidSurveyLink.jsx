@@ -25,6 +25,8 @@ const InvalidSurveyLink = () => {
               height: 4,
             }}
           />
+        </Grid>
+        <Grid item xs={12}>
           <Typography paragraph>
             You have been provided an invalid survey link. Please click
             <a

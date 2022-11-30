@@ -84,6 +84,8 @@ export function AttentionCheck() {
                 height: 4,
               }}
             />
+          </Grid>
+          <Grid item xs={12}>
             <Typography paragraph>
               The middle step in this survey is to answer the attention check
               question below.

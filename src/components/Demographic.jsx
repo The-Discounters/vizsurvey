@@ -151,6 +151,8 @@ export function Consent() {
                 height: 4,
               }}
             />
+          </Grid>
+          <Grid item xs={12}>
             <div
               className="overflow-auto"
               style={{

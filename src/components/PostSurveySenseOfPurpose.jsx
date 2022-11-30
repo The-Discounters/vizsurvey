@@ -104,6 +104,8 @@ export function PostSurvey() {
                 height: 4,
               }}
             />
+          </Grid>
+          <Grid item xs={12}>
             <Typography paragraph>
               The last step in this survey is to answer the questions below.
             </Typography>
