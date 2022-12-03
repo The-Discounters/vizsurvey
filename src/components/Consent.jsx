@@ -212,6 +212,8 @@ export function Consent() {
                 height: 4,
               }}
             />
+          </Grid>
+          <Grid item xs={12}>
             <Typography paragraph>
               <br />
               <i>

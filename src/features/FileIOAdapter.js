@@ -120,6 +120,11 @@ export class FileIOAdapter {
       graphHeightIn: row.graph_height_in ? +row.graph_height_in : undefined,
       widthIn: row.width_in ? +row.width_in : undefined,
       heightIn: row.height_in ? +row.height_in : undefined,
+      showMinorTicks: row.show_minor_ticks
+        ? "yes" === row.show_minor_ticks.trim().toLowerCase()
+          ? true
+          : false
+        : false,
       comment: row.comment,
     });
   }

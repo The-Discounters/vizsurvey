@@ -30,6 +30,7 @@ export const drawBarChart = ({
   graphWidthIn: graphWidthIn,
   bottomMarginHeightIn: bottomMarginHeightIn,
   graphHeightIn: graphHeightIn,
+  showMinorTicks: showMinorTicks,
 }) => {
   const t = d3.transition().duration(500);
 
@@ -117,7 +118,6 @@ export const drawBarChart = ({
       axisBottom(x).tickValues(majorTicks).tickSize(10).tickFormat(format(""))
     );
 
-  // Add the class 'minor' to all minor ticks
   xAxis
     .selectAll("g")
     .filter(function (d, i) {
@@ -126,23 +126,25 @@ export const drawBarChart = ({
     .style("stroke-width", "3px")
     .attr("y2", "12");
 
-  chart
-    .selectAll(".x-axis-minor")
-    .data([null])
-    .join("g")
-    .attr(
-      "transform",
-      `translate(${leftOffSetUC / 2},${barAreaHeightUC + bottomOffSetUC / 2})`
-    )
-    .attr("class", "x-axis-minor")
-    .call(
-      axisBottom(x)
-        .tickValues(minorTicks)
-        .tickFormat(function () {
-          return "";
-        })
-        .tickSize(6)
-    );
+  if (showMinorTicks) {
+    chart
+      .selectAll(".x-axis-minor")
+      .data([null])
+      .join("g")
+      .attr(
+        "transform",
+        `translate(${leftOffSetUC / 2},${barAreaHeightUC + bottomOffSetUC / 2})`
+      )
+      .attr("class", "x-axis-minor")
+      .call(
+        axisBottom(x)
+          .tickValues(minorTicks)
+          .tickFormat(function () {
+            return "";
+          })
+          .tickSize(6)
+      );
+  }
 
   chart
     .selectAll(".x-axis-label")

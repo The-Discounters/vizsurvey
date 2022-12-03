@@ -89,8 +89,12 @@ const Introduction = () => {
   );
 
   const barchartGif = new Array(
-    "introduction-barchart-later.gif",
-    "introduction-barchart-earlier.gif"
+    "introduction-barchart-later-" +
+      (treatment.showMinorTicks ? "ticks" : "no-ticks") +
+      ".gif",
+    "introduction-barchart-earlier-" +
+      (treatment.showMinorTicks ? "ticks" : "no-ticks") +
+      ".gif"
   );
 
   const radioBtnExp = () => {
@@ -203,6 +207,7 @@ const Introduction = () => {
                 graphWidthIn: null,
                 bottomMarginHeightIn: null,
                 graphHeightIn: null,
+                showMinorTicks: treatment.showMinorTicks,
               });
             },
             [choice]

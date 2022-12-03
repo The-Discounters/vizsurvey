@@ -108,6 +108,7 @@ function BarChart() {
                   graphWidthIn: q.graphWidthIn,
                   bottomMarginHeightIn: q.bottomMarginHeightIn,
                   graphHeightIn: q.graphHeightIn,
+                  showMinorTicks: q.showMinorTicks,
                 });
               },
               [q]

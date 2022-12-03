@@ -69,6 +69,7 @@ export class QuestionEngine {
       graphHeightIn: treatment.graphHeightIn,
       widthIn: treatment.widthIn,
       heightIn: treatment.heightIn,
+      showMinorTicks: treatment.showMinorTicks,
       choice: AmountType.none,
       highup: highup,
       lowdown: lowdown,
