@@ -37,7 +37,6 @@ export function MELSelectionForm(props) {
   function resetUseStyles() {
     let part = ["btn0", "btn1"].reduce((result, key) => {
       result[key] = {
-        "border-style": "solid",
         backgroundColor: "steelblue",
         "border-radius": "20px",
         "border-width": "5px",
@@ -53,8 +52,7 @@ export function MELSelectionForm(props) {
 
     let part1 = ["btn0Clicked", "btn1Clicked"].reduce((result, key) => {
       result[key] = {
-        "border-style": "solid",
-        backgroundColor: "steelblue",
+        backgroundColor: "lightblue",
         "border-radius": "20px",
         "border-width": "5px",
         borderColor: "#000000",
@@ -73,7 +71,6 @@ export function MELSelectionForm(props) {
       btn0Clicked: part1.btn0Clicked,
       btn1Clicked: part1.btn1Clicked,
       qArea: {
-        "border-style": "solid",
         "border-width": "5px",
         "border-radius": "20px",
         padding: "10px",
