@@ -103,7 +103,7 @@ const TheEnd = () => {
             <b>
               Click the &quot;Submit Your Answers&quot; button to complete the
               survey and have your answers recorded! You must do this step to
-              get paid ${process.env.REACT_APP_PAYMENT_AMOUT} USD.
+              get paid {process.env.REACT_APP_PAYMENT_AMOUT} USD.
             </b>{" "}
           </Typography>
           <hr
