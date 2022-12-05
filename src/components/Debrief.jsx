@@ -54,7 +54,7 @@ const Debrief = () => {
         <Grid item xs={12}>
           <Typography paragraph>
             <b>
-              Your answers have been submitted and you will be compensated $
+              Your answers have been submitted and you will be compensated
               {process.env.REACT_APP_PAYMENT_AMOUT} USD.
             </b>
           </Typography>
