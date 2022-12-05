@@ -48,6 +48,12 @@ export function Consent() {
 
   const navigate = useNavigate();
 
+  const compensation = process.env.REACT_APP_PAYMENT_AMOUT;
+
+  console.log(
+    "process.env.REACT_APP_PAYMENT_AMOUT=" + process.env.REACT_APP_PAYMENT_AMOUT
+  );
+
   const ConsentTextEn = () => {
     return (
       <React.Fragment>
@@ -117,10 +123,10 @@ export function Consent() {
           <b>Cost/Payment:</b>
           <b>
             <i>
-              You will be compensated ${process.env.REACT_APP_PAYMENT_AMOUT}{" "}
-              (United States Dollars) for your participation in completing this
-              survey if you complete the survey in its entirety. If you choose
-              to end the survey before completion, you will not be paid.
+              You will be compensated {compensation} (United States Dollars) for
+              your participation in completing this survey if you complete the
+              survey in its entirety. If you choose to end the survey before
+              completion, you will not be paid.
             </i>
           </b>
         </Typography>

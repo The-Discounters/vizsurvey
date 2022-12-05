@@ -97,50 +97,57 @@ const Introduction = () => {
       ".gif"
   );
 
-  const radioBtnExp = () => {
+  const testGif = new Array("test.png");
+
+  const instructions = (
+    description,
+    clickDesc,
+    gifs,
+    gifAltText,
+    tryLeftDesc,
+    tryRightDesc,
+    tryAction
+  ) => {
     return (
       <React.Fragment>
         <Typography paragraph>
-          <b>Radio Buttons: </b>
-          Radio buttons represent information where a left button represents one
-          option, and the right button represents a second option. You will be
-          presented with a series of questions where you will make a choice of
-          receiving an amount of money earlier or a different amount of money
-          later. All amounts are in US dollars and the time of receiving the
-          money is in months from the present. Select one of the options by
-          clicking on the circle for your choice.
+          You will be presented with a series of hypothetical choices of
+          receiving two different amounts of money at two different times. Both
+          amounts are in United States Dollars and both times are the delay in
+          months from now.{" "}
+          <b>
+            All amounts and delay times are hypothetical. You will not be
+            compensated the amounts in the questions. You will be compensated{" "}
+            {process.env.REACT_APP_PAYMENT_AMOUT} upon completion of all the
+            questions in this survey and the review of your answers by the
+            researchers. The researches will review your answers in a timely
+            manner and initiate a credit of{" "}
+            {process.env.REACT_APP_PAYMENT_AMOUT} to your Prolific account.
+          </b>
         </Typography>
-        <img
-          src={
-            radioButtonGif[Math.floor(Math.random() * radioButtonGif.length)]
-          }
-          alt="Radio button example"
-        ></img>
-        <Typography paragraph></Typography>
+        <Typography paragraph>
+          The amount and delay time for each option will be represented as a{" "}
+          {description}. You will make your choice by clicking on one of the{" "}
+          {clickDesc}.
+        </Typography>
+        <Typography paragraph>
+          <img
+            src={gifs[Math.floor(Math.random() * gifs.length)]}
+            alt={gifAltText}
+          ></img>
+        </Typography>
         <Typography paragraph>
           <b>Try it out below: </b>
-          In the example below, the left button represents the choice of
-          receiving $300 in two months and the right button $700 in seven
-          months. Select one of the options by clicking on the circle for your
-          choice.
+          In the example below, the {tryLeftDesc} represents the choice of
+          receiving $300 two months from now and the {tryRightDesc} receiving
+          $700 seven months from now. Select one of the options by {tryAction}{" "}
+          for your choice.
         </Typography>
-
-        <MELSelectionForm
-          textShort={"textShort"}
-          error={error}
-          amountEarlier={300}
-          timeEarlier={2}
-          amountLater={700}
-          timeLater={7}
-          helperText={helperText}
-          onClickCallback={onClickCallback}
-          choice={choice}
-        />
       </React.Fragment>
     );
   };
 
-  const barchartExp = () => {
+  const vizExplanation = (viewType) => {
     const horizontalPixels = 800;
     const verticalPixels = 400;
     const { totalSVGWidth, totalSVGHeight, totalUCWidth, totalUCHeight } =
@@ -152,129 +159,124 @@ const Introduction = () => {
         null,
         null
       );
-    return (
-      <React.Fragment>
-        <Typography paragraph>
-          <b>
-            {" "}
-            <span style={{ fontSize: 20 }}>&#8226;</span> Bar chart:{" "}
-          </b>
-          Bar charts represent information where the height of the bar
-          represents one value and the position of the bar a second. In the
-          chart below, the height represents the amount of money is US dollars
-          and the position on the horizontal axis the delay in months of when
-          that money is received. You will be presented with a series of
-          questions where you will make a choice of receiving an amount of money
-          earlier or a different amount of money later. All amounts are in US
-          dollars and the time of receiving the money is in months from the
-          present. In this case the choice is to receive $300 in two months or
-          $700 in seven months. Select one of the options by clicking on the bar
-          that represents your choice.
-        </Typography>
-        <img
-          src={barchartGif[Math.floor(Math.random() * radioButtonGif.length)]}
-          alt="Barchart example"
-        ></img>
-        <Typography paragraph></Typography>
-        <Typography paragraph>
-          <b>Try it out below:</b> In the example below, the left bar represents
-          the choice of receiving $300 in two months and the right bar $700 in
-          seven months. Select one of the bars by clicking on the in for your
-          choice.
-        </Typography>
-
-        <svg
-          width={totalSVGWidth}
-          height={totalSVGHeight}
-          viewBox={`0 0 ${totalUCWidth} ${totalUCHeight}`}
-          ref={useD3(
-            (svg) => {
-              drawBarChart({
-                svg: svg,
-                maxTime: 8,
-                maxAmount: 1000,
-                interaction: InteractionType.none,
-                variableAmount: AmountType.none,
-                amountEarlier: 300,
-                timeEarlier: 2,
-                amountLater: 700,
-                timeLater: 7,
-                onClickCallback: onClickCallback,
-                choice: choice,
-                horizontalPixels: horizontalPixels,
-                verticalPixels: verticalPixels,
-                leftMarginWidthIn: null,
-                graphWidthIn: null,
-                bottomMarginHeightIn: null,
-                graphHeightIn: null,
-                showMinorTicks: treatment.showMinorTicks,
-              });
-            },
-            [choice]
-          )}
-        ></svg>
-      </React.Fragment>
-    );
-  };
-
-  const calendarExp = () => {
-    return (
-      <React.Fragment>
-        <Typography paragraph>
-          <b>
-            {" "}
-            <span style={{ fontSize: 20 }}>&#8226;</span> Calendar:{" "}
-          </b>
-          A calendar is a pictoral representation of dates. In this experiment,
-          the date that money will be received is shown on a calendar.
-        </Typography>
-        <img src="test.png" alt="Calendar example."></img>
-        <Typography paragraph>.</Typography>
-      </React.Fragment>
-    );
-  };
-
-  const iconExp = () => {
-    return (
-      <React.Fragment>
-        <Typography paragraph>
-          <b>
-            {" "}
-            <span style={{ fontSize: 20 }}>&#8226;</span> Icon array:{" "}
-          </b>
-          An icon array is a visual display that shows a proportion using
-          colored icons. For example, to represent a proportion of 67%, one can
-          start with 100 gray icons (here we use squares), and color 67 of them
-          orange.
-        </Typography>
-        <img
-          src="intro-icon-array-67-10PerRow.png"
-          alt="Icon array example"
-        ></img>
-      </React.Fragment>
-    );
-  };
-
-  const vizExplanation = (viewType) => {
     const result = [];
     switch (viewType) {
       case ViewType.word:
-        return radioBtnExp();
+        result.push(
+          instructions(
+            "radio buttons",
+            "buttons",
+            radioButtonGif,
+            "Radio button example",
+            "button on the left",
+            "button on the right",
+            "clicking the button"
+          )
+        );
+        result.push(
+          <MELSelectionForm
+            textShort={"textShort"}
+            error={error}
+            amountEarlier={300}
+            timeEarlier={2}
+            amountLater={700}
+            timeLater={7}
+            helperText={helperText}
+            onClickCallback={onClickCallback}
+            choice={choice}
+          />
+        );
+        break;
       case ViewType.barchart:
-        return barchartExp();
+        result.push(
+          instructions(
+            "bar chart",
+            "bars",
+            barchartGif,
+            "Bar chart button example",
+            "bar on the left",
+            "bar on the right",
+            "clicking the bar"
+          )
+        );
+        result.push(
+          <svg
+            width={totalSVGWidth}
+            height={totalSVGHeight}
+            viewBox={`0 0 ${totalUCWidth} ${totalUCHeight}`}
+            ref={useD3(
+              (svg) => {
+                drawBarChart({
+                  svg: svg,
+                  maxTime: 8,
+                  maxAmount: 1000,
+                  interaction: InteractionType.none,
+                  variableAmount: AmountType.none,
+                  amountEarlier: 300,
+                  timeEarlier: 2,
+                  amountLater: 700,
+                  timeLater: 7,
+                  onClickCallback: onClickCallback,
+                  choice: choice,
+                  horizontalPixels: horizontalPixels,
+                  verticalPixels: verticalPixels,
+                  leftMarginWidthIn: null,
+                  graphWidthIn: null,
+                  bottomMarginHeightIn: null,
+                  graphHeightIn: null,
+                  showMinorTicks: treatment.showMinorTicks,
+                });
+              },
+              [choice]
+            )}
+          ></svg>
+        );
+        break;
       case ViewType.calendarBar:
-        result.push(barchartExp());
-        result.push(calendarExp());
-        return <React.Fragment>{result}</React.Fragment>;
+        result.push(
+          instructions(
+            "calendar bar chart",
+            "bars",
+            testGif,
+            "Radio button example",
+            "button on the left",
+            "button on the right",
+            "clicking the button"
+          )
+        );
+        break;
       case ViewType.calendarWord:
-        return calendarExp();
+        result.push(
+          instructions(
+            "calendar word chart",
+            "amounts",
+            testGif,
+            "Calendar word chart example",
+            "bar on the earlier day",
+            "bar on the laster day",
+            "clicking the bar"
+          )
+        );
+        break;
       case ViewType.calendarIcon:
-        result.push(iconExp());
-        result.push(calendarExp());
-        return <React.Fragment>{result}</React.Fragment>;
+        result.push(
+          instructions(
+            "calendar icon chart",
+            "icon charts",
+            testGif,
+            "Calendar icon chart example",
+            "icon chart on the earlier day",
+            "icon chart on the laster day",
+            "clicking the icon chart"
+          )
+        );
+        break;
       default:
-        return <React.Fragment>{navigate("/invalidlink")}</React.Fragment>;
+        result.push(
+          <React.Fragment>{navigate("/invalidlink")}</React.Fragment>
+        );
     }
+    return <React.Fragment>{result}</React.Fragment>;
   };
 
   return (
