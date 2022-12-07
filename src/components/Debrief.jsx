@@ -54,7 +54,8 @@ const Debrief = () => {
         <Grid item xs={12}>
           <Typography paragraph>
             <b>
-              Your answers have been submitted and you will be compensated
+              Your answers have been submitted. You must enter the code{" "}
+              {process.env.REACT_APP_PROLIFIC_CODE} into Prolific to be paid{" "}
               {process.env.REACT_APP_PAYMENT_AMOUT} USD.
             </b>
           </Typography>
@@ -72,7 +73,6 @@ const Debrief = () => {
             represented. Visualization offers a powerful tool that influence all
             three of these factors.
           </Typography>
-
           <Typography paragraph>
             This experiment seeks to examine how visualization can be designed
             to influence people in making long term decisions differently. For
@@ -82,6 +82,13 @@ const Debrief = () => {
             can be used in the time (horizontal) axis to increase the likelihood
             of choosing the longer-term option.
           </Typography>
+          <Typography paragraph>
+            <b>
+              Please remember to enter the code C1KQNGZK into Prolific before
+              you click exit or you will not be paid $3 USD.
+            </b>
+          </Typography>
+
           <hr
             style={{
               backgroundColor: "#aaaaaa",

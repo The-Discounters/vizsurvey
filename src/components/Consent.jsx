@@ -48,8 +48,6 @@ export function Consent() {
 
   const navigate = useNavigate();
 
-  const compensation = process.env.REACT_APP_PAYMENT_AMOUT;
-
   console.log(
     "process.env.REACT_APP_PAYMENT_AMOUT=" + process.env.REACT_APP_PAYMENT_AMOUT
   );
@@ -123,10 +121,17 @@ export function Consent() {
           <b>Cost/Payment:</b>
           <b>
             <i>
-              You will be compensated {compensation} (United States Dollars) for
-              your participation in completing this survey if you complete the
-              survey in its entirety. If you choose to end the survey before
-              completion, you will not be paid.
+              You will be compensated {process.env.REACT_APP_PAYMENT_AMOUT}{" "}
+              (United States Dollars) for your participation in this survey if
+              you complete the survey in its entirety and enter the code
+              presented at the end into Prolific. If you choose to end the
+              survey before completion, you will not be paid. All dollar amounts
+              in the survey questions are hypothetical and you will not be
+              compensated the survey question amounts. You will be compensated{" "}
+              {process.env.REACT_APP_PAYMENT_AMOUT} upon completion and
+              submission of all questions, entering the code presented into
+              Prolific, and acknowledgement of your completion by the
+              researchers.
             </i>
           </b>
         </Typography>

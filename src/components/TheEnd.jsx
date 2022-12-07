@@ -104,6 +104,12 @@ const TheEnd = () => {
               Click the &quot;Submit Your Answers&quot; button to complete the
               survey and have your answers recorded! You must do this step to
               get paid {process.env.REACT_APP_PAYMENT_AMOUT} USD.
+            </b>
+          </Typography>
+          <Typography paragraph>
+            <b>
+              You will be shown a code on the next screen after you submit your
+              answers that you must enter into prolific to get paid.
             </b>{" "}
           </Typography>
           <hr
