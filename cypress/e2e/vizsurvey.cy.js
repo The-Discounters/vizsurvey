@@ -167,7 +167,7 @@ function answerMELForm(word = true, tickAmount = 1000) {
 function introduction(treatmentId) {
   cy.get("#buttonNext").should("be.disabled");
 
-  answerMELForm(treatmentId === 1);
+  answerMELForm(treatmentId === 1 || treatmentId === 20);
 }
 
 function instruction() {
@@ -224,6 +224,38 @@ describe("vizsurvey", () => {
       "2,3,barchart,none,none,300,2,,1000,7",
     ]);
   });
+  it("word prod", () => {
+    visitTreatment(20);
+
+    answerMELForm();
+    answerMELForm(true, 500);
+
+    answerMELForm(true, 100);
+    answerMELForm(true, 100);
+
+    answerMELForm(true, 100);
+    answerMELForm(true, 100);
+
+    answerMELForm(true, 100);
+    answerMELForm(true, 100);
+
+// TODO    cy.get("#attention-check-strongly-disagree").click();
+// TODO   cy.get("button").contains("Next").click();
+
+    cy.tick(1000);
+
+    // TODO: fix timing
+    postsurvey([
+      "20,1,word,none,none,350,4,,430,13",
+      "20,2,word,none,none,490,2,,700,18",
+      "20,3,word,none,none,720,6,,1390,24",
+      "20,4,word,none,none,840,3,,1120,16",
+      "20,5,word,none,none,32,4,,39,13",
+      "20,6,word,none,none,45,2,,70,18",
+      "20,7,word,none,none,66,6,,110,24",
+      "20,8,word,none,none,77,3,,118,16",
+    ]);
+  });
   [
     {
       width: 800,
@@ -257,6 +289,7 @@ describe("vizsurvey", () => {
         answerMELForm(false, 10); // bar
         answerMELForm(false, 10); // bar
 
+        // TODO: fix timing
         postsurvey([
           "3,1,barchart,none,none,300,2,,700,5",
           "3,2,barchart,none,none,300,2,,700,5",
