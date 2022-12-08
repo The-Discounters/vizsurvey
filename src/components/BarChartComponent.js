@@ -32,7 +32,9 @@ export const drawBarChart = ({
   graphHeightIn: graphHeightIn,
   showMinorTicks: showMinorTicks,
 }) => {
-  const t = d3.transition().duration(500);
+  function t() {
+    return d3.transition().duration(500);
+  }
 
   const {
     totalUCWidth,
@@ -223,18 +225,20 @@ export const drawBarChart = ({
         choice = d.target.__data__.barType;
         switch (choice) {
           case AmountType.earlierAmount:
-            d3.select("#laterAmount").transition(t).attr("stroke", "none");
-            d3.select("#earlierAmount").transition(t).attr("stroke", "black");
-            d3.select("#earlierAmount").transition(t).attr("stroke-width", "3");
+            d3.select("#laterAmount").transition(t()).attr("stroke", "none");
+            d3.select("#earlierAmount").transition(t()).attr("stroke", "black");
+            d3.select("#earlierAmount")
+              .transition(t())
+              .attr("stroke-width", "3");
             break;
           case AmountType.laterAmount:
-            d3.select("#earlierAmount").transition(t).attr("stroke", "none");
-            d3.select("#laterAmount").transition(t).attr("stroke", "black");
-            d3.select("#laterAmount").transition(t).attr("stroke-width", "3");
+            d3.select("#earlierAmount").transition(t()).attr("stroke", "none");
+            d3.select("#laterAmount").transition(t()).attr("stroke", "black");
+            d3.select("#laterAmount").transition(t()).attr("stroke-width", "3");
             break;
           default:
-            d3.select("#laterAmount").transition(t).attr("stroke", "none");
-            d3.select("#earlierAmount").transition(t).attr("stroke", "none");
+            d3.select("#laterAmount").transition(t()).attr("stroke", "none");
+            d3.select("#earlierAmount").transition(t()).attr("stroke", "none");
         }
       }
     });
