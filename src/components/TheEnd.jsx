@@ -26,7 +26,6 @@ import {
   getProfession,
   getAttentionCheck,
   getTimestamps,
-  getFeedback,
   selectAllQuestions,
   writeAnswers,
 } from "../features/questionSlice";
@@ -51,7 +50,7 @@ const TheEnd = () => {
   const attentioncheck = useSelector(getAttentionCheck);
   const timestamps = useSelector(getTimestamps);
   const status = useSelector(getStatus);
-  const feedback = useSelector(getFeedback);
+  const [feedback, setFeedback] = React.useState("");
 
   useEffect(() => {
     dispatch(theEndShownTimestamp(dateToState(DateTime.utc())));
@@ -67,6 +66,10 @@ const TheEnd = () => {
         break;
     }
   }, [status]);
+
+  const handleFieldChange = (event, setter) => {
+    setter(event.target.value);
+  };
 
   return (
     <ThemeProvider theme={theme}>
@@ -93,6 +96,9 @@ const TheEnd = () => {
             id="Feedback"
             fullWidth
             value={feedback}
+            onChange={(event) => {
+              handleFieldChange(event, setFeedback);
+            }}
             multiline
             rows={8}
             label="Feedback"

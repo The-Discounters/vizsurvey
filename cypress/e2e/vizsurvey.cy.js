@@ -70,7 +70,7 @@ function postsurvey(expects) {
                 debriefCompleted: null, // TODO
                 theEndShownTimestamp: 10000,
               },
-              feedback: null, // TODO: fix
+              feedback: "had trouble seeing numbers",
               /*
               postsurvey: {
                 fincanialLit: {
