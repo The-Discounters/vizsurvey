@@ -190,9 +190,8 @@ function visitTreatment(treatmentId, width = 1200, height = 700) {
   instruction();
 }
 describe("vizsurvey", () => {
-  it("word", () => {
-    let treatmentId = 1;
-    visitTreatment(treatmentId);
+  it("word dev", () => {
+    visitTreatment(1);
     answerMELForm();
 
     cy.get("#attention-check-strongly-disagree").click();
@@ -208,7 +207,7 @@ describe("vizsurvey", () => {
       "1,3,word,none,none,250,2,,1000,3",
     ]);
   });
-  it("bar", () => {
+  it("bar dev", () => {
     visitTreatment(2);
     answerMELForm(false); // bar
 
