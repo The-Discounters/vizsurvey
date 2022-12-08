@@ -118,7 +118,7 @@ function demographic() {
   cy.get("button").contains("Next").click();
 }
 
-function answerMELForm(word = true) {
+function answerMELForm(word = true, tickAmount = 1000) {
   if (word) {
     cy.get("#earlierAmount").should(
       "have.css",
@@ -161,7 +161,7 @@ function answerMELForm(word = true) {
     .realHover()
     .should("not.be.disabled")
     .click();
-  cy.tick(1000);
+  cy.tick(tickAmount);
 }
 
 function introduction(treatmentId) {
@@ -247,18 +247,17 @@ describe("vizsurvey", () => {
       "bar very wide but short in height (" + width + ", " + height + ")",
       () => {
         visitTreatment(3, width, height);
-        cy.get("#earlierAmount").click();
-        cy.get("button").contains("Next").click();
-        cy.get("#earlierAmount").click();
-        cy.tick(4000);
-        cy.get("#laterAmount").click();
-        cy.get("button").contains("Next").click();
+
+        answerMELForm(false); // bar
+        answerMELForm(false, 980); // bar
+
         cy.get("#attention-check-strongly-disagree").click();
         cy.get("button").contains("Next").click();
-        cy.get("#earlierAmount").click();
-        cy.get("button").contains("Next").click();
-        cy.get("#earlierAmount").click();
-        cy.get("button").contains("Next").click();
+
+        answerMELForm(false, 10); // bar
+        answerMELForm(false, 10); // bar
+        answerMELForm(false, 10); // bar
+
         postsurvey([
           "3,1,barchart,none,none,300,2,,700,5",
           "3,2,barchart,none,none,300,2,,700,5",
