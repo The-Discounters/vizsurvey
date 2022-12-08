@@ -24,6 +24,7 @@ function postsurvey(expects) {
   cy.tick(1000);
   cy.wait(1000);
   cy.get("h4").contains("Submit Your Answers").should("exist");
+  cy.get("#Feedback").type("had trouble seeing numbers");
   cy.get("button").contains("Submit Your Answers").click();
   cy.get("h4").contains("Study Explanation").should("exist");
   cy.get("button")
@@ -69,7 +70,7 @@ function postsurvey(expects) {
                 debriefCompleted: null, // TODO
                 theEndShownTimestamp: 10000,
               },
-              feedback: null,
+              feedback: null, // TODO: fix
               /*
               postsurvey: {
                 fincanialLit: {
