@@ -163,6 +163,12 @@ export function Consent() {
               }}
               id="consent-section"
             >
+              <Typography paragraph>
+                <b>
+                  This survey is not designed to render on a mobile device and
+                  should be taken on a laptop or desktop computer.
+                </b>
+              </Typography>
               <Typography>
                 Before you proceed, please tell us about yourself by answering
                 the questions below:{" "}

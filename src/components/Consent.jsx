@@ -87,9 +87,13 @@ export function Consent() {
         </Typography>
         <Typography paragraph>
           <b>Procedures to be followed: </b>You will be presented with a series
-          of choices about receiving money at different points in time.
-          &nbsp;&nbsp;<b>You will choose</b> either the earlier or later amount.
-          The study should take about 10 minutes to complete.
+          of choices about receiving money at different points in time.&nbsp;
+          <b>You will choose</b> either the earlier or later amount. The study
+          should take about 10 minutes to complete.&nbsp;
+          <b>
+            This survey is not designed to render on a mobile device and should
+            be taken on a laptop or desktop computer.
+          </b>
         </Typography>
         <Typography paragraph>
           <b>Risks to study participants:</b> To the best of the researchers
@@ -259,7 +263,7 @@ export function Consent() {
                 label={
                   <Typography>
                     I agree that any information provided in this survey can be
-                    used for the purpose(s) mentioned in the Consent Form
+                    used for the purpose(s) mentioned in the Consent Form.
                   </Typography>
                 }
               />
