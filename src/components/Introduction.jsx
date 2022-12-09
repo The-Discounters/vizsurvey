@@ -6,7 +6,8 @@ import {
   Box,
   Typography,
   ThemeProvider,
-} from "@material-ui/core";
+  StyledEngineProvider,
+} from "@mui/material";
 import { useSelector, useDispatch } from "react-redux";
 import { useD3 } from "../hooks/useD3";
 import { DateTime } from "luxon";
@@ -280,83 +281,87 @@ const Introduction = () => {
   };
 
   return (
-    <ThemeProvider theme={theme}>
-      <Grid container style={styles.root} justifyContent="center">
-        <Grid item xs={12}>
-          <Typography variant="h4">Introduction</Typography>
-          <hr
-            style={{
-              color: "#ea3433",
-              backgroundColor: "#ea3433",
-              height: 4,
-            }}
-          />
-        </Grid>
-        <Grid item xs={12}>
-          {treatment ? vizExplanation(treatment.viewType) : <p />}
-          {showNextPrevious && (
-            <>
-              <hr
-                style={{
-                  backgroundColor: "#aaaaaa",
-                  height: 4,
-                }}
-              />
-              <Typography paragraph></Typography>
-              <Typography paragraph>
-                Once you have made your selection, the Next button will be
-                enabled to allow you to advance to the next question. You must
-                make a selection to proceed onto the next question.
-              </Typography>
-            </>
-          )}
-          <hr
-            style={{
-              backgroundColor: "#aaaaaa",
-              height: 4,
-            }}
-          />
-        </Grid>
-        <Grid item xs={12}>
-          <Box display="flex" justifyContent="center" alignItems="center">
-            {showNextPrevious && (
-              <img
-                id="nextButtonHintArrow"
-                width="auto"
-                src="arrow.png"
-                alt="Click next button after making selection."
-              ></img>
-            )}
-
-            <Button
-              variant="contained"
-              color="secondary"
-              id="buttonNext"
-              disableRipple
-              disableFocusRipple
-              style={styles.button}
-              onClick={() => {
-                if (
-                  treatment.viewType === ViewType.word &&
-                  choice !== AmountType.earlierAmount &&
-                  choice !== AmountType.laterAmount
-                ) {
-                  setError(true);
-                  setHelperText("You must choose one of the options below.");
-                } else {
-                  dispatch(introductionCompleted(dateToState(DateTime.utc())));
-                  dispatch(startSurvey());
-                }
+    <StyledEngineProvider injectFirst>
+      <ThemeProvider theme={theme}>
+        <Grid container style={styles.root} justifyContent="center">
+          <Grid item xs={12}>
+            <Typography variant="h4">Introduction</Typography>
+            <hr
+              style={{
+                color: "#ea3433",
+                backgroundColor: "#ea3433",
+                height: 4,
               }}
-              disabled={disableSubmit}
-            >
-              {" "}
-              Next{" "}
-            </Button>
-          </Box>
+            />
+          </Grid>
+          <Grid item xs={12}>
+            {treatment ? vizExplanation(treatment.viewType) : <p />}
+            {showNextPrevious && (
+              <>
+                <hr
+                  style={{
+                    backgroundColor: "#aaaaaa",
+                    height: 4,
+                  }}
+                />
+                <Typography paragraph></Typography>
+                <Typography paragraph>
+                  Once you have made your selection, the Next button will be
+                  enabled to allow you to advance to the next question. You must
+                  make a selection to proceed onto the next question.
+                </Typography>
+              </>
+            )}
+            <hr
+              style={{
+                backgroundColor: "#aaaaaa",
+                height: 4,
+              }}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <Box display="flex" justifyContent="center" alignItems="center">
+              {showNextPrevious && (
+                <img
+                  id="nextButtonHintArrow"
+                  width="auto"
+                  src="arrow.png"
+                  alt="Click next button after making selection."
+                ></img>
+              )}
+
+              <Button
+                variant="contained"
+                color="secondary"
+                id="buttonNext"
+                disableRipple
+                disableFocusRipple
+                style={styles.button}
+                onClick={() => {
+                  if (
+                    treatment.viewType === ViewType.word &&
+                    choice !== AmountType.earlierAmount &&
+                    choice !== AmountType.laterAmount
+                  ) {
+                    setError(true);
+                    setHelperText("You must choose one of the options below.");
+                  } else {
+                    dispatch(
+                      introductionCompleted(dateToState(DateTime.utc()))
+                    );
+                    dispatch(startSurvey());
+                  }
+                }}
+                disabled={disableSubmit}
+              >
+                {" "}
+                Next{" "}
+              </Button>
+            </Box>
+          </Grid>
         </Grid>
-      </Grid>
-    </ThemeProvider>
+      </ThemeProvider>
+    </StyledEngineProvider>
   );
 };
 

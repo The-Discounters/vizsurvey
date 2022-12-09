@@ -8,12 +8,12 @@ import {
   Button,
   Typography,
   ThemeProvider,
-} from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
-import InputLabel from "@material-ui/core/InputLabel";
-import FormHelperText from "@material-ui/core/FormHelperText";
-import FormControl from "@material-ui/core/FormControl";
-import NativeSelect from "@material-ui/core/NativeSelect";
+  StyledEngineProvider,
+} from "@mui/material";
+import InputLabel from "@mui/material/InputLabel";
+import FormHelperText from "@mui/material/FormHelperText";
+import FormControl from "@mui/material/FormControl";
+import NativeSelect from "@mui/material/NativeSelect";
 import { useSelector, useDispatch } from "react-redux";
 import * as countries from "./countries.json";
 import { dateToState } from "../features/ConversionUtil";
@@ -38,19 +38,8 @@ import { StatusType } from "../features/StatusType";
 import { styles, theme } from "./ScreenHelper";
 import "../App.css";
 
-const useStyles = makeStyles((theme) => ({
-  formControl: {
-    margin: theme.spacing(1),
-    minWidth: 120,
-  },
-  selectEmpty: {
-    marginTop: theme.spacing(2),
-  },
-}));
-
 export function Consent() {
   const dispatch = useDispatch();
-  const classes = useStyles();
   const [disableSubmit, setDisableSubmit] = React.useState(true);
   const [disableSelfDescribe, setDisableSelfDescribe] = React.useState(true);
 
@@ -136,219 +125,207 @@ export function Consent() {
   ];
 
   return (
-    <ThemeProvider theme={theme}>
-      <div>
-        <Grid container style={styles.root} justifyContent="center">
-          <Grid item xs={12}>
-            <Typography variant="h5">
-              <b>Demographic Data</b>
-              <br />
-            </Typography>
-            <hr
-              style={{
-                color: "#ea3433",
-                backgroundColor: "#ea3433",
-                height: 4,
-              }}
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <div
-              className="overflow-auto"
-              style={{
-                padding: 10,
-                marginBottom: 25,
-                maxWidth: "95%",
-                maxHeight: "300px",
-              }}
-              id="consent-section"
-            >
-              <Typography paragraph>
-                <b>
-                  This survey is not designed to render on a mobile device and
-                  should be taken on a laptop or desktop computer.
-                </b>
+    <StyledEngineProvider injectFirst>
+      <ThemeProvider theme={theme}>
+        <div>
+          <Grid container style={styles.root} justifyContent="center">
+            <Grid item xs={12}>
+              <Typography variant="h5">
+                <b>Demographic Data</b>
+                <br />
               </Typography>
-              <Typography>
-                Before you proceed, please tell us about yourself by answering
-                the questions below:{" "}
-              </Typography>
-            </div>
-          </Grid>
-          <Grid item xs={3}>
-            <FormControl
-              className={classes.formControl}
-              required
-              style={{ maxWidth: 230, marginRight: 20 }}
-            >
-              <InputLabel htmlFor="country-select-helper">
-                Country of residence
-              </InputLabel>
-              <NativeSelect
-                value={countryOfResidence}
+              <hr
+                style={{
+                  color: "#ea3433",
+                  backgroundColor: "#ea3433",
+                  height: 4,
+                }}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <div
+                className="overflow-auto"
+                style={{
+                  padding: 10,
+                  marginBottom: 25,
+                  maxWidth: "95%",
+                  maxHeight: "300px",
+                }}
+                id="consent-section"
+              >
+                <Typography paragraph>
+                  <b>
+                    This survey is not designed to render on a mobile device and
+                    should be taken on a laptop or desktop computer.
+                  </b>
+                </Typography>
+                <Typography>
+                  Before you proceed, please tell us about yourself by answering
+                  the questions below:{" "}
+                </Typography>
+              </div>
+            </Grid>
+            <Grid item xs={3}>
+              <FormControl required style={{ maxWidth: 230, marginRight: 20 }}>
+                <InputLabel htmlFor="country-select-helper">
+                  Country of residence
+                </InputLabel>
+                <NativeSelect
+                  value={countryOfResidence}
+                  onChange={(event) => {
+                    dispatch(setCountryOfResidence(event.target.value));
+                  }}
+                  inputProps={{
+                    name: "country-of-origin",
+                    id: "country-select-helper",
+                  }}
+                >
+                  <option> </option>
+                  {countries.default.map((option) => (
+                    <option
+                      key={option.alpha3}
+                      id={option.alpha3}
+                      value={option.alpha3}
+                    >
+                      {option.name}
+                    </option>
+                  ))}
+                </NativeSelect>
+                <FormHelperText>
+                  The country you are living in now
+                </FormHelperText>
+              </FormControl>
+            </Grid>
+            <Grid item xs={3}>
+              <FormControl required style={{ maxWidth: 230, marginRight: 20 }}>
+                <InputLabel htmlFor="country-select-helper">
+                  Dataviz experience
+                </InputLabel>
+                <NativeSelect
+                  value={vizFamiliarity}
+                  onChange={(event) => {
+                    dispatch(setVizFamiliarity(event.target.value));
+                  }}
+                  name="familiarity-with-viz"
+                  inputProps={{ "aria-label": "Datavis experience" }}
+                >
+                  <option> </option>
+                  {vizFamiliarityLevel.map((option) => (
+                    <option key={option.id} value={option.id}>
+                      {option["name"]}
+                    </option>
+                  ))}
+                </NativeSelect>
+                <FormHelperText>
+                  Your experience with data visualizations and charts
+                </FormHelperText>
+              </FormControl>
+            </Grid>
+            <Grid item xs={3}></Grid>
+            <Grid item xs={3}></Grid>
+            <Grid item xs={3}>
+              <TextField
+                required
+                label="Age"
+                type="number"
+                id="Age"
+                value={age}
                 onChange={(event) => {
-                  dispatch(setCountryOfResidence(event.target.value));
+                  if (
+                    event.target.value.length != 0 &&
+                    +event.target.value <= 0
+                  ) {
+                    event.target.value = age;
+                  } else {
+                    dispatch(setAge(event.target.value));
+                  }
                 }}
-                inputProps={{
-                  name: "country-of-origin",
-                  id: "country-select-helper",
-                }}
-              >
-                <option> </option>
-                {countries.default.map((option) => (
-                  <option
-                    key={option.alpha3}
-                    id={option.alpha3}
-                    value={option.alpha3}
-                  >
-                    {option.name}
-                  </option>
-                ))}
-              </NativeSelect>
-              <FormHelperText>The country you are living in now</FormHelperText>
-            </FormControl>
-          </Grid>
-          <Grid item xs={3}>
-            <FormControl
-              className={classes.formControl}
-              required
-              style={{ maxWidth: 230, marginRight: 20 }}
-            >
-              <InputLabel htmlFor="country-select-helper">
-                Dataviz experience
-              </InputLabel>
-              <NativeSelect
-                value={vizFamiliarity}
+              />
+            </Grid>
+            <Grid item xs={3}>
+              <label style={{ marginRight: 20 }}> </label>
+              <FormControl required style={{ maxWidth: 230, marginRight: 20 }}>
+                <InputLabel htmlFor="gender-select-helper">Gender</InputLabel>
+                <NativeSelect
+                  value={gender}
+                  onChange={(event) => {
+                    dispatch(setGender(event.target.value));
+                  }}
+                  inputProps={{
+                    name: "gender",
+                    id: "gender-select-helper",
+                  }}
+                >
+                  <option> </option>
+                  {[
+                    { value: "female", text: "Female" },
+                    { value: "male", text: "Male" },
+                    { value: "transgender", text: "Transgender" },
+                    { value: "non-binary", text: "Non-binary" },
+                    { value: "intersex", text: "Intersex" },
+                    { value: "self-describe", text: "Prefer to self-describe" },
+                  ].map(({ value, text }) => (
+                    <option key={value} id={value} value={value}>
+                      {text}
+                    </option>
+                  ))}
+                </NativeSelect>
+              </FormControl>
+            </Grid>
+            <Grid item xs={3}>
+              <TextField
+                required
+                value={selfDescribeGender}
                 onChange={(event) => {
-                  dispatch(setVizFamiliarity(event.target.value));
+                  dispatch(setSelfDescribeGender(event.target.value));
                 }}
-                name="familiarity-with-viz"
-                className={classes.selectEmpty}
-                inputProps={{ "aria-label": "Datavis experience" }}
-              >
-                <option> </option>
-                {vizFamiliarityLevel.map((option) => (
-                  <option key={option.id} value={option.id}>
-                    {option["name"]}
-                  </option>
-                ))}
-              </NativeSelect>
-              <FormHelperText>
-                Your experience with data visualizations and charts
-              </FormHelperText>
-            </FormControl>
-          </Grid>
-          <Grid item xs={3}></Grid>
-          <Grid item xs={3}></Grid>
-          <Grid item xs={3}>
-            <TextField
-              required
-              className={classes.formControl}
-              label="Age"
-              type="number"
-              id="Age"
-              value={age}
-              onChange={(event) => {
-                if (
-                  event.target.value.length != 0 &&
-                  +event.target.value <= 0
-                ) {
-                  event.target.value = age;
-                } else {
-                  dispatch(setAge(event.target.value));
-                }
-              }}
-            />
-          </Grid>
-          <Grid item xs={3}>
-            <label style={{ marginRight: 20 }}> </label>
-            <FormControl
-              className={classes.formControl}
-              required
-              style={{ maxWidth: 230, marginRight: 20 }}
-            >
-              <InputLabel htmlFor="gender-select-helper">Gender</InputLabel>
-              <NativeSelect
-                value={gender}
+                label="Self Describe Gender"
+                id="Self-Describe-Gender"
+                disabled={disableSelfDescribe}
+              />
+              <label style={{ marginLeft: 25 }}> </label>
+            </Grid>
+            <Grid item xs={3}>
+              <TextField
+                required
+                value={profession}
                 onChange={(event) => {
-                  dispatch(setGender(event.target.value));
+                  dispatch(setProfession(event.target.value));
                 }}
-                inputProps={{
-                  name: "gender",
-                  id: "gender-select-helper",
+                label="Current Profession"
+                id="Current-Profession"
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <hr
+                style={{
+                  backgroundColor: "#aaaaaa",
+                  height: 4,
                 }}
-              >
-                <option> </option>
-                {[
-                  { value: "female", text: "Female" },
-                  { value: "male", text: "Male" },
-                  { value: "transgender", text: "Transgender" },
-                  { value: "non-binary", text: "Non-binary" },
-                  { value: "intersex", text: "Intersex" },
-                  { value: "self-describe", text: "Prefer to self-describe" },
-                ].map(({ value, text }) => (
-                  <option key={value} id={value} value={value}>
-                    {text}
-                  </option>
-                ))}
-              </NativeSelect>
-            </FormControl>
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <Box display="flex" justifyContent="center">
+                <Button
+                  variant="contained"
+                  color="secondary"
+                  disableRipple
+                  disableFocusRipple
+                  style={styles.button}
+                  onClick={() => {
+                    dispatch(nextQuestion());
+                  }}
+                  disabled={disableSubmit}
+                >
+                  {" "}
+                  Next{" "}
+                </Button>
+              </Box>
+            </Grid>
           </Grid>
-          <Grid item xs={3}>
-            <TextField
-              required
-              value={selfDescribeGender}
-              onChange={(event) => {
-                dispatch(setSelfDescribeGender(event.target.value));
-              }}
-              className={classes.formControl}
-              label="Self Describe Gender"
-              id="Self-Describe-Gender"
-              disabled={disableSelfDescribe}
-            />
-            <label style={{ marginLeft: 25 }}> </label>
-          </Grid>
-          <Grid item xs={3}>
-            <TextField
-              required
-              value={profession}
-              onChange={(event) => {
-                dispatch(setProfession(event.target.value));
-              }}
-              className={classes.formControl}
-              label="Current Profession"
-              id="Current-Profession"
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <hr
-              style={{
-                backgroundColor: "#aaaaaa",
-                height: 4,
-              }}
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <Box display="flex" justifyContent="center">
-              <Button
-                variant="contained"
-                color="secondary"
-                disableRipple
-                disableFocusRipple
-                style={styles.button}
-                onClick={() => {
-                  dispatch(nextQuestion());
-                }}
-                disabled={disableSubmit}
-              >
-                {" "}
-                Next{" "}
-              </Button>
-            </Box>
-          </Grid>
-        </Grid>
-      </div>
-    </ThemeProvider>
+        </div>
+      </ThemeProvider>
+    </StyledEngineProvider>
   );
 }
 

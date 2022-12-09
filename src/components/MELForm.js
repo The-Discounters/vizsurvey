@@ -2,7 +2,12 @@ import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { DateTime } from "luxon";
-import { Button, Box, ThemeProvider } from "@mui/material";
+import {
+  Button,
+  Box,
+  ThemeProvider,
+  StyledEngineProvider,
+} from "@mui/material";
 import Grid from "@mui/material/Unstable_Grid2";
 
 import { MELSelectionForm } from "./MELSelectionForm";
@@ -75,58 +80,60 @@ function MELForm() {
   };
 
   return (
-    <ThemeProvider theme={theme}>
-      <Grid container style={styles.root} justifyContent="center">
-        <MELSelectionForm
-          textShort={q.textShort}
-          error={error}
-          amountEarlier={q.amountEarlier}
-          timeEarlier={q.timeEarlier}
-          amountLater={q.amountLater}
-          timeLater={q.timeLater}
-          helperText={helperText}
-          onClickCallback={onClickCallback}
-          choice={choice}
-        />
-        <Grid item xs={12}>
-          <hr
-            style={{
-              backgroundColor: "#aaaaaa",
-              height: 4,
-            }}
+    <StyledEngineProvider injectFirst>
+      <ThemeProvider theme={theme}>
+        <Grid container style={styles.root} justifyContent="center">
+          <MELSelectionForm
+            textShort={q.textShort}
+            error={error}
+            amountEarlier={q.amountEarlier}
+            timeEarlier={q.timeEarlier}
+            amountLater={q.amountLater}
+            timeLater={q.timeLater}
+            helperText={helperText}
+            onClickCallback={onClickCallback}
+            choice={choice}
           />
-        </Grid>
-        <Grid item xs={12} style={{ margin: 0 }}>
-          <Box display="flex" justifyContent="center">
-            <Button
-              variant="contained"
-              color="secondary"
-              disableRipple
-              disableFocusRipple
-              style={styles.button}
-              onClick={() => {
-                console.log("onClick");
-                if (
-                  choice !== AmountType.earlierAmount &&
-                  choice !== AmountType.laterAmount
-                ) {
-                  setError(true);
-                  setHelperText("Please choose one of the options below.");
-                } else {
-                  setError(false);
-                  setHelperText("");
-                  dispatch(nextQuestion());
-                }
+          <Grid item xs={12}>
+            <hr
+              style={{
+                backgroundColor: "#aaaaaa",
+                height: 4,
               }}
-              disabled={disableSubmit}
-            >
-              {" "}
-              Next{" "}
-            </Button>
-          </Box>
+            />
+          </Grid>
+          <Grid item xs={12} style={{ margin: 0 }}>
+            <Box display="flex" justifyContent="center">
+              <Button
+                variant="contained"
+                color="secondary"
+                disableRipple
+                disableFocusRipple
+                style={styles.button}
+                onClick={() => {
+                  console.log("onClick");
+                  if (
+                    choice !== AmountType.earlierAmount &&
+                    choice !== AmountType.laterAmount
+                  ) {
+                    setError(true);
+                    setHelperText("Please choose one of the options below.");
+                  } else {
+                    setError(false);
+                    setHelperText("");
+                    dispatch(nextQuestion());
+                  }
+                }}
+                disabled={disableSubmit}
+              >
+                {" "}
+                Next{" "}
+              </Button>
+            </Box>
+          </Grid>
         </Grid>
-      </Grid>
-    </ThemeProvider>
+      </ThemeProvider>
+    </StyledEngineProvider>
   );
 }
 export default MELForm;

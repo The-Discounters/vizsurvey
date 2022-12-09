@@ -8,7 +8,7 @@ import {
 } from "@mui/material";
 
 import Grid from "@mui/material/Unstable_Grid2";
-import { makeStyles } from "@material-ui/core/styles";
+import makeStyles from "@mui/styles/makeStyles";
 import { AmountType } from "../features/AmountType";
 import { formControl } from "./ScreenHelper";
 import { format } from "d3";

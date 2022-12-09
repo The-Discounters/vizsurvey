@@ -2,7 +2,13 @@ import React, { useEffect, useState } from "react";
 import { useD3 } from "../hooks/useD3";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { Grid, Box, Button, ThemeProvider } from "@mui/material";
+import {
+  Grid,
+  Box,
+  Button,
+  ThemeProvider,
+  StyledEngineProvider,
+} from "@mui/material";
 
 import { DateTime } from "luxon";
 import { AmountType } from "../features/AmountType";
@@ -81,60 +87,62 @@ function BarChart() {
     );
 
   return (
-    <ThemeProvider theme={theme}>
-      <Grid container style={styles.root} justifyContent="center">
-        <Grid item xs={12}>
-          <svg
-            width={totalSVGWidth}
-            height={totalSVGHeight}
-            viewBox={`0 0 ${totalUCWidth} ${totalUCHeight}`}
-            ref={useD3(
-              (svg) => {
-                drawBarChart({
-                  svg: svg,
-                  maxTime: q.maxTime,
-                  maxAmount: q.maxAmount,
-                  interaction: q.interaction,
-                  variableAmount: q.variableAmount,
-                  amountEarlier: q.amountEarlier,
-                  timeEarlier: q.timeEarlier,
-                  amountLater: q.amountLater,
-                  timeLater: q.timeLater,
-                  onClickCallback: onClickCallback,
-                  choice: choice,
-                  horizontalPixels: q.horizontalPixels,
-                  verticalPixels: q.verticalPixels,
-                  leftMarginWidthIn: q.leftMarginWidthIn,
-                  graphWidthIn: q.graphWidthIn,
-                  bottomMarginHeightIn: q.bottomMarginHeightIn,
-                  graphHeightIn: q.graphHeightIn,
-                  showMinorTicks: q.showMinorTicks,
-                });
-              },
-              [q]
-            )}
-          ></svg>
+    <StyledEngineProvider injectFirst>
+      <ThemeProvider theme={theme}>
+        <Grid container style={styles.root} justifyContent="center">
+          <Grid item xs={12}>
+            <svg
+              width={totalSVGWidth}
+              height={totalSVGHeight}
+              viewBox={`0 0 ${totalUCWidth} ${totalUCHeight}`}
+              ref={useD3(
+                (svg) => {
+                  drawBarChart({
+                    svg: svg,
+                    maxTime: q.maxTime,
+                    maxAmount: q.maxAmount,
+                    interaction: q.interaction,
+                    variableAmount: q.variableAmount,
+                    amountEarlier: q.amountEarlier,
+                    timeEarlier: q.timeEarlier,
+                    amountLater: q.amountLater,
+                    timeLater: q.timeLater,
+                    onClickCallback: onClickCallback,
+                    choice: choice,
+                    horizontalPixels: q.horizontalPixels,
+                    verticalPixels: q.verticalPixels,
+                    leftMarginWidthIn: q.leftMarginWidthIn,
+                    graphWidthIn: q.graphWidthIn,
+                    bottomMarginHeightIn: q.bottomMarginHeightIn,
+                    graphHeightIn: q.graphHeightIn,
+                    showMinorTicks: q.showMinorTicks,
+                  });
+                },
+                [q]
+              )}
+            ></svg>
+          </Grid>
+          <Grid item xs={12} style={{ margin: 0 }}>
+            <Box display="flex" justifyContent="center">
+              <Button
+                variant="contained"
+                color="secondary"
+                disableRipple
+                disableFocusRipple
+                style={styles.button}
+                onClick={() => {
+                  dispatch(nextQuestion());
+                }}
+                disabled={disableSubmit}
+              >
+                {" "}
+                Next{" "}
+              </Button>
+            </Box>
+          </Grid>
         </Grid>
-        <Grid item xs={12} style={{ margin: 0 }}>
-          <Box display="flex" justifyContent="center">
-            <Button
-              variant="contained"
-              color="secondary"
-              disableRipple
-              disableFocusRipple
-              style={styles.button}
-              onClick={() => {
-                dispatch(nextQuestion());
-              }}
-              disabled={disableSubmit}
-            >
-              {" "}
-              Next{" "}
-            </Button>
-          </Box>
-        </Grid>
-      </Grid>
-    </ThemeProvider>
+      </ThemeProvider>
+    </StyledEngineProvider>
   );
 }
 

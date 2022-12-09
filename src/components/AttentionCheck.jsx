@@ -13,7 +13,8 @@ import {
   Radio,
   RadioGroup,
   ThemeProvider,
-} from "@material-ui/core";
+  StyledEngineProvider,
+} from "@mui/material";
 import {
   getStatus,
   financialLitSurveyQuestionsShown,
@@ -72,93 +73,95 @@ export function AttentionCheck() {
     },
   };
   return (
-    <ThemeProvider theme={theme}>
-      <div>
-        <Grid container style={styles.root} justifyContent="center">
-          <Grid item xs={12}>
-            <Typography variant="h4">Attention Check</Typography>
-            <hr
-              style={{
-                color: "#ea3433",
-                backgroundColor: "#ea3433",
-                height: 4,
-              }}
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <Typography paragraph>
-              The middle step in this survey is to answer the attention check
-              question below.
-            </Typography>
-            <hr
-              style={{
-                backgroundColor: "#aaaaaa",
-                height: 4,
-              }}
-            />
-          </Grid>
-          <Grid item xs={12} style={{ margin: 0 }}>
-            <FormControl required>
-              <FormLabel id={question0.question.textShort}>
-                {"1. " + question0.question.textFull}
-              </FormLabel>
-              <RadioGroup
-                row
-                aria-labelledby={
-                  question0.question.textShort +
-                  "-row-radio-buttons-group-label"
-                }
-                name={question0.question.textShort + "-radio-buttons-group"}
-              >
-                {[
-                  "strongly-disagree",
-                  "disagree",
-                  "neutral",
-                  "agree",
-                  "strongly-agree",
-                ].map((option, index1) => (
-                  <FormControlLabel
-                    key={index1}
-                    value={option}
-                    id={"attention-check-" + option}
-                    checked={q === option}
-                    control={<Radio />}
-                    label={option.replace("-", " ")}
-                    onChange={(event) => {
-                      handleFieldChange(event, setQ);
-                    }}
-                  />
-                ))}
-              </RadioGroup>
-            </FormControl>
-            <hr
-              style={{
-                backgroundColor: "#aaaaaa",
-                height: 4,
-              }}
-            />
-          </Grid>
-          <Grid item xs={12} style={{ margin: 0 }}>
-            <Box display="flex" justifyContent="center">
-              <Button
-                variant="contained"
-                color="secondary"
-                disableRipple
-                disableFocusRipple
-                style={styles.button}
-                onClick={() => {
-                  dispatch(setAttentionCheck(q));
+    <StyledEngineProvider injectFirst>
+      <ThemeProvider theme={theme}>
+        <div>
+          <Grid container style={styles.root} justifyContent="center">
+            <Grid item xs={12}>
+              <Typography variant="h4">Attention Check</Typography>
+              <hr
+                style={{
+                  color: "#ea3433",
+                  backgroundColor: "#ea3433",
+                  height: 4,
                 }}
-                disabled={disableSubmit}
-              >
-                {" "}
-                Next{" "}
-              </Button>
-            </Box>
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <Typography paragraph>
+                The middle step in this survey is to answer the attention check
+                question below.
+              </Typography>
+              <hr
+                style={{
+                  backgroundColor: "#aaaaaa",
+                  height: 4,
+                }}
+              />
+            </Grid>
+            <Grid item xs={12} style={{ margin: 0 }}>
+              <FormControl required>
+                <FormLabel id={question0.question.textShort}>
+                  {"1. " + question0.question.textFull}
+                </FormLabel>
+                <RadioGroup
+                  row
+                  aria-labelledby={
+                    question0.question.textShort +
+                    "-row-radio-buttons-group-label"
+                  }
+                  name={question0.question.textShort + "-radio-buttons-group"}
+                >
+                  {[
+                    "strongly-disagree",
+                    "disagree",
+                    "neutral",
+                    "agree",
+                    "strongly-agree",
+                  ].map((option, index1) => (
+                    <FormControlLabel
+                      key={index1}
+                      value={option}
+                      id={"attention-check-" + option}
+                      checked={q === option}
+                      control={<Radio />}
+                      label={option.replace("-", " ")}
+                      onChange={(event) => {
+                        handleFieldChange(event, setQ);
+                      }}
+                    />
+                  ))}
+                </RadioGroup>
+              </FormControl>
+              <hr
+                style={{
+                  backgroundColor: "#aaaaaa",
+                  height: 4,
+                }}
+              />
+            </Grid>
+            <Grid item xs={12} style={{ margin: 0 }}>
+              <Box display="flex" justifyContent="center">
+                <Button
+                  variant="contained"
+                  color="secondary"
+                  disableRipple
+                  disableFocusRipple
+                  style={styles.button}
+                  onClick={() => {
+                    dispatch(setAttentionCheck(q));
+                  }}
+                  disabled={disableSubmit}
+                >
+                  {" "}
+                  Next{" "}
+                </Button>
+              </Box>
+            </Grid>
           </Grid>
-        </Grid>
-      </div>
-    </ThemeProvider>
+        </div>
+      </ThemeProvider>
+    </StyledEngineProvider>
   );
 }
 

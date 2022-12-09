@@ -7,6 +7,7 @@ import {
   Box,
   Typography,
   ThemeProvider,
+  StyledEngineProvider,
   FormControlLabel,
 } from "@mui/material";
 import FormGroup from "@mui/material/FormGroup";
@@ -205,97 +206,99 @@ export function Consent() {
   });
 
   return (
-    <ThemeProvider theme={theme}>
-      <div>
-        <Box height="25%" alignItems="center">
-          <img
-            style={{ maxHeight: "240px" }}
-            src="generic-questionaire-icon.svg"
-            alt="Questionaire image."
-          ></img>
-        </Box>{" "}
-        <Grid container style={styles.root} justifyContent="center">
-          <Grid item xs={12}>
-            <Typography variant="h5">
-              <b>Informed Consent</b>
-              <br />
-            </Typography>
-            <hr
-              style={{
-                color: "#ea3433",
-                backgroundColor: "#ea3433",
-                height: 4,
-              }}
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <Typography paragraph>
-              <br />
-              <i>
-                {" "}
-                <u>
-                  Before you proceed, please read the following consent form
-                  carefully:{" "}
-                </u>{" "}
-              </i>
-            </Typography>
-            <ConsentTextEn />
-            <Typography paragraph>
-              <b>By selecting the checkbox and clicking &ldquo;Next&ldquo;</b>,
-              you acknowledge that you have been informed about and consent to
-              be a participant in the study described above. Make sure that your
-              questions are answered to your satisfaction before signing. You
-              are entitled to retain a copy of this consent agreement.
-            </Typography>
-          </Grid>
-          <Grid item xs={12} style={{ margin: 0 }}>
-            <FormGroup>
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={checked}
-                    onChange={handleChange}
-                    name="checkConsent"
-                    id="checkConsent"
-                    color="primary"
-                  />
-                }
-                label={
-                  <Typography>
-                    I agree that any information provided in this survey can be
-                    used for the purpose(s) mentioned in the Consent Form.
-                  </Typography>
-                }
-              />
-            </FormGroup>
-            <hr
-              style={{
-                backgroundColor: "#aaaaaa",
-                height: 4,
-              }}
-            />
-          </Grid>
-          <Grid item xs={12} style={{ margin: 0 }}>
-            <Box display="flex" justifyContent="center">
-              <Button
-                variant="contained"
-                color="secondary"
-                disableRipple
-                disableFocusRipple
-                style={styles.button}
-                onClick={() => {
-                  dispatch(consentCompleted(dateToState(DateTime.utc())));
+    <StyledEngineProvider injectFirst>
+      <ThemeProvider theme={theme}>
+        <div>
+          <Box height="25%" alignItems="center">
+            <img
+              style={{ maxHeight: "240px" }}
+              src="generic-questionaire-icon.svg"
+              alt="Questionaire image."
+            ></img>
+          </Box>{" "}
+          <Grid container style={styles.root} justifyContent="center">
+            <Grid item xs={12}>
+              <Typography variant="h5">
+                <b>Informed Consent</b>
+                <br />
+              </Typography>
+              <hr
+                style={{
+                  color: "#ea3433",
+                  backgroundColor: "#ea3433",
+                  height: 4,
                 }}
-                disabled={disableSubmit}
-              >
-                {" "}
-                Next{" "}
-              </Button>
-            </Box>
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <Typography paragraph>
+                <br />
+                <i>
+                  {" "}
+                  <u>
+                    Before you proceed, please read the following consent form
+                    carefully:{" "}
+                  </u>{" "}
+                </i>
+              </Typography>
+              <ConsentTextEn />
+              <Typography paragraph>
+                <b>By selecting the checkbox and clicking &ldquo;Next&ldquo;</b>
+                , you acknowledge that you have been informed about and consent
+                to be a participant in the study described above. Make sure that
+                your questions are answered to your satisfaction before signing.
+                You are entitled to retain a copy of this consent agreement.
+              </Typography>
+            </Grid>
+            <Grid item xs={12} style={{ margin: 0 }}>
+              <FormGroup>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={checked}
+                      onChange={handleChange}
+                      name="checkConsent"
+                      id="checkConsent"
+                      color="primary"
+                    />
+                  }
+                  label={
+                    <Typography>
+                      I agree that any information provided in this survey can
+                      be used for the purpose(s) mentioned in the Consent Form.
+                    </Typography>
+                  }
+                />
+              </FormGroup>
+              <hr
+                style={{
+                  backgroundColor: "#aaaaaa",
+                  height: 4,
+                }}
+              />
+            </Grid>
+            <Grid item xs={12} style={{ margin: 0 }}>
+              <Box display="flex" justifyContent="center">
+                <Button
+                  variant="contained"
+                  color="secondary"
+                  disableRipple
+                  disableFocusRipple
+                  style={styles.button}
+                  onClick={() => {
+                    dispatch(consentCompleted(dateToState(DateTime.utc())));
+                  }}
+                  disabled={disableSubmit}
+                >
+                  {" "}
+                  Next{" "}
+                </Button>
+              </Box>
+            </Grid>
           </Grid>
-        </Grid>
-      </div>
-    </ThemeProvider>
+        </div>
+      </ThemeProvider>
+    </StyledEngineProvider>
   );
 }
 
