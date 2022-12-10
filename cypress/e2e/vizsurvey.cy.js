@@ -61,7 +61,7 @@ function postsurvey(expects) {
               timestamps: {
                 consentShownTimestamp: 500,
                 consentCompletedTimestamp: 1000,
-                introductionShowTimestamp: 2000,
+                introductionShowTimestamp: 1500,
                 introductionCompletedTimestamp: 2000,
                 instructionsShownTimestamp: 2000,
                 instructionsCompletedTimestamp: 4000,
@@ -117,7 +117,7 @@ function demographic() {
   cy.get("#Age").type("26");
   cy.get("#gender-select-helper").select("Male");
   cy.get("#Current-Profession").type("Software Developer");
-  cy.tick(1000);
+  cy.tick(500);
   cy.get("button").contains("Next").click();
 }
 
@@ -170,7 +170,7 @@ function answerMELForm(word = true, tickAmount = 1000) {
 
 function introduction(treatmentId) {
   cy.get("#buttonNext").should("be.disabled");
-
+  cy.tick(500);
   answerMELForm(treatmentId === 1 || treatmentId === 20);
 }
 
