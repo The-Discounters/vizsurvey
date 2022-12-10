@@ -274,6 +274,7 @@ export const getAttentionCheck = (state) => state.questions.attentioncheck;
 export const getTimestamps = (state) => {
   return {
     consentShownTimestamp: state.questions.consentShownTimestamp,
+    consentCompletedTimestamp: state.questions.consentCompletedTimestamp,
     introductionShowTimestamp: state.questions.introductionShowTimestamp,
     introductionCompletedTimestamp:
       state.questions.introductionCompletedTimestamp,

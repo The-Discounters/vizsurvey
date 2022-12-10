@@ -60,6 +60,7 @@ function postsurvey(expects) {
               attentioncheck: "strongly-disagree",
               timestamps: {
                 consentShownTimestamp: 1000,
+                consentCompletedTimestamp: 1000,
                 introductionShowTimestamp: 2000,
                 introductionCompletedTimestamp: 2000,
                 instructionsShownTimestamp: 2000,
