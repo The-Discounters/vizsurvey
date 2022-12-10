@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useMemo, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { DateTime } from "luxon";
@@ -9,7 +9,6 @@ import {
   Typography,
   ThemeProvider,
 } from "@material-ui/core";
-import { StatusType } from "../features/StatusType";
 import {
   getStatus,
   debriefShownTimestamp,
@@ -17,6 +16,7 @@ import {
 } from "../features/questionSlice";
 import { dateToState } from "../features/ConversionUtil";
 import { styles, theme } from "./ScreenHelper";
+import { navigateFromStatus } from "./Navigate";
 
 const Debrief = () => {
   const navigate = useNavigate();
@@ -27,15 +27,8 @@ const Debrief = () => {
     dispatch(debriefShownTimestamp(dateToState(DateTime.utc())));
   }, []);
 
-  useEffect(() => {
-    switch (status) {
-      case StatusType.PurposeQuestionaire:
-        navigate("/purposequestionaire");
-        break;
-      case StatusType.Done:
-        navigate("/theend");
-        break;
-    }
+  useMemo(() => {
+    navigateFromStatus(navigate, status);
   }, [status]);
 
   return (
@@ -106,10 +99,6 @@ const Debrief = () => {
               style={styles.button}
               onClick={() => {
                 dispatch(debriefCompleted(dateToState(DateTime.utc())));
-                setTimeout(() => {
-                  window.open("about:blank", "_self");
-                  window.close();
-                }, 400);
               }}
             >
               {" "}

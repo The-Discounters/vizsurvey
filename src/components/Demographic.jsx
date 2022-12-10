@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useMemo, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { DateTime } from "luxon";
 import {
@@ -15,6 +15,7 @@ import FormHelperText from "@material-ui/core/FormHelperText";
 import FormControl from "@material-ui/core/FormControl";
 import NativeSelect from "@material-ui/core/NativeSelect";
 import { useSelector, useDispatch } from "react-redux";
+import { navigateFromStatus } from "./Navigate";
 import * as countries from "./countries.json";
 import { dateToState } from "../features/ConversionUtil";
 import {
@@ -34,7 +35,6 @@ import {
   nextQuestion,
   getStatus,
 } from "../features/questionSlice";
-import { StatusType } from "../features/StatusType";
 import { styles, theme } from "./ScreenHelper";
 import "../App.css";
 
@@ -68,15 +68,8 @@ export function Consent() {
     dispatch(consentShown(dateToState(DateTime.utc())));
   }, []);
 
-  useEffect(() => {
-    switch (status) {
-      case StatusType.Consent:
-        navigate("/consent");
-        break;
-      case StatusType.Introduction:
-        navigate("/introduction");
-        break;
-    }
+  useMemo(() => {
+    navigateFromStatus(navigate, status);
   }, [status]);
 
   useEffect(() => {

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useMemo, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Button,
@@ -13,6 +13,7 @@ import { DateTime } from "luxon";
 import "../App.css";
 import { ViewType } from "../features/ViewType";
 import { dateToState } from "../features/ConversionUtil";
+import { navigateFromStatus } from "./Navigate";
 import {
   introductionShown,
   introductionCompleted,
@@ -21,7 +22,6 @@ import {
   startSurvey,
 } from "../features/questionSlice";
 import { styles, theme, calcScreenValues } from "./ScreenHelper";
-import { StatusType } from "../features/StatusType";
 import { AmountType } from "../features/AmountType";
 import { MELSelectionForm } from "./MELSelectionForm";
 import { drawBarChart } from "./BarChartComponent";
@@ -64,16 +64,9 @@ const Introduction = () => {
     }
   }, [choice]);
 
-  useEffect(() => {
+  useMemo(() => {
     setChoice("");
-    switch (status) {
-      case StatusType.Instructions:
-        navigate("/instruction");
-        break;
-      case StatusType.Demographic:
-        navigate("/demographic");
-        break;
-    }
+    navigateFromStatus(navigate, status);
   }, [status]);
 
   const onClickCallback = (value) => {
@@ -346,6 +339,7 @@ const Introduction = () => {
                 } else {
                   dispatch(introductionCompleted(dateToState(DateTime.utc())));
                   dispatch(startSurvey());
+                  navigateFromStatus(navigate, status);
                 }
               }}
               disabled={disableSubmit}

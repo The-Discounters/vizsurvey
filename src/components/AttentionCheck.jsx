@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useMemo, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { DateTime } from "luxon";
@@ -21,7 +21,7 @@ import {
 } from "../features/questionSlice";
 import { dateToState } from "../features/ConversionUtil";
 import { styles, theme } from "./ScreenHelper";
-import { StatusType } from "../features/StatusType";
+import { navigateFromStatus } from "./Navigate";
 
 export function AttentionCheck() {
   const dispatch = useDispatch();
@@ -47,15 +47,8 @@ export function AttentionCheck() {
     checkEnableSubmit();
   }, [q]);
 
-  useEffect(() => {
-    switch (status) {
-      case StatusType.Survey:
-        navigate("/survey");
-        break;
-      case StatusType.Attention:
-        navigate("/attentioncheck");
-        break;
-    }
+  useMemo(() => {
+    navigateFromStatus(navigate, status);
   }, [status]);
 
   const handleFieldChange = (event, setter) => {

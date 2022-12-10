@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useMemo, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { DateTime } from "luxon";
 import {
@@ -18,7 +18,7 @@ import {
   consentCompleted,
   getStatus,
 } from "../features/questionSlice";
-import { StatusType } from "../features/StatusType";
+import { navigateFromStatus } from "./Navigate";
 import { styles, theme } from "./ScreenHelper";
 import "../App.css";
 
@@ -29,6 +29,8 @@ export function Consent() {
   const [checked, setChecked] = React.useState(false);
   const status = useSelector(getStatus);
 
+  const navigate = useNavigate();
+
   const handleChange = (event) => {
     setChecked(event.target.checked);
     setDisableSubmit(!event.target.checked);
@@ -38,19 +40,9 @@ export function Consent() {
     dispatch(consentShown(dateToState(DateTime.utc())));
   }, []);
 
-  useEffect(() => {
-    switch (status) {
-      case StatusType.Demographic:
-        navigate("/demographic");
-        break;
-    }
+  useMemo(() => {
+    navigateFromStatus(navigate, status);
   }, [status]);
-
-  const navigate = useNavigate();
-
-  console.log(
-    "process.env.REACT_APP_PAYMENT_AMOUT=" + process.env.REACT_APP_PAYMENT_AMOUT
-  );
 
   const ConsentTextEn = () => {
     return (
