@@ -64,6 +64,7 @@ function postsurvey(expects) {
                 introductionCompletedTimestamp: 2000,
                 instructionsShownTimestamp: 2000,
                 instructionsCompletedTimestamp: 4000,
+                attentionCheckShownTimestamp: 4000,
                 financialLitSurveyQuestionsShownTimestamp: 6000,
                 purposeSurveyQuestionsShownTimestamp: 9000,
                 debriefShownTimestamp: null, // TODO
@@ -120,7 +121,7 @@ function demographic() {
 }
 
 function answerMELForm(word = true, tickAmount = 1000) {
-  let waitAmount = 10
+  let waitAmount = 10;
   if (word) {
     cy.get("#earlierAmount").should(
       "have.css",
@@ -241,8 +242,8 @@ describe("vizsurvey", () => {
     answerMELForm(true, 100);
     answerMELForm(true, 100);
 
-// TODO    cy.get("#attention-check-strongly-disagree").click();
-// TODO   cy.get("button").contains("Next").click();
+    // TODO    cy.get("#attention-check-strongly-disagree").click();
+    // TODO   cy.get("button").contains("Next").click();
 
     cy.tick(1000);
 
