@@ -59,7 +59,7 @@ function postsurvey(expects) {
               },
               attentioncheck: "strongly-disagree",
               timestamps: {
-                consentShownTimestamp: 1000,
+                consentShownTimestamp: 500,
                 consentCompletedTimestamp: 1000,
                 introductionShowTimestamp: 2000,
                 introductionCompletedTimestamp: 2000,
@@ -186,8 +186,9 @@ function visitTreatment(treatmentId, width = 1200, height = 700) {
     baseURL +
       `?treatment_id=${treatmentId}&session_id=1&participant_id=${participantId}`
   );
-  cy.tick(1000);
+  cy.tick(500);
   cy.get("#checkConsent").click();
+  cy.tick(500);
   cy.get("button").contains("Next").click();
   demographic();
   introduction(treatmentId);
