@@ -120,6 +120,7 @@ function demographic() {
 }
 
 function answerMELForm(word = true, tickAmount = 1000) {
+  let waitAmount = 10
   if (word) {
     cy.get("#earlierAmount").should(
       "have.css",
@@ -130,7 +131,7 @@ function answerMELForm(word = true, tickAmount = 1000) {
     // bar
     cy.get("#earlierAmount").should("have.attr", "fill", "steelblue");
   }
-  cy.wait(100);
+  cy.wait(waitAmount);
   /*
   cy.get("#earlierAmount").should(
     "have.css",
@@ -138,7 +139,7 @@ function answerMELForm(word = true, tickAmount = 1000) {
     "rgb(255, 255, 255)"
   );
 */
-  cy.wait(100);
+  cy.wait(waitAmount);
   if (word) {
     cy.get("#earlierAmount")
       .realHover()
@@ -149,14 +150,14 @@ function answerMELForm(word = true, tickAmount = 1000) {
     cy.get("#earlierAmount").click();
     cy.get("#earlierAmount").should("have.attr", "fill", "lightblue");
   }
-  cy.wait(100);
+  cy.wait(waitAmount);
   if (word) {
     cy.get("#earlierAmount")
       .realHover()
       .should("have.css", "backgroundColor", "rgb(173, 216, 230)");
   }
   //cy.get("#earlierAmount").should("have.css", "borderColor", "rgb(0, 0, 0)");
-  cy.wait(100);
+  cy.wait(waitAmount);
   cy.get("button")
     .contains("Next")
     .realHover()
