@@ -34,6 +34,8 @@ export const questionSlice = createSlice({
     selfDescribeGender: "",
     profession: "",
     attentioncheck: null,
+    attentionCheckShownTimestamp: null,
+    attentionCheckCompletedTimestamp: null,
     consentShownTimestamp: null,
     introductionShowTimestamp: null,
     introductionCompletedTimestamp: null,
@@ -111,6 +113,7 @@ export const questionSlice = createSlice({
     },
     setAttentionCheck(state, action) {
       state.attentioncheck = action.payload;
+      state.attentionCheckCompletedTimestamp = action.payload;
       state.status = qe.nextStatus(state, false);
     },
     loadTreatment(state) {
@@ -153,6 +156,9 @@ export const questionSlice = createSlice({
       qe.setLatestAnswerShown(state, action);
       return state;
     },
+    attentionCheckShown(state, action) {
+      state.attentionCheckShownTimestamp = action.payload;
+    },
     // we define our actions on the slice of global store data here.
     answer(state, action) {
       qe.answerCurrentQuestion(state, action);
@@ -193,6 +199,8 @@ export const questionSlice = createSlice({
       state.selfDescribeGender = "";
       state.profession = "";
       state.attentioncheck = null;
+      state.attentionCheckShownTimestamp = null;
+      state.attentionCheckCompletedTimestamp = null;
       state.consentShownTimestamp = null;
       state.consentCompletedTimestamp = null;
       state.introductionShowTimestamp = null;
@@ -277,6 +285,8 @@ export const getTimestamps = (state) => {
     instructionsShownTimestamp: state.questions.instructionsShownTimestamp,
     instructionsCompletedTimestamp:
       state.questions.instructionsCompletedTimestamp,
+    attentionCheckShownTimestamp: state.attentionCheckShownTimestamp,
+    attentionCheckCompletedTimestamp: state.attentionCheckCompletedTimestamp,
     financialLitSurveyQuestionsShownTimestamp:
       state.questions.financialLitSurveyQuestionsShownTimestamp,
     purposeSurveyQuestionsShownTimestamp:
@@ -340,6 +350,7 @@ export const {
   instructionsCompleted,
   introductionShown,
   introductionCompleted,
+  attentionCheckShown,
   financialLitSurveyQuestionsShown,
   purposeSurveyQuestionsShown,
   debriefShownTimestamp,

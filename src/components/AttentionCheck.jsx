@@ -16,7 +16,7 @@ import {
 } from "@material-ui/core";
 import {
   getStatus,
-  financialLitSurveyQuestionsShown,
+  attentionCheckShown,
   setAttentionCheck,
 } from "../features/questionSlice";
 import { dateToState } from "../features/ConversionUtil";
@@ -32,7 +32,7 @@ export function AttentionCheck() {
   const [q, setQ] = React.useState("");
 
   useEffect(() => {
-    dispatch(financialLitSurveyQuestionsShown(dateToState(DateTime.utc())));
+    dispatch(attentionCheckShown(dateToState(DateTime.utc())));
   }, []);
 
   const checkEnableSubmit = () => {
@@ -140,7 +140,7 @@ export function AttentionCheck() {
                 disableFocusRipple
                 style={styles.button}
                 onClick={() => {
-                  dispatch(setAttentionCheck(q));
+                  dispatch(setAttentionCheck(dateToState(DateTime.utc())));
                 }}
                 disabled={disableSubmit}
               >
