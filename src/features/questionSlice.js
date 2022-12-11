@@ -39,11 +39,11 @@ export const questionSlice = createSlice({
     introductionCompletedTimestamp: null,
     instructionsShownTimestamp: null,
     instructionsCompletedTimestamp: null,
+    attentionCheckShownTimestamp: null,
     financialLitSurveyQuestionsShownTimestamp: null,
     purposeSurveyQuestionsShownTimestamp: null,
     debriefShownTimestamp: null,
     debriefCompleted: null,
-    feedback: null,
     theEndShownTimestamp: null,
     treatments: [],
     answers: [],
@@ -163,6 +163,9 @@ export const questionSlice = createSlice({
     nextQuestion(state) {
       qe.incNextQuestion(state);
     },
+    attentionCheckShown(state, action) {
+      state.attentionCheckShownTimestamp = action.payload;
+    },
     financialLitSurveyQuestionsShown(state, action) {
       state.financialLitSurveyQuestionsShownTimestamp = action.payload;
     },
@@ -199,6 +202,7 @@ export const questionSlice = createSlice({
       state.introductionCompletedTimestamp = null;
       state.instructionsShownTimestamp = null;
       state.instructionsCompletedTimestamp = null;
+      state.attentionCheckShownTimestamp = null;
       state.financialLitSurveyQuestionsShownTimestamp = null;
       state.purposeSurveyQuestionsShownTimestamp = null;
       state.debriefShownTimestamp = null;
@@ -271,12 +275,14 @@ export const getAttentionCheck = (state) => state.questions.attentioncheck;
 export const getTimestamps = (state) => {
   return {
     consentShownTimestamp: state.questions.consentShownTimestamp,
+    consentCompletedTimestamp: state.questions.consentCompletedTimestamp,
     introductionShowTimestamp: state.questions.introductionShowTimestamp,
     introductionCompletedTimestamp:
       state.questions.introductionCompletedTimestamp,
     instructionsShownTimestamp: state.questions.instructionsShownTimestamp,
     instructionsCompletedTimestamp:
       state.questions.instructionsCompletedTimestamp,
+    attentionCheckShownTimestamp: state.questions.attentionCheckShownTimestamp,
     financialLitSurveyQuestionsShownTimestamp:
       state.questions.financialLitSurveyQuestionsShownTimestamp,
     purposeSurveyQuestionsShownTimestamp:
@@ -308,8 +314,6 @@ export const fetchParticipantId = (state) => state.questions.participantId;
 
 export const fetchSessionId = (state) => state.questions.sessionId;
 
-export const getFeedback = (state) => state.questions.feedback;
-
 // Action creators are generated for each case reducer function
 export const {
   loadTreatment,
@@ -340,6 +344,7 @@ export const {
   instructionsCompleted,
   introductionShown,
   introductionCompleted,
+  attentionCheckShown,
   financialLitSurveyQuestionsShown,
   purposeSurveyQuestionsShown,
   debriefShownTimestamp,

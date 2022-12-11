@@ -1,6 +1,5 @@
 import React, { useMemo, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { DateTime } from "luxon";
 import {
   Grid,
   Box,
@@ -17,9 +16,7 @@ import NativeSelect from "@material-ui/core/NativeSelect";
 import { useSelector, useDispatch } from "react-redux";
 import { navigateFromStatus } from "./Navigate";
 import * as countries from "./countries.json";
-import { dateToState } from "../features/ConversionUtil";
 import {
-  consentShown,
   getCountryOfResidence,
   getVizFamiliarity,
   getAge,
@@ -64,9 +61,7 @@ export function Consent() {
 
   const navigate = useNavigate();
 
-  useEffect(() => {
-    dispatch(consentShown(dateToState(DateTime.utc())));
-  }, []);
+  useEffect(() => {}, []);
 
   useMemo(() => {
     navigateFromStatus(navigate, status);
