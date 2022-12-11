@@ -34,12 +34,13 @@ export const questionSlice = createSlice({
     selfDescribeGender: "",
     profession: "",
     attentioncheck: null,
+    attentionCheckShownTimestamp: null,
+    attentionCheckCompletedTimestamp: null,
     consentShownTimestamp: null,
     introductionShowTimestamp: null,
     introductionCompletedTimestamp: null,
     instructionsShownTimestamp: null,
     instructionsCompletedTimestamp: null,
-    attentionCheckShownTimestamp: null,
     financialLitSurveyQuestionsShownTimestamp: null,
     purposeSurveyQuestionsShownTimestamp: null,
     debriefShownTimestamp: null,
@@ -110,7 +111,8 @@ export const questionSlice = createSlice({
       state.purposeSurvey[action.payload.key] = action.payload.value;
     },
     setAttentionCheck(state, action) {
-      state.attentioncheck = action.payload;
+      state.attentioncheck = action.payload.value;
+      state.attentionCheckCompletedTimestamp = action.payload.timestamp;
       state.status = qe.nextStatus(state, false);
     },
     loadTreatment(state) {
@@ -153,6 +155,9 @@ export const questionSlice = createSlice({
       qe.setLatestAnswerShown(state, action);
       return state;
     },
+    attentionCheckShown(state, action) {
+      state.attentionCheckShownTimestamp = action.payload;
+    },
     // we define our actions on the slice of global store data here.
     answer(state, action) {
       qe.answerCurrentQuestion(state, action);
@@ -162,9 +167,6 @@ export const questionSlice = createSlice({
     },
     nextQuestion(state) {
       qe.incNextQuestion(state);
-    },
-    attentionCheckShown(state, action) {
-      state.attentionCheckShownTimestamp = action.payload;
     },
     financialLitSurveyQuestionsShown(state, action) {
       state.financialLitSurveyQuestionsShownTimestamp = action.payload;
@@ -196,6 +198,8 @@ export const questionSlice = createSlice({
       state.selfDescribeGender = "";
       state.profession = "";
       state.attentioncheck = null;
+      state.attentionCheckShownTimestamp = null;
+      state.attentionCheckCompletedTimestamp = null;
       state.consentShownTimestamp = null;
       state.consentCompletedTimestamp = null;
       state.introductionShowTimestamp = null;
@@ -282,7 +286,8 @@ export const getTimestamps = (state) => {
     instructionsShownTimestamp: state.questions.instructionsShownTimestamp,
     instructionsCompletedTimestamp:
       state.questions.instructionsCompletedTimestamp,
-    attentionCheckShownTimestamp: state.questions.attentionCheckShownTimestamp,
+    attentionCheckShownTimestamp: state.attentionCheckShownTimestamp,
+    attentionCheckCompletedTimestamp: state.attentionCheckCompletedTimestamp,
     financialLitSurveyQuestionsShownTimestamp:
       state.questions.financialLitSurveyQuestionsShownTimestamp,
     purposeSurveyQuestionsShownTimestamp:

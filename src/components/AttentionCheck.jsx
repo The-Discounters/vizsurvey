@@ -29,7 +29,7 @@ export function AttentionCheck() {
 
   const status = useSelector(getStatus);
   const [disableSubmit, setDisableSubmit] = React.useState(true);
-  const [q, setQ] = React.useState("");
+  const [attentionCheckValue, setAttentionCheckValue] = React.useState("");
 
   useEffect(() => {
     dispatch(attentionCheckShown(dateToState(DateTime.utc())));
@@ -37,7 +37,7 @@ export function AttentionCheck() {
 
   const checkEnableSubmit = () => {
     let result = false;
-    if (q.length <= 0) {
+    if (attentionCheckValue.length <= 0) {
       result = true;
     }
     setDisableSubmit(result);
@@ -45,7 +45,7 @@ export function AttentionCheck() {
 
   useEffect(() => {
     checkEnableSubmit();
-  }, [q]);
+  }, [attentionCheckValue]);
 
   useMemo(() => {
     navigateFromStatus(navigate, status);
@@ -114,11 +114,11 @@ export function AttentionCheck() {
                     key={index1}
                     value={option}
                     id={"attention-check-" + option}
-                    checked={q === option}
+                    checked={attentionCheckValue === option}
                     control={<Radio />}
                     label={option.replace("-", " ")}
                     onChange={(event) => {
-                      handleFieldChange(event, setQ);
+                      handleFieldChange(event, setAttentionCheckValue);
                     }}
                   />
                 ))}
@@ -140,7 +140,12 @@ export function AttentionCheck() {
                 disableFocusRipple
                 style={styles.button}
                 onClick={() => {
-                  dispatch(setAttentionCheck(q));
+                  dispatch(
+                    setAttentionCheck({
+                      value: attentionCheckValue,
+                      timestamp: dateToState(DateTime.utc()),
+                    })
+                  );
                 }}
                 disabled={disableSubmit}
               >
