@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useMemo, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { DateTime } from "luxon";
@@ -15,7 +15,6 @@ import {
   ThemeProvider,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import { StatusType } from "../features/StatusType";
 import {
   getStatus,
   financialLitSurveyQuestionsShown,
@@ -27,6 +26,7 @@ import {
 import { dateToState } from "../features/ConversionUtil";
 import { POST_SURVEY_QUESTIONS } from "../features/postsurveyquestionsfinanciallit";
 import { styles, theme } from "./ScreenHelper";
+import { navigateFromStatus } from "./Navigate";
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
@@ -68,15 +68,8 @@ export function PostSurvey() {
     dispatch(financialLitSurveyQuestionsShown(dateToState(DateTime.utc())));
   }, []);
 
-  useEffect(() => {
-    switch (status) {
-      case StatusType.Survey:
-        navigate("/survey");
-        break;
-      case StatusType.PurposeQuestionaire:
-        navigate("/purposequestionaire");
-        break;
-    }
+  useMemo(() => {
+    navigateFromStatus(navigate, status);
   }, [status]);
 
   useEffect(() => {

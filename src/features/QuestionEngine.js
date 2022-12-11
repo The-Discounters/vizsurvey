@@ -303,7 +303,7 @@ export class QuestionEngine {
       case StatusType.Done:
         return StatusType.Debrief;
       case StatusType.Debrief:
-        return StatusType.Debrief;
+        return StatusType.Finished;
       case StatusType.Error:
         return StatusType.Error;
     }

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useMemo, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { DateTime } from "luxon";
 import {
@@ -18,7 +18,7 @@ import {
   consentCompleted,
   getStatus,
 } from "../features/questionSlice";
-import { StatusType } from "../features/StatusType";
+import { navigateFromStatus } from "./Navigate";
 import { styles, theme } from "./ScreenHelper";
 import "../App.css";
 
@@ -29,6 +29,8 @@ export function Consent() {
   const [checked, setChecked] = React.useState(false);
   const status = useSelector(getStatus);
 
+  const navigate = useNavigate();
+
   const handleChange = (event) => {
     setChecked(event.target.checked);
     setDisableSubmit(!event.target.checked);
@@ -38,19 +40,9 @@ export function Consent() {
     dispatch(consentShown(dateToState(DateTime.utc())));
   }, []);
 
-  useEffect(() => {
-    switch (status) {
-      case StatusType.Demographic:
-        navigate("/demographic");
-        break;
-    }
+  useMemo(() => {
+    navigateFromStatus(navigate, status);
   }, [status]);
-
-  const navigate = useNavigate();
-
-  console.log(
-    "process.env.REACT_APP_PAYMENT_AMOUT=" + process.env.REACT_APP_PAYMENT_AMOUT
-  );
 
   const ConsentTextEn = () => {
     return (
@@ -87,9 +79,13 @@ export function Consent() {
         </Typography>
         <Typography paragraph>
           <b>Procedures to be followed: </b>You will be presented with a series
-          of choices about receiving money at different points in time.
-          &nbsp;&nbsp;<b>You will choose</b> either the earlier or later amount.
-          The study should take about 10 minutes to complete.
+          of choices about receiving money at different points in time.&nbsp;
+          <b>You will choose</b> either the earlier or later amount. The study
+          should take about 10 minutes to complete.&nbsp;
+          <b>
+            This survey is not designed to render on a mobile device and should
+            be taken on a laptop or desktop computer.
+          </b>
         </Typography>
         <Typography paragraph>
           <b>Risks to study participants:</b> To the best of the researchers
@@ -259,7 +255,7 @@ export function Consent() {
                 label={
                   <Typography>
                     I agree that any information provided in this survey can be
-                    used for the purpose(s) mentioned in the Consent Form
+                    used for the purpose(s) mentioned in the Consent Form.
                   </Typography>
                 }
               />

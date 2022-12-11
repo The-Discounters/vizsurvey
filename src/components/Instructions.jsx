@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useMemo, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Button,
@@ -15,7 +15,7 @@ import {
   instructionsCompleted,
   getStatus,
 } from "../features/questionSlice";
-import { StatusType } from "../features/StatusType";
+import { navigateFromStatus } from "./Navigate";
 import { dateToState } from "../features/ConversionUtil";
 import { styles, theme } from "./ScreenHelper";
 
@@ -28,15 +28,8 @@ const Instructions = () => {
     dispatch(instructionsShown(dateToState(DateTime.utc())));
   }, []);
 
-  useEffect(() => {
-    switch (status) {
-      case StatusType.Introduction:
-        navigate("/introduction");
-        break;
-      case StatusType.Survey:
-        navigate("/survey");
-        break;
-    }
+  useMemo(() => {
+    navigateFromStatus(navigate, status);
   }, [status]);
 
   return (

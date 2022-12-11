@@ -177,6 +177,7 @@ export const questionSlice = createSlice({
     },
     debriefCompleted(state, action) {
       state.debriefCompleted = action.payload;
+      state.status = qe.nextStatus(state, false);
     },
     theEndShownTimestamp(state, action) {
       state.theEndShownTimestamp = action.payload;

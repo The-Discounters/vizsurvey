@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useMemo, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { DateTime } from "luxon";
@@ -29,8 +29,8 @@ import {
   selectAllQuestions,
   writeAnswers,
 } from "../features/questionSlice";
-import { StatusType } from "../features/StatusType";
 import { FileIOAdapter } from "../features/FileIOAdapter";
+import { navigateFromStatus } from "./Navigate";
 
 const TheEnd = () => {
   const dispatch = useDispatch();
@@ -56,15 +56,8 @@ const TheEnd = () => {
     dispatch(theEndShownTimestamp(dateToState(DateTime.utc())));
   }, []);
 
-  useEffect(() => {
-    switch (status) {
-      case StatusType.PurposeQuestionaire:
-        navigate("/purposequestionaire");
-        break;
-      case StatusType.Debrief:
-        navigate("/debrief");
-        break;
-    }
+  useMemo(() => {
+    navigateFromStatus(navigate, status);
   }, [status]);
 
   const handleFieldChange = (event, setter) => {
