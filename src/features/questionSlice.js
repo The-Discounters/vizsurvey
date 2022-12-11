@@ -112,8 +112,8 @@ export const questionSlice = createSlice({
       state.purposeSurvey[action.payload.key] = action.payload.value;
     },
     setAttentionCheck(state, action) {
-      state.attentioncheck = action.payload;
-      state.attentionCheckCompletedTimestamp = action.payload;
+      state.attentioncheck = action.payload.value;
+      state.attentionCheckCompletedTimestamp = action.payload.timestamp;
       state.status = qe.nextStatus(state, false);
     },
     loadTreatment(state) {
