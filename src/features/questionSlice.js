@@ -45,7 +45,6 @@ export const questionSlice = createSlice({
     purposeSurveyQuestionsShownTimestamp: null,
     debriefShownTimestamp: null,
     debriefCompleted: null,
-    feedback: null,
     theEndShownTimestamp: null,
     treatments: [],
     answers: [],
@@ -207,6 +206,7 @@ export const questionSlice = createSlice({
       state.introductionCompletedTimestamp = null;
       state.instructionsShownTimestamp = null;
       state.instructionsCompletedTimestamp = null;
+      state.attentionCheckShownTimestamp = null;
       state.financialLitSurveyQuestionsShownTimestamp = null;
       state.purposeSurveyQuestionsShownTimestamp = null;
       state.debriefShownTimestamp = null;
@@ -279,6 +279,7 @@ export const getAttentionCheck = (state) => state.questions.attentioncheck;
 export const getTimestamps = (state) => {
   return {
     consentShownTimestamp: state.questions.consentShownTimestamp,
+    consentCompletedTimestamp: state.questions.consentCompletedTimestamp,
     introductionShowTimestamp: state.questions.introductionShowTimestamp,
     introductionCompletedTimestamp:
       state.questions.introductionCompletedTimestamp,
@@ -317,8 +318,6 @@ export const fetchTreatmentId = (state) => state.questions.treatmentId;
 export const fetchParticipantId = (state) => state.questions.participantId;
 
 export const fetchSessionId = (state) => state.questions.sessionId;
-
-export const getFeedback = (state) => state.questions.feedback;
 
 // Action creators are generated for each case reducer function
 export const {
