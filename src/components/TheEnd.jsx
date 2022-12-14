@@ -15,41 +15,17 @@ import { dateToState } from "../features/ConversionUtil";
 import { styles, theme } from "./ScreenHelper";
 import {
   getStatus,
-  getParticipant,
-  getFinancialLitSurvey,
   nextQuestion,
-  getCountryOfResidence,
-  getVizFamiliarity,
-  getAge,
-  getGender,
-  getSelfDescribeGender,
-  getProfession,
-  getAttentionCheck,
-  getTimestamps,
-  selectAllQuestions,
   writeAnswers,
 } from "../features/questionSlice";
-import { FileIOAdapter } from "../features/FileIOAdapter";
 import { navigateFromStatus } from "./Navigate";
 
 const TheEnd = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const participantId = useSelector(getParticipant);
-  const answers = useSelector(selectAllQuestions);
-  const io = new FileIOAdapter();
-  const csv = io.convertToCSV(answers);
-  const postsurvey = useSelector(getFinancialLitSurvey);
-  const countryOfResidence = useSelector(getCountryOfResidence);
-  const vizFamiliarity = useSelector(getVizFamiliarity);
-  const age = useSelector(getAge);
-  const gender = useSelector(getGender);
-  const selfDescribeGender = useSelector(getSelfDescribeGender);
-  const profession = useSelector(getProfession);
-  const attentioncheck = useSelector(getAttentionCheck);
-  const timestamps = useSelector(getTimestamps);
   const status = useSelector(getStatus);
+  const consentChecked = useSelector(consentChecked);
   const [feedback, setFeedback] = React.useState("");
 
   useEffect(() => {
@@ -127,26 +103,7 @@ const TheEnd = () => {
               disableFocusRipple
               style={styles.button}
               onClick={() => {
-                dispatch(
-                  writeAnswers({
-                    csv: csv,
-                    participantId: participantId,
-                    postSurveyAnswers: {
-                      postsurvey: postsurvey,
-                      demographics: {
-                        countryOfResidence: countryOfResidence,
-                        vizFamiliarity: vizFamiliarity,
-                        age: age,
-                        gender: gender,
-                        selfDescribeGender: selfDescribeGender,
-                        profession: profession,
-                      },
-                      attentioncheck: attentioncheck,
-                      timestamps: timestamps,
-                      feedback: feedback,
-                    },
-                  })
-                );
+                dispatch(writeAnswers());
                 dispatch(nextQuestion());
               }}
             >

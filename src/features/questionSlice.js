@@ -9,7 +9,32 @@ const io = new FileIOAdapter();
 
 export const writeAnswers = createAsyncThunk(
   "survey/writeAnswers",
-  io.writeAnswers
+  async (arg, { getState }) => {
+    const state = getState();
+    const csv = io.convertToCSV(state.answers);
+    io.writeAnswers({
+      treatmentId: state.treatmentId,
+      participantId: state.participantId,
+      sessionId: state.sessionId,
+      answers: csv,
+      other: {
+        financialLitSurvey: state.financialLitSurvey,
+        purposeSurvey: state.purposeSurvey,
+        demographics: {
+          countryOfResidence: state.countryOfResidence,
+          vizFamiliarity: state.vizFamiliarity,
+          age: state.age,
+          gender: state.gender,
+          selfDescribeGender: state.selfDescribeGender,
+          profession: state.profession,
+        },
+        consentChecked: state.consentChecked,
+        attentionCheck: state.attentioncheck,
+        timestamps: state.timestamps,
+        feedback: state.feedback,
+      },
+    });
+  }
 );
 
 function getRandomIntInclusive(min, max) {
@@ -33,6 +58,8 @@ export const questionSlice = createSlice({
     gender: "",
     selfDescribeGender: "",
     profession: "",
+    consentChecked: null,
+    consentCompletedTimestamp: false,
     attentioncheck: null,
     attentionCheckShownTimestamp: null,
     attentionCheckCompletedTimestamp: null,
@@ -131,6 +158,7 @@ export const questionSlice = createSlice({
       state.consentShownTimestamp = action.payload;
     },
     consentCompleted(state, action) {
+      state.consentChecked = true;
       state.consentCompletedTimestamp = action.payload;
       state.status = qe.nextStatus(state, false);
     },
@@ -201,6 +229,7 @@ export const questionSlice = createSlice({
       state.attentionCheckShownTimestamp = null;
       state.attentionCheckCompletedTimestamp = null;
       state.consentShownTimestamp = null;
+      state.consentChecked = false;
       state.consentCompletedTimestamp = null;
       state.introductionShowTimestamp = null;
       state.introductionCompletedTimestamp = null;
@@ -318,6 +347,8 @@ export const fetchTreatmentId = (state) => state.questions.treatmentId;
 export const fetchParticipantId = (state) => state.questions.participantId;
 
 export const fetchSessionId = (state) => state.questions.sessionId;
+
+export const getConsentChecked = (state) => state.questions.consentChecked;
 
 // Action creators are generated for each case reducer function
 export const {

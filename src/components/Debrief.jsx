@@ -76,6 +76,42 @@ const Debrief = () => {
             of choosing the longer-term option.
           </Typography>
           <Typography paragraph>
+            For more information about this research or about the rights of
+            research participants, or if you would like to get in touch with us
+            for any other reason the contact information from the consent form
+            is repeated below:
+          </Typography>
+          {[
+            {
+              name: "Peter Cordone",
+              phone: "(617)678-5190",
+              email: "pncordone@wpi.edu",
+            },
+            {
+              name: "IRB Manager Ruth McKeogh",
+              phone: "(508)831-6699",
+              email: "irb@wpi.edu",
+            },
+            {
+              name: "Human Protection Administrator Gabriel Johnson",
+              phone: "(508)831-4989",
+              email: "gjohnson@wpi.edu",
+            },
+          ].map(({ name, phone, email }, index) => {
+            return (
+              <Typography key={index} paragraph>
+                <span key={index}>
+                  {name}
+                  <br />
+                  Tel: {phone}
+                  <br />
+                  Email: &lt;<a href={`mailto:${email}`}>{email}</a>&gt;
+                  <br />
+                </span>
+              </Typography>
+            );
+          })}
+          <Typography paragraph>
             <b>
               Please remember to enter the code C1KQNGZK into Prolific before
               you click exit or you will not be paid $3 USD.
