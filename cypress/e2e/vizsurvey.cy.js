@@ -69,7 +69,7 @@ function postsurvey(expects) {
                 financialLitSurveyQuestionsShownTimestamp: 6000,
                 purposeSurveyQuestionsShownTimestamp: 9000,
                 debriefShownTimestamp: null, // TODO
-                debriefCompleted: null, // TODO
+                debriefCompletedTimestamp: null, // TODO
                 theEndShownTimestamp: 10000,
               },
               feedback: "had trouble seeing numbers",

@@ -44,7 +44,7 @@ export const questionSlice = createSlice({
     financialLitSurveyQuestionsShownTimestamp: null,
     purposeSurveyQuestionsShownTimestamp: null,
     debriefShownTimestamp: null,
-    debriefCompleted: null,
+    debriefCompletedTimestamp: null,
     theEndShownTimestamp: null,
     treatments: [],
     answers: [],
@@ -178,7 +178,7 @@ export const questionSlice = createSlice({
       state.debriefShownTimestamp = action.payload;
     },
     debriefCompleted(state, action) {
-      state.debriefCompleted = action.payload;
+      state.debriefCompletedTimestamp = action.payload;
       state.status = qe.nextStatus(state, false);
     },
     theEndShownTimestamp(state, action) {
@@ -293,7 +293,7 @@ export const getTimestamps = (state) => {
     purposeSurveyQuestionsShownTimestamp:
       state.questions.purposeSurveyQuestionsShownTimestamp,
     debriefShownTimestamp: state.questions.debriefShownTimestamp,
-    debriefCompleted: state.questions.debriefCompleted,
+    debriefCompletedTimestamp: state.questions.debriefCompletedTimestamp,
     theEndShownTimestamp: state.questions.theEndShownTimestamp,
   };
 };

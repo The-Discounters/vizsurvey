@@ -64,7 +64,7 @@ JSON.stringify({
     "instructionsCompletedTimestamp": 4000,
     "financialLitSurveyQuestionsShownTimestamp": 8000,
     "debriefShownTimestamp": null,
-    "debriefCompleted": null,
+    "debriefCompletedTimestamp": null,
     "theEndShownTimestamp": null
   },
   "fincanialLit": {

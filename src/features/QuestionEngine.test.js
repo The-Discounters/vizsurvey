@@ -56,7 +56,7 @@ describe("QuestionEngine tests", () => {
     expect((state.status = qe.nextStatus(state, false))).toBe(
       StatusType.Debrief
     );
-    expect(qe.nextStatus(state, false)).toBe(StatusType.Debrief);
+    expect(qe.nextStatus(state, false)).toBe(StatusType.Finished);
   });
 
   test("previousStatus testing state transitions.", () => {
