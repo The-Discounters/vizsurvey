@@ -172,4 +172,16 @@ export class FileIOAdapter {
       uploadFileOffline(fileNamePostSurveyAnswers, postSurveyAnswersStr);
     }
   };
+
+  writeFeedback = async (data) => {
+    const fileNameFeedback = "feedback-" + data.participantId + ".txt";
+
+    if (process.env.REACT_APP_AWS_ENABLED) {
+      console.log("AWS ENABLED");
+      uploadFile(fileNameFeedback, data.feedback);
+    } else {
+      console.log("AWS DISABLED");
+      uploadFileOffline(fileNameFeedback, data.feedback);
+    }
+  };
 }

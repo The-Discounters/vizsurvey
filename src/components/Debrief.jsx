@@ -9,10 +9,13 @@ import {
   Typography,
   ThemeProvider,
 } from "@material-ui/core";
+import TextField from "@mui/material/TextField";
 import {
   getStatus,
   debriefShownTimestamp,
   debriefCompleted,
+  getParticipant,
+  writeFeedback,
 } from "../features/questionSlice";
 import { dateToState } from "../features/ConversionUtil";
 import { styles, theme } from "./ScreenHelper";
@@ -21,7 +24,9 @@ import { navigateFromStatus } from "./Navigate";
 const Debrief = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const participantId = useSelector(getParticipant);
   const status = useSelector(getStatus);
+  const [feedback, setFeedback] = React.useState("");
 
   useEffect(() => {
     dispatch(debriefShownTimestamp(dateToState(DateTime.utc())));
@@ -30,6 +35,10 @@ const Debrief = () => {
   useMemo(() => {
     navigateFromStatus(navigate, status);
   }, [status]);
+
+  const handleFieldChange = (event, setter) => {
+    setter(event.target.value);
+  };
 
   return (
     <ThemeProvider theme={theme}>
@@ -81,7 +90,28 @@ const Debrief = () => {
               you click exit or you will not be paid $3 USD.
             </b>
           </Typography>
-
+        </Grid>
+        <Grid item xs={12}>
+          <Typography paragraph>
+            We hope you have enjoyed taking this survey and welcome any feedback
+            or questions by filling out the text box below. If you encountered
+            any technical problems please let us know.
+          </Typography>
+        </Grid>
+        <Grid item xs={12}>
+          <TextField
+            id="Feedback"
+            fullWidth
+            value={feedback}
+            onChange={(event) => {
+              handleFieldChange(event, setFeedback);
+            }}
+            multiline
+            rows={8}
+            label="Feedback"
+          />
+        </Grid>
+        <Grid item xs={12}>
           <hr
             style={{
               backgroundColor: "#aaaaaa",
@@ -98,6 +128,12 @@ const Debrief = () => {
               disableFocusRipple
               style={styles.button}
               onClick={() => {
+                dispatch(
+                  writeFeedback({
+                    participantId: participantId,
+                    feedback: feedback,
+                  })
+                );
                 dispatch(debriefCompleted(dateToState(DateTime.utc())));
               }}
             >

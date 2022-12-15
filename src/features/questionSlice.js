@@ -12,6 +12,11 @@ export const writeAnswers = createAsyncThunk(
   io.writeAnswers
 );
 
+export const writeFeedback = createAsyncThunk(
+  "survey/writeFeedback",
+  io.writeFeedback
+);
+
 function getRandomIntInclusive(min, max) {
   min = Math.ceil(min);
   max = Math.floor(max);

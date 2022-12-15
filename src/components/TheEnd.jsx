@@ -9,7 +9,6 @@ import {
   ThemeProvider,
   Button,
 } from "@material-ui/core";
-import TextField from "@mui/material/TextField";
 import { theEndShownTimestamp } from "../features/questionSlice";
 import { dateToState } from "../features/ConversionUtil";
 import { styles, theme } from "./ScreenHelper";
@@ -50,7 +49,6 @@ const TheEnd = () => {
   const attentioncheck = useSelector(getAttentionCheck);
   const timestamps = useSelector(getTimestamps);
   const status = useSelector(getStatus);
-  const [feedback, setFeedback] = React.useState("");
 
   useEffect(() => {
     dispatch(theEndShownTimestamp(dateToState(DateTime.utc())));
@@ -59,10 +57,6 @@ const TheEnd = () => {
   useMemo(() => {
     navigateFromStatus(navigate, status);
   }, [status]);
-
-  const handleFieldChange = (event, setter) => {
-    setter(event.target.value);
-  };
 
   return (
     <ThemeProvider theme={theme}>
@@ -79,26 +73,6 @@ const TheEnd = () => {
         </Grid>
         <Grid item xs={12}>
           <Typography paragraph>
-            We hope you have enjoyed taking this survey and welcome any feedback
-            or questions by filling out the text box below. If you encountered
-            any technical problems please let us know.
-          </Typography>
-        </Grid>
-        <Grid item xs={12}>
-          <TextField
-            id="Feedback"
-            fullWidth
-            value={feedback}
-            onChange={(event) => {
-              handleFieldChange(event, setFeedback);
-            }}
-            multiline
-            rows={8}
-            label="Feedback"
-          />
-        </Grid>
-        <Grid item xs={12}>
-          <Typography paragraph>
             <b>
               Click the &quot;Submit Your Answers&quot; button to complete the
               survey and have your answers recorded! You must do this step to
@@ -111,6 +85,8 @@ const TheEnd = () => {
               answers that you must enter into prolific to get paid.
             </b>{" "}
           </Typography>
+        </Grid>
+        <Grid item xs={12}>
           <hr
             style={{
               backgroundColor: "#aaaaaa",
@@ -143,7 +119,6 @@ const TheEnd = () => {
                       },
                       attentioncheck: attentioncheck,
                       timestamps: timestamps,
-                      feedback: feedback,
                     },
                   })
                 );
