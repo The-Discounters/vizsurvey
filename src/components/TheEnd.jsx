@@ -85,6 +85,17 @@ const TheEnd = () => {
               answers that you must enter into prolific to get paid.
             </b>{" "}
           </Typography>
+          <Typography paragraph>
+            If you encounter an error and are not able to submit your answers,
+            please click{" "}
+            <a
+              href={`mailto:pncordone@wpi.edu?subject=Technical%20Problems%20With%20Survey&body=Please%20describe%20the%20technical%20problems%20you%20are%20having%20below%20giving%20as%20much%20details%20as%20you%20can.`}
+            >
+              here
+            </a>{" "}
+            to email pncordone@wpi.edu and give as detailed a description as you
+            can of the problem.
+          </Typography>
         </Grid>
         <Grid item xs={12}>
           <hr
