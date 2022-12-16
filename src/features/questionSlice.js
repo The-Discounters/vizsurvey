@@ -87,6 +87,7 @@ export const questionSlice = createSlice({
     introductionShowTimestamp: null,
     introductionCompletedTimestamp: null,
     instructionsShownTimestamp: null,
+    feedback: "",
     instructionsCompletedTimestamp: null,
     financialLitSurveyQuestionsShownTimestamp: null,
     purposeSurveyQuestionsShownTimestamp: null,
@@ -191,6 +192,9 @@ export const questionSlice = createSlice({
     instructionsShown(state, action) {
       state.instructionsShownTimestamp = action.payload;
     },
+    setFeedback(state, action) {
+      state.feedback = action.payload;
+    },
     instructionsCompleted(state, action) {
       state.instructionsCompletedTimestamp = action.payload;
       state.status = qe.nextStatus(state, false);
@@ -254,6 +258,7 @@ export const questionSlice = createSlice({
       state.introductionShowTimestamp = null;
       state.introductionCompletedTimestamp = null;
       state.instructionsShownTimestamp = null;
+      state.feedback = "";
       state.instructionsCompletedTimestamp = null;
       state.financialLitSurveyQuestionsShownTimestamp = null;
       state.purposeSurveyQuestionsShownTimestamp = null;
@@ -303,6 +308,8 @@ export const getCountryOfResidence = (state) =>
 export const getVizFamiliarity = (state) => state.questions.vizFamiliarity;
 
 export const getAge = (state) => state.questions.age;
+
+export const getFeedback = (state) => state.questions.feedback;
 
 export const getGender = (state) => state.questions.gender;
 
@@ -376,6 +383,7 @@ export const {
   setPurposeSurveyQuestion,
   setAttentionCheck,
   instructionsShown,
+  setFeedback,
   instructionsCompleted,
   introductionShown,
   introductionCompleted,

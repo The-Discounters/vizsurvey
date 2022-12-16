@@ -88,7 +88,7 @@ function postsurvey(expects) {
                 debriefCompletedTimestamp: null, // TODO
                 theEndShownTimestamp: 9400,
               },
-              //feedback: "had trouble seeing numbers",
+              feedback: "had trouble seeing numbers",
             });
             fetching1 = false;
           });

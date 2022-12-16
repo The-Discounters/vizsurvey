@@ -18,6 +18,8 @@ import {
   getState,
   nextQuestion,
   writeAnswers,
+  setFeedback,
+  getFeedback,
 } from "../features/questionSlice";
 import { navigateFromStatus } from "./Navigate";
 
@@ -27,7 +29,8 @@ const TheEnd = () => {
 
   const status = useSelector(getStatus);
   const state = useSelector(getState);
-  const [feedback, setFeedback] = React.useState("");
+
+  const feedback = useSelector(getFeedback);
 
   useEffect(() => {
     dispatch(theEndShownTimestamp(dateToState(DateTime.utc())));
@@ -36,10 +39,6 @@ const TheEnd = () => {
   useMemo(() => {
     navigateFromStatus(navigate, status);
   }, [status]);
-
-  const handleFieldChange = (event, setter) => {
-    setter(event.target.value);
-  };
 
   return (
     <ThemeProvider theme={theme}>
@@ -67,7 +66,7 @@ const TheEnd = () => {
             fullWidth
             value={feedback}
             onChange={(event) => {
-              handleFieldChange(event, setFeedback);
+              dispatch(setFeedback(event.target.value));
             }}
             multiline
             rows={8}
