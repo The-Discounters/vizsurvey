@@ -10,11 +10,7 @@ const io = new FileIOAdapter();
 export const writeAnswers = createAsyncThunk(
   "survey/writeAnswers",
   async (state) => {
-    console.log("state the qs: " + JSON.stringify(state, null, 2));
-    console.log("writeAnswers in question slice 0");
-    console.log("writeAnswers in question slice 1");
     const csv = io.convertToCSV(state.questions.answers);
-    console.log("writeAnswers in question slice 2");
     await io.writeAnswers({
       treatmentId: state.questions.treatmentId,
       participantId: state.questions.participantId,
