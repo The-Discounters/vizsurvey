@@ -155,7 +155,7 @@ export class FileIOAdapter {
   }
 
   writeAnswers = async (data) => {
-    let postSurveyAnswersStr = JSON.stringify(data.postSurveyAnswers, null, 2);
+    let postSurveyAnswersStr = JSON.stringify(data.other, null, 2);
 
     const fileNameAnswers = "answers-" + data.participantId + ".csv";
     const fileNamePostSurveyAnswers =
