@@ -29,7 +29,28 @@ export const writeAnswers = createAsyncThunk(
         },
         consentChecked: state.questions.consentChecked,
         attentionCheck: state.questions.attentioncheck,
-        timestamps: state.questions.timestamps,
+        timestamps: {
+          consentShownTimestamp: state.questions.consentShownTimestamp,
+          consentCompletedTimestamp: state.questions.consentCompletedTimestamp,
+          introductionShowTimestamp: state.questions.introductionShowTimestamp,
+          introductionCompletedTimestamp:
+            state.questions.introductionCompletedTimestamp,
+          instructionsShownTimestamp:
+            state.questions.instructionsShownTimestamp,
+          instructionsCompletedTimestamp:
+            state.questions.instructionsCompletedTimestamp,
+          attentionCheckShownTimestamp:
+            state.questions.attentionCheckShownTimestamp,
+          attentionCheckCompletedTimestamp:
+            state.questions.attentionCheckCompletedTimestamp,
+          financialLitSurveyQuestionsShownTimestamp:
+            state.questions.financialLitSurveyQuestionsShownTimestamp,
+          purposeSurveyQuestionsShownTimestamp:
+            state.questions.purposeSurveyQuestionsShownTimestamp,
+          debriefShownTimestamp: state.questions.debriefShownTimestamp,
+          debriefCompletedTimestamp: state.questions.debriefCompletedTimestamp,
+          theEndShownTimestamp: state.questions.theEndShownTimestamp,
+        },
         feedback: state.questions.feedback,
       },
     });
@@ -304,29 +325,6 @@ export const getFinancialLitSurvey = (state) =>
 export const getPurposeSurvey = (state) => state.questions.getPurposeSurvey;
 
 export const getAttentionCheck = (state) => state.questions.attentioncheck;
-
-export const getTimestamps = (state) => {
-  return {
-    consentShownTimestamp: state.questions.consentShownTimestamp,
-    consentCompletedTimestamp: state.questions.consentCompletedTimestamp,
-    introductionShowTimestamp: state.questions.introductionShowTimestamp,
-    introductionCompletedTimestamp:
-      state.questions.introductionCompletedTimestamp,
-    instructionsShownTimestamp: state.questions.instructionsShownTimestamp,
-    instructionsCompletedTimestamp:
-      state.questions.instructionsCompletedTimestamp,
-    attentionCheckShownTimestamp: state.questions.attentionCheckShownTimestamp,
-    attentionCheckCompletedTimestamp:
-      state.questions.attentionCheckCompletedTimestamp,
-    financialLitSurveyQuestionsShownTimestamp:
-      state.questions.financialLitSurveyQuestionsShownTimestamp,
-    purposeSurveyQuestionsShownTimestamp:
-      state.questions.purposeSurveyQuestionsShownTimestamp,
-    debriefShownTimestamp: state.questions.debriefShownTimestamp,
-    debriefCompletedTimestamp: state.questions.debriefCompletedTimestamp,
-    theEndShownTimestamp: state.questions.theEndShownTimestamp,
-  };
-};
 
 export const getCurrentQuestionIndex = (state) =>
   state.questions.currentQuestionIdx;

@@ -73,7 +73,6 @@ function postsurvey(expects) {
               },
               consentChecked: true,
               attentionCheck: "strongly-disagree",
-              /*
               timestamps: {
                 consentShownTimestamp: 500,
                 consentCompletedTimestamp: 1000,
@@ -81,14 +80,14 @@ function postsurvey(expects) {
                 introductionCompletedTimestamp: 2000,
                 instructionsShownTimestamp: 2000,
                 instructionsCompletedTimestamp: 4000,
-                //attentionCheckShownTimestamp: 4000,
+                attentionCheckShownTimestamp: 4000,
+                attentionCheckCompletedTimestamp: 5000,
                 financialLitSurveyQuestionsShownTimestamp: 6000,
                 purposeSurveyQuestionsShownTimestamp: 9000,
                 debriefShownTimestamp: null, // TODO
                 debriefCompletedTimestamp: null, // TODO
                 theEndShownTimestamp: 9400,
               },
-*/
               //feedback: "had trouble seeing numbers",
             });
             fetching1 = false;
