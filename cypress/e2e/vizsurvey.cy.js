@@ -49,6 +49,20 @@ function postsurvey(expects) {
           response.text().then((text) => {
             console.log("file1 text: " + text);
             expect(JSON.parse(text)).to.deep.equal({
+              financialLitSurvey: {
+                q15vs30: "v15+",
+                q50k6p: "v<50k",
+                q100k5p: "v<120k",
+                q200k5p: "v<20y",
+              },
+              purposeSurvey: {
+                posdiff: "strongly-disagree",
+                carbetplac: "strongly-disagree",
+                servsoc: "strongly-disagree",
+                thinkach: "strongly-disagree",
+                descrpurp: "strongly-disagree",
+                effort: "strongly-disagree",
+              },
               demographics: {
                 countryOfResidence: "usa",
                 vizFamiliarity: "3",
@@ -57,7 +71,9 @@ function postsurvey(expects) {
                 selfDescribeGender: "",
                 profession: "Software Developer",
               },
-              attentioncheck: "strongly-disagree",
+              consentChecked: true,
+              attentionCheck: "strongly-disagree",
+              /*
               timestamps: {
                 consentShownTimestamp: 500,
                 consentCompletedTimestamp: 1000,
@@ -65,32 +81,15 @@ function postsurvey(expects) {
                 introductionCompletedTimestamp: 2000,
                 instructionsShownTimestamp: 2000,
                 instructionsCompletedTimestamp: 4000,
-                attentionCheckShownTimestamp: 4000,
+                //attentionCheckShownTimestamp: 4000,
                 financialLitSurveyQuestionsShownTimestamp: 6000,
                 purposeSurveyQuestionsShownTimestamp: 9000,
                 debriefShownTimestamp: null, // TODO
                 debriefCompletedTimestamp: null, // TODO
-                theEndShownTimestamp: 10000,
-              },
-              feedback: "had trouble seeing numbers",
-              /*
-              postsurvey: {
-                fincanialLit: {
-                  q15vs30: "v15+",
-                  q50k6p: "v<50k",
-                  q100k5p: "v<120k",
-                  q200k5p: "v<20y",
-                },
-                senseOfPurpose: {
-                  posdiff: "strongly-disagree",
-                  carbetplac: "strongly-disagree",
-                  servsoc: "strongly-disagree",
-                  thinkach: "strongly-disagree",
-                  descrpurp: "strongly-disagree",
-                  effort: "strongly-disagree",
-                },
+                theEndShownTimestamp: 9400,
               },
 */
+              //feedback: "had trouble seeing numbers",
             });
             fetching1 = false;
           });
