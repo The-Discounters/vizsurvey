@@ -25,7 +25,6 @@ const TheEnd = () => {
   const navigate = useNavigate();
 
   const status = useSelector(getStatus);
-  const consentChecked = useSelector(consentChecked);
   const [feedback, setFeedback] = React.useState("");
 
   useEffect(() => {
