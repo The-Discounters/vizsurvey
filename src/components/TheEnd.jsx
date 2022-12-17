@@ -14,7 +14,6 @@ import { dateToState } from "../features/ConversionUtil";
 import { styles, theme } from "./ScreenHelper";
 import {
   getStatus,
-  getState,
   nextQuestion,
   writeAnswers,
 } from "../features/questionSlice";
@@ -25,7 +24,6 @@ const TheEnd = () => {
   const navigate = useNavigate();
 
   const status = useSelector(getStatus);
-  const state = useSelector(getState);
 
   useEffect(() => {
     dispatch(theEndShownTimestamp(dateToState(DateTime.utc())));
@@ -91,7 +89,7 @@ const TheEnd = () => {
               disableFocusRipple
               style={styles.button}
               onClick={() => {
-                dispatch(writeAnswers(state));
+                dispatch(writeAnswers());
                 dispatch(nextQuestion());
               }}
             >

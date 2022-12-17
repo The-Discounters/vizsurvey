@@ -9,7 +9,8 @@ const io = new FileIOAdapter();
 
 export const writeAnswers = createAsyncThunk(
   "survey/writeAnswers",
-  async (state) => {
+  async (arg, { getState }) => {
+    const state = getState();
     const csv = io.convertToCSV(state.questions.answers);
     await io.writeAnswers({
       treatmentId: state.questions.treatmentId,
