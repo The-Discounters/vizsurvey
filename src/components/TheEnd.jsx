@@ -15,42 +15,22 @@ import { dateToState } from "../features/ConversionUtil";
 import { styles, theme } from "./ScreenHelper";
 import {
   getStatus,
-  getParticipant,
-  getFinancialLitSurvey,
+  getState,
   nextQuestion,
-  getCountryOfResidence,
-  getVizFamiliarity,
-  getAge,
-  getGender,
-  getSelfDescribeGender,
-  getProfession,
-  getAttentionCheck,
-  getTimestamps,
-  selectAllQuestions,
   writeAnswers,
+  setFeedback,
+  getFeedback,
 } from "../features/questionSlice";
-import { FileIOAdapter } from "../features/FileIOAdapter";
 import { navigateFromStatus } from "./Navigate";
 
 const TheEnd = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const participantId = useSelector(getParticipant);
-  const answers = useSelector(selectAllQuestions);
-  const io = new FileIOAdapter();
-  const csv = io.convertToCSV(answers);
-  const postsurvey = useSelector(getFinancialLitSurvey);
-  const countryOfResidence = useSelector(getCountryOfResidence);
-  const vizFamiliarity = useSelector(getVizFamiliarity);
-  const age = useSelector(getAge);
-  const gender = useSelector(getGender);
-  const selfDescribeGender = useSelector(getSelfDescribeGender);
-  const profession = useSelector(getProfession);
-  const attentioncheck = useSelector(getAttentionCheck);
-  const timestamps = useSelector(getTimestamps);
   const status = useSelector(getStatus);
-  const [feedback, setFeedback] = React.useState("");
+  const state = useSelector(getState);
+
+  const feedback = useSelector(getFeedback);
 
   useEffect(() => {
     dispatch(theEndShownTimestamp(dateToState(DateTime.utc())));
@@ -59,10 +39,6 @@ const TheEnd = () => {
   useMemo(() => {
     navigateFromStatus(navigate, status);
   }, [status]);
-
-  const handleFieldChange = (event, setter) => {
-    setter(event.target.value);
-  };
 
   return (
     <ThemeProvider theme={theme}>
@@ -90,7 +66,7 @@ const TheEnd = () => {
             fullWidth
             value={feedback}
             onChange={(event) => {
-              handleFieldChange(event, setFeedback);
+              dispatch(setFeedback(event.target.value));
             }}
             multiline
             rows={8}
@@ -127,26 +103,7 @@ const TheEnd = () => {
               disableFocusRipple
               style={styles.button}
               onClick={() => {
-                dispatch(
-                  writeAnswers({
-                    csv: csv,
-                    participantId: participantId,
-                    postSurveyAnswers: {
-                      postsurvey: postsurvey,
-                      demographics: {
-                        countryOfResidence: countryOfResidence,
-                        vizFamiliarity: vizFamiliarity,
-                        age: age,
-                        gender: gender,
-                        selfDescribeGender: selfDescribeGender,
-                        profession: profession,
-                      },
-                      attentioncheck: attentioncheck,
-                      timestamps: timestamps,
-                      feedback: feedback,
-                    },
-                  })
-                );
+                dispatch(writeAnswers(state));
                 dispatch(nextQuestion());
               }}
             >
