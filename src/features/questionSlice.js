@@ -9,7 +9,52 @@ const io = new FileIOAdapter();
 
 export const writeAnswers = createAsyncThunk(
   "survey/writeAnswers",
-  io.writeAnswers
+  async (state) => {
+    const csv = io.convertToCSV(state.questions.answers);
+    await io.writeAnswers({
+      treatmentId: state.questions.treatmentId,
+      participantId: state.questions.participantId,
+      sessionId: state.questions.sessionId,
+      csv: csv,
+      other: {
+        financialLitSurvey: state.questions.financialLitSurvey,
+        purposeSurvey: state.questions.purposeSurvey,
+        demographics: {
+          countryOfResidence: state.questions.countryOfResidence,
+          vizFamiliarity: state.questions.vizFamiliarity,
+          age: state.questions.age,
+          gender: state.questions.gender,
+          selfDescribeGender: state.questions.selfDescribeGender,
+          profession: state.questions.profession,
+        },
+        consentChecked: state.questions.consentChecked,
+        attentionCheck: state.questions.attentioncheck,
+        timestamps: {
+          consentShownTimestamp: state.questions.consentShownTimestamp,
+          consentCompletedTimestamp: state.questions.consentCompletedTimestamp,
+          introductionShowTimestamp: state.questions.introductionShowTimestamp,
+          introductionCompletedTimestamp:
+            state.questions.introductionCompletedTimestamp,
+          instructionsShownTimestamp:
+            state.questions.instructionsShownTimestamp,
+          instructionsCompletedTimestamp:
+            state.questions.instructionsCompletedTimestamp,
+          attentionCheckShownTimestamp:
+            state.questions.attentionCheckShownTimestamp,
+          attentionCheckCompletedTimestamp:
+            state.questions.attentionCheckCompletedTimestamp,
+          financialLitSurveyQuestionsShownTimestamp:
+            state.questions.financialLitSurveyQuestionsShownTimestamp,
+          purposeSurveyQuestionsShownTimestamp:
+            state.questions.purposeSurveyQuestionsShownTimestamp,
+          debriefShownTimestamp: state.questions.debriefShownTimestamp,
+          debriefCompletedTimestamp: state.questions.debriefCompletedTimestamp,
+          theEndShownTimestamp: state.questions.theEndShownTimestamp,
+        },
+        feedback: state.questions.feedback,
+      },
+    });
+  }
 );
 
 export const writeFeedback = createAsyncThunk(
@@ -38,6 +83,8 @@ export const questionSlice = createSlice({
     gender: "",
     selfDescribeGender: "",
     profession: "",
+    consentChecked: null,
+    consentCompletedTimestamp: false,
     attentioncheck: null,
     attentionCheckShownTimestamp: null,
     attentionCheckCompletedTimestamp: null,
@@ -45,6 +92,7 @@ export const questionSlice = createSlice({
     introductionShowTimestamp: null,
     introductionCompletedTimestamp: null,
     instructionsShownTimestamp: null,
+    feedback: "",
     instructionsCompletedTimestamp: null,
     financialLitSurveyQuestionsShownTimestamp: null,
     purposeSurveyQuestionsShownTimestamp: null,
@@ -136,6 +184,7 @@ export const questionSlice = createSlice({
       state.consentShownTimestamp = action.payload;
     },
     consentCompleted(state, action) {
+      state.consentChecked = true;
       state.consentCompletedTimestamp = action.payload;
       state.status = qe.nextStatus(state, false);
     },
@@ -147,6 +196,9 @@ export const questionSlice = createSlice({
     },
     instructionsShown(state, action) {
       state.instructionsShownTimestamp = action.payload;
+    },
+    setFeedback(state, action) {
+      state.feedback = action.payload;
     },
     instructionsCompleted(state, action) {
       state.instructionsCompletedTimestamp = action.payload;
@@ -206,12 +258,13 @@ export const questionSlice = createSlice({
       state.attentionCheckShownTimestamp = null;
       state.attentionCheckCompletedTimestamp = null;
       state.consentShownTimestamp = null;
+      state.consentChecked = false;
       state.consentCompletedTimestamp = null;
       state.introductionShowTimestamp = null;
       state.introductionCompletedTimestamp = null;
       state.instructionsShownTimestamp = null;
+      state.feedback = "";
       state.instructionsCompletedTimestamp = null;
-      state.attentionCheckShownTimestamp = null;
       state.financialLitSurveyQuestionsShownTimestamp = null;
       state.purposeSurveyQuestionsShownTimestamp = null;
       state.debriefShownTimestamp = null;
@@ -252,12 +305,16 @@ export const selectAllQuestions = (state) => qe.allQuestions(state.questions);
 
 export const getParticipant = (state) => state.questions.participantId;
 
+export const getState = (state) => state;
+
 export const getCountryOfResidence = (state) =>
   state.questions.countryOfResidence;
 
 export const getVizFamiliarity = (state) => state.questions.vizFamiliarity;
 
 export const getAge = (state) => state.questions.age;
+
+export const getFeedback = (state) => state.questions.feedback;
 
 export const getGender = (state) => state.questions.gender;
 
@@ -281,28 +338,6 @@ export const getPurposeSurvey = (state) => state.questions.getPurposeSurvey;
 
 export const getAttentionCheck = (state) => state.questions.attentioncheck;
 
-export const getTimestamps = (state) => {
-  return {
-    consentShownTimestamp: state.questions.consentShownTimestamp,
-    consentCompletedTimestamp: state.questions.consentCompletedTimestamp,
-    introductionShowTimestamp: state.questions.introductionShowTimestamp,
-    introductionCompletedTimestamp:
-      state.questions.introductionCompletedTimestamp,
-    instructionsShownTimestamp: state.questions.instructionsShownTimestamp,
-    instructionsCompletedTimestamp:
-      state.questions.instructionsCompletedTimestamp,
-    attentionCheckShownTimestamp: state.attentionCheckShownTimestamp,
-    attentionCheckCompletedTimestamp: state.attentionCheckCompletedTimestamp,
-    financialLitSurveyQuestionsShownTimestamp:
-      state.questions.financialLitSurveyQuestionsShownTimestamp,
-    purposeSurveyQuestionsShownTimestamp:
-      state.questions.purposeSurveyQuestionsShownTimestamp,
-    debriefShownTimestamp: state.questions.debriefShownTimestamp,
-    debriefCompletedTimestamp: state.questions.debriefCompletedTimestamp,
-    theEndShownTimestamp: state.questions.theEndShownTimestamp,
-  };
-};
-
 export const getCurrentQuestionIndex = (state) =>
   state.questions.currentQuestionIdx;
 
@@ -323,6 +358,8 @@ export const fetchTreatmentId = (state) => state.questions.treatmentId;
 export const fetchParticipantId = (state) => state.questions.participantId;
 
 export const fetchSessionId = (state) => state.questions.sessionId;
+
+export const getConsentChecked = (state) => state.questions.consentChecked;
 
 // Action creators are generated for each case reducer function
 export const {
@@ -351,6 +388,7 @@ export const {
   setPurposeSurveyQuestion,
   setAttentionCheck,
   instructionsShown,
+  setFeedback,
   instructionsCompleted,
   introductionShown,
   introductionCompleted,
