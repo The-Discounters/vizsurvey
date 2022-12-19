@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useMemo, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Button,
@@ -14,9 +14,8 @@ import {
   instructionsShown,
   instructionsCompleted,
   getStatus,
-  previousQuestion,
 } from "../features/questionSlice";
-import { StatusType } from "../features/StatusType";
+import { navigateFromStatus } from "./Navigate";
 import { dateToState } from "../features/ConversionUtil";
 import { styles, theme } from "./ScreenHelper";
 
@@ -29,15 +28,8 @@ const Instructions = () => {
     dispatch(instructionsShown(dateToState(DateTime.utc())));
   }, []);
 
-  useEffect(() => {
-    switch (status) {
-      case StatusType.Introduction:
-        navigate("/introduction");
-        break;
-      case StatusType.Survey:
-        navigate("/survey");
-        break;
-    }
+  useMemo(() => {
+    navigateFromStatus(navigate, status);
   }, [status]);
 
   return (
@@ -52,6 +44,8 @@ const Instructions = () => {
               height: 4,
             }}
           />
+        </Grid>
+        <Grid item xs={12}>
           <Typography paragraph>
             <b>Survey questions: </b>
             After making your money choice selections, you will be presented
@@ -79,23 +73,8 @@ const Instructions = () => {
             }}
           />
         </Grid>
-        <Grid item xs={6}>
-          <Button
-            variant="contained"
-            color="secondary"
-            disableRipple
-            disableFocusRipple
-            style={styles.button}
-            onClick={() => {
-              dispatch(previousQuestion());
-            }}
-          >
-            {" "}
-            Previous{" "}
-          </Button>
-        </Grid>
-        <Grid item xs={6}>
-          <Box display="flex" justifyContent="flex-end">
+        <Grid item xs={12}>
+          <Box display="flex" justifyContent="center">
             <Button
               variant="contained"
               color="secondary"

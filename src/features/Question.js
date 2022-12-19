@@ -20,6 +20,7 @@ export function Question({
   graphHeightIn,
   widthIn,
   heightIn,
+  showMinorTicks,
   comment,
 }) {
   return {
@@ -44,6 +45,7 @@ export function Question({
     graphHeightIn: graphHeightIn,
     widthIn: widthIn,
     heightIn: heightIn,
+    showMinorTicks: showMinorTicks,
     comment: comment,
     highup: null,
     lowdown: null,

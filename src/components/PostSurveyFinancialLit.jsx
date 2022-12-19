@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useMemo, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { DateTime } from "luxon";
@@ -15,12 +15,10 @@ import {
   ThemeProvider,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import { StatusType } from "../features/StatusType";
 import {
   getStatus,
   financialLitSurveyQuestionsShown,
   nextQuestion,
-  previousQuestion,
   initFinancialLitSurveyQuestion,
   setFinancialLitSurveyQuestion,
   getFinancialLitSurveyQuestion,
@@ -28,6 +26,7 @@ import {
 import { dateToState } from "../features/ConversionUtil";
 import { POST_SURVEY_QUESTIONS } from "../features/postsurveyquestionsfinanciallit";
 import { styles, theme } from "./ScreenHelper";
+import { navigateFromStatus } from "./Navigate";
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
@@ -69,15 +68,8 @@ export function PostSurvey() {
     dispatch(financialLitSurveyQuestionsShown(dateToState(DateTime.utc())));
   }, []);
 
-  useEffect(() => {
-    switch (status) {
-      case StatusType.Survey:
-        navigate("/survey");
-        break;
-      case StatusType.PurposeQuestionaire:
-        navigate("/purposequestionaire");
-        break;
-    }
+  useMemo(() => {
+    navigateFromStatus(navigate, status);
   }, [status]);
 
   useEffect(() => {
@@ -109,6 +101,8 @@ export function PostSurvey() {
                 height: 4,
               }}
             />
+          </Grid>
+          <Grid item xs={12}>
             <Typography paragraph>
               The last step in this survey is to answer the questions below.
             </Typography>
@@ -200,23 +194,8 @@ export function PostSurvey() {
               />
             </div>
           </Grid>
-          <Grid item xs={6}>
-            <Button
-              variant="contained"
-              color="secondary"
-              disableRipple
-              disableFocusRipple
-              style={styles.button}
-              onClick={() => {
-                dispatch(previousQuestion());
-              }}
-            >
-              {" "}
-              Previous{" "}
-            </Button>
-          </Grid>
-          <Grid item xs={6} style={{ margin: 0 }}>
-            <Box display="flex" justifyContent="flex-end">
+          <Grid item xs={12} style={{ margin: 0 }}>
+            <Box display="flex" justifyContent="center">
               <Button
                 variant="contained"
                 color="secondary"

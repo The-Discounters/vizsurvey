@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useMemo, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { DateTime } from "luxon";
@@ -8,7 +8,6 @@ import Grid from "@mui/material/Unstable_Grid2";
 import { MELSelectionForm } from "./MELSelectionForm";
 
 import { AmountType } from "../features/AmountType";
-import { StatusType } from "../features/StatusType";
 import {
   getCurrentQuestion,
   getCurrentChoice,
@@ -16,11 +15,11 @@ import {
   getStatus,
   setQuestionShownTimestamp,
   nextQuestion,
-  previousQuestion,
   answer,
 } from "../features/questionSlice";
 import { dateToState } from "../features/ConversionUtil";
 import { styles, theme } from "./ScreenHelper";
+import { navigateFromStatus } from "./Navigate";
 
 function MELForm() {
   const dispatch = useDispatch();
@@ -50,18 +49,8 @@ function MELForm() {
     }
   }, [choice, qi]);
 
-  useEffect(() => {
-    switch (status) {
-      case StatusType.Instructions:
-        navigate("/instruction");
-        break;
-      case StatusType.FinancialQuestionaire:
-        navigate("/financialquestionaire");
-        break;
-      case StatusType.Attention:
-        navigate("/attentioncheck");
-        break;
-    }
+  useMemo(() => {
+    navigateFromStatus(navigate, status);
   }, [status]);
 
   const onClickCallback = (value) => {
@@ -97,23 +86,8 @@ function MELForm() {
             }}
           />
         </Grid>
-        <Grid item xs={6}>
-          <Button
-            variant="contained"
-            color="secondary"
-            disableRipple
-            disableFocusRipple
-            style={styles.button}
-            onClick={() => {
-              dispatch(previousQuestion());
-            }}
-          >
-            {" "}
-            Previous{" "}
-          </Button>
-        </Grid>
-        <Grid item xs={6} style={{ margin: 0 }}>
-          <Box display="flex" justifyContent="flex-end">
+        <Grid item xs={12} style={{ margin: 0 }}>
+          <Box display="flex" justifyContent="center">
             <Button
               variant="contained"
               color="secondary"

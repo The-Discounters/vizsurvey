@@ -69,6 +69,7 @@ export class QuestionEngine {
       graphHeightIn: treatment.graphHeightIn,
       widthIn: treatment.widthIn,
       heightIn: treatment.heightIn,
+      showMinorTicks: treatment.showMinorTicks,
       choice: AmountType.none,
       highup: highup,
       lowdown: lowdown,
@@ -302,7 +303,7 @@ export class QuestionEngine {
       case StatusType.Done:
         return StatusType.Debrief;
       case StatusType.Debrief:
-        return StatusType.Debrief;
+        return StatusType.Finished;
       case StatusType.Error:
         return StatusType.Error;
     }

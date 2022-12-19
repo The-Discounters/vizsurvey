@@ -36,6 +36,15 @@ describe("FileIOAdapter tests", () => {
     expect(questions[0].graphHeightIn).toBeUndefined();
     expect(questions[0].widthIn).toBe(4);
     expect(questions[0].heightIn).toBe(4);
+
+    const showMinorTicks = "yes";
+    const value = showMinorTicks
+      ? "yes" === showMinorTicks.trim().toLowerCase()
+        ? true
+        : false
+      : false;
+    expect(value).toBe(true);
+    expect(questions[0].showMinorTicks).toBe(false);
     expect(questions[0].comment).toBe(
       "Worded with no interaction and Read 2001 example values."
     );
@@ -70,7 +79,7 @@ describe("FileIOAdapter tests", () => {
   test("Validate loadAllTreatments loads all treatments correctly.", async () => {
     const io = new FileIOAdapter();
     var questions = await io.loadAllTreatments();
-    expect(questions.length).toBe(41);
+    expect(questions.length).toBe(65);
   });
 
   test("Validate answer CSV fields are written correctly.", async () => {

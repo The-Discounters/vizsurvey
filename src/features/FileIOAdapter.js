@@ -120,6 +120,11 @@ export class FileIOAdapter {
       graphHeightIn: row.graph_height_in ? +row.graph_height_in : undefined,
       widthIn: row.width_in ? +row.width_in : undefined,
       heightIn: row.height_in ? +row.height_in : undefined,
+      showMinorTicks: row.show_minor_ticks
+        ? "yes" === row.show_minor_ticks.trim().toLowerCase()
+          ? true
+          : false
+        : false,
       comment: row.comment,
     });
   }
@@ -150,7 +155,7 @@ export class FileIOAdapter {
   }
 
   writeAnswers = async (data) => {
-    let postSurveyAnswersStr = JSON.stringify(data.postSurveyAnswers, null, 2);
+    let postSurveyAnswersStr = JSON.stringify(data.other, null, 2);
 
     const fileNameAnswers = "answers-" + data.participantId + ".csv";
     const fileNamePostSurveyAnswers =
@@ -165,6 +170,18 @@ export class FileIOAdapter {
       console.log("AWS DISABLED");
       uploadFileOffline(fileNameAnswers, data.csv);
       uploadFileOffline(fileNamePostSurveyAnswers, postSurveyAnswersStr);
+    }
+  };
+
+  writeFeedback = async (data) => {
+    const fileNameFeedback = "feedback-" + data.participantId + ".txt";
+
+    if (process.env.REACT_APP_AWS_ENABLED) {
+      console.log("AWS ENABLED");
+      uploadFile(fileNameFeedback, data.feedback);
+    } else {
+      console.log("AWS DISABLED");
+      uploadFileOffline(fileNameFeedback, data.feedback);
     }
   };
 }

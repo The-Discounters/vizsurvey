@@ -25,16 +25,20 @@ const InvalidSurveyLink = () => {
               height: 4,
             }}
           />
-          <Typography paragraph>
-            You have been provided an invalid survey link. Please click
+        </Grid>
+        <Grid item xs={12}>
+          <Typography variant="h6" paragraph>
+            There has been an error in the application. You may have been
+            provided an invalid survey link. Please click&nbsp;
             <a
               href={`mailto:pncordone@wpi.edu?subject=!!!Invlaid survey link!!!t&body=${encodeURIComponent(
                 "TODO put in invalid survey email text."
               )}`}
             >
-              &nbsp;here&nbsp;
+              here
             </a>
-            to send an email to the administrator reporting this error.
+            &nbsp;to send an email to the administrator reporting this error and
+            we will fix the problem and respond back.
           </Typography>
         </Grid>
       </Grid>

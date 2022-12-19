@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useMemo, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { DateTime } from "luxon";
@@ -16,13 +16,12 @@ import {
 } from "@material-ui/core";
 import {
   getStatus,
-  financialLitSurveyQuestionsShown,
+  attentionCheckShown,
   setAttentionCheck,
-  previousQuestion,
 } from "../features/questionSlice";
 import { dateToState } from "../features/ConversionUtil";
 import { styles, theme } from "./ScreenHelper";
-import { StatusType } from "../features/StatusType";
+import { navigateFromStatus } from "./Navigate";
 
 export function AttentionCheck() {
   const dispatch = useDispatch();
@@ -30,15 +29,15 @@ export function AttentionCheck() {
 
   const status = useSelector(getStatus);
   const [disableSubmit, setDisableSubmit] = React.useState(true);
-  const [q, setQ] = React.useState("");
+  const [attentionCheckValue, setAttentionCheckValue] = React.useState("");
 
   useEffect(() => {
-    dispatch(financialLitSurveyQuestionsShown(dateToState(DateTime.utc())));
+    dispatch(attentionCheckShown(dateToState(DateTime.utc())));
   }, []);
 
   const checkEnableSubmit = () => {
     let result = false;
-    if (q.length <= 0) {
+    if (attentionCheckValue.length <= 0) {
       result = true;
     }
     setDisableSubmit(result);
@@ -46,17 +45,10 @@ export function AttentionCheck() {
 
   useEffect(() => {
     checkEnableSubmit();
-  }, [q]);
+  }, [attentionCheckValue]);
 
-  useEffect(() => {
-    switch (status) {
-      case StatusType.Survey:
-        navigate("/survey");
-        break;
-      case StatusType.Attention:
-        navigate("/attentioncheck");
-        break;
-    }
+  useMemo(() => {
+    navigateFromStatus(navigate, status);
   }, [status]);
 
   const handleFieldChange = (event, setter) => {
@@ -85,6 +77,8 @@ export function AttentionCheck() {
                 height: 4,
               }}
             />
+          </Grid>
+          <Grid item xs={12}>
             <Typography paragraph>
               The middle step in this survey is to answer the attention check
               question below.
@@ -120,11 +114,11 @@ export function AttentionCheck() {
                     key={index1}
                     value={option}
                     id={"attention-check-" + option}
-                    checked={q === option}
+                    checked={attentionCheckValue === option}
                     control={<Radio />}
                     label={option.replace("-", " ")}
                     onChange={(event) => {
-                      handleFieldChange(event, setQ);
+                      handleFieldChange(event, setAttentionCheckValue);
                     }}
                   />
                 ))}
@@ -137,23 +131,8 @@ export function AttentionCheck() {
               }}
             />
           </Grid>
-          <Grid item xs={6}>
-            <Button
-              variant="contained"
-              color="secondary"
-              disableRipple
-              disableFocusRipple
-              style={styles.button}
-              onClick={() => {
-                dispatch(previousQuestion());
-              }}
-            >
-              {" "}
-              Previous{" "}
-            </Button>
-          </Grid>
-          <Grid item xs={6} style={{ margin: 0 }}>
-            <Box display="flex" justifyContent="flex-end">
+          <Grid item xs={12} style={{ margin: 0 }}>
+            <Box display="flex" justifyContent="center">
               <Button
                 variant="contained"
                 color="secondary"
@@ -161,7 +140,12 @@ export function AttentionCheck() {
                 disableFocusRipple
                 style={styles.button}
                 onClick={() => {
-                  dispatch(setAttentionCheck(q));
+                  dispatch(
+                    setAttentionCheck({
+                      value: attentionCheckValue,
+                      timestamp: dateToState(DateTime.utc()),
+                    })
+                  );
                 }}
                 disabled={disableSubmit}
               >

@@ -1,6 +1,5 @@
-import React, { useEffect } from "react";
+import React, { useMemo, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { DateTime } from "luxon";
 import {
   Grid,
   Box,
@@ -15,10 +14,9 @@ import FormHelperText from "@material-ui/core/FormHelperText";
 import FormControl from "@material-ui/core/FormControl";
 import NativeSelect from "@material-ui/core/NativeSelect";
 import { useSelector, useDispatch } from "react-redux";
+import { navigateFromStatus } from "./Navigate";
 import * as countries from "./countries.json";
-import { dateToState } from "../features/ConversionUtil";
 import {
-  consentShown,
   getCountryOfResidence,
   getVizFamiliarity,
   getAge,
@@ -32,10 +30,8 @@ import {
   setSelfDescribeGender,
   setProfession,
   nextQuestion,
-  previousQuestion,
   getStatus,
 } from "../features/questionSlice";
-import { StatusType } from "../features/StatusType";
 import { styles, theme } from "./ScreenHelper";
 import "../App.css";
 
@@ -65,19 +61,10 @@ export function Consent() {
 
   const navigate = useNavigate();
 
-  useEffect(() => {
-    dispatch(consentShown(dateToState(DateTime.utc())));
-  }, []);
+  useEffect(() => {}, []);
 
-  useEffect(() => {
-    switch (status) {
-      case StatusType.Consent:
-        navigate("/consent");
-        break;
-      case StatusType.Introduction:
-        navigate("/introduction");
-        break;
-    }
+  useMemo(() => {
+    navigateFromStatus(navigate, status);
   }, [status]);
 
   useEffect(() => {
@@ -152,6 +139,8 @@ export function Consent() {
                 height: 4,
               }}
             />
+          </Grid>
+          <Grid item xs={12}>
             <div
               className="overflow-auto"
               style={{
@@ -162,6 +151,12 @@ export function Consent() {
               }}
               id="consent-section"
             >
+              <Typography paragraph>
+                <b>
+                  This survey is not designed to render on a mobile device and
+                  should be taken on a laptop or desktop computer.
+                </b>
+              </Typography>
               <Typography>
                 Before you proceed, please tell us about yourself by answering
                 the questions below:{" "}
@@ -321,23 +316,8 @@ export function Consent() {
               }}
             />
           </Grid>
-          <Grid item xs={6}>
-            <Button
-              variant="contained"
-              color="secondary"
-              disableRipple
-              disableFocusRipple
-              style={styles.button}
-              onClick={() => {
-                dispatch(previousQuestion());
-              }}
-            >
-              {" "}
-              Previous{" "}
-            </Button>
-          </Grid>
-          <Grid item xs={6}>
-            <Box display="flex" justifyContent="flex-end">
+          <Grid item xs={12}>
+            <Box display="flex" justifyContent="center">
               <Button
                 variant="contained"
                 color="secondary"

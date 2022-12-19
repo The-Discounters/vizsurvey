@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useMemo, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { DateTime } from "luxon";
@@ -14,56 +14,23 @@ import { dateToState } from "../features/ConversionUtil";
 import { styles, theme } from "./ScreenHelper";
 import {
   getStatus,
-  getParticipant,
-  getFinancialLitSurvey,
-  previousQuestion,
   nextQuestion,
-  getCountryOfResidence,
-  getVizFamiliarity,
-  getAge,
-  getGender,
-  getSelfDescribeGender,
-  getProfession,
-  getAttentionCheck,
-  getTimestamps,
-  selectAllQuestions,
   writeAnswers,
 } from "../features/questionSlice";
-import { StatusType } from "../features/StatusType";
-import { FileIOAdapter } from "../features/FileIOAdapter";
+import { navigateFromStatus } from "./Navigate";
 
 const TheEnd = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const participantId = useSelector(getParticipant);
-  const answers = useSelector(selectAllQuestions);
-  const io = new FileIOAdapter();
-  const csv = io.convertToCSV(answers);
-  const postsurvey = useSelector(getFinancialLitSurvey);
-  const countryOfResidence = useSelector(getCountryOfResidence);
-  const vizFamiliarity = useSelector(getVizFamiliarity);
-  const age = useSelector(getAge);
-  const gender = useSelector(getGender);
-  const selfDescribeGender = useSelector(getSelfDescribeGender);
-  const profession = useSelector(getProfession);
-  const attentioncheck = useSelector(getAttentionCheck);
-  const timestamps = useSelector(getTimestamps);
   const status = useSelector(getStatus);
 
   useEffect(() => {
     dispatch(theEndShownTimestamp(dateToState(DateTime.utc())));
   }, []);
 
-  useEffect(() => {
-    switch (status) {
-      case StatusType.PurposeQuestionaire:
-        navigate("/purposequestionaire");
-        break;
-      case StatusType.Debrief:
-        navigate("/debrief");
-        break;
-    }
+  useMemo(() => {
+    navigateFromStatus(navigate, status);
   }, [status]);
 
   return (
@@ -78,13 +45,34 @@ const TheEnd = () => {
               height: 4,
             }}
           />
+        </Grid>
+        <Grid item xs={12}>
           <Typography paragraph>
             <b>
-              Click the Submit Your Answers button to complete the survey and
-              have your answers recorded! You must do this step to get paid.
-            </b>{" "}
-            Please click the button below to submit your answers.
+              Click the &quot;Submit Your Answers&quot; button to complete the
+              survey and have your answers recorded! You must do this step to
+              get paid {process.env.REACT_APP_PAYMENT_AMOUT} USD.
+            </b>
           </Typography>
+          <Typography paragraph>
+            <b>
+              You will be shown a code on the next screen after you submit your
+              answers that you must enter into prolific to get paid.
+            </b>{" "}
+          </Typography>
+          <Typography paragraph>
+            If you encounter an error and are not able to submit your answers,
+            please click{" "}
+            <a
+              href={`mailto:pncordone@wpi.edu?subject=Technical%20Problems%20With%20Survey&body=Please%20describe%20the%20technical%20problems%20you%20are%20having%20below%20giving%20as%20much%20details%20as%20you%20can.`}
+            >
+              here
+            </a>{" "}
+            to email pncordone@wpi.edu and give as detailed a description as you
+            can of the problem.
+          </Typography>
+        </Grid>
+        <Grid item xs={12}>
           <hr
             style={{
               backgroundColor: "#aaaaaa",
@@ -92,23 +80,8 @@ const TheEnd = () => {
             }}
           />
         </Grid>
-        <Grid item xs={6}>
-          <Button
-            variant="contained"
-            color="secondary"
-            disableRipple
-            disableFocusRipple
-            style={styles.button}
-            onClick={() => {
-              dispatch(previousQuestion());
-            }}
-          >
-            {" "}
-            Previous{" "}
-          </Button>
-        </Grid>
-        <Grid item xs={6} style={{ margin: 0 }}>
-          <Box display="flex" justifyContent="flex-end">
+        <Grid item xs={12} style={{ margin: 0 }}>
+          <Box display="flex" justifyContent="center">
             <Button
               variant="contained"
               color="secondary"
@@ -116,25 +89,7 @@ const TheEnd = () => {
               disableFocusRipple
               style={styles.button}
               onClick={() => {
-                dispatch(
-                  writeAnswers({
-                    csv: csv,
-                    participantId: participantId,
-                    postSurveyAnswers: {
-                      postsurvey: postsurvey,
-                      demographics: {
-                        countryOfResidence: countryOfResidence,
-                        vizFamiliarity: vizFamiliarity,
-                        age: age,
-                        gender: gender,
-                        selfDescribeGender: selfDescribeGender,
-                        profession: profession,
-                      },
-                      attentioncheck: attentioncheck,
-                      timestamps: timestamps,
-                    },
-                  })
-                );
+                dispatch(writeAnswers());
                 dispatch(nextQuestion());
               }}
             >
