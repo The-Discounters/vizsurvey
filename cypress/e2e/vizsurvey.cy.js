@@ -24,9 +24,9 @@ function postsurvey(expects) {
   cy.tick(1000);
   cy.wait(1000);
   cy.get("h4").contains("Submit Your Answers").should("exist");
-  cy.get("#Feedback").type("had trouble seeing numbers");
   cy.get("button").contains("Submit Your Answers").click();
   cy.get("h4").contains("Study Explanation").should("exist");
+  cy.get("#Feedback").type("had trouble seeing numbers");
   cy.get("button")
     .contains("Exit")
     .click()
@@ -86,9 +86,10 @@ function postsurvey(expects) {
                 purposeSurveyQuestionsShownTimestamp: 9000,
                 debriefShownTimestamp: null, // TODO
                 debriefCompletedTimestamp: null, // TODO
-                theEndShownTimestamp: 9400,
+                theEndShownTimestamp: 10000,
               },
-              feedback: "had trouble seeing numbers",
+              feedback: "",
+              // feedback: "had trouble seeing numbers",
             });
             fetching1 = false;
           });
