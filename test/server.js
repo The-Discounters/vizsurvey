@@ -93,12 +93,113 @@ app.post("/test", (req, res) => {
     fs.mkdirSync(dir);
   }
 
-  console.log("req.body.data: " + req.body.data);
+  console.log(
+    "req.body.name: " + req.body.name + ", " + "req.body.data: " + req.body.data
+  );
 
-  fs.writeFile(dir + req.body.name, req.body.data, function (err) {
-    if (err) throw err;
-  });
-  res.send(JSON.stringify({ test: 123 }, null, 2));
+  console.log(
+    "req.body.data.answers.filename: " +
+      req.body.data.answers.filename +
+      ", " +
+      "req.body.data.answers.data: " +
+      req.body.answers.data
+  );
+  fs.writeFile(
+    dir + req.body.data.answers.filename,
+    req.body.answers.data,
+    function (err) {
+      if (err) {
+        console.log(err);
+        throw err;
+      }
+    }
+  );
+  console.log(
+    "req.body.data.timestamps.filename: " +
+      req.body.data.timestamps.filename +
+      ", " +
+      "req.body.data.timestamps.data: " +
+      req.body.timestamps.data
+  );
+  fs.writeFile(
+    dir + req.body.data.timestamps.filename,
+    req.body.timestamps.data,
+    function (err) {
+      if (err) {
+        console.log(err);
+        throw err;
+      }
+    }
+  );
+  console.log(
+    "req.body.data.financialLitSurvey.filename: " +
+      req.body.data.financialLitSurvey.filename +
+      ", " +
+      "req.body.data.financialLitSurvey.data: " +
+      req.body.financialLitSurvey.data
+  );
+  fs.writeFile(
+    dir + req.body.data.financialLitSurvey.filename,
+    req.body.financialLitSurvey.data,
+    function (err) {
+      if (err) {
+        console.log(err);
+        throw err;
+      }
+    }
+  );
+  console.log(
+    "req.body.data.purposeSurvey.filename: " +
+      req.body.data.purposeSurvey.filename +
+      ", " +
+      "req.body.data.purposeSurvey.data: " +
+      req.body.purposeSurvey.data
+  );
+  fs.writeFile(
+    dir + req.body.data.purposeSurvey.filename,
+    req.body.purposeSurvey.data,
+    function (err) {
+      if (err) {
+        console.log(err);
+        throw err;
+      }
+    }
+  );
+  console.log(
+    "req.body.data.demographic.filename: " +
+      req.body.data.demographic.filename +
+      ", " +
+      "req.body.data.demographic.data: " +
+      req.body.demographic.data
+  );
+  fs.writeFile(
+    dir + req.body.data.demographic.filename,
+    req.body.demographic.data,
+    function (err) {
+      if (err) {
+        console.log(err);
+        throw err;
+      }
+    }
+  );
+  console.log(
+    "req.body.data.legal.filename: " +
+      req.body.data.legal.filename +
+      ", " +
+      "req.body.data.legal.data: " +
+      req.body.legal.data
+  );
+  fs.writeFile(
+    dir + req.body.data.legal.filename,
+    req.body.legal.data,
+    function (err) {
+      if (err) {
+        console.log(err);
+        throw err;
+      }
+    }
+  );
+  return res.json(`Done processing: ${req.body}`);
 });
 
 const serverHTTP = http.createServer(app);

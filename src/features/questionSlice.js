@@ -1,66 +1,76 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { FileIOAdapter } from "./FileIOAdapter";
+import * as io from "./FileIOAdapter";
 import { QuestionEngine } from "./QuestionEngine";
 import { StatusType } from "./StatusType";
 
 // Define the initial state of the store for this slicer.
 const qe = new QuestionEngine();
-const io = new FileIOAdapter();
 
 export const writeAnswers = createAsyncThunk(
   "survey/writeAnswers",
   async (arg, { getState }) => {
     const state = getState();
-    const csv = io.convertToCSV(state.questions.answers);
-    await io.writeAnswers({
-      treatmentId: state.questions.treatmentId,
+    const financialLitSurvey = state.questions.financialLitSurvey;
+    financialLitSurvey.participantId = state.questions.participantId;
+    const purposeSurvey = state.questions.purposeSurvey;
+    purposeSurvey.participantId = state.questions.participantId;
+    const demographic = {
       participantId: state.questions.participantId,
-      sessionId: state.questions.sessionId,
-      csv: csv,
-      other: {
-        financialLitSurvey: state.questions.financialLitSurvey,
-        purposeSurvey: state.questions.purposeSurvey,
-        demographics: {
-          countryOfResidence: state.questions.countryOfResidence,
-          vizFamiliarity: state.questions.vizFamiliarity,
-          age: state.questions.age,
-          gender: state.questions.gender,
-          selfDescribeGender: state.questions.selfDescribeGender,
-          profession: state.questions.profession,
-        },
-        consentChecked: state.questions.consentChecked,
-        attentionCheck: state.questions.attentioncheck,
-        timestamps: {
-          consentShownTimestamp: state.questions.consentShownTimestamp,
-          consentCompletedTimestamp: state.questions.consentCompletedTimestamp,
-          introductionShowTimestamp: state.questions.introductionShowTimestamp,
-          introductionCompletedTimestamp:
-            state.questions.introductionCompletedTimestamp,
-          instructionsShownTimestamp:
-            state.questions.instructionsShownTimestamp,
-          instructionsCompletedTimestamp:
-            state.questions.instructionsCompletedTimestamp,
-          attentionCheckShownTimestamp:
-            state.questions.attentionCheckShownTimestamp,
-          attentionCheckCompletedTimestamp:
-            state.questions.attentionCheckCompletedTimestamp,
-          financialLitSurveyQuestionsShownTimestamp:
-            state.questions.financialLitSurveyQuestionsShownTimestamp,
-          purposeSurveyQuestionsShownTimestamp:
-            state.questions.purposeSurveyQuestionsShownTimestamp,
-          debriefShownTimestamp: state.questions.debriefShownTimestamp,
-          debriefCompletedTimestamp: state.questions.debriefCompletedTimestamp,
-          theEndShownTimestamp: state.questions.theEndShownTimestamp,
-        },
-        feedback: state.questions.feedback,
-      },
-    });
+      countryOfResidence: state.questions.countryOfResidence,
+      vizFamiliarity: state.questions.vizFamiliarity,
+      age: state.questions.age,
+      gender: state.questions.gender,
+      selfDescribeGender: state.questions.selfDescribeGender,
+      profession: state.questions.profession,
+    };
+    const timestamps = {
+      participantId: state.questions.participantId,
+      consentShownTimestamp: state.questions.consentShownTimestamp,
+      consentCompletedTimestamp: state.questions.consentCompletedTimestamp,
+      introductionShowTimestamp: state.questions.introductionShowTimestamp,
+      introductionCompletedTimestamp:
+        state.questions.introductionCompletedTimestamp,
+      instructionsShownTimestamp: state.questions.instructionsShownTimestamp,
+      instructionsCompletedTimestamp:
+        state.questions.instructionsCompletedTimestamp,
+      attentionCheckShownTimestamp:
+        state.questions.attentionCheckShownTimestamp,
+      attentionCheckCompletedTimestamp:
+        state.questions.attentionCheckCompletedTimestamp,
+      financialLitSurveyQuestionsShownTimestamp:
+        state.questions.financialLitSurveyQuestionsShownTimestamp,
+      purposeSurveyQuestionsShownTimestamp:
+        state.questions.purposeSurveyQuestionsShownTimestamp,
+      debriefShownTimestamp: state.questions.debriefShownTimestamp,
+      debriefCompletedTimestamp: state.questions.debriefCompletedTimestamp,
+      theEndShownTimestamp: state.questions.theEndShownTimestamp,
+    };
+    const legal = {
+      participantId: state.questions.participantId,
+      consentChecked: state.questions.consentChecked,
+      attentionCheck: state.questions.attentioncheck,
+    };
+    writeAnswers(
+      state.questions.participantId,
+      state.questions.answers,
+      timestamps,
+      financialLitSurvey,
+      purposeSurvey,
+      demographic,
+      legal
+    );
   }
 );
 
 export const writeFeedback = createAsyncThunk(
   "survey/writeFeedback",
-  io.writeFeedback
+  async (arg, { getState }) => {
+    const state = getState();
+    io.writeFeedback({
+      participantId: state.questions.participantId,
+      feedback: arg,
+    });
+  }
 );
 
 function getRandomIntInclusive(min, max) {
@@ -75,6 +85,7 @@ export const questionSlice = createSlice({
     allTreatments: null,
     treatmentId: null,
     participantId: null,
+    studyId: null,
     sessionId: null,
     financialLitSurvey: {},
     purposeSurvey: {},
@@ -119,6 +130,10 @@ export const questionSlice = createSlice({
     },
     setSessionId(state, action) {
       state.sessionId = action.payload;
+      return state;
+    },
+    setStudyId(state, action) {
+      state.studyId = action.payload;
       return state;
     },
     setDemographic(state, action) {
@@ -304,7 +319,13 @@ export const isLastTreatment = (state) => qe.isLastTreatment(state.questions);
 
 export const selectAllQuestions = (state) => qe.allQuestions(state.questions);
 
-export const getParticipant = (state) => state.questions.participantId;
+export const getParticipantId = (state) => state.questions.participantId;
+
+export const getTreatmentId = (state) => state.questions.treatmentId;
+
+export const getSessionId = (state) => state.questions.sessionId;
+
+export const getStudyId = (state) => state.questions.studyId;
 
 export const getState = (state) => state;
 
@@ -354,12 +375,6 @@ export const getCurrentChoice = (state) =>
 
 export const getStatus = (state) => state.questions.status;
 
-export const fetchTreatmentId = (state) => state.questions.treatmentId;
-
-export const fetchParticipantId = (state) => state.questions.participantId;
-
-export const fetchSessionId = (state) => state.questions.sessionId;
-
 export const getConsentChecked = (state) => state.questions.consentChecked;
 
 // Action creators are generated for each case reducer function
@@ -374,6 +389,7 @@ export const {
   setParticipantId,
   setTreatmentId,
   setSessionId,
+  setStudyId,
   consentShown,
   consentCompleted,
   setDemographic,

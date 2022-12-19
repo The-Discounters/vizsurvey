@@ -27,7 +27,7 @@ export function Answer({
   choiceTimestamp: choiceTimestamp,
   highup: highup,
   lowdown: lowdown,
-  participantCode: participantCode,
+  participantId: participantId,
 }) {
   return {
     treatmentId: treatmentId,
@@ -58,6 +58,6 @@ export function Answer({
     choiceTimestamp: choiceTimestamp,
     highup: highup,
     lowdown: lowdown,
-    participantCode: participantCode,
+    participantId: participantId,
   };
 }

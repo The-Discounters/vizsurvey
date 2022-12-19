@@ -14,7 +14,7 @@ import {
   getStatus,
   debriefShownTimestamp,
   debriefCompleted,
-  getParticipant,
+  getParticipantId,
   writeFeedback,
 } from "../features/questionSlice";
 import { dateToState } from "../features/ConversionUtil";
@@ -24,7 +24,7 @@ import { navigateFromStatus } from "./Navigate";
 const Debrief = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const participantId = useSelector(getParticipant);
+  const participantId = useSelector(getParticipantId);
   const status = useSelector(getStatus);
   const [feedback, setFeedback] = React.useState("");
 
