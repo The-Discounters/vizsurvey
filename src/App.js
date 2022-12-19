@@ -23,7 +23,7 @@ import InvalidSurveyLink from "./components/InvalidSurveyLink";
 import {
   loadAllTreatments,
   fetchAllTreatments,
-  fetchStatus,
+  getStatus,
   clearState,
   genRandomTreatment,
   fetchTreatmentId,
@@ -79,16 +79,16 @@ const App = () => {
               <Route path={"instruction"} element={<Instructions />} />
               <Route path={"survey"} element={<Survey />} />
               <Route
-                path={"postsurvey1"}
+                path={"financialquestionaire"}
                 element={<PostSurveyFinancialLit />}
               />
               <Route
-                path={"postsurvey2"}
+                path={"purposequestionaire"}
                 element={<PostSurveySenseOfPurpose />}
               />
               <Route path={"attentioncheck"} element={<AttentionCheck />} />
-              <Route path={"debrief"} element={<Debrief />} />
               <Route path={"theend"} element={<TheEnd />} />
+              <Route path={"debrief"} element={<Debrief />} />
               <Route path={"invalidlink"} element={<InvalidSurveyLink />} />
               <Route path="*" element={<InvalidSurveyLink />} />
             </Routes>
@@ -130,7 +130,7 @@ const DevHome = () => {
     dispatch(loadAllTreatments());
   }, []);
 
-  const status = useSelector(fetchStatus);
+  const status = useSelector(getStatus);
   const allTreatments = useSelector(fetchAllTreatments);
 
   function testLinks() {
@@ -155,14 +155,19 @@ const DevHome = () => {
             </a>
             <p>
               The prolific url is:
-              https://release.d2ptxb5fbsc082.amplifyapp.com/instructions?participant_id=&#123;&#123;%PROLIFIC_PID%&#125;&#125;&treatment_id=&#123;&#123;%STUDY_ID%&#125;&#125;&session_id=&#123;&#123;%SESSION_ID%&#125;&#125;
-              ?PROLIFIC_PID=&#123;&#123;%PROLIFIC_PID%&#125;&#125;&STUDY_ID=&#123;&#123;%STUDY_ID%&#125;&#125;&SESSION_ID=&#123;&#123;%SESSION_ID%&#125;&#125;
+              https://release.d2ptxb5fbsc082.amplifyapp.com/start?PROLIFIC_PID=&#123;&#123;%PROLIFIC_PID%&#125;&#125;&STUDY_ID=&#123;&#123;%STUDY_ID%&#125;&#125;&SESSION_ID=&#123;&#123;%SESSION_ID%&#125;&#125;+
             </p>
             <p>
               Click a link below to launch one of the experiments. The
               experimental parameters are not setup yet and are configurable
               through a file. Right now these links give a feel for what each
               type of stimulus is like.
+            </p>
+            <p>
+              <b>
+                Teest treatments are listed below for the different
+                configuraiton scenarios.
+              </b>
             </p>
             <p>
               <Link
@@ -420,7 +425,46 @@ const DevHome = () => {
               >
                 {
                   allTreatments.filter(
-                    (d) => d.treatmentId === 18 && d.position === 1
+                    (d) => d.treatmentId === 19 && d.position === 1
+                  )[0].comment
+                }
+              </Link>
+            </p>
+            <p>
+              <b>Production treatments are listed below.</b>
+            </p>
+            <p>
+              <Link
+                id="20"
+                to="/start?participant_id=1&treatment_id=20&session_id=1"
+              >
+                {
+                  allTreatments.filter(
+                    (d) => d.treatmentId === 20 && d.position === 1
+                  )[0].comment
+                }
+              </Link>
+            </p>
+            <p>
+              <Link
+                id="21"
+                to="/start?participant_id=1&treatment_id=21&session_id=1"
+              >
+                {
+                  allTreatments.filter(
+                    (d) => d.treatmentId === 21 && d.position === 1
+                  )[0].comment
+                }
+              </Link>
+            </p>
+            <p>
+              <Link
+                id="22"
+                to="/start?participant_id=1&treatment_id=22&session_id=1"
+              >
+                {
+                  allTreatments.filter(
+                    (d) => d.treatmentId === 22 && d.position === 1
                   )[0].comment
                 }
               </Link>

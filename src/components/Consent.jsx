@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useMemo, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { DateTime } from "luxon";
 import {
@@ -8,12 +8,17 @@ import {
   Typography,
   ThemeProvider,
   FormControlLabel,
-} from "@material-ui/core";
+} from "@mui/material";
 import FormGroup from "@mui/material/FormGroup";
 import Checkbox from "@mui/material/Checkbox";
-import { useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { dateToState } from "../features/ConversionUtil";
-import { consentShown, consentCompleted } from "../features/questionSlice";
+import {
+  consentShown,
+  consentCompleted,
+  getStatus,
+} from "../features/questionSlice";
+import { navigateFromStatus } from "./Navigate";
 import { styles, theme } from "./ScreenHelper";
 import "../App.css";
 
@@ -22,6 +27,9 @@ export function Consent() {
 
   const [disableSubmit, setDisableSubmit] = React.useState(true);
   const [checked, setChecked] = React.useState(false);
+  const status = useSelector(getStatus);
+
+  const navigate = useNavigate();
 
   const handleChange = (event) => {
     setChecked(event.target.checked);
@@ -32,7 +40,9 @@ export function Consent() {
     dispatch(consentShown(dateToState(DateTime.utc())));
   }, []);
 
-  const navigate = useNavigate();
+  useMemo(() => {
+    navigateFromStatus(navigate, status);
+  }, [status]);
 
   const ConsentTextEn = () => {
     return (
@@ -69,9 +79,13 @@ export function Consent() {
         </Typography>
         <Typography paragraph>
           <b>Procedures to be followed: </b>You will be presented with a series
-          of choices about receiving money at different points in time.
-          &nbsp;&nbsp;<b>You will choose</b> either the earlier or later amount.
-          The study should take about 10 minutes to complete.
+          of choices about receiving money at different points in time.&nbsp;
+          <b>You will choose</b> either the earlier or later amount. The study
+          should take about 10 minutes to complete.&nbsp;
+          <b>
+            This survey is not designed to render on a mobile device and should
+            be taken on a laptop or desktop computer.
+          </b>
         </Typography>
         <Typography paragraph>
           <b>Risks to study participants:</b> To the best of the researchers
@@ -101,10 +115,21 @@ export function Consent() {
         </Typography>
         <Typography paragraph>
           <b>Cost/Payment:</b>
-          You will be compensated $10 (United States Dollars) for your
-          participation in completing this survey if you complete the survey in
-          its entirety. If you choose to end the survey before completion, you
-          will not be paid.
+          <b>
+            <i>
+              You will be compensated {process.env.REACT_APP_PAYMENT_AMOUT}{" "}
+              (United States Dollars) for your participation in this survey if
+              you complete the survey in its entirety and enter the code
+              presented at the end into Prolific. If you choose to end the
+              survey before completion, you will not be paid. All dollar amounts
+              in the survey questions are hypothetical and you will not be
+              compensated the survey question amounts. You will be compensated{" "}
+              {process.env.REACT_APP_PAYMENT_AMOUT} upon completion and
+              submission of all questions, entering the code presented into
+              Prolific, and acknowledgement of your completion by the
+              researchers.
+            </i>
+          </b>
         </Typography>
         <Typography paragraph>
           <b>
@@ -194,6 +219,8 @@ export function Consent() {
                 height: 4,
               }}
             />
+          </Grid>
+          <Grid item xs={12}>
             <Typography paragraph>
               <br />
               <i>
@@ -228,28 +255,35 @@ export function Consent() {
                 label={
                   <Typography>
                     I agree that any information provided in this survey can be
-                    used for the purpose(s) mentioned in the Consent Form
+                    used for the purpose(s) mentioned in the Consent Form.
                   </Typography>
                 }
               />
             </FormGroup>
+            <hr
+              style={{
+                backgroundColor: "#aaaaaa",
+                height: 4,
+              }}
+            />
           </Grid>
           <Grid item xs={12} style={{ margin: 0 }}>
-            <Button
-              variant="contained"
-              color="secondary"
-              disableRipple
-              disableFocusRipple
-              style={styles.button}
-              onClick={() => {
-                dispatch(consentCompleted(dateToState(DateTime.utc())));
-                navigate("/demographic");
-              }}
-              disabled={disableSubmit}
-            >
-              {" "}
-              Next{" "}
-            </Button>
+            <Box display="flex" justifyContent="center">
+              <Button
+                variant="contained"
+                color="secondary"
+                disableRipple
+                disableFocusRipple
+                style={styles.button}
+                onClick={() => {
+                  dispatch(consentCompleted(dateToState(DateTime.utc())));
+                }}
+                disabled={disableSubmit}
+              >
+                {" "}
+                Next{" "}
+              </Button>
+            </Box>
           </Grid>
         </Grid>
       </div>

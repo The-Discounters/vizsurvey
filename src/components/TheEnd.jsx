@@ -1,42 +1,43 @@
-import React, { useEffect } from "react";
+import React, { useMemo, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { DateTime } from "luxon";
-import { Grid, Typography, ThemeProvider, Button } from "@material-ui/core";
+import {
+  Grid,
+  Box,
+  Typography,
+  ThemeProvider,
+  Button,
+} from "@material-ui/core";
 import { theEndShownTimestamp } from "../features/questionSlice";
 import { dateToState } from "../features/ConversionUtil";
 import { styles, theme } from "./ScreenHelper";
 import {
-  getParticipant,
-  getPostSurvey,
-  getDemographics,
-  getAttentionCheck,
-  getTimestamps,
-  selectAllQuestions,
+  getStatus,
+  nextQuestion,
   writeAnswers,
 } from "../features/questionSlice";
-import { FileIOAdapter } from "../features/FileIOAdapter";
+import { navigateFromStatus } from "./Navigate";
 
 const TheEnd = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const status = useSelector(getStatus);
+
   useEffect(() => {
     dispatch(theEndShownTimestamp(dateToState(DateTime.utc())));
   }, []);
 
-  const dispatch = useDispatch();
-
-  const participantId = useSelector(getParticipant);
-  const answers = useSelector(selectAllQuestions);
-  const io = new FileIOAdapter();
-  const csv = io.convertToCSV(answers);
-  const postsurvey = useSelector(getPostSurvey);
-  const demographics = useSelector(getDemographics);
-  const attentioncheck = useSelector(getAttentionCheck);
-  const timestamps = useSelector(getTimestamps);
+  useMemo(() => {
+    navigateFromStatus(navigate, status);
+  }, [status]);
 
   return (
     <ThemeProvider theme={theme}>
-      <Grid container style={styles.root}>
+      <Grid container style={styles.root} justifyContent="center">
         <Grid item xs={12}>
-          <Typography variant="h4">Thank You and The End</Typography>
+          <Typography variant="h4">Submit Your Answers</Typography>
           <hr
             style={{
               color: "#ea3433",
@@ -44,53 +45,58 @@ const TheEnd = () => {
               height: 4,
             }}
           />
+        </Grid>
+        <Grid item xs={12}>
           <Typography paragraph>
-            You have completed the survey. We hope you have enjoyed taking this
-            survey and welcome any feedback and/or questions through email by
-            clicking&nbsp;
+            <b>
+              Click the &quot;Submit Your Answers&quot; button to complete the
+              survey and have your answers recorded! You must do this step to
+              get paid {process.env.REACT_APP_PAYMENT_AMOUT} USD.
+            </b>
+          </Typography>
+          <Typography paragraph>
+            <b>
+              You will be shown a code on the next screen after you submit your
+              answers that you must enter into prolific to get paid.
+            </b>{" "}
+          </Typography>
+          <Typography paragraph>
+            If you encounter an error and are not able to submit your answers,
+            please click{" "}
             <a
-              href={`mailto:pncordone@wpi.edu?subject=Survey Feedback&body=${encodeURIComponent(
-                "Enter your feedback here."
-              )}`}
+              href={`mailto:pncordone@wpi.edu?subject=Technical%20Problems%20With%20Survey&body=Please%20describe%20the%20technical%20problems%20you%20are%20having%20below%20giving%20as%20much%20details%20as%20you%20can.`}
             >
               here
-            </a>
-            . Please click the button below to submit your answers and exit this
-            tab.
-          </Typography>
-          <Typography paragraph>
-            You can now close this browser window.
+            </a>{" "}
+            to email pncordone@wpi.edu and give as detailed a description as you
+            can of the problem.
           </Typography>
         </Grid>
-        <Grid item xs={12} style={{ margin: 0 }}>
-          <Button
-            variant="contained"
-            color="secondary"
-            disableRipple
-            disableFocusRipple
-            style={styles.button}
-            onClick={() => {
-              dispatch(
-                writeAnswers({
-                  csv: csv,
-                  participantId: participantId,
-                  postSurveyAnswers: {
-                    postsurvey: postsurvey,
-                    demographics: demographics,
-                    attentioncheck: attentioncheck,
-                    timestamps: timestamps,
-                  },
-                })
-              );
-              setTimeout(() => {
-                window.open("about:blank", "_self");
-                window.close();
-              }, 400);
+        <Grid item xs={12}>
+          <hr
+            style={{
+              backgroundColor: "#aaaaaa",
+              height: 4,
             }}
-          >
-            {" "}
-            Submit and Exit{" "}
-          </Button>
+          />
+        </Grid>
+        <Grid item xs={12} style={{ margin: 0 }}>
+          <Box display="flex" justifyContent="center">
+            <Button
+              variant="contained"
+              color="secondary"
+              disableRipple
+              disableFocusRipple
+              style={styles.button}
+              onClick={() => {
+                dispatch(writeAnswers());
+                dispatch(nextQuestion());
+              }}
+            >
+              {" "}
+              Submit Your Answers{" "}
+            </Button>
+          </Box>
         </Grid>
       </Grid>
     </ThemeProvider>
