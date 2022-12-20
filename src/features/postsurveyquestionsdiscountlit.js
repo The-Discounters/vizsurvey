@@ -33,5 +33,34 @@ export const POST_SURVEY_QUESTIONS = {
         },
       ],
     },
+    /*
+chrome-extension://efaidnbmnnnibpcajpcglclefindmkaj/https://www.mathinenglish.com/PWP/Grade6Discount.pdf
+Grade 6 Discount Word Problems
+*/
+    {
+      question: {
+        textFull:
+          "The price of a motorbike is 1,500$. How much do you need to pay if you get a 10% discount?",
+        textShort: "qsinglediscount",
+      },
+      options: [
+        {
+          textFull: "1350",
+          textShort: "v1350", // ANSWER
+        },
+        {
+          textFull: "Rs. 1000",
+          textShort: "v1000",
+        },
+        {
+          textFull: "Rs. 1400",
+          textShort: "v1400",
+        },
+        {
+          textFull: "Rs. 1250",
+          textShort: "v1250",
+        },
+      ],
+    },
   ],
 };

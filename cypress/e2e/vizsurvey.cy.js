@@ -9,6 +9,7 @@ let fetching = true;
 let fetching1 = true;
 function postsurvey(expects) {
   cy.get("label").contains("1360").click();
+  cy.get("label").contains("1350").click();
   cy.get("button").contains("Next").click();
   cy.tick(1000);
   cy.get("#posdiff-strongly-disagree").click();
@@ -48,6 +49,7 @@ function postsurvey(expects) {
             expect(JSON.parse(text)).to.deep.equal({
               financialLitSurvey: {
                 qdoublediscount: "v1360",
+                qsinglediscount: "v1350",
               },
               purposeSurvey: {
                 posdiff: "strongly-disagree",
