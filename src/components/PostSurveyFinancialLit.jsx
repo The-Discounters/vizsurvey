@@ -1,4 +1,4 @@
-import React, { useMemo, useEffect } from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { DateTime } from "luxon";
@@ -18,12 +18,12 @@ import { makeStyles } from "@material-ui/core/styles";
 import {
   getStatus,
   financialLitSurveyQuestionsShown,
+  financialLitSurveyQuestionsCompleted,
   nextQuestion,
   initFinancialLitSurveyQuestion,
   setFinancialLitSurveyQuestion,
   getFinancialLitSurveyQuestion,
 } from "../features/questionSlice";
-import { dateToState } from "../features/ConversionUtil";
 import { POST_SURVEY_QUESTIONS } from "../features/postsurveyquestionsfinanciallit";
 import { styles, theme } from "./ScreenHelper";
 import { navigateFromStatus } from "./Navigate";
@@ -65,11 +65,12 @@ export function PostSurvey() {
   });
 
   useEffect(() => {
-    dispatch(financialLitSurveyQuestionsShown(dateToState(DateTime.utc())));
+    dispatch(financialLitSurveyQuestionsShown(DateTime.utc().toString()));
   }, []);
 
-  useMemo(() => {
-    navigateFromStatus(navigate, status);
+  useEffect(() => {
+    const path = navigateFromStatus(status);
+    navigate(path);
   }, [status]);
 
   useEffect(() => {
@@ -204,6 +205,11 @@ export function PostSurvey() {
                 style={styles.button}
                 onClick={() => {
                   setTimeout(() => {
+                    dispatch(
+                      financialLitSurveyQuestionsCompleted(
+                        DateTime.utc().toString()
+                      )
+                    );
                     dispatch(nextQuestion());
                   }, 400);
                 }}

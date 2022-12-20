@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 import { FileIOAdapter } from "./FileIOAdapter";
 import { QuestionEngine } from "./QuestionEngine";
 import { StatusType } from "./StatusType";
@@ -6,62 +6,6 @@ import { StatusType } from "./StatusType";
 // Define the initial state of the store for this slicer.
 const qe = new QuestionEngine();
 const io = new FileIOAdapter();
-
-export const writeAnswers = createAsyncThunk(
-  "survey/writeAnswers",
-  async (arg, { getState }) => {
-    const state = getState();
-    const csv = io.convertToCSV(state.questions.answers);
-    await io.writeAnswers({
-      treatmentId: state.questions.treatmentId,
-      participantId: state.questions.participantId,
-      sessionId: state.questions.sessionId,
-      csv: csv,
-      other: {
-        financialLitSurvey: state.questions.financialLitSurvey,
-        purposeSurvey: state.questions.purposeSurvey,
-        demographics: {
-          countryOfResidence: state.questions.countryOfResidence,
-          vizFamiliarity: state.questions.vizFamiliarity,
-          age: state.questions.age,
-          gender: state.questions.gender,
-          selfDescribeGender: state.questions.selfDescribeGender,
-          profession: state.questions.profession,
-        },
-        consentChecked: state.questions.consentChecked,
-        attentionCheck: state.questions.attentioncheck,
-        timestamps: {
-          consentShownTimestamp: state.questions.consentShownTimestamp,
-          consentCompletedTimestamp: state.questions.consentCompletedTimestamp,
-          introductionShowTimestamp: state.questions.introductionShowTimestamp,
-          introductionCompletedTimestamp:
-            state.questions.introductionCompletedTimestamp,
-          instructionsShownTimestamp:
-            state.questions.instructionsShownTimestamp,
-          instructionsCompletedTimestamp:
-            state.questions.instructionsCompletedTimestamp,
-          attentionCheckShownTimestamp:
-            state.questions.attentionCheckShownTimestamp,
-          attentionCheckCompletedTimestamp:
-            state.questions.attentionCheckCompletedTimestamp,
-          financialLitSurveyQuestionsShownTimestamp:
-            state.questions.financialLitSurveyQuestionsShownTimestamp,
-          purposeSurveyQuestionsShownTimestamp:
-            state.questions.purposeSurveyQuestionsShownTimestamp,
-          debriefShownTimestamp: state.questions.debriefShownTimestamp,
-          debriefCompletedTimestamp: state.questions.debriefCompletedTimestamp,
-          theEndShownTimestamp: state.questions.theEndShownTimestamp,
-        },
-        feedback: state.questions.feedback,
-      },
-    });
-  }
-);
-
-export const writeFeedback = createAsyncThunk(
-  "survey/writeFeedback",
-  io.writeFeedback
-);
 
 function getRandomIntInclusive(min, max) {
   min = Math.ceil(min);
@@ -76,8 +20,9 @@ export const questionSlice = createSlice({
     treatmentId: null,
     participantId: null,
     sessionId: null,
-    financialLitSurvey: {},
-    purposeSurvey: {},
+    studyId: null,
+    financialLitSurvey: { participantId: null },
+    purposeSurvey: { participantId: null },
     countryOfResidence: "",
     vizFamiliarity: "",
     age: "",
@@ -96,10 +41,13 @@ export const questionSlice = createSlice({
     feedback: "",
     instructionsCompletedTimestamp: null,
     financialLitSurveyQuestionsShownTimestamp: null,
+    financialLitSurveyQuestionsCompletedTimestamp: null,
     purposeSurveyQuestionsShownTimestamp: null,
+    purposeSurveyQuestionsCompletedTimestamp: null,
     debriefShownTimestamp: null,
     debriefCompletedTimestamp: null,
     theEndShownTimestamp: null,
+    theEndCompletedTimestamp: null,
     treatments: [],
     answers: [],
     currentQuestionIdx: 0,
@@ -111,6 +59,8 @@ export const questionSlice = createSlice({
   reducers: {
     setParticipantId(state, action) {
       state.participantId = action.payload;
+      state.financialLitSurvey.participantId = action.payload;
+      state.purposeSurvey.participantId = action.payload;
       return state;
     },
     setTreatmentId(state, action) {
@@ -120,6 +70,9 @@ export const questionSlice = createSlice({
     setSessionId(state, action) {
       state.sessionId = action.payload;
       return state;
+    },
+    setStudyId(state, action) {
+      state.studyId = action.payload;
     },
     setDemographic(state, action) {
       state.countryOfResidence = action.payload.countryOfResidence;
@@ -229,24 +182,95 @@ export const questionSlice = createSlice({
     financialLitSurveyQuestionsShown(state, action) {
       state.financialLitSurveyQuestionsShownTimestamp = action.payload;
     },
+    financialLitSurveyQuestionsCompleted(state, action) {
+      state.financialLitSurveyQuestionsCompletedTimestamp = action.payload;
+    },
     purposeSurveyQuestionsShown(state, action) {
       state.purposeSurveyQuestionsShownTimestamp = action.payload;
+    },
+    purposeSurveyQuestionsCompleted(state, action) {
+      state.purposeSurveyQuestionsCompletedTimestamp = action.payload;
     },
     debriefShownTimestamp(state, action) {
       state.debriefShownTimestamp = action.payload;
     },
     debriefCompleted(state, action) {
       state.debriefCompletedTimestamp = action.payload;
+      const feedback = {
+        participantId: state.participantId,
+        feedback: state.feedback,
+      };
+      const timestamps = {
+        participantId: state.participantId,
+        debriefShownTimestamp: state.debriefShownTimestamp,
+        debriefCompletedTimestamp: state.debriefCompletedTimestamp,
+      };
+      io.writeFeedback(
+        state.participantId,
+        state.studyId,
+        feedback,
+        timestamps
+      );
       state.status = qe.nextStatus(state, false);
     },
     theEndShownTimestamp(state, action) {
       state.theEndShownTimestamp = action.payload;
+    },
+    theEndCompleted(state, action) {
+      state.theEndCompletedTimestamp = action.payload;
+      const demographic = {
+        participantId: state.participantId,
+        countryOfResidence: state.countryOfResidence,
+        vizFamiliarity: state.vizFamiliarity,
+        age: state.age,
+        gender: state.gender,
+        selfDescribeGender: state.selfDescribeGender,
+        profession: state.profession,
+      };
+      const timestamps = {
+        participantId: state.participantId,
+        consentShownTimestamp: state.consentShownTimestamp,
+        consentCompletedTimestamp: state.consentCompletedTimestamp,
+        introductionShowTimestamp: state.introductionShowTimestamp,
+        introductionCompletedTimestamp: state.introductionCompletedTimestamp,
+        instructionsShownTimestamp: state.instructionsShownTimestamp,
+        instructionsCompletedTimestamp: state.instructionsCompletedTimestamp,
+        attentionCheckShownTimestamp: state.attentionCheckShownTimestamp,
+        attentionCheckCompletedTimestamp:
+          state.attentionCheckCompletedTimestamp,
+        financialLitSurveyQuestionsShownTimestamp:
+          state.financialLitSurveyQuestionsShownTimestamp,
+        financialLitSurveyQuestionsCompletedTimestamp:
+          state.financialLitSurveyQuestionsCompletedTimestamp,
+        purposeSurveyQuestionsShownTimestamp:
+          state.purposeSurveyQuestionsShownTimestamp,
+        purposeSurveyQuestionsCompletedTimestamp:
+          state.purposeSurveyQuestionsCompletedTimestamp,
+        theEndShownTimestamp: state.theEndShownTimestamp,
+        theEndCompletedTimestamp: state.theEndCompletedTimestamp,
+      };
+      const legal = {
+        participantId: state.participantId,
+        consentChecked: state.consentChecked,
+        attentionCheck: state.attentioncheck,
+      };
+      io.writeAnswers(
+        state.participantId,
+        state.studyId,
+        state.answers,
+        timestamps,
+        state.financialLitSurvey,
+        state.purposeSurvey,
+        demographic,
+        legal
+      );
     },
     clearState(state) {
       state.allTreatments = null;
       state.treatmentId = null;
       state.articipantId = null;
       state.sessionId = null;
+      state.studyId = null;
       state.financialLitSurvey = {};
       state.purposeSurvey = {};
       state.countryOfResidence = "";
@@ -267,7 +291,9 @@ export const questionSlice = createSlice({
       state.feedback = "";
       state.instructionsCompletedTimestamp = null;
       state.financialLitSurveyQuestionsShownTimestamp = null;
+      state.financialLitSurveyQuestionsCompletedTimestamp = null;
       state.purposeSurveyQuestionsShownTimestamp = null;
+      state.purposeSurveyQuestionsCompletedTimestamp = null;
       state.debriefShownTimestamp = null;
       state.treatments = [];
       state.answers = [];
@@ -360,6 +386,8 @@ export const fetchParticipantId = (state) => state.questions.participantId;
 
 export const fetchSessionId = (state) => state.questions.sessionId;
 
+export const getStudyId = (state) => state.questions.studyId;
+
 export const getConsentChecked = (state) => state.questions.consentChecked;
 
 // Action creators are generated for each case reducer function
@@ -374,6 +402,7 @@ export const {
   setParticipantId,
   setTreatmentId,
   setSessionId,
+  setStudyId,
   consentShown,
   consentCompleted,
   setDemographic,
@@ -395,12 +424,15 @@ export const {
   introductionCompleted,
   attentionCheckShown,
   financialLitSurveyQuestionsShown,
+  financialLitSurveyQuestionsCompleted,
   purposeSurveyQuestionsShown,
   debriefShownTimestamp,
   debriefCompleted,
   theEndShownTimestamp,
+  theEndCompleted,
   clearState,
   genRandomTreatment,
+  nextStatus,
 } = questionSlice.actions;
 
 export default questionSlice.reducer;

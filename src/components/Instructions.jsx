@@ -1,4 +1,4 @@
-import React, { useMemo, useEffect } from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Button,
@@ -16,7 +16,6 @@ import {
   getStatus,
 } from "../features/questionSlice";
 import { navigateFromStatus } from "./Navigate";
-import { dateToState } from "../features/ConversionUtil";
 import { styles, theme } from "./ScreenHelper";
 
 const Instructions = () => {
@@ -25,11 +24,12 @@ const Instructions = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    dispatch(instructionsShown(dateToState(DateTime.utc())));
+    dispatch(instructionsShown(DateTime.utc().toString()));
   }, []);
 
-  useMemo(() => {
-    navigateFromStatus(navigate, status);
+  useEffect(() => {
+    const path = navigateFromStatus(status);
+    navigate(path);
   }, [status]);
 
   return (
@@ -82,7 +82,7 @@ const Instructions = () => {
               disableFocusRipple
               style={styles.button}
               onClick={() => {
-                dispatch(instructionsCompleted(dateToState(DateTime.utc())));
+                dispatch(instructionsCompleted(DateTime.utc().toString()));
                 if (process.env.REACT_APP_FULLSCREEN === "enabled")
                   document.body.requestFullscreen();
               }}
