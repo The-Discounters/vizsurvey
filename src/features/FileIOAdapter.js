@@ -135,8 +135,13 @@ export class FileIOAdapter {
     return csv(answers);
   }
 
+  generateFilenameSuffix(participantId, studyId) {
+    return `${participantId}-${studyId}-${DateTime.utc().toISO().toString()}`;
+  }
+
   writeAnswers = async (
     participantId,
+    studyId,
     answers,
     timestamps,
     financialLitSurvey,
@@ -144,8 +149,10 @@ export class FileIOAdapter {
     demographic,
     legal
   ) => {
-    const filename =
-      "answers-" + participantId + "-" + DateTime.utc().toISO() + ".json";
+    const filename = `answers-${this.generateFilenameSuffix(
+      participantId,
+      studyId
+    )}.json`;
 
     const answersCSV = this.convertToCSV(answers);
     const timestampsCSV = this.convertToCSV([timestamps]);
@@ -156,53 +163,45 @@ export class FileIOAdapter {
 
     const data = {
       surveyAnswers: {
-        filename:
-          "answers-" + participantId + "-" + DateTime.utc().toISO() + ".csv",
+        filename: `answers-${this.generateFilenameSuffix(
+          participantId,
+          studyId
+        )}.csv`,
         data: answersCSV,
       },
       answerTimestamps: {
-        filename:
-          "answer-timestamps-" +
-          participantId +
-          "-" +
-          DateTime.utc().toISO() +
-          ".csv",
+        filename: `answer-timestamps-${this.generateFilenameSuffix(
+          participantId,
+          studyId
+        )}.csv`,
         data: timestampsCSV,
       },
       financialLitSurvey: {
-        filename:
-          "financial-lit-survey-" +
-          participantId +
-          "-" +
-          DateTime.utc().toISO() +
-          ".csv",
+        filename: `financial-lit-survey-${this.generateFilenameSuffix(
+          participantId,
+          studyId
+        )}.csv`,
         data: financialLitSurveyCSV,
       },
       purposeSurvey: {
-        filename:
-          "purpose-survey-" +
-          participantId +
-          "-" +
-          DateTime.utc().toISO() +
-          ".csv",
+        filename: `purpose-survey-${this.generateFilenameSuffix(
+          participantId,
+          studyId
+        )}.csv`,
         data: purposeSurveyCSV,
       },
       demographics: {
-        filename:
-          "demographic-" +
-          demographic.participantId +
-          "-" +
-          DateTime.utc().toISO() +
-          ".csv",
+        filename: `demographics-${this.generateFilenameSuffix(
+          participantId,
+          studyId
+        )}.csv`,
         data: demographicCSV,
       },
       legal: {
-        filename:
-          "legal-" +
-          legal.participantId +
-          "-" +
-          DateTime.utc().toISO() +
-          ".csv",
+        filename: `legal-${this.generateFilenameSuffix(
+          participantId,
+          studyId
+        )}.csv`,
         data: legalCSV,
       },
     };
@@ -217,30 +216,28 @@ export class FileIOAdapter {
     }
   };
 
-  writeFeedback = async (participantId, feedback, timestamps) => {
-    const fileNameFeedback =
-      "debrief-" + participantId + "-" + DateTime.utc().toISO() + ".json";
+  writeFeedback = async (participantId, studyId, feedback, timestamps) => {
+    const fileNameFeedback = `debrief-${this.generateFilenameSuffix(
+      participantId,
+      studyId
+    )}.json`;
 
     const feedbackCSV = this.convertToCSV([feedback]);
     const timestampsCSV = this.convertToCSV([timestamps]);
 
     const data = {
       feedback: {
-        filename:
-          "feedback-" +
-          participantId +
-          "-" +
-          DateTime.utc().toISO().toString() +
-          ".csv",
+        filename: `feedback-${this.generateFilenameSuffix(
+          participantId,
+          studyId
+        )}.csv`,
         data: feedbackCSV,
       },
       debriefTimestamps: {
-        filename:
-          "debrief-timestamps-" +
-          participantId +
-          "-" +
-          DateTime.utc().toISO().toString() +
-          ".csv",
+        filename: `debrief-timestamps-${this.generateFilenameSuffix(
+          participantId,
+          studyId
+        )}.csv`,
         data: timestampsCSV,
       },
     };

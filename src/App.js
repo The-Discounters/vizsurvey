@@ -30,6 +30,7 @@ import {
   setSessionId,
   setParticipantId,
   setTreatmentId,
+  setStudyId,
   loadTreatment,
 } from "./features/questionSlice";
 import { StatusType } from "./features/StatusType";
@@ -115,6 +116,9 @@ const GenTreatmentId = () => {
   dispatch(setSessionId(sessionId));
   const participantId = searchParams.get("participant_id");
   dispatch(setParticipantId(participantId));
+  const studyId = searchParams.get("study_id");
+  dispatch(setStudyId(studyId));
+
   dispatch(loadTreatment());
 
   useEffect(() => {
@@ -155,7 +159,7 @@ const DevHome = () => {
             </a>
             <p>
               The prolific url is:
-              https://release.d2ptxb5fbsc082.amplifyapp.com/start?PROLIFIC_PID=&#123;&#123;%PROLIFIC_PID%&#125;&#125;&STUDY_ID=&#123;&#123;%STUDY_ID%&#125;&#125;&SESSION_ID=&#123;&#123;%SESSION_ID%&#125;&#125;+
+              https://release.d2ptxb5fbsc082.amplifyapp.com/start?participant_id=&#123;&#123;%PROLIFIC_PID%&#125;&#125;&study_id=&#123;&#123;%STUDY_ID%&#125;&#125;&session_id=&#123;&#123;%session_id%&#125;&#125;
             </p>
             <p>
               Click a link below to launch one of the experiments. The
@@ -172,7 +176,7 @@ const DevHome = () => {
             <p>
               <Link
                 id="1"
-                to="/start?participant_id=1&treatment_id=1&session_id=1"
+                to="/start?participant_id=1&treatment_id=1&study_id=1&session_id=1"
                 onClick={() => {
                   dispatch(clearState());
                 }}
@@ -187,7 +191,7 @@ const DevHome = () => {
             <p>
               <Link
                 id="2"
-                to="/start?participant_id=1&treatment_id=2&session_id=1"
+                to="/start?participant_id=1&treatment_id=2&study_id=1&session_id=1"
                 onClick={() => {
                   dispatch(clearState());
                 }}
@@ -202,7 +206,7 @@ const DevHome = () => {
             <p>
               <Link
                 id="3"
-                to="/start?participant_id=1&treatment_id=3&session_id=1"
+                to="/start?participant_id=1&treatment_id=3&study_id=1&session_id=1"
                 onClick={() => {
                   dispatch(clearState());
                 }}
@@ -217,7 +221,7 @@ const DevHome = () => {
             <p>
               <Link
                 id="4"
-                to="/start?participant_id=1&treatment_id=4"
+                to="/start?participant_id=1&treatment_id=4&study_id=1&session_id=1"
                 onClick={() => {
                   dispatch(clearState());
                 }}
@@ -232,7 +236,7 @@ const DevHome = () => {
             <p>
               <Link
                 id="5"
-                to="/start?participant_id=1&treatment_id=5&session_id=1"
+                to="/start?participant_id=1&treatment_id=5&study_id=1&session_id=1"
                 onClick={() => {
                   dispatch(clearState());
                 }}
@@ -247,7 +251,7 @@ const DevHome = () => {
             <p>
               <Link
                 id="6"
-                to="/start?participant_id=1&treatment_id=6&session_id=1"
+                to="/start?participant_id=1&treatment_id=6&study_id=1&session_id=1"
                 onClick={() => {
                   dispatch(clearState());
                 }}
@@ -262,7 +266,7 @@ const DevHome = () => {
             <p>
               <Link
                 id="7"
-                to="/start?participant_id=1&treatment_id=7&session_id=1"
+                to="/start?participant_id=1&treatment_id=7&study_id=1&session_id=1"
                 onClick={() => {
                   dispatch(clearState());
                 }}
@@ -277,7 +281,7 @@ const DevHome = () => {
             <p>
               <Link
                 id="8"
-                to="/start?participant_id=1&treatment_id=8&session_id=1"
+                to="/start?participant_id=1&treatment_id=8&study_id=1&session_id=1"
                 onClick={() => {
                   dispatch(clearState());
                 }}
@@ -292,7 +296,7 @@ const DevHome = () => {
             <p>
               <Link
                 id="9"
-                to="/start?participant_id=1&treatment_id=9&session_id=1"
+                to="/start?participant_id=1&treatment_id=9&study_id=1&session_id=1"
                 onClick={() => {
                   dispatch(clearState());
                 }}
@@ -307,7 +311,7 @@ const DevHome = () => {
             <p>
               <Link
                 id="10"
-                to="/start?participant_id=1&treatment_id=10&session_id=1"
+                to="/start?participant_id=1&treatment_id=10&study_id=1&session_id=1"
                 onClick={() => {
                   dispatch(clearState());
                 }}
@@ -322,7 +326,7 @@ const DevHome = () => {
             <p>
               <Link
                 id="11"
-                to="/start?participant_id=1&treatment_id=11&session_id=1"
+                to="/start?participant_id=1&treatment_id=11&study_id=1&session_id=1"
                 onClick={() => {
                   dispatch(clearState());
                 }}
@@ -337,7 +341,7 @@ const DevHome = () => {
             <p>
               <Link
                 id="12"
-                to="/start?participant_id=1&treatment_id=12&session_id=1"
+                to="/start?participant_id=1&treatment_id=12&study_id=1&session_id=1"
               >
                 {
                   allTreatments.filter(
@@ -349,7 +353,7 @@ const DevHome = () => {
             <p>
               <Link
                 id="13"
-                to="/start?participant_id=1&treatment_id=13&session_id=1"
+                to="/start?participant_id=1&treatment_id=13&study_id=1&session_id=1"
               >
                 {
                   allTreatments.filter(
@@ -361,7 +365,7 @@ const DevHome = () => {
             <p>
               <Link
                 id="14"
-                to="/start?participant_id=1&treatment_id=14&session_id=1"
+                to="/start?participant_id=1&treatment_id=14&study_id=1&session_id=1"
               >
                 {
                   allTreatments.filter(
@@ -373,7 +377,7 @@ const DevHome = () => {
             <p>
               <Link
                 id="15"
-                to="/start?participant_id=1&treatment_id=15&session_id=1"
+                to="/start?participant_id=1&treatment_id=15&study_id=1&session_id=1"
               >
                 {
                   allTreatments.filter(
@@ -385,7 +389,7 @@ const DevHome = () => {
             <p>
               <Link
                 id="16"
-                to="/start?participant_id=1&treatment_id=16&session_id=1"
+                to="/start?participant_id=1&treatment_id=16&study_id=1&session_id=1"
               >
                 {
                   allTreatments.filter(
@@ -397,7 +401,7 @@ const DevHome = () => {
             <p>
               <Link
                 id="17"
-                to="/start?participant_id=1&treatment_id=17&session_id=1"
+                to="/start?participant_id=1&treatment_id=17&study_id=1&session_id=1"
               >
                 {
                   allTreatments.filter(
@@ -409,7 +413,7 @@ const DevHome = () => {
             <p>
               <Link
                 id="18"
-                to="/start?participant_id=1&treatment_id=18&session_id=1"
+                to="/start?participant_id=1&treatment_id=18&study_id=1&session_id=1"
               >
                 {
                   allTreatments.filter(
@@ -421,7 +425,7 @@ const DevHome = () => {
             <p>
               <Link
                 id="19"
-                to="/start?participant_id=1&treatment_id=19&session_id=1"
+                to="/start?participant_id=1&treatment_id=19&study_id=1&session_id=1"
               >
                 {
                   allTreatments.filter(
@@ -436,7 +440,7 @@ const DevHome = () => {
             <p>
               <Link
                 id="20"
-                to="/start?participant_id=1&treatment_id=20&session_id=1"
+                to="/start?participant_id=1&treatment_id=20&study_id=1&session_id=1"
               >
                 {
                   allTreatments.filter(
@@ -448,7 +452,7 @@ const DevHome = () => {
             <p>
               <Link
                 id="21"
-                to="/start?participant_id=1&treatment_id=21&session_id=1"
+                to="/start?participant_id=1&treatment_id=21&study_id=1&session_id=1"
               >
                 {
                   allTreatments.filter(
@@ -460,7 +464,7 @@ const DevHome = () => {
             <p>
               <Link
                 id="22"
-                to="/start?participant_id=1&treatment_id=22&session_id=1"
+                to="/start?participant_id=1&treatment_id=22&study_id=1&session_id=1"
               >
                 {
                   allTreatments.filter(

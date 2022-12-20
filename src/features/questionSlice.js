@@ -20,6 +20,7 @@ export const questionSlice = createSlice({
     treatmentId: null,
     participantId: null,
     sessionId: null,
+    studyId: null,
     financialLitSurvey: { participantId: null },
     purposeSurvey: { participantId: null },
     countryOfResidence: "",
@@ -69,6 +70,9 @@ export const questionSlice = createSlice({
     setSessionId(state, action) {
       state.sessionId = action.payload;
       return state;
+    },
+    setStudyId(state, action) {
+      state.studyId = action.payload;
     },
     setDemographic(state, action) {
       state.countryOfResidence = action.payload.countryOfResidence;
@@ -201,7 +205,12 @@ export const questionSlice = createSlice({
         debriefShownTimestamp: state.debriefShownTimestamp,
         debriefCompletedTimestamp: state.debriefCompletedTimestamp,
       };
-      io.writeFeedback(state.participantId, feedback, timestamps);
+      io.writeFeedback(
+        state.participantId,
+        state.studyId,
+        feedback,
+        timestamps
+      );
       state.status = qe.nextStatus(state, false);
     },
     theEndShownTimestamp(state, action) {
@@ -247,6 +256,7 @@ export const questionSlice = createSlice({
       };
       io.writeAnswers(
         state.participantId,
+        state.studyId,
         state.answers,
         timestamps,
         state.financialLitSurvey,
@@ -260,6 +270,7 @@ export const questionSlice = createSlice({
       state.treatmentId = null;
       state.articipantId = null;
       state.sessionId = null;
+      state.studyId = null;
       state.financialLitSurvey = {};
       state.purposeSurvey = {};
       state.countryOfResidence = "";
@@ -375,6 +386,8 @@ export const fetchParticipantId = (state) => state.questions.participantId;
 
 export const fetchSessionId = (state) => state.questions.sessionId;
 
+export const getStudyId = (state) => state.questions.studyId;
+
 export const getConsentChecked = (state) => state.questions.consentChecked;
 
 // Action creators are generated for each case reducer function
@@ -389,6 +402,7 @@ export const {
   setParticipantId,
   setTreatmentId,
   setSessionId,
+  setStudyId,
   consentShown,
   consentCompleted,
   setDemographic,
