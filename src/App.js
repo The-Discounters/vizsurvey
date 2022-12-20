@@ -1,15 +1,18 @@
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
-  useSearchParams,
   useNavigate,
+  useSearchParams,
   BrowserRouter,
   Route,
   Routes,
   Link,
 } from "react-router-dom";
+import { Typography } from "@mui/material";
+//import { redirect } from "react-router-dom";
 import { Container } from "@material-ui/core";
 import "./App.css";
+import { navigateFromStatus } from "./components/Navigate";
 import Introduction from "./components/Introduction";
 import Demographic from "./components/Demographic";
 import Instructions from "./components/Instructions";
@@ -32,6 +35,7 @@ import {
   setTreatmentId,
   setStudyId,
   loadTreatment,
+  nextStatus,
 } from "./features/questionSlice";
 import { StatusType } from "./features/StatusType";
 import { Consent } from "./components/Consent";
@@ -68,12 +72,12 @@ const App = () => {
         <BrowserRouter>
           <Container>
             <Routes>
-              <Route path="start" element={<GenTreatmentId />} />
               {process.env.REACT_APP_ENV !== "production" ? (
                 <Route path="dev" element={<DevHome />} />
               ) : (
                 ""
               )}
+              <Route path="start" element={<GenTreatmentId />} />
               <Route path={"consent"} element={<Consent />} />
               <Route path={"demographic"} element={<Demographic />} />
               <Route path={"introduction"} element={<Introduction />} />
@@ -101,30 +105,39 @@ const App = () => {
 };
 
 const GenTreatmentId = () => {
+  const status = useSelector(getStatus);
   const [searchParams] = useSearchParams();
-  const navigate = useNavigate();
   const dispatch = useDispatch();
-
-  var treatmentId = searchParams.get("treatment_id");
-  if (!treatmentId) {
-    dispatch(genRandomTreatment());
-    treatmentId = useSelector(fetchTreatmentId);
-  } else {
-    dispatch(setTreatmentId(treatmentId));
-  }
-  const sessionId = searchParams.get("session_id");
-  dispatch(setSessionId(sessionId));
-  const participantId = searchParams.get("participant_id");
-  dispatch(setParticipantId(participantId));
-  const studyId = searchParams.get("study_id");
-  dispatch(setStudyId(studyId));
-
-  dispatch(loadTreatment());
+  const navigate = useNavigate();
 
   useEffect(() => {
-    navigate("/consent");
+    var treatmentId = searchParams.get("treatment_id");
+    if (!treatmentId) {
+      dispatch(genRandomTreatment());
+      treatmentId = useSelector(fetchTreatmentId);
+    } else {
+      dispatch(setTreatmentId(treatmentId));
+    }
+    dispatch(setSessionId(searchParams.get("session_id")));
+    dispatch(setParticipantId(searchParams.get("participant_id")));
+    dispatch(setStudyId(searchParams.get("study_id")));
+    dispatch(nextStatus());
+    dispatch(loadTreatment());
+    dispatch(nextStatus());
   }, []);
-  return "";
+
+  useEffect(() => {
+    if (status != StatusType.Unitialized && status != StatusType.Fetching) {
+      const path = navigateFromStatus(status);
+      navigate(path);
+    }
+  }, [status]);
+
+  return (
+    <React.Fragment>
+      <Typography paragraph>The application is initializing.</Typography>
+    </React.Fragment>
+  );
 };
 
 const DevHome = () => {
@@ -139,7 +152,7 @@ const DevHome = () => {
 
   function testLinks() {
     return (
-      <div>
+      <div key="testlinks-parent">
         <p>
           This page will not be available when deployed in production since the
           participants will be provided a link with the treatment id in the URL.
@@ -147,7 +160,7 @@ const DevHome = () => {
         {status === StatusType.Unitialized ? (
           <p>Please wait while all treatments are loaded...</p>
         ) : (
-          <div>
+          <div key="testlinks-list">
             <a href="https://github.com/The-Discounters/vizsurvey">
               Github README.md
             </a>

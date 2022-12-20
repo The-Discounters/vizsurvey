@@ -1,5 +1,4 @@
-import React, { useMemo, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { DateTime } from "luxon";
 import {
@@ -17,10 +16,9 @@ import {
   debriefCompleted,
 } from "../features/questionSlice";
 import { styles, theme } from "./ScreenHelper";
-import { navigateFromStatus } from "./Navigate";
+import { StatusType } from "../features/StatusType";
 
 const Debrief = () => {
-  const navigate = useNavigate();
   const dispatch = useDispatch();
   const status = useSelector(getStatus);
   const [comment, setComment] = React.useState("");
@@ -29,8 +27,13 @@ const Debrief = () => {
     dispatch(debriefShownTimestamp(DateTime.utc().toString()));
   }, []);
 
-  useMemo(() => {
-    navigateFromStatus(navigate, status);
+  useEffect(() => {
+    if (status == StatusType.Finished) {
+      setTimeout(() => {
+        window.open("about:blank", "_self");
+        window.close();
+      }, 400);
+    }
   }, [status]);
 
   const handleFieldChange = (event, setter) => {

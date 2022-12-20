@@ -1,4 +1,4 @@
-import React, { useMemo, useEffect } from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { DateTime } from "luxon";
 import {
@@ -39,8 +39,9 @@ export function Consent() {
     dispatch(consentShown(DateTime.utc().toString()));
   }, []);
 
-  useMemo(() => {
-    navigateFromStatus(navigate, status);
+  useEffect(() => {
+    const path = navigateFromStatus(status);
+    navigate(path);
   }, [status]);
 
   const ConsentTextEn = () => {
@@ -229,6 +230,12 @@ export function Consent() {
                   carefully:{" "}
                 </u>{" "}
               </i>
+            </Typography>
+            <Typography paragraph>
+              <b>
+                This survey is not designed to render on a mobile device and
+                should be taken on a laptop or desktop computer.
+              </b>
             </Typography>
             <ConsentTextEn />
             <Typography paragraph>

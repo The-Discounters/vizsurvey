@@ -1,4 +1,4 @@
-import React, { useMemo, useEffect } from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { DateTime } from "luxon";
@@ -34,6 +34,11 @@ export function AttentionCheck() {
     dispatch(attentionCheckShown(DateTime.utc().toString()));
   }, []);
 
+  useEffect(() => {
+    const path = navigateFromStatus(status);
+    navigate(path);
+  }, [status]);
+
   const checkEnableSubmit = () => {
     let result = false;
     if (attentionCheckValue.length <= 0) {
@@ -45,10 +50,6 @@ export function AttentionCheck() {
   useEffect(() => {
     checkEnableSubmit();
   }, [attentionCheckValue]);
-
-  useMemo(() => {
-    navigateFromStatus(navigate, status);
-  }, [status]);
 
   const handleFieldChange = (event, setter) => {
     setter(event.target.value);

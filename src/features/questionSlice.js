@@ -432,6 +432,7 @@ export const {
   theEndCompleted,
   clearState,
   genRandomTreatment,
+  nextStatus,
 } = questionSlice.actions;
 
 export default questionSlice.reducer;
