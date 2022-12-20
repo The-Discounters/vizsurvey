@@ -8,7 +8,7 @@ let participantId = 1;
 let fetching = true;
 let fetching1 = true;
 function postsurvey(expects) {
-  cy.get("label").contains("Higher for the 15 year mortgage").click();
+  cy.get("label").contains("1360").click();
   cy.get("label").contains("Less than $50,000").click();
   cy.get("label").contains("Less than $120,000").click();
   cy.get("label").contains("Less than 20 years").click();
@@ -50,7 +50,7 @@ function postsurvey(expects) {
             console.log("file1 text: " + text);
             expect(JSON.parse(text)).to.deep.equal({
               financialLitSurvey: {
-                q15vs30: "v15+",
+                q15vs30: "v1360",
                 q50k6p: "v<50k",
                 q100k5p: "v<120k",
                 q200k5p: "v<20y",

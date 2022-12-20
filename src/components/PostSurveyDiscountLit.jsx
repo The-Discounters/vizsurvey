@@ -24,7 +24,7 @@ import {
   getFinancialLitSurveyQuestion, // TODO
 } from "../features/questionSlice";
 import { dateToState } from "../features/ConversionUtil";
-import { POST_SURVEY_QUESTIONS } from "../features/postsurveyquestionsfinanciallit";
+import { POST_SURVEY_QUESTIONS } from "../features/postsurveyquestionsdiscountlit";
 import { styles, theme } from "./ScreenHelper";
 import { navigateFromStatus } from "./Navigate";
 
