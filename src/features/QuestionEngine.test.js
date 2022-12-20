@@ -545,6 +545,9 @@ export class TestDataFactory {
 
   static createAnswer(treatmentId, positionId) {
     return Answer({
+      participantId: 1,
+      sessionId: 1,
+      studyId: 1,
       treatmentId: treatmentId,
       position: positionId,
       viewType: ViewType.barchart,

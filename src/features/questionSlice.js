@@ -21,8 +21,8 @@ export const questionSlice = createSlice({
     participantId: null,
     sessionId: null,
     studyId: null,
-    financialLitSurvey: { participantId: null },
-    purposeSurvey: { participantId: null },
+    financialLitSurvey: { participantId: null, sessionId: null, studyId: null },
+    purposeSurvey: { participantId: null, sessionId: null, studyId: null },
     countryOfResidence: "",
     vizFamiliarity: "",
     age: "",
@@ -69,10 +69,14 @@ export const questionSlice = createSlice({
     },
     setSessionId(state, action) {
       state.sessionId = action.payload;
+      state.financialLitSurvey.sessionId = action.payload;
+      state.purposeSurvey.sessionId = action.payload;
       return state;
     },
     setStudyId(state, action) {
       state.studyId = action.payload;
+      state.financialLitSurvey.studyId = action.payload;
+      state.purposeSurvey.studyId = action.payload;
     },
     setDemographic(state, action) {
       state.countryOfResidence = action.payload.countryOfResidence;
@@ -198,10 +202,14 @@ export const questionSlice = createSlice({
       state.debriefCompletedTimestamp = action.payload;
       const feedback = {
         participantId: state.participantId,
+        sessionId: state.sessionId,
+        studyId: state.studyId,
         feedback: state.feedback,
       };
       const timestamps = {
         participantId: state.participantId,
+        sessionId: state.sessionId,
+        studyId: state.studyId,
         debriefShownTimestamp: state.debriefShownTimestamp,
         debriefCompletedTimestamp: state.debriefCompletedTimestamp,
       };
@@ -220,6 +228,8 @@ export const questionSlice = createSlice({
       state.theEndCompletedTimestamp = action.payload;
       const demographic = {
         participantId: state.participantId,
+        sessionId: state.sessionId,
+        studyId: state.studyId,
         countryOfResidence: state.countryOfResidence,
         vizFamiliarity: state.vizFamiliarity,
         age: state.age,
@@ -229,6 +239,8 @@ export const questionSlice = createSlice({
       };
       const timestamps = {
         participantId: state.participantId,
+        sessionId: state.sessionId,
+        studyId: state.studyId,
         consentShownTimestamp: state.consentShownTimestamp,
         consentCompletedTimestamp: state.consentCompletedTimestamp,
         introductionShowTimestamp: state.introductionShowTimestamp,
@@ -251,6 +263,8 @@ export const questionSlice = createSlice({
       };
       const legal = {
         participantId: state.participantId,
+        sessionId: state.sessionId,
+        studyId: state.studyId,
         consentChecked: state.consentChecked,
         attentionCheck: state.attentioncheck,
       };
@@ -268,7 +282,7 @@ export const questionSlice = createSlice({
     clearState(state) {
       state.allTreatments = null;
       state.treatmentId = null;
-      state.articipantId = null;
+      state.participantId = null;
       state.sessionId = null;
       state.studyId = null;
       state.financialLitSurvey = {};
