@@ -12,7 +12,6 @@ import {
 import FormGroup from "@mui/material/FormGroup";
 import Checkbox from "@mui/material/Checkbox";
 import { useSelector, useDispatch } from "react-redux";
-import { dateToState } from "../features/ConversionUtil";
 import {
   consentShown,
   consentCompleted,
@@ -37,7 +36,7 @@ export function Consent() {
   };
 
   useEffect(() => {
-    dispatch(consentShown(dateToState(DateTime.utc())));
+    dispatch(consentShown(DateTime.utc().toString()));
   }, []);
 
   useMemo(() => {
@@ -276,7 +275,7 @@ export function Consent() {
                 disableFocusRipple
                 style={styles.button}
                 onClick={() => {
-                  dispatch(consentCompleted(dateToState(DateTime.utc())));
+                  dispatch(consentCompleted(DateTime.utc().toString()));
                 }}
                 disabled={disableSubmit}
               >

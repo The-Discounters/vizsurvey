@@ -9,14 +9,12 @@ import {
   ThemeProvider,
   Button,
 } from "@material-ui/core";
-import { theEndShownTimestamp } from "../features/questionSlice";
-import { dateToState } from "../features/ConversionUtil";
-import { styles, theme } from "./ScreenHelper";
 import {
-  getStatus,
-  nextQuestion,
-  writeAnswers,
+  theEndShownTimestamp,
+  theEndCompleted,
 } from "../features/questionSlice";
+import { styles, theme } from "./ScreenHelper";
+import { getStatus, nextQuestion } from "../features/questionSlice";
 import { navigateFromStatus } from "./Navigate";
 
 const TheEnd = () => {
@@ -26,7 +24,7 @@ const TheEnd = () => {
   const status = useSelector(getStatus);
 
   useEffect(() => {
-    dispatch(theEndShownTimestamp(dateToState(DateTime.utc())));
+    dispatch(theEndShownTimestamp(DateTime.utc().toString()));
   }, []);
 
   useMemo(() => {
@@ -89,7 +87,7 @@ const TheEnd = () => {
               disableFocusRipple
               style={styles.button}
               onClick={() => {
-                dispatch(writeAnswers());
+                dispatch(theEndCompleted(DateTime.utc().toString()));
                 dispatch(nextQuestion());
               }}
             >

@@ -19,7 +19,6 @@ import {
   attentionCheckShown,
   setAttentionCheck,
 } from "../features/questionSlice";
-import { dateToState } from "../features/ConversionUtil";
 import { styles, theme } from "./ScreenHelper";
 import { navigateFromStatus } from "./Navigate";
 
@@ -32,7 +31,7 @@ export function AttentionCheck() {
   const [attentionCheckValue, setAttentionCheckValue] = React.useState("");
 
   useEffect(() => {
-    dispatch(attentionCheckShown(dateToState(DateTime.utc())));
+    dispatch(attentionCheckShown(DateTime.utc().toString()));
   }, []);
 
   const checkEnableSubmit = () => {
@@ -143,7 +142,7 @@ export function AttentionCheck() {
                   dispatch(
                     setAttentionCheck({
                       value: attentionCheckValue,
-                      timestamp: dateToState(DateTime.utc()),
+                      timestamp: DateTime.utc().toString(),
                     })
                   );
                 }}

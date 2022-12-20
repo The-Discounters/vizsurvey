@@ -12,7 +12,6 @@ import { useD3 } from "../hooks/useD3";
 import { DateTime } from "luxon";
 import "../App.css";
 import { ViewType } from "../features/ViewType";
-import { dateToState } from "../features/ConversionUtil";
 import { navigateFromStatus } from "./Navigate";
 import {
   introductionShown,
@@ -40,7 +39,7 @@ const Introduction = () => {
   const status = useSelector(getStatus);
 
   useEffect(() => {
-    dispatch(introductionShown(dateToState(DateTime.utc())));
+    dispatch(introductionShown(DateTime.utc().toString()));
     setChoice("");
     if (!treatment) navigate("/invalidlink");
   }, []);
@@ -337,7 +336,7 @@ const Introduction = () => {
                   setError(true);
                   setHelperText("You must choose one of the options below.");
                 } else {
-                  dispatch(introductionCompleted(dateToState(DateTime.utc())));
+                  dispatch(introductionCompleted(DateTime.utc().toString()));
                   dispatch(startSurvey());
                   navigateFromStatus(navigate, status);
                 }

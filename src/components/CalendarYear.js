@@ -228,7 +228,7 @@ export function Calendar() {
   if (status === StatusType.FinancialQuestionaire) {
     navigate("/questionaire");
   } else {
-    dispatch(setQuestionShownTimestamp(dateToState(DateTime.utc())));
+    dispatch(setQuestionShownTimestamp(DateTime.utc().toString()));
   }
   return result;
 }

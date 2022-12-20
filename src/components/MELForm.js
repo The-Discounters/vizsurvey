@@ -35,7 +35,7 @@ function MELForm() {
   const [helperText, setHelperText] = React.useState("");
 
   useEffect(() => {
-    dispatch(dispatch(setQuestionShownTimestamp(dateToState(DateTime.utc()))));
+    dispatch(dispatch(setQuestionShownTimestamp(DateTime.utc().toString())));
   }, [qi]);
 
   useEffect(() => {

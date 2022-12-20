@@ -1,11 +1,13 @@
 import { csvParse } from "d3";
+import { DateTime } from "luxon";
+import csv from "to-csv";
 
 import { TREATMENTS_DEV_CSV, TREATMENTS_PROD_CSV } from "./treatments";
 import { Question } from "./Question";
 import { ViewType } from "./ViewType";
 import { InteractionType } from "./InteractionType";
 import { AmountType } from "./AmountType";
-import { stringToDate, dateToState, stateToDate } from "./ConversionUtil";
+import { stringToDate, dateToState } from "./ConversionUtil";
 
 import AWS from "aws-sdk";
 
@@ -130,58 +132,127 @@ export class FileIOAdapter {
   }
 
   convertToCSV(answers) {
-    const header = [
-      "treatment_id,position,view_type,interaction,variable_amount,amount_earlier,time_earlier,date_earlier,amount_later,time_later,date_later,max_amount,max_time,vertical_pixels,horizontal_pixels,left_margin_width_in,bottom_margin_height_in,graph_width_in,graph_height_in,width_in,height_in,choice,shown_timestamp,choice_timestamp,highup,lowdown,participant_code",
-    ];
-    const rows = answers.map(
-      (a) =>
-        `${a.treatmentId},${a.position},${a.viewType},${a.interaction},${
-          a.variableAmount
-        },${a.amountEarlier},${a.timeEarlier},${
-          a.dateEarlier ? stateToDate(a.dateEarlier) : ""
-        },${a.amountLater},${a.timeLater},${
-          a.dateLater ? stateToDate(a.dateLater) : ""
-        },${a.maxAmount},${a.maxTime},${a.verticalPixels},${
-          a.horizontalPixels
-        },${a.leftMarginWidthIn},${a.bottomMarginHeightIn},${a.graphWidthIn},${
-          a.graphHeightIn
-        },${a.widthIn},${a.heightIn},${a.choice},${
-          a.shownTimestamp ? stateToDate(a.shownTimestamp) : ""
-        },${a.choiceTimestamp ? stateToDate(a.choiceTimestamp) : ""},${
-          a.highup
-        },${a.lowdown},${a.participantCode}`
-    );
-    return header.concat(rows).join("\n");
+    return csv(answers);
   }
 
-  writeAnswers = async (data) => {
-    let postSurveyAnswersStr = JSON.stringify(data.other, null, 2);
+  writeAnswers = async (
+    participantId,
+    answers,
+    timestamps,
+    financialLitSurvey,
+    purposeSurvey,
+    demographic,
+    legal
+  ) => {
+    const filename =
+      "answers-" + participantId + "-" + DateTime.utc().toISO() + ".json";
 
-    const fileNameAnswers = "answers-" + data.participantId + ".csv";
-    const fileNamePostSurveyAnswers =
-      "post-survey-answers-" + data.participantId + ".json";
-    console.log("fileNameAnswers: " + fileNameAnswers);
+    const answersCSV = this.convertToCSV(answers);
+    const timestampsCSV = this.convertToCSV([timestamps]);
+    const financialLitSurveyCSV = this.convertToCSV([financialLitSurvey]);
+    const purposeSurveyCSV = this.convertToCSV([purposeSurvey]);
+    const demographicCSV = this.convertToCSV([demographic]);
+    const legalCSV = this.convertToCSV([legal]);
+
+    const data = {
+      surveyAnswers: {
+        filename:
+          "answers-" + participantId + "-" + DateTime.utc().toISO() + ".csv",
+        data: answersCSV,
+      },
+      answerTimestamps: {
+        filename:
+          "answer-imestamps-" +
+          participantId +
+          "-" +
+          DateTime.utc().toISO() +
+          ".csv",
+        data: timestampsCSV,
+      },
+      financialLitSurvey: {
+        filename:
+          "financial-lit-survey-" +
+          participantId +
+          "-" +
+          DateTime.utc().toISO() +
+          ".csv",
+        data: financialLitSurveyCSV,
+      },
+      purposeSurvey: {
+        filename:
+          "purpose-survey-" +
+          participantId +
+          "-" +
+          DateTime.utc().toISO() +
+          ".csv",
+        data: purposeSurveyCSV,
+      },
+      demographics: {
+        filename:
+          "demographic-" +
+          demographic.participantId +
+          "-" +
+          DateTime.utc().toISO() +
+          ".csv",
+        data: demographicCSV,
+      },
+      legal: {
+        filename:
+          "legal-" +
+          legal.participantId +
+          "-" +
+          DateTime.utc().toISO() +
+          ".csv",
+        data: legalCSV,
+      },
+    };
+    const dataJSON = JSON.stringify(data, null, 2);
 
     if (process.env.REACT_APP_AWS_ENABLED) {
       console.log("AWS ENABLED");
-      uploadFile(fileNameAnswers, data.csv);
-      uploadFile(fileNamePostSurveyAnswers, postSurveyAnswersStr);
+      uploadFile(filename, dataJSON);
     } else {
       console.log("AWS DISABLED");
-      uploadFileOffline(fileNameAnswers, data.csv);
-      uploadFileOffline(fileNamePostSurveyAnswers, postSurveyAnswersStr);
+      uploadFileOffline(filename, dataJSON);
     }
   };
 
-  writeFeedback = async (data) => {
-    const fileNameFeedback = "feedback-" + data.participantId + ".txt";
+  writeFeedback = async (participantId, feedback, timestamps) => {
+    const fileNameFeedback =
+      "debrief-" + data.participantId + "-" + DateTime.utc().toISO() + ".json";
+
+    const feedbackCSV = this.convertToCSV([feedback]);
+    const timestampsCSV = this.convertToCSV([timestamps]);
+
+    const data = {
+      feedback: {
+        filename:
+          "feedback-" +
+          participantId +
+          "-" +
+          DateTime.utc().toISO().toString() +
+          ".csv",
+        data: feedbackCSV,
+      },
+      debriefTimestamps: {
+        filename:
+          "debrief-timestamps-" +
+          participantId +
+          "-" +
+          DateTime.utc().toISO().toString() +
+          ".csv",
+        data: timestampsCSV,
+      },
+    };
+
+    const dataJSON = JSON.stringify(data, null, 2);
 
     if (process.env.REACT_APP_AWS_ENABLED) {
       console.log("AWS ENABLED");
-      uploadFile(fileNameFeedback, data.feedback);
+      uploadFile(fileNameFeedback, dataJSON);
     } else {
       console.log("AWS DISABLED");
-      uploadFileOffline(fileNameFeedback, data.feedback);
+      uploadFileOffline(fileNameFeedback, dataJSON);
     }
   };
 }

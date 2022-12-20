@@ -23,7 +23,6 @@ import {
   setPurposeSurveyQuestion,
   getPurposeSurveyQuestion,
 } from "../features/questionSlice";
-import { dateToState } from "../features/ConversionUtil";
 import { POST_SURVEY_QUESTIONS } from "../features/postsurveyquestionssenseofpurpose";
 import { styles, theme } from "./ScreenHelper";
 import { navigateFromStatus } from "./Navigate";
@@ -62,7 +61,7 @@ export function PostSurvey() {
   });
 
   useEffect(() => {
-    dispatch(purposeSurveyQuestionsShown(dateToState(DateTime.utc())));
+    dispatch(purposeSurveyQuestionsShown(DateTime.utc().toString()));
     //if (process.env.REACT_APP_FULLSCREEN === "enabled") handle.exit();
   }, []);
 

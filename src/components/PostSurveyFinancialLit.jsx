@@ -18,12 +18,12 @@ import { makeStyles } from "@material-ui/core/styles";
 import {
   getStatus,
   financialLitSurveyQuestionsShown,
+  financialLitSurveyQuestionsCompleted,
   nextQuestion,
   initFinancialLitSurveyQuestion,
   setFinancialLitSurveyQuestion,
   getFinancialLitSurveyQuestion,
 } from "../features/questionSlice";
-import { dateToState } from "../features/ConversionUtil";
 import { POST_SURVEY_QUESTIONS } from "../features/postsurveyquestionsfinanciallit";
 import { styles, theme } from "./ScreenHelper";
 import { navigateFromStatus } from "./Navigate";
@@ -65,7 +65,7 @@ export function PostSurvey() {
   });
 
   useEffect(() => {
-    dispatch(financialLitSurveyQuestionsShown(dateToState(DateTime.utc())));
+    dispatch(financialLitSurveyQuestionsShown(DateTime.utc().toString()));
   }, []);
 
   useMemo(() => {
@@ -204,6 +204,11 @@ export function PostSurvey() {
                 style={styles.button}
                 onClick={() => {
                   setTimeout(() => {
+                    dispatch(
+                      financialLitSurveyQuestionsCompleted(
+                        DateTime.utc().toString()
+                      )
+                    );
                     dispatch(nextQuestion());
                   }, 400);
                 }}
