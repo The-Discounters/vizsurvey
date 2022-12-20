@@ -9,9 +9,6 @@ let fetching = true;
 let fetching1 = true;
 function postsurvey(expects) {
   cy.get("label").contains("1360").click();
-  cy.get("label").contains("Less than $50,000").click();
-  cy.get("label").contains("Less than $120,000").click();
-  cy.get("label").contains("Less than 20 years").click();
   cy.get("button").contains("Next").click();
   cy.tick(1000);
   cy.get("#posdiff-strongly-disagree").click();
@@ -51,9 +48,6 @@ function postsurvey(expects) {
             expect(JSON.parse(text)).to.deep.equal({
               financialLitSurvey: {
                 qdoublediscount: "v1360",
-                q50k6p: "v<50k",
-                q100k5p: "v<120k",
-                q200k5p: "v<20y",
               },
               purposeSurvey: {
                 posdiff: "strongly-disagree",
