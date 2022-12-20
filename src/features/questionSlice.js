@@ -18,6 +18,10 @@ export const writeAnswers = createAsyncThunk(
       sessionId: state.questions.sessionId,
       csv: csv,
       other: {
+        surveys: state.questions.surveys.reduce((accumulator, currentValue) => {
+          accumulator[currentValue] = state.questions[currentValue];
+          return accumulator;
+        }, {}),
         financialLitSurvey: state.questions.financialLitSurvey,
         purposeSurvey: state.questions.purposeSurvey,
         demographics: {
@@ -153,8 +157,25 @@ export const questionSlice = createSlice({
         state.financialLitSurvey[action.payload] = "";
       }
     },
+    initSurveyQuestion(state, action) {
+      if (state.surveys == undefined) {
+        state.surveys = [];
+      }
+      state.surveys.push(action.payload.survey);
+      if (state[action.payload.survey] == undefined) {
+        state[action.payload.survey] = {};
+      }
+      if (state[action.payload.survey][action.payload.key] == undefined) {
+        state[action.payload.survey][action.payload.key] = "";
+      }
+    },
     setFinancialLitSurveyQuestion(state, action) {
       state.financialLitSurvey[action.payload.key] = action.payload.value;
+    },
+    setSurveyQuestion(state, action) {
+      if (state[action.payload.survey] == undefined)
+        state[action.payload.survey] = {};
+      state[action.payload.survey][action.payload.key] = action.payload.value;
     },
     initPurposeSurveyQuestion(state, action) {
       if (state.purposeSurvey[action.payload] == undefined) {
@@ -328,6 +349,11 @@ export const getFinancialLitSurveyQuestion = (questionId) => (state) => {
   return state.questions.financialLitSurvey[questionId];
 };
 
+export const getSurveyQuestion = (survey, questionId) => (state) => {
+  if (state.questions[survey] == undefined) state.questions[survey] = {};
+  return state.questions[survey][questionId];
+};
+
 export const getPurposeSurveyQuestion = (questionId) => (state) => {
   return state.questions.purposeSurvey[questionId];
 };
@@ -384,7 +410,9 @@ export const {
   setSelfDescribeGender,
   setProfession,
   initFinancialLitSurveyQuestion,
+  initSurveyQuestion,
   setFinancialLitSurveyQuestion,
+  setSurveyQuestion,
   initPurposeSurveyQuestion,
   setPurposeSurveyQuestion,
   setAttentionCheck,

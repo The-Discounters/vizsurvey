@@ -17,11 +17,11 @@ import {
 import { makeStyles } from "@material-ui/core/styles";
 import {
   getStatus,
-  financialLitSurveyQuestionsShown,
+  financialLitSurveyQuestionsShown, // TODO
   nextQuestion,
-  initFinancialLitSurveyQuestion, // TODO
-  setFinancialLitSurveyQuestion, // TODO
-  getFinancialLitSurveyQuestion, // TODO
+  initSurveyQuestion,
+  setSurveyQuestion,
+  getSurveyQuestion,
 } from "../features/questionSlice";
 import { dateToState } from "../features/ConversionUtil";
 import { POST_SURVEY_QUESTIONS } from "../features/postsurveyquestionsdiscountlit";
@@ -57,15 +57,20 @@ export function PostSurvey() {
 
   let qList = [];
   surveys.questions.forEach((q) => {
-    dispatch(initFinancialLitSurveyQuestion(q.question.textShort)); // TODO
+    dispatch(
+      initSurveyQuestion({
+        survey: surveys.promptShort,
+        key: q.question.textShort,
+      })
+    );
     const value = useSelector(
-      getFinancialLitSurveyQuestion(q.question.textShort) // TODO
+      getSurveyQuestion(surveys.promptShort, q.question.textShort)
     );
     qList.push(value);
   });
 
   useEffect(() => {
-    dispatch(financialLitSurveyQuestionsShown(dateToState(DateTime.utc())));
+    dispatch(financialLitSurveyQuestionsShown(dateToState(DateTime.utc()))); // TODO
   }, []);
 
   useMemo(() => {
@@ -145,8 +150,8 @@ export function PostSurvey() {
                             label={option.textFull}
                             onChange={(event) => {
                               dispatch(
-                                setFinancialLitSurveyQuestion({
-                                  // TODO
+                                setSurveyQuestion({
+                                  survey: surveys.promptShort,
                                   key: surveys.questions[index].question
                                     .textShort,
                                   value: event.target.value,
@@ -175,8 +180,9 @@ export function PostSurvey() {
                             label={option.replace("-", " ")}
                             onChange={(event) => {
                               dispatch(
-                                setFinancialLitSurveyQuestion({
-                                  // TODO
+                                setSurveyQuestion({
+                                  // TODO change all surveys to base react component
+                                  survey: surveys.promptShort,
                                   key: surveys.questions[index].question
                                     .textShort,
                                   value: event.target.value,

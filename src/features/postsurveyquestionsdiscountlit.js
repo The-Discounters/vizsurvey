@@ -1,5 +1,5 @@
 export const POST_SURVEY_QUESTIONS = {
-  promptShort: "fincanialLit", // TODO
+  promptShort: "discountLit",
   prompt:
     "The following questions try to assess your discount literacy. Please answer these to the best of your knowledge.",
   questionsType: "multiple choice",

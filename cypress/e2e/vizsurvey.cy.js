@@ -48,11 +48,15 @@ function postsurvey(expects) {
           response.text().then((text) => {
             console.log("file1 text: " + text);
             expect(JSON.parse(text)).to.deep.equal({
-              financialLitSurvey: {
-                qdoublediscount: "v1360",
-                qsinglediscount: "v1350",
-                qfinddiscount: "v20p",
+              surveys: {
+                discountLit: {
+                  qdoublediscount: "v1360",
+                  qsinglediscount: "v1350",
+                  qfinddiscount: "v20p",
+                },
               },
+              financialLitSurvey: {},
+
               purposeSurvey: {
                 posdiff: "strongly-disagree",
                 carbetplac: "strongly-disagree",
