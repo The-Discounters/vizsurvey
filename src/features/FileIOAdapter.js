@@ -162,7 +162,7 @@ export class FileIOAdapter {
       },
       answerTimestamps: {
         filename:
-          "answer-imestamps-" +
+          "answer-timestamps-" +
           participantId +
           "-" +
           DateTime.utc().toISO() +
@@ -219,7 +219,7 @@ export class FileIOAdapter {
 
   writeFeedback = async (participantId, feedback, timestamps) => {
     const fileNameFeedback =
-      "debrief-" + data.participantId + "-" + DateTime.utc().toISO() + ".json";
+      "debrief-" + participantId + "-" + DateTime.utc().toISO() + ".json";
 
     const feedbackCSV = this.convertToCSV([feedback]);
     const timestampsCSV = this.convertToCSV([timestamps]);
