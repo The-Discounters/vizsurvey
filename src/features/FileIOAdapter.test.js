@@ -118,7 +118,7 @@ describe("FileIOAdapter tests", () => {
       }).toMillis(),
       highup: 17,
       lowdown: 18,
-      participantCode: "participant code",
+      participantId: "participant id",
     });
     const answer2 = Answer({
       treatmentId: 13,
@@ -155,7 +155,7 @@ describe("FileIOAdapter tests", () => {
       }).toMillis(),
       highup: 29,
       lowdown: 30,
-      participantCode: "participant code 2",
+      participantId: "participant id 2",
     });
     const answers = [answer1, answer2];
     expect(

@@ -40,6 +40,7 @@ export class QuestionEngine {
   }
 
   createNextAnswer(
+    participantId,
     treatment,
     answers,
     amountEarlier,
@@ -48,6 +49,7 @@ export class QuestionEngine {
     lowdown
   ) {
     const answer = Answer({
+      participantId: participantId,
       treatmentId: treatment.treatmentId,
       position: treatment.position,
       viewType: treatment.viewType,
@@ -90,6 +92,7 @@ export class QuestionEngine {
         : treatment.amountLater;
     state.lowdown = undefined;
     this.createNextAnswer(
+      state.participantId,
       treatment,
       state.answers,
       treatment.amountEarlier,
@@ -136,6 +139,7 @@ export class QuestionEngine {
         if (this.latestAnswer(state) === null) {
           const treatment = this.currentTreatment(state);
           this.createNextAnswer(
+            state.participantId,
             treatment,
             state.answers,
             treatment.amountEarlier,
