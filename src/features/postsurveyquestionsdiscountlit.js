@@ -12,16 +12,16 @@ export const POST_SURVEY_QUESTIONS = {
       question: {
         textFull:
           "The marked price on an item was Rs 2000/- but the shopkeeper offered a double discount of 20% and 15%. How much did he finally sell the item for?",
-        textShort: "q15vs30", // TODO
+        textShort: "qdoublediscount",
       },
       options: [
         {
           textFull: "Rs. 640",
-          textShort: "v640", // TODO
+          textShort: "v640",
         },
         {
           textFull: "Rs. 1300",
-          textShort: "v1300", // TODO
+          textShort: "v1300",
         },
         {
           textFull: "Rs. 1360",
@@ -29,7 +29,7 @@ export const POST_SURVEY_QUESTIONS = {
         },
         {
           textFull: "Rs. 1600",
-          textShort: "v1600", // TODO
+          textShort: "v1600",
         },
       ],
     },

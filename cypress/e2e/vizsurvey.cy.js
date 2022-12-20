@@ -50,7 +50,7 @@ function postsurvey(expects) {
             console.log("file1 text: " + text);
             expect(JSON.parse(text)).to.deep.equal({
               financialLitSurvey: {
-                q15vs30: "v1360",
+                qdoublediscount: "v1360",
                 q50k6p: "v<50k",
                 q100k5p: "v<120k",
                 q200k5p: "v<20y",
