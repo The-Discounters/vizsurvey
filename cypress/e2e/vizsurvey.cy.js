@@ -10,6 +10,7 @@ let fetching1 = true;
 function postsurvey(expects) {
   cy.get("label").contains("1360").click();
   cy.get("label").contains("1350").click();
+  cy.get("label").contains("20%").click();
   cy.get("button").contains("Next").click();
   cy.tick(1000);
   cy.get("#posdiff-strongly-disagree").click();
@@ -50,6 +51,7 @@ function postsurvey(expects) {
               financialLitSurvey: {
                 qdoublediscount: "v1360",
                 qsinglediscount: "v1350",
+                qfinddiscount: "v20p",
               },
               purposeSurvey: {
                 posdiff: "strongly-disagree",

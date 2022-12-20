@@ -62,5 +62,30 @@ Grade 6 Discount Word Problems
         },
       ],
     },
+    {
+      question: {
+        textFull:
+          "Mike and Mandy bought the same item. Mike paid 15,000$. Mandy got discount and paid 3,000$ less than Mike. How much discount did Mandy get?",
+        textShort: "qfinddiscount",
+      },
+      options: [
+        {
+          textFull: "33%",
+          textShort: "v33p",
+        },
+        {
+          textFull: "30%",
+          textShort: "v30p",
+        },
+        {
+          textFull: "15%",
+          textShort: "v15p",
+        },
+        {
+          textFull: "20%",
+          textShort: "v20p", // ANSWER
+        },
+      ],
+    },
   ],
 };
