@@ -62,22 +62,28 @@ export const questionSlice = createSlice({
   reducers: {
     setParticipantId(state, action) {
       state.participantId = action.payload;
+      state.discountLitSurvey.participantId = action.payload;
       state.financialLitSurvey.participantId = action.payload;
       state.purposeSurvey.participantId = action.payload;
       return state;
     },
     setTreatmentId(state, action) {
       state.treatmentId = action.payload;
+      state.discountLitSurvey.participantId = action.payload;
+      state.financialLitSurvey.participantId = action.payload;
+      state.purposeSurvey.participantId = action.payload;
       return state;
     },
     setSessionId(state, action) {
       state.sessionId = action.payload;
+      state.discountLitSurvey.participantId = action.payload;
       state.financialLitSurvey.sessionId = action.payload;
       state.purposeSurvey.sessionId = action.payload;
       return state;
     },
     setStudyId(state, action) {
       state.studyId = action.payload;
+      state.discountLitSurvey.participantId = action.payload;
       state.financialLitSurvey.studyId = action.payload;
       state.purposeSurvey.studyId = action.payload;
     },
@@ -108,30 +114,21 @@ export const questionSlice = createSlice({
     setProfession(state, action) {
       state.profession = action.payload;
     },
+    initDiscountLitSurveyQuestion(state, action) {
+      if (state.discountLitSurvey[action.payload] == undefined) {
+        state.discountLitSurvey[action.payload] = "";
+      }
+    },
+    setDiscountLitSurveyQuestion(state, action) {
+      state.discountLitSurvey[action.payload.key] = action.payload.value;
+    },
     initFinancialLitSurveyQuestion(state, action) {
       if (state.financialLitSurvey[action.payload] == undefined) {
         state.financialLitSurvey[action.payload] = "";
       }
     },
-    initSurveyQuestion(state, action) {
-      if (state.surveys == undefined) {
-        state.surveys = [];
-      }
-      state.surveys.push(action.payload.survey);
-      if (state[action.payload.survey] == undefined) {
-        state[action.payload.survey] = {};
-      }
-      if (state[action.payload.survey][action.payload.key] == undefined) {
-        state[action.payload.survey][action.payload.key] = "";
-      }
-    },
     setFinancialLitSurveyQuestion(state, action) {
       state.financialLitSurvey[action.payload.key] = action.payload.value;
-    },
-    setSurveyQuestion(state, action) {
-      if (state[action.payload.survey] == undefined)
-        state[action.payload.survey] = {};
-      state[action.payload.survey][action.payload.key] = action.payload.value;
     },
     initPurposeSurveyQuestion(state, action) {
       if (state.purposeSurvey[action.payload] == undefined) {
@@ -316,6 +313,7 @@ export const questionSlice = createSlice({
       state.participantId = null;
       state.sessionId = null;
       state.studyId = null;
+      state.discountLitSurvey = {};
       state.financialLitSurvey = {};
       state.purposeSurvey = {};
       state.countryOfResidence = "";
@@ -400,12 +398,9 @@ export const getProfession = (state) => state.questions.profession;
 export const getFinancialLitSurveyQuestion = (questionId) => (state) => {
   return state.questions.financialLitSurvey[questionId];
 };
-
-export const getSurveyQuestion = (survey, questionId) => (state) => {
-  if (state.questions[survey] == undefined) state.questions[survey] = {};
-  return state.questions[survey][questionId];
+export const getDiscountLitSurveyQuestion = (questionId) => (state) => {
+  return state.questions.discountLitSurvey[questionId];
 };
-
 export const getPurposeSurveyQuestion = (questionId) => (state) => {
   return state.questions.purposeSurvey[questionId];
 };
@@ -464,8 +459,9 @@ export const {
   setGender,
   setSelfDescribeGender,
   setProfession,
+  initDiscountLitSurveyQuestion,
+  setDiscountLitSurveyQuestion,
   initFinancialLitSurveyQuestion,
-  initSurveyQuestion,
   setFinancialLitSurveyQuestion,
   setSurveyQuestion,
   initPurposeSurveyQuestion,

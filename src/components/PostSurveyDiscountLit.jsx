@@ -1,4 +1,4 @@
-import React, { useMemo, useEffect } from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { DateTime } from "luxon";
@@ -17,11 +17,12 @@ import {
 import { makeStyles } from "@material-ui/core/styles";
 import {
   getStatus,
-  financialLitSurveyQuestionsShown, // TODO
+  discountLitSurveyQuestionsShown,
+  discountLitSurveyQuestionsCompleted,
   nextQuestion,
-  initSurveyQuestion,
-  setSurveyQuestion,
-  getSurveyQuestion,
+  initDiscountLitSurveyQuestion,
+  setDiscountLitSurveyQuestion,
+  getDiscountLitSurveyQuestion,
 } from "../features/questionSlice";
 import { dateToState } from "../features/ConversionUtil";
 import { POST_SURVEY_QUESTIONS } from "../features/postsurveyquestionsdiscountlit";
@@ -57,24 +58,20 @@ export function PostSurvey() {
 
   let qList = [];
   surveys.questions.forEach((q) => {
-    dispatch(
-      initSurveyQuestion({
-        survey: surveys.promptShort,
-        key: q.question.textShort,
-      })
-    );
+    dispatch(initDiscountLitSurveyQuestion(q.question.textShort));
     const value = useSelector(
-      getSurveyQuestion(surveys.promptShort, q.question.textShort)
+      getDiscountLitSurveyQuestion(q.question.textShort)
     );
     qList.push(value);
   });
 
   useEffect(() => {
-    dispatch(financialLitSurveyQuestionsShown(dateToState(DateTime.utc()))); // TODO
+    dispatch(discountLitSurveyQuestionsShown(dateToState(DateTime.now())));
   }, []);
 
-  useMemo(() => {
-    navigateFromStatus(navigate, status);
+  useEffect(() => {
+    const path = navigateFromStatus(status);
+    navigate(path);
   }, [status]);
 
   useEffect(() => {
@@ -150,8 +147,7 @@ export function PostSurvey() {
                             label={option.textFull}
                             onChange={(event) => {
                               dispatch(
-                                setSurveyQuestion({
-                                  survey: surveys.promptShort,
+                                setDiscountLitSurveyQuestion({
                                   key: surveys.questions[index].question
                                     .textShort,
                                   value: event.target.value,
@@ -180,9 +176,7 @@ export function PostSurvey() {
                             label={option.replace("-", " ")}
                             onChange={(event) => {
                               dispatch(
-                                setSurveyQuestion({
-                                  // TODO change all surveys to base react component
-                                  survey: surveys.promptShort,
+                                setDiscountLitSurveyQuestion({
                                   key: surveys.questions[index].question
                                     .textShort,
                                   value: event.target.value,
@@ -212,6 +206,11 @@ export function PostSurvey() {
                 style={styles.button}
                 onClick={() => {
                   setTimeout(() => {
+                    dispatch(
+                      discountLitSurveyQuestionsCompleted(
+                        dateToState(DateTime.now())
+                      )
+                    );
                     dispatch(nextQuestion());
                   }, 400);
                 }}

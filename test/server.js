@@ -89,6 +89,25 @@ app.post("/test", (req, res) => {
       }
     );
   }
+  if (data.discountLitSurvey) {
+    console.log(
+      "data.discountLitSurvey.filename: " +
+        data.discountLitSurvey.filename +
+        ", " +
+        "data.discountLitSurvey.data: " +
+        data.discountLitSurvey.data
+    );
+    fs.writeFile(
+      dir + data.discountLitSurvey.filename,
+      data.discountLitSurvey.data,
+      function (err) {
+        if (err) {
+          console.log(err);
+          throw err;
+        }
+      }
+    );
+  }
   if (data.financialLitSurvey) {
     console.log(
       "data.financialLitSurvey.filename: " +
