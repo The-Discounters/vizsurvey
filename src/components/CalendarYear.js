@@ -203,7 +203,7 @@ export function Calendar() {
               dispatch(
                 answer({
                   choice: AmountType.earlierAmount,
-                  choiceTimestamp: dateToState(DateTime.utc()),
+                  choiceTimestamp: dateToState(DateTime.now()),
                 })
               );
               setSubmitting(false);
@@ -228,7 +228,7 @@ export function Calendar() {
   if (status === StatusType.FinancialQuestionaire) {
     navigate("/questionaire");
   } else {
-    dispatch(setQuestionShownTimestamp(DateTime.utc().toString()));
+    dispatch(setQuestionShownTimestamp(dateToState(DateTime.now())));
   }
   return result;
 }

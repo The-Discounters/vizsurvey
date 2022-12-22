@@ -19,6 +19,7 @@ import {
   attentionCheckShown,
   setAttentionCheck,
 } from "../features/questionSlice";
+import { dateToState } from "../features/ConversionUtil";
 import { styles, theme } from "./ScreenHelper";
 import { navigateFromStatus } from "./Navigate";
 
@@ -31,7 +32,7 @@ export function AttentionCheck() {
   const [attentionCheckValue, setAttentionCheckValue] = React.useState("");
 
   useEffect(() => {
-    dispatch(attentionCheckShown(DateTime.utc().toString()));
+    dispatch(attentionCheckShown(dateToState(DateTime.now())));
   }, []);
 
   useEffect(() => {
@@ -143,7 +144,7 @@ export function AttentionCheck() {
                   dispatch(
                     setAttentionCheck({
                       value: attentionCheckValue,
-                      timestamp: DateTime.utc().toString(),
+                      timestamp: dateToState(DateTime.now()),
                     })
                   );
                 }}

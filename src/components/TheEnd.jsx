@@ -13,6 +13,7 @@ import {
   theEndShownTimestamp,
   theEndCompleted,
 } from "../features/questionSlice";
+import { dateToState } from "../features/ConversionUtil";
 import { styles, theme } from "./ScreenHelper";
 import { getStatus, nextQuestion } from "../features/questionSlice";
 import { navigateFromStatus } from "./Navigate";
@@ -24,7 +25,7 @@ const TheEnd = () => {
   const status = useSelector(getStatus);
 
   useEffect(() => {
-    dispatch(theEndShownTimestamp(DateTime.utc().toString()));
+    dispatch(theEndShownTimestamp(dateToState(DateTime.now())));
   }, []);
 
   useEffect(() => {
@@ -88,7 +89,7 @@ const TheEnd = () => {
               disableFocusRipple
               style={styles.button}
               onClick={() => {
-                dispatch(theEndCompleted(DateTime.utc().toString()));
+                dispatch(theEndCompleted(dateToState(DateTime.now())));
                 dispatch(nextQuestion());
               }}
             >

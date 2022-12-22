@@ -35,7 +35,7 @@ app.get("/", (req, res) => {
 app.post("/test", (req, res) => {
   var dir = "public/";
 
-  console.log("post to /test received on " + DateTime.utc().toISO());
+  console.log("post to /test received on " + DateTime.now().toISO());
 
   if (!fs.existsSync(dir)) {
     fs.mkdirSync(dir);

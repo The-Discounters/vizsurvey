@@ -20,6 +20,7 @@ import {
   getStatus,
   startSurvey,
 } from "../features/questionSlice";
+import { dateToState } from "../features/ConversionUtil";
 import { styles, theme, calcScreenValues } from "./ScreenHelper";
 import { AmountType } from "../features/AmountType";
 import { MELSelectionForm } from "./MELSelectionForm";
@@ -39,7 +40,7 @@ const Introduction = () => {
   const status = useSelector(getStatus);
 
   useEffect(() => {
-    dispatch(introductionShown(DateTime.utc().toString()));
+    dispatch(introductionShown(dateToState(DateTime.now())));
     setChoice("");
     if (!treatment) navigate("/invalidlink");
   }, []);
@@ -334,7 +335,7 @@ const Introduction = () => {
                   setError(true);
                   setHelperText("You must choose one of the options below.");
                 } else {
-                  dispatch(introductionCompleted(DateTime.utc().toString()));
+                  dispatch(introductionCompleted(dateToState(DateTime.now())));
                   dispatch(startSurvey());
                 }
               }}

@@ -109,10 +109,10 @@ export class QuestionEngine {
     state.status = StatusType.Instructions;
   }
 
-  setLatestAnswerShown(state, action) {
+  setLatestAnswerShown(state, date) {
     const latestAnswer = this.latestAnswer(state);
     if (latestAnswer.shownTimestamp === null) {
-      latestAnswer.shownTimestamp = action.payload;
+      latestAnswer.shownTimestamp = date;
     }
   }
 
@@ -236,12 +236,12 @@ export class QuestionEngine {
     }
   }
 
-  answerCurrentQuestion(state, action) {
+  answerCurrentQuestion(state, payload) {
     const { treatment, latestAnswer } =
       this.currentTreatmentAndLatestAnswer(state);
-    latestAnswer.choice = action.payload.choice;
-    latestAnswer.choiceTimestamp = action.payload.choiceTimestamp;
-    latestAnswer.dragAmount = action.payload.dragAmount;
+    latestAnswer.choice = payload.choice;
+    latestAnswer.choiceTimestamp = payload.choiceTimestamp;
+    latestAnswer.dragAmount = payload.dragAmount;
     if (treatment.interaction === InteractionType.titration) {
       throw new Error("Tirtration experiments not supported");
       // TODO I did not incorporate previous logic into titration experiments since we aren't piloting with those.  This code needs to be modified to incorporate previous action.

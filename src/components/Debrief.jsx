@@ -15,6 +15,7 @@ import {
   debriefShownTimestamp,
   debriefCompleted,
 } from "../features/questionSlice";
+import { dateToState } from "../features/ConversionUtil";
 import { styles, theme } from "./ScreenHelper";
 import { StatusType } from "../features/StatusType";
 
@@ -24,7 +25,7 @@ const Debrief = () => {
   const [comment, setComment] = React.useState("");
 
   useEffect(() => {
-    dispatch(debriefShownTimestamp(DateTime.utc().toString()));
+    dispatch(debriefShownTimestamp(dateToState(DateTime.now())));
   }, []);
 
   useEffect(() => {
@@ -165,7 +166,7 @@ const Debrief = () => {
               style={styles.button}
               onClick={() => {
                 dispatch(setFeedback(comment));
-                dispatch(debriefCompleted(DateTime.utc().toString()));
+                dispatch(debriefCompleted(dateToState(DateTime.now())));
               }}
             >
               {" "}

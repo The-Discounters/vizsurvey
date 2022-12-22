@@ -167,7 +167,7 @@ export const questionSlice = createSlice({
       return state;
     },
     setQuestionShownTimestamp(state, action) {
-      qe.setLatestAnswerShown(state, action);
+      qe.setLatestAnswerShown(state, action.payload);
       return state;
     },
     attentionCheckShown(state, action) {
@@ -175,7 +175,7 @@ export const questionSlice = createSlice({
     },
     // we define our actions on the slice of global store data here.
     answer(state, action) {
-      qe.answerCurrentQuestion(state, action);
+      qe.answerCurrentQuestion(state, action.payload);
     },
     previousQuestion(state) {
       qe.decPreviousQuestion(state);
@@ -440,6 +440,7 @@ export const {
   financialLitSurveyQuestionsShown,
   financialLitSurveyQuestionsCompleted,
   purposeSurveyQuestionsShown,
+  purposeSurveyQuestionsCompleted,
   debriefShownTimestamp,
   debriefCompleted,
   theEndShownTimestamp,

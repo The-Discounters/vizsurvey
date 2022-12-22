@@ -17,6 +17,7 @@ import {
   consentCompleted,
   getStatus,
 } from "../features/questionSlice";
+import { dateToState } from "../features/ConversionUtil";
 import { navigateFromStatus } from "./Navigate";
 import { styles, theme } from "./ScreenHelper";
 import "../App.css";
@@ -36,7 +37,7 @@ export function Consent() {
   };
 
   useEffect(() => {
-    dispatch(consentShown(DateTime.utc().toString()));
+    dispatch(consentShown(dateToState(DateTime.now())));
   }, []);
 
   useEffect(() => {
@@ -282,7 +283,7 @@ export function Consent() {
                 disableFocusRipple
                 style={styles.button}
                 onClick={() => {
-                  dispatch(consentCompleted(DateTime.utc().toString()));
+                  dispatch(consentCompleted(dateToState(DateTime.now())));
                 }}
                 disabled={disableSubmit}
               >

@@ -32,7 +32,6 @@ const myBucket = new AWS.S3({
 });
 
 const uploadFileOffline = (name, data) => {
-  console.log("data: " + data);
   const requestOptions = {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -136,7 +135,7 @@ export class FileIOAdapter {
   }
 
   generateFilenameSuffix(participantId, studyId) {
-    return `${participantId}-${studyId}-${DateTime.utc().toISO().toString()}`;
+    return `${participantId}-${studyId}-${DateTime.now().toMillis()}`;
   }
 
   writeAnswers = async (

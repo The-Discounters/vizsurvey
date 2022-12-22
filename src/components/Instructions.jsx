@@ -15,6 +15,7 @@ import {
   instructionsCompleted,
   getStatus,
 } from "../features/questionSlice";
+import { dateToState } from "../features/ConversionUtil";
 import { navigateFromStatus } from "./Navigate";
 import { styles, theme } from "./ScreenHelper";
 
@@ -24,7 +25,7 @@ const Instructions = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    dispatch(instructionsShown(DateTime.utc().toString()));
+    dispatch(instructionsShown(dateToState(DateTime.now())));
   }, []);
 
   useEffect(() => {
@@ -82,7 +83,7 @@ const Instructions = () => {
               disableFocusRipple
               style={styles.button}
               onClick={() => {
-                dispatch(instructionsCompleted(DateTime.utc().toString()));
+                dispatch(instructionsCompleted(dateToState(DateTime.now())));
                 if (process.env.REACT_APP_FULLSCREEN === "enabled")
                   document.body.requestFullscreen();
               }}
