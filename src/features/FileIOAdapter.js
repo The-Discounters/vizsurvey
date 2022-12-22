@@ -143,6 +143,7 @@ export class FileIOAdapter {
     studyId,
     answers,
     timestamps,
+    discountLitSurvey,
     financialLitSurvey,
     purposeSurvey,
     demographic,
@@ -156,6 +157,7 @@ export class FileIOAdapter {
     const answersCSV = this.convertToCSV(answers);
     const timestampsCSV = this.convertToCSV([timestamps]);
     const financialLitSurveyCSV = this.convertToCSV([financialLitSurvey]);
+    const discountLitSurveyCSV = this.convertToCSV([discountLitSurvey]);
     const purposeSurveyCSV = this.convertToCSV([purposeSurvey]);
     const demographicCSV = this.convertToCSV([demographic]);
     const legalCSV = this.convertToCSV([legal]);
@@ -181,6 +183,13 @@ export class FileIOAdapter {
           studyId
         )}.csv`,
         data: financialLitSurveyCSV,
+      },
+      discountLitSurvey: {
+        filename: `discount-lit-survey-${this.generateFilenameSuffix(
+          participantId,
+          studyId
+        )}.csv`,
+        data: discountLitSurveyCSV,
       },
       purposeSurvey: {
         filename: `purpose-survey-${this.generateFilenameSuffix(
