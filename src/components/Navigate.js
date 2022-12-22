@@ -1,52 +1,36 @@
 import { StatusType } from "../features/StatusType";
 
-export const navigateFromStatus = (navigate, status) => {
+export const navigateFromStatus = (status) => {
   switch (status) {
     case StatusType.Unitialized:
-      navigate("/invalidlink");
-      break;
+      return "/invalidlink";
     case StatusType.Fetching:
-      break;
+      return "/invalidlink";
     case StatusType.Consent:
-      navigate("/consent");
-      break;
+      return "/consent";
     case StatusType.Demographic:
-      navigate("/demographic");
-      break;
+      return "/demographic";
     case StatusType.Introduction:
-      navigate("/introduction");
-      break;
+      return "/introduction";
     case StatusType.Instructions:
-      navigate("/instruction");
-      break;
+      return "/instruction";
     case StatusType.Survey:
-      navigate("/survey");
-      break;
+      return "/survey";
     case StatusType.Attention:
-      navigate("/attentioncheck");
-      break;
+      return "/attentioncheck";
     case StatusType.FinancialQuestionaire:
-      navigate("/financialquestionaire");
-      break;
+      return "/financialquestionaire";
     case StatusType.PurposeQuestionaire:
-      navigate("/purposequestionaire");
-      break;
+      return "/purposequestionaire";
     case StatusType.Done:
-      navigate("/theend");
-      break;
+      return "/theend";
     case StatusType.Debrief:
-      navigate("/debrief");
-      break;
+      return "/debrief";
     case StatusType.Finished:
-      setTimeout(() => {
-        window.open("about:blank", "_self");
-        window.close();
-      }, 400);
-      break;
+      return null;
     case StatusType.Error:
-      navigate("/invalidlink");
-      break;
+      return "/invalidlink";
     default:
-      navigate("/invalidlink");
+      return "/invalidlink";
   }
 };

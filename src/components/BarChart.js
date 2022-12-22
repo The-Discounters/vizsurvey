@@ -16,8 +16,8 @@ import {
   nextQuestion,
   answer,
 } from "../features/questionSlice";
-import { drawBarChart } from "./BarChartComponent";
 import { dateToState } from "../features/ConversionUtil";
+import { drawBarChart } from "./BarChartComponent";
 import { styles, theme, calcScreenValues } from "./ScreenHelper";
 
 function BarChart() {
@@ -31,7 +31,7 @@ function BarChart() {
   const [disableSubmit, setDisableSubmit] = useState(true);
 
   useEffect(() => {
-    dispatch(dispatch(setQuestionShownTimestamp(dateToState(DateTime.utc()))));
+    dispatch(setQuestionShownTimestamp(dateToState(DateTime.now())));
   }, [qi]);
 
   useEffect(() => {
@@ -65,7 +65,7 @@ function BarChart() {
     dispatch(
       answer({
         choice: value,
-        choiceTimestamp: dateToState(DateTime.utc()),
+        choiceTimestamp: dateToState(DateTime.now()),
       })
     );
   };

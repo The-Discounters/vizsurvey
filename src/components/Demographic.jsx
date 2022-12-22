@@ -1,4 +1,4 @@
-import React, { useMemo, useEffect } from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Grid,
@@ -63,8 +63,9 @@ export function Consent() {
 
   useEffect(() => {}, []);
 
-  useMemo(() => {
-    navigateFromStatus(navigate, status);
+  useEffect(() => {
+    const path = navigateFromStatus(status);
+    navigate(path);
   }, [status]);
 
   useEffect(() => {
@@ -151,12 +152,6 @@ export function Consent() {
               }}
               id="consent-section"
             >
-              <Typography paragraph>
-                <b>
-                  This survey is not designed to render on a mobile device and
-                  should be taken on a laptop or desktop computer.
-                </b>
-              </Typography>
               <Typography>
                 Before you proceed, please tell us about yourself by answering
                 the questions below:{" "}

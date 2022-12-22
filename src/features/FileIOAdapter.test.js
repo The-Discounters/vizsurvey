@@ -84,6 +84,101 @@ describe("FileIOAdapter tests", () => {
 
   test("Validate answer CSV fields are written correctly.", async () => {
     const answer1 = Answer({
+      participantId: 1,
+      sessionId: 2,
+      studyId: 3,
+      treatmentId: 4,
+      position: 5,
+      viewType: ViewType.word,
+      interaction: InteractionType.none,
+      variableAmount: AmountType.earlierAmount,
+      amountEarlier: 6,
+      timeEarlier: 7,
+      dateEarlier: DateTime.fromFormat("1/1/2001", "M/d/yyyy", {
+        zone: "utc",
+      }).toISO(),
+      amountLater: 8,
+      timeLater: 9,
+      dateLater: DateTime.fromFormat("1/2/2001", "M/d/yyyy", {
+        zone: "utc",
+      }).toISO(),
+      maxAmount: 10,
+      maxTime: 11,
+      verticalPixels: 12,
+      horizontalPixels: 13,
+      leftMarginWidthIn: 14,
+      bottomMarginHeightIn: 15,
+      graphWidthIn: 16,
+      graphHeightIn: 17,
+      widthIn: 18,
+      heightIn: 19,
+      choice: AmountType.earlierAmount,
+      showMinorTicks: false,
+      shownTimestamp: DateTime.fromFormat("1/3/2001", "M/d/yyyy", {
+        zone: "utc",
+      }).toISO(),
+      choiceTimestamp: DateTime.fromFormat("1/4/2001", "M/d/yyyy", {
+        zone: "utc",
+      }).toISO(),
+      highup: 20,
+      lowdown: 21,
+    });
+    const answer2 = Answer({
+      participantId: 22,
+      sessionId: 23,
+      studyId: 24,
+      treatmentId: 25,
+      position: 26,
+      viewType: ViewType.barchart,
+      interaction: InteractionType.drag,
+      variableAmount: AmountType.earlierAmount,
+      amountEarlier: 27,
+      timeEarlier: 28,
+      dateEarlier: DateTime.utc(2001, 1, 2, 1, 1, 1, 1, {
+        zone: "utc",
+      }).toISO(),
+      amountLater: 29,
+      timeLater: 30,
+      dateLater: DateTime.utc(2001, 1, 2, 2, 1, 1, 1, {
+        zone: "utc",
+      }).toISO(),
+      maxAmount: 31,
+      maxTime: 32,
+      verticalPixels: 33,
+      horizontalPixels: 34,
+      leftMarginWidthIn: 35,
+      bottomMarginHeightIn: 36,
+      graphWidthIn: 37,
+      graphHeightIn: 38,
+      widthIn: 39,
+      heightIn: 40,
+      choice: AmountType.laterAmount,
+      showMinorTicks: false,
+      shownTimestamp: DateTime.utc(2001, 1, 2, 3, 1, 1, 1, {
+        zone: "utc",
+      }).toISO(),
+      choiceTimestamp: DateTime.utc(2001, 1, 2, 4, 1, 1, 1, {
+        zone: "utc",
+      }).toISO(),
+      highup: 41,
+      lowdown: 42,
+    });
+    const answers = [answer1, answer2];
+    const io = new FileIOAdapter();
+    const result = io.convertToCSV(answers);
+    console.log(result);
+    expect(result)
+      .toBe(`participantId,sessionId,studyId,treatmentId,position,viewType,interaction,variableAmount,amountEarlier,timeEarlier,dateEarlier,amountLater,timeLater,dateLater,maxAmount,maxTime,verticalPixels,horizontalPixels,leftMarginWidthIn,bottomMarginHeightIn,graphWidthIn,graphHeightIn,widthIn,heightIn,showMinorTicks,choice,dragAmount,shownTimestamp,choiceTimestamp,highup,lowdown
+1,2,3,4,5,word,none,earlierAmount,6,7,2001-01-01T00:00:00.000Z,8,9,2001-01-02T00:00:00.000Z,10,11,12,13,14,15,16,17,18,19,false,earlierAmount,,2001-01-03T00:00:00.000Z,2001-01-04T00:00:00.000Z,20,21·
+22,23,24,25,26,barchart,drag,earlierAmount,27,28,2001-01-02T01:01:01.001Z,29,30,2001-01-02T02:01:01.001Z,31,32,33,34,35,36,37,38,39,40,false,laterAmount,,2001-01-02T03:01:01.001Z,2001-01-02T04:01:01.001Z,41,42·`);
+  });
+
+  test("Validate timestamp file is written correctly.", async () => {
+    const timestamp = DateTime.fromFormat("1/1/2001", "M/d/yyyy", {
+      zone: "utc",
+    }).toMillis();
+
+    const answer1 = Answer({
       treatmentId: 1,
       position: 2,
       viewType: ViewType.word,
@@ -118,7 +213,7 @@ describe("FileIOAdapter tests", () => {
       }).toMillis(),
       highup: 17,
       lowdown: 18,
-      participantCode: "participant code",
+      participantId: "participant id",
     });
     const answer2 = Answer({
       treatmentId: 13,
@@ -155,17 +250,64 @@ describe("FileIOAdapter tests", () => {
       }).toMillis(),
       highup: 29,
       lowdown: 30,
-      participantCode: "participant code 2",
+      participantId: "participant id 2",
     });
     const answers = [answer1, answer2];
-    expect(
-      DateTime.fromMillis(answers[0].dateEarlier, { zone: "utc" }).year
-    ).toBe(2001);
+
+    const financialLitSurvey = {
+      participantId: 1,
+      key1: "value1",
+      key2: "value2",
+    };
+    const purposeSurvey = {
+      participantId: 1,
+      key1: "value1",
+      key2: "value2",
+    };
+
+    const timestamps = {
+      participantId: 1,
+      consentShownTimestamp: timestamp,
+      consentCompletedTimestamp: timestamp,
+      introductionShowTimestamp: timestamp,
+      introductionCompletedTimestamp: timestamp,
+      instructionsShownTimestamp: timestamp,
+      instructionsCompletedTimestamp: timestamp,
+      attentionCheckShownTimestamp: timestamp,
+      attentionCheckCompletedTimestamp: timestamp,
+      financialLitSurveyQuestionsShownTimestamp: timestamp,
+      purposeSurveyQuestionsShownTimestamp: timestamp,
+      debriefShownTimestamp: timestamp,
+      debriefCompletedTimestamp: timestamp,
+      theEndShownTimestamp: timestamp,
+    };
+
+    const demographic = {
+      participantId: 1,
+      countryOfResidence: "Country of residence",
+      vizFamiliarity: "vis familiarity",
+      age: "age",
+      gender: "gender",
+      selfDescribeGender: "self describe gender",
+      profession: "profession",
+    };
+
+    const legal = {
+      participantId: 1,
+      consentChecked: true,
+      attentionCheck: true,
+    };
+
     const io = new FileIOAdapter();
-    const result = io.convertToCSV(answers);
-    expect(result)
-      .toBe(`treatment_id,position,view_type,interaction,variable_amount,amount_earlier,time_earlier,date_earlier,amount_later,time_later,date_later,max_amount,max_time,vertical_pixels,horizontal_pixels,left_margin_width_in,bottom_margin_height_in,graph_width_in,graph_height_in,width_in,height_in,choice,shown_timestamp,choice_timestamp,highup,lowdown,participant_code
-1,2,word,none,earlierAmount,3,4,2001-01-01T00:00:00.000Z,5,6,2001-01-02T00:00:00.000Z,7,8,9,10,11,12,13,14,15,16,earlierAmount,2001-01-03T00:00:00.000Z,2001-01-04T00:00:00.000Z,17,18,participant code
-13,14,barchart,drag,earlierAmount,15,16,2001-01-02T01:01:01.001Z,17,18,2001-01-02T02:01:01.001Z,19,20,21,22,23,24,25,26,27,28,laterAmount,2001-01-02T03:01:01.001Z,2001-01-02T04:01:01.001Z,29,30,participant code 2`);
+    io.writeAnswers(
+      1,
+      1,
+      answers,
+      timestamps,
+      financialLitSurvey,
+      purposeSurvey,
+      demographic,
+      legal
+    );
   });
 });

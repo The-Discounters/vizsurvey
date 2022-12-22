@@ -1,4 +1,7 @@
 export function Answer({
+  participantId: participantId,
+  sessionId: sessionId,
+  studyId: studyId,
   treatmentId: treatmentId,
   position: position,
   viewType: viewType,
@@ -27,9 +30,11 @@ export function Answer({
   choiceTimestamp: choiceTimestamp,
   highup: highup,
   lowdown: lowdown,
-  participantCode: participantCode,
 }) {
   return {
+    participantId: participantId,
+    sessionId: sessionId,
+    studyId: studyId,
     treatmentId: treatmentId,
     position: position,
     viewType: viewType,
@@ -58,6 +63,5 @@ export function Answer({
     choiceTimestamp: choiceTimestamp,
     highup: highup,
     lowdown: lowdown,
-    participantCode: participantCode,
   };
 }

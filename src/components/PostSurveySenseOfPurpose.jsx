@@ -1,4 +1,4 @@
-import React, { useMemo, useEffect } from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { DateTime } from "luxon";
@@ -62,12 +62,13 @@ export function PostSurvey() {
   });
 
   useEffect(() => {
-    dispatch(purposeSurveyQuestionsShown(dateToState(DateTime.utc())));
+    dispatch(purposeSurveyQuestionsShown(dateToState(DateTime.now())));
     //if (process.env.REACT_APP_FULLSCREEN === "enabled") handle.exit();
   }, []);
 
-  useMemo(() => {
-    navigateFromStatus(navigate, status);
+  useEffect(() => {
+    const path = navigateFromStatus(status);
+    navigate(path);
   }, [status]);
 
   useEffect(() => {

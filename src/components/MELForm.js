@@ -1,4 +1,4 @@
-import React, { useMemo, useEffect } from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { DateTime } from "luxon";
@@ -35,7 +35,7 @@ function MELForm() {
   const [helperText, setHelperText] = React.useState("");
 
   useEffect(() => {
-    dispatch(dispatch(setQuestionShownTimestamp(dateToState(DateTime.utc()))));
+    dispatch(setQuestionShownTimestamp(dateToState(DateTime.now())));
   }, [qi]);
 
   useEffect(() => {
@@ -49,15 +49,16 @@ function MELForm() {
     }
   }, [choice, qi]);
 
-  useMemo(() => {
-    navigateFromStatus(navigate, status);
+  useEffect(() => {
+    const path = navigateFromStatus(status);
+    navigate(path);
   }, [status]);
 
   const onClickCallback = (value) => {
     dispatch(
       answer({
         choice: value,
-        choiceTimestamp: dateToState(DateTime.utc()),
+        choiceTimestamp: dateToState(DateTime.now()),
       })
     );
     setHelperText("");
@@ -95,7 +96,6 @@ function MELForm() {
               disableFocusRipple
               style={styles.button}
               onClick={() => {
-                console.log("onClick");
                 if (
                   choice !== AmountType.earlierAmount &&
                   choice !== AmountType.laterAmount

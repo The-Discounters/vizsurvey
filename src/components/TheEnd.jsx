@@ -1,4 +1,4 @@
-import React, { useMemo, useEffect } from "react";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { DateTime } from "luxon";
@@ -9,14 +9,13 @@ import {
   ThemeProvider,
   Button,
 } from "@material-ui/core";
-import { theEndShownTimestamp } from "../features/questionSlice";
+import {
+  theEndShownTimestamp,
+  theEndCompleted,
+} from "../features/questionSlice";
 import { dateToState } from "../features/ConversionUtil";
 import { styles, theme } from "./ScreenHelper";
-import {
-  getStatus,
-  nextQuestion,
-  writeAnswers,
-} from "../features/questionSlice";
+import { getStatus, nextQuestion } from "../features/questionSlice";
 import { navigateFromStatus } from "./Navigate";
 
 const TheEnd = () => {
@@ -26,11 +25,12 @@ const TheEnd = () => {
   const status = useSelector(getStatus);
 
   useEffect(() => {
-    dispatch(theEndShownTimestamp(dateToState(DateTime.utc())));
+    dispatch(theEndShownTimestamp(dateToState(DateTime.now())));
   }, []);
 
-  useMemo(() => {
-    navigateFromStatus(navigate, status);
+  useEffect(() => {
+    const path = navigateFromStatus(status);
+    navigate(path);
   }, [status]);
 
   return (
@@ -89,7 +89,7 @@ const TheEnd = () => {
               disableFocusRipple
               style={styles.button}
               onClick={() => {
-                dispatch(writeAnswers());
+                dispatch(theEndCompleted(dateToState(DateTime.now())));
                 dispatch(nextQuestion());
               }}
             >
