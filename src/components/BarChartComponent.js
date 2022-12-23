@@ -32,10 +32,6 @@ export const drawBarChart = ({
   graphHeightIn: graphHeightIn,
   showMinorTicks: showMinorTicks,
 }) => {
-  function t() {
-    return d3.transition().duration(500);
-  }
-
   const {
     totalUCWidth,
     totalUCHeight,
@@ -58,9 +54,11 @@ export const drawBarChart = ({
     minor: "minor",
   };
 
-  const data = Array.from(Array(maxTime * 4 + 1).keys()).map((d) => {
-    const isMajor = d % 4 === 0;
-    const delay = d / 4;
+  const data = Array.from(
+    Array(showMinorTicks ? maxTime * 4 : maxTime + 1).keys()
+  ).map((d) => {
+    const isMajor = showMinorTicks ? d % 4 === 0 : true;
+    const delay = showMinorTicks ? d / 4 : d;
     if (isMajor && delay === timeEarlier) {
       return {
         type: TickType.major,
@@ -223,23 +221,6 @@ export const drawBarChart = ({
       ) {
         onClickCallback(d.target.__data__.barType);
         choice = d.target.__data__.barType;
-        switch (choice) {
-          case AmountType.earlierAmount:
-            d3.select("#laterAmount").transition(t()).attr("stroke", "none");
-            d3.select("#earlierAmount").transition(t()).attr("stroke", "black");
-            d3.select("#earlierAmount")
-              .transition(t())
-              .attr("stroke-width", "3");
-            break;
-          case AmountType.laterAmount:
-            d3.select("#earlierAmount").transition(t()).attr("stroke", "none");
-            d3.select("#laterAmount").transition(t()).attr("stroke", "black");
-            d3.select("#laterAmount").transition(t()).attr("stroke-width", "3");
-            break;
-          default:
-            d3.select("#laterAmount").transition(t()).attr("stroke", "none");
-            d3.select("#earlierAmount").transition(t()).attr("stroke", "none");
-        }
       }
     });
 

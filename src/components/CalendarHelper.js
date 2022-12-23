@@ -310,14 +310,14 @@ export const drawCalendar = ({
                 dispatchCallback(
                   answer({
                     choice: AmountType.earlierAmount,
-                    choiceTimestamp: dateToState(DateTime.utc()),
+                    choiceTimestamp: dateToState(DateTime.now()),
                   })
                 );
               } else if (d.target.__data__.type === AmountType.laterAmount) {
                 dispatchCallback(
                   answer({
                     choice: AmountType.laterAmount,
-                    choiceTimestamp: dateToState(DateTime.utc()),
+                    choiceTimestamp: dateToState(DateTime.now()),
                   })
                 );
               }

@@ -154,10 +154,8 @@ describe("QuestionEngine tests", () => {
     };
     const qe = new QuestionEngine();
     qe.answerCurrentQuestion(state, {
-      payload: {
-        choice: AmountType.earlierAmount,
-        choiceTimestamp: dateToState(DateTime.utc()),
-      },
+      choice: AmountType.earlierAmount,
+      choiceTimestamp: dateToState(DateTime.now()),
     });
     expect(state.currentQuestionIdx).toBe(0);
     expect(state.answers).not.toBeUndefined();
@@ -178,10 +176,8 @@ describe("QuestionEngine tests", () => {
     };
     const qe = new QuestionEngine();
     qe.answerCurrentQuestion(state, {
-      payload: {
-        choice: AmountType.earlierAmount,
-        choiceTimestamp: dateToState(DateTime.utc()),
-      },
+      choice: AmountType.earlierAmount,
+      choiceTimestamp: dateToState(DateTime.now()),
     });
     expect(state.currentQuestionIdx).toBe(0);
     expect(state.answers).not.toBeUndefined();
@@ -410,7 +406,7 @@ describe("QuestionEngine tests", () => {
   //   qe.answerCurrentQuestion(state, {
   //     payload: {
   //       choice: AmountType.earlierAmount,
-  //       choiceTimestamp: dateToState(DateTime.utc()),
+  //       choiceTimestamp: dateToState(DateTime.now()),
   //       direction: DirectionType.next,
   //       answerChanged: true,
   //     },
@@ -427,7 +423,7 @@ describe("QuestionEngine tests", () => {
   //   qe.answerCurrentQuestion(state, {
   //     payload: {
   //       choice: AmountType.laterAmount,
-  //       choiceTimestamp: dateToState(DateTime.utc()),
+  //       choiceTimestamp: dateToState(DateTime.now()),
   //       direction: DirectionType.next,
   //       answerChanged: true,
   //     },
@@ -444,7 +440,7 @@ describe("QuestionEngine tests", () => {
   //   qe.answerCurrentQuestion(state, {
   //     payload: {
   //       choice: AmountType.laterAmount,
-  //       choiceTimestamp: dateToState(DateTime.utc()),
+  //       choiceTimestamp: dateToState(DateTime.now()),
   //       direction: DirectionType.next,
   //       answerChanged: true,
   //     },
@@ -461,7 +457,7 @@ describe("QuestionEngine tests", () => {
   //   qe.answerCurrentQuestion(state, {
   //     payload: {
   //       choice: AmountType.earlierAmount,
-  //       choiceTimestamp: dateToState(DateTime.utc()),
+  //       choiceTimestamp: dateToState(DateTime.now()),
   //       direction: DirectionType.next,
   //       answerChanged: true,
   //     },
@@ -478,7 +474,7 @@ describe("QuestionEngine tests", () => {
   //   qe.answerCurrentQuestion(state, {
   //     payload: {
   //       choice: AmountType.laterAmount,
-  //       choiceTimestamp: dateToState(DateTime.utc()),
+  //       choiceTimestamp: dateToState(DateTime.now()),
   //       direction: DirectionType.next,
   //       answerChanged: true,
   //     },
@@ -498,7 +494,7 @@ describe("QuestionEngine tests", () => {
   //       // Choice of later seems to make the last value of lowdown work according to the algorithm
   //       // I derived from the earlier steps in the example.
   //       choice: AmountType.laterAmount,
-  //       choiceTimestamp: dateToState(DateTime.utc()),
+  //       choiceTimestamp: dateToState(DateTime.now()),
   //       direction: DirectionType.next,
   //       answerChanged: true,
   //     },
@@ -545,6 +541,9 @@ export class TestDataFactory {
 
   static createAnswer(treatmentId, positionId) {
     return Answer({
+      participantId: 1,
+      sessionId: 1,
+      studyId: 1,
       treatmentId: treatmentId,
       position: positionId,
       viewType: ViewType.barchart,

@@ -1,4 +1,4 @@
-import React, { useMemo, useEffect } from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { DateTime } from "luxon";
 import {
@@ -12,12 +12,12 @@ import {
 import FormGroup from "@mui/material/FormGroup";
 import Checkbox from "@mui/material/Checkbox";
 import { useSelector, useDispatch } from "react-redux";
-import { dateToState } from "../features/ConversionUtil";
 import {
   consentShown,
   consentCompleted,
   getStatus,
 } from "../features/questionSlice";
+import { dateToState } from "../features/ConversionUtil";
 import { navigateFromStatus } from "./Navigate";
 import { styles, theme } from "./ScreenHelper";
 import "../App.css";
@@ -37,11 +37,12 @@ export function Consent() {
   };
 
   useEffect(() => {
-    dispatch(consentShown(dateToState(DateTime.utc())));
+    dispatch(consentShown(dateToState(DateTime.now())));
   }, []);
 
-  useMemo(() => {
-    navigateFromStatus(navigate, status);
+  useEffect(() => {
+    const path = navigateFromStatus(status);
+    navigate(path);
   }, [status]);
 
   const ConsentTextEn = () => {
@@ -231,6 +232,12 @@ export function Consent() {
                 </u>{" "}
               </i>
             </Typography>
+            <Typography paragraph>
+              <b>
+                This survey is not designed to render on a mobile device and
+                should be taken on a laptop or desktop computer.
+              </b>
+            </Typography>
             <ConsentTextEn />
             <Typography paragraph>
               <b>By selecting the checkbox and clicking &ldquo;Next&ldquo;</b>,
@@ -276,7 +283,7 @@ export function Consent() {
                 disableFocusRipple
                 style={styles.button}
                 onClick={() => {
-                  dispatch(consentCompleted(dateToState(DateTime.utc())));
+                  dispatch(consentCompleted(dateToState(DateTime.now())));
                 }}
                 disabled={disableSubmit}
               >

@@ -8,10 +8,9 @@ let participantId = 1;
 let fetching = true;
 let fetching1 = true;
 function postsurvey(expects) {
-  cy.get("label").contains("Higher for the 15 year mortgage").click();
-  cy.get("label").contains("Less than $50,000").click();
-  cy.get("label").contains("Less than $120,000").click();
-  cy.get("label").contains("Less than 20 years").click();
+  cy.get("label").contains("1360").click();
+  cy.get("label").contains("1350").click();
+  cy.get("label").contains("20%").click();
   cy.get("button").contains("Next").click();
   cy.tick(1000);
   cy.get("#posdiff-strongly-disagree").click();
@@ -24,9 +23,9 @@ function postsurvey(expects) {
   cy.tick(1000);
   cy.wait(1000);
   cy.get("h4").contains("Submit Your Answers").should("exist");
-  cy.get("#Feedback").type("had trouble seeing numbers");
   cy.get("button").contains("Submit Your Answers").click();
   cy.get("h4").contains("Study Explanation").should("exist");
+  cy.get("#Feedback").type("had trouble seeing numbers");
   cy.get("button")
     .contains("Exit")
     .click()
@@ -49,12 +48,15 @@ function postsurvey(expects) {
           response.text().then((text) => {
             console.log("file1 text: " + text);
             expect(JSON.parse(text)).to.deep.equal({
-              financialLitSurvey: {
-                q15vs30: "v15+",
-                q50k6p: "v<50k",
-                q100k5p: "v<120k",
-                q200k5p: "v<20y",
+              surveys: {
+                discountLit: {
+                  qdoublediscount: "v1360",
+                  qsinglediscount: "v1350",
+                  qfinddiscount: "v20p",
+                },
               },
+              financialLitSurvey: {},
+
               purposeSurvey: {
                 posdiff: "strongly-disagree",
                 carbetplac: "strongly-disagree",
@@ -86,9 +88,10 @@ function postsurvey(expects) {
                 purposeSurveyQuestionsShownTimestamp: 9000,
                 debriefShownTimestamp: null, // TODO
                 debriefCompletedTimestamp: null, // TODO
-                theEndShownTimestamp: 9400,
+                theEndShownTimestamp: 10000,
               },
-              feedback: "had trouble seeing numbers",
+              feedback: "",
+              // feedback: "had trouble seeing numbers",
             });
             fetching1 = false;
           });

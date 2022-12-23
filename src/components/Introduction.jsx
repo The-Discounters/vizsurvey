@@ -1,4 +1,4 @@
-import React, { useMemo, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Button,
@@ -12,7 +12,6 @@ import { useD3 } from "../hooks/useD3";
 import { DateTime } from "luxon";
 import "../App.css";
 import { ViewType } from "../features/ViewType";
-import { dateToState } from "../features/ConversionUtil";
 import { navigateFromStatus } from "./Navigate";
 import {
   introductionShown,
@@ -21,6 +20,7 @@ import {
   getStatus,
   startSurvey,
 } from "../features/questionSlice";
+import { dateToState } from "../features/ConversionUtil";
 import { styles, theme, calcScreenValues } from "./ScreenHelper";
 import { AmountType } from "../features/AmountType";
 import { MELSelectionForm } from "./MELSelectionForm";
@@ -40,7 +40,7 @@ const Introduction = () => {
   const status = useSelector(getStatus);
 
   useEffect(() => {
-    dispatch(introductionShown(dateToState(DateTime.utc())));
+    dispatch(introductionShown(dateToState(DateTime.now())));
     setChoice("");
     if (!treatment) navigate("/invalidlink");
   }, []);
@@ -64,9 +64,10 @@ const Introduction = () => {
     }
   }, [choice]);
 
-  useMemo(() => {
+  useEffect(() => {
     setChoice("");
-    navigateFromStatus(navigate, status);
+    const path = navigateFromStatus(status);
+    navigate(path);
   }, [status]);
 
   const onClickCallback = (value) => {
@@ -141,6 +142,63 @@ const Introduction = () => {
   };
 
   const vizExplanation = (viewType) => {
+    switch (viewType) {
+      case ViewType.word:
+        return instructions(
+          "radio buttons",
+          "buttons",
+          radioButtonGif,
+          "Radio button example",
+          "button on the left",
+          "button on the right",
+          "clicking the button"
+        );
+      case ViewType.barchart:
+        return instructions(
+          "bar chart",
+          "bars",
+          barchartGif,
+          "Bar chart button example",
+          "bar on the left",
+          "bar on the right",
+          "clicking the bar"
+        );
+      case ViewType.calendarBar:
+        return instructions(
+          "calendar bar chart",
+          "bars",
+          testGif,
+          "Radio button example",
+          "button on the left",
+          "button on the right",
+          "clicking the button"
+        );
+      case ViewType.calendarWord:
+        return instructions(
+          "calendar word chart",
+          "amounts",
+          testGif,
+          "Calendar word chart example",
+          "bar on the earlier day",
+          "bar on the laster day",
+          "clicking the bar"
+        );
+      case ViewType.calendarIcon:
+        return instructions(
+          "calendar icon chart",
+          "icon charts",
+          testGif,
+          "Calendar icon chart example",
+          "icon chart on the earlier day",
+          "icon chart on the laster day",
+          "clicking the icon chart"
+        );
+      default:
+        return <React.Fragment>{navigate("/invalidlink")}</React.Fragment>;
+    }
+  };
+
+  const vizTry = (viewType) => {
     const horizontalPixels = 800;
     const verticalPixels = 400;
     const { totalSVGWidth, totalSVGHeight, totalUCWidth, totalUCHeight } =
@@ -152,21 +210,9 @@ const Introduction = () => {
         null,
         null
       );
-    const result = [];
     switch (viewType) {
       case ViewType.word:
-        result.push(
-          instructions(
-            "radio buttons",
-            "buttons",
-            radioButtonGif,
-            "Radio button example",
-            "button on the left",
-            "button on the right",
-            "clicking the button"
-          )
-        );
-        result.push(
+        return (
           <MELSelectionForm
             textShort={"textShort"}
             error={error}
@@ -179,20 +225,8 @@ const Introduction = () => {
             choice={choice}
           />
         );
-        break;
       case ViewType.barchart:
-        result.push(
-          instructions(
-            "bar chart",
-            "bars",
-            barchartGif,
-            "Bar chart button example",
-            "bar on the left",
-            "bar on the right",
-            "clicking the bar"
-          )
-        );
-        result.push(
+        return (
           <svg
             width={totalSVGWidth}
             height={totalSVGHeight}
@@ -224,52 +258,15 @@ const Introduction = () => {
             )}
           ></svg>
         );
-        break;
       case ViewType.calendarBar:
-        result.push(
-          instructions(
-            "calendar bar chart",
-            "bars",
-            testGif,
-            "Radio button example",
-            "button on the left",
-            "button on the right",
-            "clicking the button"
-          )
-        );
-        break;
+        return "";
       case ViewType.calendarWord:
-        result.push(
-          instructions(
-            "calendar word chart",
-            "amounts",
-            testGif,
-            "Calendar word chart example",
-            "bar on the earlier day",
-            "bar on the laster day",
-            "clicking the bar"
-          )
-        );
-        break;
+        return "";
       case ViewType.calendarIcon:
-        result.push(
-          instructions(
-            "calendar icon chart",
-            "icon charts",
-            testGif,
-            "Calendar icon chart example",
-            "icon chart on the earlier day",
-            "icon chart on the laster day",
-            "clicking the icon chart"
-          )
-        );
-        break;
+        return "";
       default:
-        result.push(
-          <React.Fragment>{navigate("/invalidlink")}</React.Fragment>
-        );
+        return "";
     }
-    return <React.Fragment>{result}</React.Fragment>;
   };
 
   return (
@@ -286,7 +283,8 @@ const Introduction = () => {
           />
         </Grid>
         <Grid item xs={12}>
-          {treatment ? vizExplanation(treatment.viewType) : <p />}
+          {vizExplanation(treatment.viewType)}
+          {vizTry(treatment.viewType)}
           {showNextPrevious && (
             <>
               <hr
@@ -337,9 +335,8 @@ const Introduction = () => {
                   setError(true);
                   setHelperText("You must choose one of the options below.");
                 } else {
-                  dispatch(introductionCompleted(dateToState(DateTime.utc())));
+                  dispatch(introductionCompleted(dateToState(DateTime.now())));
                   dispatch(startSurvey());
-                  navigateFromStatus(navigate, status);
                 }
               }}
               disabled={disableSubmit}

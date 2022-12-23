@@ -1,5 +1,4 @@
-import React, { useMemo, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { DateTime } from "luxon";
 import {
@@ -12,28 +11,30 @@ import {
 import TextField from "@mui/material/TextField";
 import {
   getStatus,
+  setFeedback,
   debriefShownTimestamp,
   debriefCompleted,
-  getParticipant,
-  writeFeedback,
 } from "../features/questionSlice";
 import { dateToState } from "../features/ConversionUtil";
 import { styles, theme } from "./ScreenHelper";
-import { navigateFromStatus } from "./Navigate";
+import { StatusType } from "../features/StatusType";
 
 const Debrief = () => {
-  const navigate = useNavigate();
   const dispatch = useDispatch();
-  const participantId = useSelector(getParticipant);
   const status = useSelector(getStatus);
-  const [feedback, setFeedback] = React.useState("");
+  const [comment, setComment] = React.useState("");
 
   useEffect(() => {
-    dispatch(debriefShownTimestamp(dateToState(DateTime.utc())));
+    dispatch(debriefShownTimestamp(dateToState(DateTime.now())));
   }, []);
 
-  useMemo(() => {
-    navigateFromStatus(navigate, status);
+  useEffect(() => {
+    if (status == StatusType.Finished) {
+      setTimeout(() => {
+        window.open("about:blank", "_self");
+        window.close();
+      }, 400);
+    }
   }, [status]);
 
   const handleFieldChange = (event, setter) => {
@@ -138,9 +139,9 @@ const Debrief = () => {
           <TextField
             id="Feedback"
             fullWidth
-            value={feedback}
+            value={comment}
             onChange={(event) => {
-              handleFieldChange(event, setFeedback);
+              handleFieldChange(event, setComment);
             }}
             multiline
             rows={8}
@@ -164,13 +165,8 @@ const Debrief = () => {
               disableFocusRipple
               style={styles.button}
               onClick={() => {
-                dispatch(
-                  writeFeedback({
-                    participantId: participantId,
-                    feedback: feedback,
-                  })
-                );
-                dispatch(debriefCompleted(dateToState(DateTime.utc())));
+                dispatch(setFeedback(comment));
+                dispatch(debriefCompleted(dateToState(DateTime.now())));
               }}
             >
               {" "}

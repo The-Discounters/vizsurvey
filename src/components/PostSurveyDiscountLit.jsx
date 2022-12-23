@@ -17,15 +17,15 @@ import {
 import { makeStyles } from "@material-ui/core/styles";
 import {
   getStatus,
-  financialLitSurveyQuestionsShown,
-  purposeSurveyQuestionsCompleted,
+  discountLitSurveyQuestionsShown,
+  discountLitSurveyQuestionsCompleted,
   nextQuestion,
-  initFinancialLitSurveyQuestion,
-  setFinancialLitSurveyQuestion,
-  getFinancialLitSurveyQuestion,
+  initDiscountLitSurveyQuestion,
+  setDiscountLitSurveyQuestion,
+  getDiscountLitSurveyQuestion,
 } from "../features/questionSlice";
 import { dateToState } from "../features/ConversionUtil";
-import { POST_SURVEY_QUESTIONS } from "../features/postsurveyquestionsfinanciallit";
+import { POST_SURVEY_QUESTIONS } from "../features/postsurveyquestionsdiscountlit";
 import { styles, theme } from "./ScreenHelper";
 import { navigateFromStatus } from "./Navigate";
 
@@ -58,15 +58,15 @@ export function PostSurvey() {
 
   let qList = [];
   surveys.questions.forEach((q) => {
-    dispatch(initFinancialLitSurveyQuestion(q.question.textShort));
+    dispatch(initDiscountLitSurveyQuestion(q.question.textShort));
     const value = useSelector(
-      getFinancialLitSurveyQuestion(q.question.textShort)
+      getDiscountLitSurveyQuestion(q.question.textShort)
     );
     qList.push(value);
   });
 
   useEffect(() => {
-    dispatch(financialLitSurveyQuestionsShown(dateToState(DateTime.now())));
+    dispatch(discountLitSurveyQuestionsShown(dateToState(DateTime.now())));
   }, []);
 
   useEffect(() => {
@@ -147,7 +147,7 @@ export function PostSurvey() {
                             label={option.textFull}
                             onChange={(event) => {
                               dispatch(
-                                setFinancialLitSurveyQuestion({
+                                setDiscountLitSurveyQuestion({
                                   key: surveys.questions[index].question
                                     .textShort,
                                   value: event.target.value,
@@ -176,7 +176,7 @@ export function PostSurvey() {
                             label={option.replace("-", " ")}
                             onChange={(event) => {
                               dispatch(
-                                setFinancialLitSurveyQuestion({
+                                setDiscountLitSurveyQuestion({
                                   key: surveys.questions[index].question
                                     .textShort,
                                   value: event.target.value,
@@ -207,7 +207,7 @@ export function PostSurvey() {
                 onClick={() => {
                   setTimeout(() => {
                     dispatch(
-                      purposeSurveyQuestionsCompleted(
+                      discountLitSurveyQuestionsCompleted(
                         dateToState(DateTime.now())
                       )
                     );
