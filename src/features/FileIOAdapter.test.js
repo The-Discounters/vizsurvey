@@ -10,6 +10,42 @@ describe("Enum tests", () => {
   expect(result).toBe(ViewType.barchart);
 });
 
+describe("Regular express test", () => {
+  const files = [
+    "answer-timestamps-1-2-1671914207718.csv",
+    "answer-timestamps-1-2-1671914717290.csv",
+    "answers-1-2-1671914207715.json",
+    "answers-1-2-1671914207718.csv",
+    "answers-1-2-1671914717289.json",
+    "answers-1-2-1671914717290.csv",
+    "debrief-1-2-1671914210663.json",
+    "debrief-1-2-1671914720923.json",
+    "debrief-timestamps-1-2-1671914210663.csv",
+    "debrief-timestamps-1-2-1671914720923.csv",
+    "demographics-1-2-1671914207718.csv",
+    "demographics-1-2-1671914717290.csv",
+    "discount-lit-survey-1-2-1671914207718.csv",
+    "discount-lit-survey-1-2-1671914717290.csv",
+    "feedback - 1 - 2 - 1671914210663.csv",
+    "feedback-1-2-1671914720923.csv",
+    "financial-lit-survey-1-2-1671914207718.csv",
+    "financial-lit-survey-1-2-1671914717290.csv",
+    "legal-1-2-1671914207718.csv",
+    "legal-1-2-1671914717290.csv",
+    "purpose-survey-1-2-1671914207718.csv",
+    "purpose-survey-1-2-1671914717290.csv",
+  ];
+  const result = [];
+  //const re = /answer-timestamps-\d+-\d+-\d+\.csv/;
+  const re = new RegExp("answer-timestamps-\\d+-\\d+-\\d+\\.csv");
+  files.forEach((file) => {
+    if (re.test(file)) {
+      result.push(file);
+    }
+  });
+  expect(result.length).toBe(2);
+});
+
 describe("FileIOAdapter tests", () => {
   test("Validate loadTreatment loads CSV fields correctly.", async () => {
     const io = new FileIOAdapter();

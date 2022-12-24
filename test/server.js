@@ -35,14 +35,14 @@ app.get("/", (req, res) => {
 app.get("/files", (req, res) => {
   const filter = req.query.filter;
   console.log("/files request for files matching filter=" + filter);
-  var result = [];
+  const result = [];
   try {
     fs.readdir("public/", (err, files) => {
       if (err) res.send(err);
       else {
+        const re = /answer-timestamps-\d+-\d+-\d+\.csv/;
         files.forEach((file) => {
           console.log("considering file " + file);
-          const re = new RegExp(filter);
           if (re.test(file)) {
             console.log("match found!");
             result.push(file);
@@ -53,8 +53,9 @@ app.get("/files", (req, res) => {
       }
     });
     console.log("Returning result " + result);
-    res.send(result);
+    res.send(JSON.stringify(result));
   } catch (err) {
+    console.log(err);
     res.send(err);
   }
 });
