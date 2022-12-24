@@ -1,7 +1,6 @@
 export const POST_SURVEY_QUESTIONS = {
   promptShort: "discountLit",
-  prompt:
-    "The following questions try to assess your discount literacy. Please answer these to the best of your knowledge.",
+  prompt: "Please answer these to the best of your knowledge.",
   questionsType: "multiple choice",
   questions: [
     /*
@@ -11,24 +10,24 @@ export const POST_SURVEY_QUESTIONS = {
     {
       question: {
         textFull:
-          "The marked price on an item was Rs 2000/- but the shopkeeper offered a double discount of 20% and 15%. How much did he finally sell the item for?",
+          "The marked price on an item was $2,000 but the shopkeeper offered a double discount of 20% and 15%. How much did he finally sell the item for?",
         textShort: "qdoublediscount",
       },
       options: [
         {
-          textFull: "Rs. 640",
+          textFull: "$640",
           textShort: "v640",
         },
         {
-          textFull: "Rs. 1300",
+          textFull: "$1,300",
           textShort: "v1300",
         },
         {
-          textFull: "Rs. 1360",
+          textFull: "$1,360",
           textShort: "v1360", // ANSWER
         },
         {
-          textFull: "Rs. 1600",
+          textFull: "$,1600",
           textShort: "v1600",
         },
       ],
@@ -40,24 +39,24 @@ Grade 6 Discount Word Problems
     {
       question: {
         textFull:
-          "The price of a motorbike is 1,500$. How much do you need to pay if you get a 10% discount?",
+          "The price of a motorbike is $1,500. How much do you need to pay if you get a 10% discount?",
         textShort: "qsinglediscount",
       },
       options: [
         {
-          textFull: "1350",
+          textFull: "$1,350",
           textShort: "v1350", // ANSWER
         },
         {
-          textFull: "Rs. 1000",
+          textFull: "$1,000",
           textShort: "v1000",
         },
         {
-          textFull: "Rs. 1400",
+          textFull: "$1,400",
           textShort: "v1400",
         },
         {
-          textFull: "Rs. 1250",
+          textFull: "$1,250",
           textShort: "v1250",
         },
       ],
@@ -65,7 +64,7 @@ Grade 6 Discount Word Problems
     {
       question: {
         textFull:
-          "Mike and Mandy bought the same item. Mike paid 15,000$. Mandy got discount and paid 3,000$ less than Mike. How much discount did Mandy get?",
+          "Mike and Mandy bought the same item. Mike paid $15,000. Mandy got discount and paid $3,000 less than Mike. How much discount did Mandy get?",
         textShort: "qfinddiscount",
       },
       options: [

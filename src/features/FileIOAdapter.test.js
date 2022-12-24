@@ -265,6 +265,12 @@ describe("FileIOAdapter tests", () => {
       key2: "value2",
     };
 
+    const discountSurvey = {
+      participantId: 1,
+      key1: "value1",
+      key2: "value2",
+    };
+
     const timestamps = {
       participantId: 1,
       consentShownTimestamp: timestamp,
@@ -304,6 +310,7 @@ describe("FileIOAdapter tests", () => {
       1,
       answers,
       timestamps,
+      discountSurvey,
       financialLitSurvey,
       purposeSurvey,
       demographic,
