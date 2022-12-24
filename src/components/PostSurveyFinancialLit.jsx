@@ -74,10 +74,13 @@ export function PostSurvey() {
     navigate(path);
   }, [status]);
 
+  const [exited, setExited] = React.useState(false);
   useEffect(() => {
     checkEnableSubmit();
-    if (process.env.REACT_APP_FULLSCREEN === "enabled")
+    if (!exited && process.env.REACT_APP_FULLSCREEN === "enabled") {
       document.exitFullscreen();
+      setExited(true);
+    }
   }, qList);
 
   const checkEnableSubmit = () => {
