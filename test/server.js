@@ -32,6 +32,33 @@ app.get("/", (req, res) => {
   );
 });
 
+app.get("/files", (req, res) => {
+  const filter = req.query.filter;
+  console.log("/files request for files matching filter=" + filter);
+  var result = [];
+  try {
+    fs.readdir("public/", (err, files) => {
+      if (err) res.send(err);
+      else {
+        files.forEach((file) => {
+          console.log("considering file " + file);
+          const re = new RegExp(filter);
+          if (re.test(file)) {
+            console.log("match found!");
+            result.push(file);
+          } else {
+            console.log("match not found.");
+          }
+        });
+      }
+    });
+    console.log("Returning result " + result);
+    res.send(result);
+  } catch (err) {
+    res.send(err);
+  }
+});
+
 app.post("/test", (req, res) => {
   var dir = "public/";
 

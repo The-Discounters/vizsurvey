@@ -29,7 +29,6 @@ import {
   getStatus,
   clearState,
   genRandomTreatment,
-  fetchTreatmentId,
   setSessionId,
   setParticipantId,
   setTreatmentId,
@@ -114,7 +113,6 @@ const GenTreatmentId = () => {
     var treatmentId = searchParams.get("treatment_id");
     if (!treatmentId) {
       dispatch(genRandomTreatment());
-      treatmentId = useSelector(fetchTreatmentId);
     } else {
       dispatch(setTreatmentId(treatmentId));
     }
@@ -173,6 +171,14 @@ const DevHome = () => {
             <p>
               The prolific url is:
               https://release.d2ptxb5fbsc082.amplifyapp.com/start?participant_id=&#123;&#123;%PROLIFIC_PID%&#125;&#125;&study_id=&#123;&#123;%STUDY_ID%&#125;&#125;&session_id=&#123;&#123;%session_id%&#125;&#125;
+            </p>
+            <p>
+              An example is
+              https://release.d2ptxb5fbsc082.amplifyapp.com/start?participant_id=1&study_id=2&session_id=3
+            </p>
+            <p>
+              And for localhost with the treatment id being randomly determined
+              http://localhost:3000/start?participant_id=1&study_id=2&session_id=3
             </p>
             <p>
               Click a link below to launch one of the experiments. The

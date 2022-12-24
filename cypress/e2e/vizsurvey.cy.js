@@ -4,12 +4,13 @@
 let baseURL = "http://localhost:3000/start";
 
 let participantId = 1;
+let studyId = 1;
 
 let fetching = true;
 let fetching1 = true;
 function postsurvey(expects) {
-  cy.get("label").contains("1360").click();
-  cy.get("label").contains("1350").click();
+  cy.get("label").contains("1,360").click();
+  cy.get("label").contains("1,350").click();
   cy.get("label").contains("20%").click();
   cy.get("button").contains("Next").click();
   cy.tick(1000);
@@ -31,7 +32,7 @@ function postsurvey(expects) {
     .click()
     .then(() => {
       cy.wait(1000).then(() => {
-        let file = `http://localhost:3001/answers-${participantId}.csv`;
+        let file = `http://localhost:3001/answers-${participantId}-${studyId}-.csv`;
         console.log("fetching file: " + file);
         fetch(file).then((response) => {
           response.text().then((text) => {
