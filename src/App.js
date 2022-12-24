@@ -33,6 +33,7 @@ import {
   setParticipantId,
   setTreatmentId,
   setStudyId,
+  setUserAgent,
   loadTreatment,
   nextStatus,
 } from "./features/questionSlice";
@@ -119,6 +120,7 @@ const GenTreatmentId = () => {
     dispatch(setSessionId(searchParams.get("session_id")));
     dispatch(setParticipantId(searchParams.get("participant_id")));
     dispatch(setStudyId(searchParams.get("study_id")));
+    dispatch(setUserAgent(navigator.userAgent));
     dispatch(nextStatus());
     dispatch(loadTreatment());
     dispatch(nextStatus());
