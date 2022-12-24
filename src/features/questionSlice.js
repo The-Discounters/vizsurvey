@@ -58,8 +58,12 @@ export const questionSlice = createSlice({
     lowdown: undefined,
     status: StatusType.Unitialized,
     error: null,
+    userAgen: null,
   }, // the initial state of our global data (under name slice)
   reducers: {
+    setUserAgent(state, action) {
+      state.userAgent = action.payload;
+    },
     setParticipantId(state, action) {
       state.participantId = action.payload;
       state.discountLitSurvey.participantId = action.payload;
@@ -259,6 +263,7 @@ export const questionSlice = createSlice({
         gender: state.gender,
         selfDescribeGender: state.selfDescribeGender,
         profession: state.profession,
+        userAgent: state.userAgent,
       };
       const timestamps = {
         participantId: state.participantId,
@@ -347,6 +352,7 @@ export const questionSlice = createSlice({
       state.lowdown = undefined;
       state.status = StatusType.Unitialized;
       state.error = null;
+      state.userAgent = null;
     },
     genRandomTreatment(state) {
       // figure out the min and max treatment id
@@ -486,6 +492,7 @@ export const {
   clearState,
   genRandomTreatment,
   nextStatus,
+  setUserAgent,
 } = questionSlice.actions;
 
 export default questionSlice.reducer;
