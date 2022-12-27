@@ -51,19 +51,23 @@ const Instructions = () => {
             <b>Survey questions: </b>
             After making your money choice selections, you will be presented
             with two short surveys of questions to get a better undestanding of
-            yourself, an explanation of the goals of this research project, and
-            then a screen to submit your final answers.{" "}
+            yourself and then a screen to submit your final answers.{" "}
             <b>
-              You must click on the button at the end to have your answers be
-              registered and get paid.
+              You must click on the button to submit your final answers to get
+              paid.
             </b>
+          </Typography>
+          <Typography paragraph>
+            After you submit your answers, you will be presented with a more
+            detailed explanation of the theory behind this research and its
+            goals along with a section to submit feedback. The researches
+            greatly appreciate any feedback you are willing to share.
           </Typography>
           <img
             width="100%"
             src="submit-and-exit.png"
             alt="Submit answers button."
           ></img>
-          <Typography paragraph></Typography>
           <Typography paragraph>
             <b>Click the Next button to start the survey!</b>
           </Typography>{" "}
