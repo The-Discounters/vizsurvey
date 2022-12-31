@@ -162,7 +162,7 @@ export function Consent() {
             <FormControl
               className={classes.formControl}
               required
-              style={{ maxWidth: 230, marginRight: 20 }}
+              style={{ maxWidth: 250, marginRight: 20 }}
             >
               <InputLabel htmlFor="country-select-helper">
                 Country of residence
@@ -195,9 +195,9 @@ export function Consent() {
             <FormControl
               className={classes.formControl}
               required
-              style={{ maxWidth: 230, marginRight: 20 }}
+              style={{ maxWidth: 250, marginRight: 20 }}
             >
-              <InputLabel htmlFor="country-select-helper">
+              <InputLabel htmlFor="familiarity-with-viz">
                 Dataviz experience
               </InputLabel>
               <NativeSelect
