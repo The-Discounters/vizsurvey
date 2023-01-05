@@ -23,7 +23,8 @@ export const drawCalendar = ({
   dragCallback: dragCallback,
   dispatchCallback: dispatchCallback,
 }) => {
-  const dpi = window.devicePixelRatio >= 2 ? 132 : 96;
+  console.log(q);
+  const dpi = 100; //window.devicePixelRatio >= 2 ? 132 : 96;
   const tableSquareSizeIn = tableWidthIn / 7;
   const tableSquareSizePx = Math.round(tableSquareSizeIn * dpi);
 
@@ -55,6 +56,7 @@ export const drawCalendar = ({
       };
     })
   );
+  console.log(monthDaysAmounts); // 2-dimensional array of calendar days
 
   const lastDayOfMonth = Math.max(...[].concat(...monthDays));
   const firstDaysOfWeek = monthDaysAmounts.reduce((acc, cv) => {
@@ -90,7 +92,7 @@ export const drawCalendar = ({
     .data([monthDate])
     .join("td")
     .attr("id", "month-year-cell")
-    .attr("style", "font-size: 14px; box-sizing: border-box;")
+    .attr("style", "font-size: 40px; box-sizing: border-box;") // year title styling
     .attr("colspan", 7)
     .text((d) => `${d.monthLong}${showYear ? " " + d.year : ""}`);
   thead
@@ -104,7 +106,7 @@ export const drawCalendar = ({
     .attr("class", "weekday-name-cell")
     .attr(
       "style",
-      "font-size: 10px; text-align: center; box-sizing: border-box;"
+      "font-size: 20px; text-align: center; box-sizing: border-box;" // weekday abbreviation styling (ex. S,M,T,W,T,F,S)
     )
     .text((d) => d);
 
@@ -339,7 +341,7 @@ export const drawCalendar = ({
             const td = select(this);
             if (d.day >= 0) {
               td.append("div")
-                .attr("style", "font-size: 10px; float: right")
+                .attr("style", "font-size: 20px; float: right") // TODO: still fix first day of month font-size
                 .attr("class", "day-div")
                 .text((d) => {
                   if (d.day <= 0) return "";

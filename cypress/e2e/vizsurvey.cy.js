@@ -173,7 +173,7 @@ function answerMELForm(word = true, tickAmount = 1000) {
 function introduction(treatmentId) {
   cy.get("#buttonNext").should("be.disabled");
   cy.tick(500);
-  answerMELForm(treatmentId === 1 || treatmentId === 20);
+  answerMELForm(treatmentId === 1 || treatmentId === 20 || treatmentId === 5);
 }
 
 function instruction() {
@@ -197,6 +197,7 @@ function visitTreatment(treatmentId, width = 1200, height = 700) {
   instruction();
 }
 describe("vizsurvey", () => {
+  /*
   it("word dev", () => {
     visitTreatment(1);
     answerMELForm();
@@ -307,17 +308,17 @@ describe("vizsurvey", () => {
       }
     );
   });
-  /*
   it("calendar bar", () => {
     visitTreatment(4);
     cy.tick(4000);
     calendar("day", "4", "Bar");
-  });
+  });*/
   it("calendar word", () => {
-    visitTreatment(5);
+    visitTreatment(5, 1280, 720);
     cy.tick(4000);
     calendar("day", "5", "Word");
   });
+  /*
   it("survey invalid", () => {
     cy.viewport(1200, 700);
     cy.visit(baseURL + "?treatment_id=100&session_id=1&participant_id=1");

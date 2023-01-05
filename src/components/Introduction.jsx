@@ -260,7 +260,19 @@ const Introduction = () => {
       case ViewType.calendarBar:
         return "";
       case ViewType.calendarWord:
-        return "";
+        return (
+          <MELSelectionForm // TODO: change to correct mini-calendar word view
+            textShort={"textShort"}
+            error={error}
+            amountEarlier={300}
+            timeEarlier={2}
+            amountLater={700}
+            timeLater={7}
+            helperText={helperText}
+            onClickCallback={onClickCallback}
+            choice={choice}
+          />
+        );
       case ViewType.calendarIcon:
         return "";
       default:
