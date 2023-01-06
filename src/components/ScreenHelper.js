@@ -1,7 +1,7 @@
 import { createTheme } from "@mui/material";
 
 export const styles = {
-  root: { flexGrow: 1, margin: 0 },
+  root: { flexGrow: 1, margin: 20 },
   button: { marginTop: 10, marginBottom: 10 },
   container: { display: "flex", flexWrap: "wrap" },
   textField: { marginLeft: 10, marginRight: 10, width: 200 },

@@ -1,88 +1,91 @@
 export const POST_SURVEY_QUESTIONS = {
-  promptShort: "discountLit",
+  promptShort: "fincanialLit",
   prompt: "Please answer these to the best of your knowledge.",
   questionsType: "multiple choice",
   questions: [
     /*
-      https://www.tutorialride.com/discount/discount-aptitude-questions-and-answers.htm
-      Discount - Aptitude Questions and Answers
-*/
+      A. Lusardi and O. S. Mitchell, “Planning and Financial Literacy: How Do Women Fare?,” The American Economic Review, vol. 98, no. 2, pp. 413–417, 2008.
+    */
     {
       question: {
         textFull:
-          "The marked price on an item was $2,000 but the shopkeeper offered a double discount of 20% and 15%. How much did he finally sell the item for?",
-        textShort: "qdoublediscount",
+          "Suppose you had $100 in a savings account and the interest rate was 2% per year. After 5 years, how much do you think you would have in the account if you left the money to grow?",
+        textShort: "qNumeracy",
       },
       options: [
         {
-          textFull: "$640",
-          textShort: "v640",
+          textFull: "more than $102",
+          textShort: ">$102",
         },
         {
-          textFull: "$1,300",
-          textShort: "v1300",
+          textFull: "exactly $102",
+          textShort: "=$102",
         },
         {
-          textFull: "$1,360",
-          textShort: "v1360", // ANSWER
+          textFull: "less than $102",
+          textShort: "<$102",
         },
         {
-          textFull: "$,1600",
-          textShort: "v1600",
-        },
-      ],
-    },
-    /*
-chrome-extension://efaidnbmnnnibpcajpcglclefindmkaj/https://www.mathinenglish.com/PWP/Grade6Discount.pdf
-Grade 6 Discount Word Problems
-*/
-    {
-      question: {
-        textFull:
-          "The price of a motorbike is $1,500. How much do you need to pay if you get a 10% discount?",
-        textShort: "qsinglediscount",
-      },
-      options: [
-        {
-          textFull: "$1,350",
-          textShort: "v1350", // ANSWER
+          textFull: "do not know",
+          textShort: "dont-know",
         },
         {
-          textFull: "$1,000",
-          textShort: "v1000",
-        },
-        {
-          textFull: "$1,400",
-          textShort: "v1400",
-        },
-        {
-          textFull: "$1,250",
-          textShort: "v1250",
+          textFull: "refuse to answer",
+          textShort: "refuse-to-answer",
         },
       ],
     },
     {
       question: {
         textFull:
-          "Mike and Mandy bought the same item. Mike paid $15,000. Mandy got discount and paid $3,000 less than Mike. How much discount did Mandy get?",
-        textShort: "qfinddiscount",
+          "Imagine that the interest rate on your savings account was 1% per year and inflation was 2% per year. After 1 year, would you be able to buy more than, exactly the same as, or less than today with the money in this account?",
+        textShort: "qInflation",
       },
       options: [
         {
-          textFull: "33%",
-          textShort: "v33p",
+          textFull: "more than",
+          textShort: "more-than",
         },
         {
-          textFull: "30%",
-          textShort: "v30p",
+          textFull: "exactly the same",
+          textShort: "exactly-same",
         },
         {
-          textFull: "15%",
-          textShort: "v15p",
+          textFull: "less than",
+          textShort: "less-than",
         },
         {
-          textFull: "20%",
-          textShort: "v20p", // ANSWER
+          textFull: "do not know",
+          textShort: "dont-know",
+        },
+        {
+          textFull: "refuse to answer",
+          textShort: "refuse-to-answer",
+        },
+      ],
+    },
+    {
+      question: {
+        textFull:
+          "Do you think that the following statement is true or false? ‘Buying a single company stock usually provides a safer return than a stock mutual fund.’",
+        textShort: "qRiskDiversification",
+      },
+      options: [
+        {
+          textFull: "true",
+          textShort: "true",
+        },
+        {
+          textFull: "false",
+          textShort: "false",
+        },
+        {
+          textFull: "do not know",
+          textShort: "dont-know",
+        },
+        {
+          textFull: "refuse to answer",
+          textShort: "refuse-to-answer",
         },
       ],
     },

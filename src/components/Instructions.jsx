@@ -37,7 +37,7 @@ const Instructions = () => {
     <ThemeProvider theme={theme}>
       <Grid container style={styles.root}>
         <Grid item xs={12}>
-          <Typography variant="h4">Instructions</Typography>
+          <Typography variant="h4">Instructions Continued</Typography>
           <hr
             style={{
               color: "#ea3433",
@@ -50,8 +50,8 @@ const Instructions = () => {
           <Typography paragraph>
             <b>Survey questions: </b>
             After making your money choice selections, you will be presented
-            with two short surveys of questions to get a better undestanding of
-            yourself and then a screen to submit your final answers.{" "}
+            with two short surveys of questions to learn more about you and then
+            a screen to submit your final answers.{" "}
             <b>
               You must click on the button to submit your final answers to get
               paid.
@@ -59,9 +59,9 @@ const Instructions = () => {
           </Typography>
           <Typography paragraph>
             After you submit your answers, you will be presented with a more
-            detailed explanation of the theory behind this research and its
-            goals along with a section to submit feedback. The researches
-            greatly appreciate any feedback you are willing to share.
+            detailed explanation of the goals behind this research along with a
+            section to submit feedback. The researchers greatly appreciate any
+            feedback you are willing to share.
           </Typography>
           <img
             width="100%"

@@ -53,15 +53,17 @@ export function Consent() {
           Harrison, Daniel Reichman
         </Typography>
         <Typography paragraph>
-          <b>Contact Information: </b>
-          <a href={`mailto:pncordone@wpi.edu`}>pncordone@wpi.edu</a>
+          <b>Contact Information: </b>Peter Cordone
+          <a href={`mailto:pncordone@wpi.edu?subject=%5bSurvey%20Consent%5d`}>
+            pncordone@wpi.edu
+          </a>
         </Typography>
         <Typography paragraph>
           <b>Title of Research Study: </b>Choices About Money
         </Typography>
         <Typography paragraph>
           <b>Sponsor: </b>
-          <a href={`mailto:dreichman@wpi.edu`}>
+          <a href={`mailto:dreichman@wpi.edu?subject=%5bSurvey%20Consent%5d`}>
             Prof. Daniel Reichman (dreichman@wpi.edu)
           </a>
         </Typography>
@@ -110,7 +112,7 @@ export function Consent() {
         </Typography>
         <Typography paragraph>
           <b> Compensation or treatment in the event of injury:</b> There is
-          minimal or no risk of injury in tis research so there is no
+          minimal or no risk of injury in this research so there is no
           compensation available for injury from the researchers. You do not
           give up any of your legal rights by signing this statement.
         </Typography>
@@ -163,7 +165,11 @@ export function Consent() {
                 <br />
                 Tel: {phone}
                 <br />
-                Email: &lt;<a href={`mailto:${email}`}>{email}</a>&gt;
+                Email: &lt;
+                <a href={`mailto:${email}?subject=%5bSurvey%20Consent%5d`}>
+                  {email}
+                </a>
+                &gt;
                 <br />
               </span>
             </Typography>
@@ -175,9 +181,10 @@ export function Consent() {
           any loss of benefits to which you may otherwise be entitled. You may
           decide to stop participating in the research at any time without
           penalty or loss of other benefits; however, you will not receive the
-          compensation of $10 USD unless you complete the survey in its
-          entirety. The project investigators retain the right to cancel or
-          postpone the experimental procedures at any time they see fit.
+          compensation of {process.env.REACT_APP_PAYMENT_AMOUT} unless you
+          complete the survey in its entirety. The project investigators retain
+          the right to cancel or postpone the experimental procedures at any
+          time they see fit.
         </Typography>
       </React.Fragment>
     );

@@ -73,23 +73,22 @@ const Debrief = () => {
             the shorter term option accumulate over time. Decisions like these
             are malleable and discounting can be counteracted by how attention
             is focused, how a reference point is framed, and how time is
-            represented. Visualization offers a powerful tool that influence all
-            three of these factors.
+            represented. Visualization offers a powerful tool that influences
+            all three of these factors.
           </Typography>
           <Typography paragraph>
             This experiment seeks to examine how visualization can be designed
             to influence people in making long term decisions differently. For
             this purpose, participants in this experiment are randomly assigned
             to be presented with word choices or different versions of graphical
-            displays, such as a bar graph. In particluar, we examine how space
+            displays, such as a bar graph. In particular, we examine how space
             can be used in the time (horizontal) axis to increase the likelihood
             of choosing the longer-term option.
           </Typography>
           <Typography paragraph>
             For more information about this research or about the rights of
             research participants, or if you would like to get in touch with us
-            for any other reason the contact information from the consent form
-            is repeated below:
+            for any other reason the contact information is below:
           </Typography>
           {[
             {
@@ -115,7 +114,10 @@ const Debrief = () => {
                   <br />
                   Tel: {phone}
                   <br />
-                  Email: &lt;<a href={`mailto:${email}`}>{email}</a>&gt;
+                  Email:{" "}
+                  <a href={`mailto:${email}?subject=%5bSurvey Feedback%5d`}>
+                    {email}
+                  </a>
                   <br />
                 </span>
               </Typography>
@@ -123,16 +125,18 @@ const Debrief = () => {
           })}
           <Typography paragraph>
             <b>
-              Please remember to enter the code C1KQNGZK into Prolific before
-              you click exit or you will not be paid $3 USD.
+              Please remember to enter the code{" "}
+              {process.env.REACT_APP_PROLIFIC_CODE} into Prolific before you
+              click submit feedback & exit so we can pay you{" "}
+              {process.env.REACT_APP_PAYMENT_AMOUT}.
             </b>
           </Typography>
         </Grid>
         <Grid item xs={12}>
           <Typography paragraph>
             We hope you have enjoyed taking this survey and welcome any feedback
-            or questions by filling out the text box below. If you encountered
-            any technical problems please let us know.
+            or questions by filling out the text box below and clicking submit &
+            exit.
           </Typography>
         </Grid>
         <Grid item xs={12}>
@@ -170,7 +174,7 @@ const Debrief = () => {
               }}
             >
               {" "}
-              Exit{" "}
+              Submit Feedback & Exit{" "}
             </Button>
           </Box>
         </Grid>
