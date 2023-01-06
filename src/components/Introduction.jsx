@@ -107,20 +107,19 @@ const Introduction = () => {
         <Typography paragraph>
           You will be presented with a series of hypothetical choices of
           receiving two different amounts of money at two different times. Both
-          amounts are in United States Dollars and both times are the delay in
-          months from now.{" "}
+          amounts are in United States Dollars (USD) and both times are the
+          delay in months from now.{" "}
           <b>
-            All amounts and delay times are hypothetical. You will not be
-            compensated the amounts in the questions. You will be compensated{" "}
-            {process.env.REACT_APP_PAYMENT_AMOUT} upon completion of all the
-            questions in this survey and the review of your answers by the
-            researchers. The researches will review your answers in a timely
-            manner and initiate a credit of{" "}
-            {process.env.REACT_APP_PAYMENT_AMOUT} to your Prolific account.
+            All amounts and delay times in the questions are hypothetical. We do
+            ask that you imagine to the best of your ability that you are in
+            this situation and need to make a choice between the two payments.
+            These are very realistic choices that can present themselves to
+            anyone, so for each question, please think which option you would
+            choose if you were truly in this situation.
           </b>
         </Typography>
         <Typography paragraph>
-          The amount and delay time for each option will be represented as a{" "}
+          The amount and delay time for each option will be represented as{" "}
           {description}. You will make your choice by clicking on one of the{" "}
           {clickDesc}.
         </Typography>
@@ -155,7 +154,7 @@ const Introduction = () => {
         );
       case ViewType.barchart:
         return instructions(
-          "bar chart",
+          "a bar chart",
           "bars",
           barchartGif,
           "Bar chart button example",
@@ -273,7 +272,7 @@ const Introduction = () => {
     <ThemeProvider theme={theme}>
       <Grid container style={styles.root} justifyContent="center">
         <Grid item xs={12}>
-          <Typography variant="h4">Introduction</Typography>
+          <Typography variant="h4">Instructions</Typography>
           <hr
             style={{
               color: "#ea3433",

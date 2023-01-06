@@ -1,106 +1,91 @@
 export const POST_SURVEY_QUESTIONS = {
   promptShort: "fincanialLit",
-  prompt:
-    "The following questions try to assess your financial literacy. Please answer these to the best of your knowledge.",
+  prompt: "Please answer these to the best of your knowledge.",
   questionsType: "multiple choice",
   questions: [
     /*
-      https://www.sciencedirect.com/science/article/pii/S0378426617300316?casa_token=5v9mS3YD8twAAAAA:Bw8be0MPJq7r-pS-HcC23y-JMFMMKQ_sNM_ANNNLJP0-W-Gp3INZjY2Y22s7od6YVu_ntp07
-      Financial literacy, present bias and alternative mortgage products
-*/
+      A. Lusardi and O. S. Mitchell, “Planning and Financial Literacy: How Do Women Fare?,” The American Economic Review, vol. 98, no. 2, pp. 413–417, 2008.
+    */
     {
       question: {
         textFull:
-          "Suppose a 15 year mortgage and a 30 year mortgage have the same Annual Percentage Rate and the same amount borrowed. The total amount repaid will be:",
-        textShort: "q15vs30",
+          "Suppose you had $100 in a savings account and the interest rate was 2% per year. After 5 years, how much do you think you would have in the account if you left the money to grow?",
+        textShort: "qNumeracy",
       },
       options: [
         {
-          textFull: "Higher for the 15 year mortgage",
-          textShort: "v15+",
+          textFull: "more than $102",
+          textShort: ">$102",
         },
         {
-          textFull: "Higher for the 30 year mortgage",
-          textShort: "v30+",
+          textFull: "exactly $102",
+          textShort: "=$102",
         },
         {
-          textFull: "The total amount repaid will be the same",
-          textShort: "v15=30",
+          textFull: "less than $102",
+          textShort: "<$102",
+        },
+        {
+          textFull: "do not know",
+          textShort: "dont-know",
+        },
+        {
+          textFull: "refuse to answer",
+          textShort: "refuse-to-answer",
         },
       ],
     },
     {
       question: {
         textFull:
-          "Suppose you owe $50,000 on a mortgage at an Annual Percentage Rate of 6%. If you didn’t make any payments on this mortgage how much would you owe in total after one year?",
-        textShort: "q50k6p",
+          "Imagine that the interest rate on your savings account was 1% per year and inflation was 2% per year. After 1 year, would you be able to buy more than, exactly the same as, or less than today with the money in this account?",
+        textShort: "qInflation",
       },
       options: [
         {
-          textFull: "Less than $50,000",
-          textShort: "v<50k",
+          textFull: "more than",
+          textShort: "more-than",
         },
         {
-          textFull: "$50,000 – $54,999",
-          textShort: "v50kto55k",
+          textFull: "exactly the same",
+          textShort: "exactly-same",
         },
         {
-          textFull: "$55,000 – $59,999",
-          textShort: "v55kto60k",
+          textFull: "less than",
+          textShort: "less-than",
         },
         {
-          textFull: "$60,000 – $64,999",
-          textShort: "v60kto65k",
+          textFull: "do not know",
+          textShort: "dont-know",
         },
         {
-          textFull: "More than $65,000",
-          textShort: "v65k+",
+          textFull: "refuse to answer",
+          textShort: "refuse-to-answer",
         },
       ],
     },
     {
       question: {
         textFull:
-          "Suppose you owe $100,000 on a mortgage at an Annual Percentage Rate of 5%. If you didn’t make any payments on this mortgage how much would you owe in total after five years?",
-        textShort: "q100k5p",
+          "Do you think that the following statement is true or false? ‘Buying a single company stock usually provides a safer return than a stock mutual fund.’",
+        textShort: "qRiskDiversification",
       },
       options: [
         {
-          textFull: "Less than $120,000",
-          textShort: "v<120k",
+          textFull: "true",
+          textShort: "true",
         },
         {
-          textFull: "Between $120,000 and $125,000",
-          textShort: "v120kto125k",
+          textFull: "false",
+          textShort: "false",
         },
         {
-          textFull: "More than $125,000",
-          textShort: "v125k+",
-        },
-      ],
-    },
-    {
-      question: {
-        textFull:
-          "Suppose you owe $200,000 on a mortgage with at an Annual Percentage Rate of 5%. If you made annual payments of $10,000 per year how long would it take to repay the whole mortgage?",
-        textShort: "q200k5p",
-      },
-      options: [
-        {
-          textFull: "Less than 20 years",
-          textShort: "v<20y",
+          textFull: "do not know",
+          textShort: "dont-know",
         },
         {
-          textFull: "Between 20 and 30 years",
-          textShort: "v20yto30y",
-        },
-        {
-          textFull: "Between 30 and 40 years",
-          textShort: "v30yto40y",
-        },
-        {
-          textFull: "The mortgage would never be repaid",
-          textShort: "vnever",
+          textFull: "refuse to answer",
+          textShort: "refuse-to-answer",
         },
       ],
     },
