@@ -327,7 +327,6 @@ const Introduction = () => {
               style={styles.button}
               onClick={() => {
                 if (
-                  treatment.viewType === ViewType.word &&
                   choice !== AmountType.earlierAmount &&
                   choice !== AmountType.laterAmount
                 ) {
