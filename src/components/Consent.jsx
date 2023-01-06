@@ -165,11 +165,10 @@ export function Consent() {
                 <br />
                 Tel: {phone}
                 <br />
-                Email: &lt;
+                Email:
                 <a href={`mailto:${email}?subject=%5bSurvey%20Consent%5d`}>
                   {email}
                 </a>
-                &gt;
                 <br />
               </span>
             </Typography>
