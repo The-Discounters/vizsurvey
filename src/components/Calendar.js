@@ -52,6 +52,7 @@ export function Calendar() {
     };
   }
   */
+  let selection = { d: -1, a: -1 };
 
   const result = (
     <div>
@@ -85,7 +86,7 @@ export function Calendar() {
             const month = [
               [1, 2, { d: 3, a: 100 }, 4, 5, 6, 7],
               [8, 9, 10, 11, 12, 13, 14],
-              [15, 16, 17, 18, 19, 20, 21],
+              [15, 16, { d: 17, a: 200 }, 18, 19, 20, 21],
               [22, 23, 24, 25, 26, 27, 28],
               [29, 30, 31, -1, -2, -3, -4],
             ];
@@ -147,8 +148,38 @@ export function Calendar() {
                 .style("width", boxLength)
                 .style("height", boxLength)
                 .on("click", (d) => {
-                  console.log(d.target.__data__);
+                  console.log(
+                    "click: target: " + JSON.stringify(d.target.__data__)
+                  );
+                  if (isNaN(d.target.__data__)) {
+                    console.log("click: setselection");
+                    selection = d.target.__data__;
+                    console.log(
+                      "click: selection: " + JSON.stringify(selection)
+                    );
+                    select(this).style("background-color", "rgb(200,200,200)");
+                  }
                   // TODO add selection mechanism
+                })
+                .on("mouseover", function (d) {
+                  console.log(
+                    "mouseover: target: " + JSON.stringify(d.target.__data__)
+                  );
+                  if (isNaN(d.target.__data__)) {
+                    select(this).style("background-color", "rgb(200,200,200)");
+                  }
+                })
+                .on("mouseout", function (d) {
+                  console.log(
+                    "mouseout: target: " + JSON.stringify(d.target.__data__)
+                  );
+                  console.log("mouseout: selection: " + selection.d);
+                  if (
+                    isNaN(d.target.__data__) &&
+                    d.target.__data__.d != selection.d
+                  ) {
+                    select(this).style("background-color", "rgb(255,255,255)");
+                  }
                 })
                 .each(function (d) {
                   const td = select(this);
@@ -161,7 +192,10 @@ export function Calendar() {
                       .style("width", boxLength)
                       .style("height", "10px")
                       .style("top", "-33px")
-                      .style("position", "relative");
+                      .style("position", "relative")
+                      .on("click", () => {})
+                      .on("mouseover", function () {})
+                      .on("mouseout", function () {});
                     td.append("div")
                       .text(function (d) {
                         return "$" + d.a;
@@ -174,7 +208,9 @@ export function Calendar() {
                   } else {
                     td.append("div")
                       .text(function (d) {
-                        return d > 0 ? d : "";
+                        if (!d) return "";
+                        if (d < 1) return "";
+                        return d;
                       })
                       .style("width", boxLength)
                       .style("height", boxLength);
