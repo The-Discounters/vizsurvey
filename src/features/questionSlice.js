@@ -52,6 +52,7 @@ export const questionSlice = createSlice({
     theEndShownTimestamp: null,
     theEndCompletedTimestamp: null,
     treatments: [],
+    instructionTreatment: null,
     answers: [],
     currentQuestionIdx: 0,
     highup: undefined,
@@ -149,7 +150,9 @@ export const questionSlice = createSlice({
     },
     loadTreatment(state) {
       state.status = StatusType.Fetching;
-      state.treatments = io.loadTreatment(state.treatmentId);
+      const { questions, instructions } = io.loadTreatment(state.treatmentId);
+      state.treatments = questions;
+      state.instructionTreatment = instructions[0];
       state.status = qe.nextStatus(state, false);
       return state;
     },
@@ -346,6 +349,7 @@ export const questionSlice = createSlice({
       state.purposeSurveyQuestionsCompletedTimestamp = null;
       state.debriefShownTimestamp = null;
       state.treatments = [];
+      state.instructionTreatment = null;
       state.answers = [];
       state.currentQuestionIdx = 0;
       state.highup = undefined;
@@ -423,6 +427,9 @@ export const getCurrentQuestionIndex = (state) =>
 
 export const fetchCurrentTreatment = (state) =>
   qe.currentTreatment(state.questions);
+
+export const getInstructionTreatment = (state) =>
+  state.questions.instructionTreatment;
 
 export const fetchAllTreatments = (state) => state.questions.allTreatments;
 
