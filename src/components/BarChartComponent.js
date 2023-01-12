@@ -109,6 +109,7 @@ export const drawBarChart = ({
     .selectAll(".x-axis-major")
     .data([null])
     .join("g")
+    .attr("font-weight", 700)
     .attr(
       "transform",
       `translate(${leftOffSetUC / 2},${barAreaHeightUC + bottomOffSetUC / 2})`
@@ -170,6 +171,7 @@ export const drawBarChart = ({
     .data([null])
     .join("g")
     .attr("class", "y-axis")
+    .attr("font-weight", 700)
     .attr("transform", `translate(${leftOffSetUC / 2},${bottomOffSetUC / 2})`)
     .call(axisLeft(y).tickValues(yTickValues).tickFormat(format("$,.0f")));
 
@@ -244,7 +246,8 @@ export const drawBarChart = ({
     .attr("y", (d) => y(d.amount))
     .attr("text-anchor", "middle")
     .text((d) => format("$,.0f")(d.amount))
-    .attr("font-size", "1.2em");
+    .attr("font-size", "1.2em")
+    .attr("font-weight", 700);
 
   chart
     .selectAll(".later-amount-label")
@@ -263,7 +266,8 @@ export const drawBarChart = ({
     .attr("y", (d) => y(d.amount))
     .attr("text-anchor", "middle")
     .text((d) => format("$,.0f")(d.amount))
-    .attr("font-size", "1.2em");
+    .attr("font-size", "1.2em")
+    .attr("font-weight", 700);
 
   var dragHandler = drag().on("drag", function (d) {
     if (

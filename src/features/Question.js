@@ -22,6 +22,7 @@ export function Question({
   heightIn,
   showMinorTicks,
   comment,
+  instructionGifPrefix,
 }) {
   return {
     treatmentId: treatmentId,
@@ -47,6 +48,7 @@ export function Question({
     heightIn: heightIn,
     showMinorTicks: showMinorTicks,
     comment: comment,
+    instructionGifPrefix: instructionGifPrefix,
     highup: null,
     lowdown: null,
   };
