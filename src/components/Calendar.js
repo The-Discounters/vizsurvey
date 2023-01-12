@@ -84,7 +84,7 @@ export function Calendar() {
         ref={useD3(
           (table) => {
             const month = [
-              [1, 2, { d: 3, a: 100 }, 4, 5, 6, 7],
+              [1, 2, { d: 3, a: 100, k: "earlierAmount" }, 4, 5, 6, 7],
               [8, 9, 10, 11, 12, 13, 14],
               [15, 16, { d: 17, a: 200 }, 18, 19, 20, 21],
               [22, 23, 24, 25, 26, 27, 28],
@@ -153,11 +153,22 @@ export function Calendar() {
                   );
                   if (isNaN(d.target.__data__)) {
                     console.log("click: setselection");
+                    if (d.target.__data__.k !== selection.k) {
+                      if (selection.k === "earlierAmount") {
+                        body
+                          .selectAll("#earlierAmount")
+                          .style("background-color", "steelblue");
+                      } else {
+                        body
+                          .selectAll("#laterAmount")
+                          .style("background-color", "steelblue");
+                      }
+                    }
                     selection = d.target.__data__;
                     console.log(
                       "click: selection: " + JSON.stringify(selection)
                     );
-                    select(this).style("background-color", "rgb(200,200,200)");
+                    select(this).style("background-color", "lightblue");
                   }
                   // TODO add selection mechanism
                 })
@@ -166,7 +177,7 @@ export function Calendar() {
                     "mouseover: target: " + JSON.stringify(d.target.__data__)
                   );
                   if (isNaN(d.target.__data__)) {
-                    select(this).style("background-color", "rgb(200,200,200)");
+                    select(this).style("background-color", "lightblue");
                   }
                 })
                 .on("mouseout", function (d) {
@@ -178,7 +189,7 @@ export function Calendar() {
                     isNaN(d.target.__data__) &&
                     d.target.__data__.d != selection.d
                   ) {
-                    select(this).style("background-color", "rgb(255,255,255)");
+                    select(this).style("background-color", "steelblue");
                   }
                 })
                 .each(function (d) {
@@ -205,6 +216,8 @@ export function Calendar() {
                       .style("top", "-5px")
                       .style("position", "relative")
                       .style("font-size", "25px");
+                    if (d.k === "earlierAmount") td.attr("id", "earlierAmount");
+                    else td.attr("id", "laterAmount");
                   } else {
                     td.append("div")
                       .text(function (d) {

@@ -346,9 +346,8 @@ describe("vizsurvey", () => {
 });
 
 function calendar(id, treatmentNum, treatmentName) {
-  cy.get("#later-" + id).click();
-  cy.get("#later-" + id).click();
-  cy.get("#later-" + id).click();
+  cy.get("#earlierAmount").click();
+  cy.get("#laterAmount").click();
   postsurvey([
     treatmentNum +
       ",1,calendar" +
