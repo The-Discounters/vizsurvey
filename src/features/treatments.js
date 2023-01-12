@@ -76,7 +76,7 @@ export const TREATMENTS_DEV_CSV = `treatment_id,position,view_type,interaction,v
 21,6,barchart,none,none,45,2,,70,18,,70,19,600,300,,,,,,,no,,Barchart MEL question experiment 3 of date/delay paper half the screen.
 21,7,barchart,none,none,66,6,,110,24,,110,25,600,300,,,,,,,no,,Barchart MEL question experiment 3 of date/delay paper.
 21,8,barchart,none,none,77,3,,118,16,,120,17,600,300,,,,,,,no,,Barchart MEL question experiment 3 of date/delay paper half the screen.
-21,instructions,barchart,none,none,300,2,,700,7,,1000,7,600,300,,,,,,,no,introduction-barchart-no-ticks-none-right,Barchart MEL question experiment 3 of date/delay paper half the screen.
+21,instructions,barchart,none,none,300,2,,700,7,,1000,8,600,300,,,,,,,no,introduction-barchart-no-ticks-none-right,Barchart MEL question experiment 3 of date/delay paper half the screen.
 22,1,barchart,none,none,350,4,,430,13,,430,27,1200,300,,,,,,,no,,Barchart MEL question experiment 1 date/delay paper full screen.
 22,2,barchart,none,none,490,2,,700,18,,700,37,1200,300,,,,,,,no,,Barchart MEL question experiment 1 date/delay paper full screen.
 22,3,barchart,none,none,720,6,,1390,24,,1390,49,1200,300,,,,,,,no,,Barchart MEL question experiment 1 date/delay paper full screen.
@@ -85,7 +85,7 @@ export const TREATMENTS_DEV_CSV = `treatment_id,position,view_type,interaction,v
 22,6,barchart,none,none,45,2,,70,18,,70,37,1200,300,,,,,,,no,,Barchart MEL question experiment 3 of date/delay paper full screen.
 22,7,barchart,none,none,66,6,,110,24,,110,49,1200,300,,,,,,,no,,Barchart MEL question experiment 3 of date/delay paper full screen.
 22,8,barchart,none,none,77,3,,118,16,,120,33,1200,300,,,,,,,no,,Barchart MEL question experiment 3 of date/delay paper full screen.
-22,instructions,barchart,none,none,300,2,,700,7,,1000,33,1200,300,,,,,,,no,introduction-barchart-no-ticks-right,Barchart MEL question experiment 3 of date/delay paper full screen.
+22,instructions,barchart,none,none,300,2,,700,7,,1000,15,1200,300,,,,,,,no,introduction-barchart-no-ticks-right,Barchart MEL question experiment 3 of date/delay paper full screen.
 `;
 
 export const TREATMENTS_PROD_CSV = `treatment_id,position,view_type,interaction,variable_amount,amount_earlier,time_earlier,date_earlier,amount_later,time_later,date_later,max_amount,max_time,horizontal_pixels,vertical_pixels,left_margin_width_in,bottom_margin_height_in,graph_width_in,graph_height_in,width_in,height_in,show_minor_ticks,instruction_gif_prefix,comment
@@ -106,7 +106,7 @@ export const TREATMENTS_PROD_CSV = `treatment_id,position,view_type,interaction,
 2,6,barchart,none,none,45,2,,70,18,,70,19,600,300,,,,,,,no,,Barchart MEL question experiment 3 of date/delay paper half the screen.
 2,7,barchart,none,none,66,6,,110,24,,110,25,600,300,,,,,,,no,,Barchart MEL question experiment 3 of date/delay paper.
 2,8,barchart,none,none,77,3,,118,16,,120,17,600,300,,,,,,,no,,Barchart MEL question experiment 3 of date/delay paper half the screen.
-2,instructions,barchart,none,none,300,2,,700,7,,1000,7,600,300,,,,,,,no,introduction-barchart-no-ticks-none-right,Barchart MEL question experiment 3 of date/delay paper half the screen.
+2,instructions,barchart,none,none,300,2,,700,7,,1000,8,600,300,,,,,,,no,introduction-barchart-no-ticks-none-right,Barchart MEL question experiment 3 of date/delay paper half the screen.
 3,1,barchart,none,none,350,4,,430,13,,430,27,1200,300,,,,,,,no,,Barchart MEL question experiment 1 date/delay paper full screen.
 3,2,barchart,none,none,490,2,,700,18,,700,37,1200,300,,,,,,,no,,Barchart MEL question experiment 1 date/delay paper full screen.
 3,3,barchart,none,none,720,6,,1390,24,,1390,49,1200,300,,,,,,,no,,Barchart MEL question experiment 1 date/delay paper full screen.
@@ -115,5 +115,5 @@ export const TREATMENTS_PROD_CSV = `treatment_id,position,view_type,interaction,
 3,6,barchart,none,none,45,2,,70,18,,70,37,1200,300,,,,,,,no,,Barchart MEL question experiment 3 of date/delay paper full screen.
 3,7,barchart,none,none,66,6,,110,24,,110,49,1200,300,,,,,,,no,,Barchart MEL question experiment 3 of date/delay paper full screen.
 3,8,barchart,none,none,77,3,,118,16,,120,33,1200,300,,,,,,,no,,Barchart MEL question experiment 3 of date/delay paper full screen.
-3,instructions,barchart,none,none,300,2,,700,7,,1000,33,1200,300,,,,,,,no,introduction-barchart-no-ticks-right,Barchart MEL question experiment 3 of date/delay paper full screen.
+3,instructions,barchart,none,none,300,2,,700,7,,1000,15,1200,300,,,,,,,no,introduction-barchart-no-ticks-right,Barchart MEL question experiment 3 of date/delay paper full screen.
 `;

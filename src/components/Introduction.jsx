@@ -40,6 +40,16 @@ const Introduction = () => {
   const [showNextPrevious, setShowNextPrevious] = useState(false);
   const status = useSelector(getStatus);
 
+  const { totalSVGWidth, totalSVGHeight, totalUCWidth, totalUCHeight } =
+    calcScreenValues(
+      instructionTreatment.horizontalPixels,
+      instructionTreatment.verticalPixels,
+      instructionTreatment.leftMarginWidthIn,
+      instructionTreatment.graphWidthIn,
+      instructionTreatment.bottomMarginHeightIn,
+      instructionTreatment.graphHeightIn
+    );
+
   useEffect(() => {
     dispatch(introductionShown(dateToState(DateTime.now())));
     setChoice("");
@@ -85,14 +95,6 @@ const Introduction = () => {
     const randIndex = Math.floor(Math.random() * 2);
     const randAmountType = AmountType[Object.keys(AmountType)[randIndex + 1]];
 
-    // return `introduction-${treatment.viewType}-${
-    //   treatment.viewType === ViewType.barchart
-    //     ? treatment.showMinorTicks
-    //       ? "ticks-"
-    //       : "no-ticks-"
-    //     : ""
-    // }${randAmountType}.gif`;
-
     return `${instructionTreatment.instructionGifPrefix}-${randAmountType}.gif`;
   };
 
@@ -126,7 +128,12 @@ const Introduction = () => {
           {clickDesc}.
         </Typography>
         <Typography paragraph>
-          <img src={gifFilename()} alt={gifAltText}></img>
+          <img
+            src={gifFilename()}
+            alt={gifAltText}
+            width={totalSVGWidth}
+            height={totalSVGHeight}
+          ></img>
         </Typography>
         <Typography paragraph>
           <b>Try it out below: </b>
@@ -192,16 +199,6 @@ const Introduction = () => {
   };
 
   const vizTry = () => {
-    const { totalSVGWidth, totalSVGHeight, totalUCWidth, totalUCHeight } =
-      calcScreenValues(
-        instructionTreatment.horizontalPixels,
-        instructionTreatment.verticalPixels,
-        instructionTreatment.leftMarginWidthIn,
-        instructionTreatment.graphWidthIn,
-        instructionTreatment.bottomMarginHeightIn,
-        instructionTreatment.graphHeightIn
-      );
-
     switch (instructionTreatment.viewType) {
       case ViewType.word:
         return (
