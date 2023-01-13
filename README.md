@@ -1,10 +1,10 @@
 # What is VizSurvey
 
-I created VisSurvey out of a need to have a tool with survey questions with an accompanying visualization that could be data driven for my masters thesis reasearch. I had originally investigated using survey monkey and other tools; however, they lack the ability to embed visualizations or could't find any with a REST API that would allow me to make the visualizations driven off the survey questions, so I wrote VizHub.
+We created VizSurvey out of a need to have a tool with survey questions with an accompanying visualization that could be data driven for my masters thesis reasearch. I had originally investigated using survey monkey and other tools; however, they lack the ability to embed visualizations or could't find any with a REST API that would allow me to make the visualizations driven off the survey questions, so I wrote VizHub.
 
 The application is written in react using redux. Treatments are configured in CSV format in one of the code files. The application retloads the treatments for the survey questionaire data, and renders the questions in a click through format making the data avialable to the react component that wraps the D3 visualization.
 
-I hope you find it useful.
+We hope you find it useful.
 
 # Architecture
 
