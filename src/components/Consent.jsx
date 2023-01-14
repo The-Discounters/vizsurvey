@@ -96,7 +96,7 @@ export function Consent() {
         </Typography>
         <Typography paragraph>
           <b>Benefits to research participants and others: </b> You will learn
-          more about the goal of this reasearch and how people make decisions
+          more about the goal of this research and how people make decisions
           about money at the end.
         </Typography>
         <Typography paragraph>
@@ -107,7 +107,7 @@ export function Consent() {
           Worcester Polytechnic Institute Institutional Review Board (WPI IRB)
           will be able to inspect and have access to confidential data that
           identify you by name. Any publication or presentation of the data will
-          not identify you. Your prolific ID will be recorded in the data soley
+          not identify you. Your prolific ID will be recorded in the data solely
           for the purpose of paying you and then will be deleted from the data.
         </Typography>
         <Typography paragraph>
