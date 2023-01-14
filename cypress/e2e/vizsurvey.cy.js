@@ -125,6 +125,8 @@ function demographic() {
 
 function answerMELForm(word = true, tickAmount = 1000) {
   let waitAmount = 10;
+  cy.get("#buttonNext").should("be.disabled");
+  cy.tick(500);
   if (word) {
     cy.get("#earlierAmount").should(
       "have.css",
@@ -171,8 +173,6 @@ function answerMELForm(word = true, tickAmount = 1000) {
 }
 
 function introduction(treatmentId) {
-  cy.get("#buttonNext").should("be.disabled");
-  cy.tick(500);
   answerMELForm(treatmentId === 1 || treatmentId === 20 || treatmentId === 5);
 }
 
@@ -316,7 +316,7 @@ describe("vizsurvey", () => {
   it("calendar word", () => {
     visitTreatment(5, 1280, 720);
     cy.tick(4000);
-    calendar("day", "5", "Word");
+    answerMELForm();
   });
   /*
   it("survey invalid", () => {

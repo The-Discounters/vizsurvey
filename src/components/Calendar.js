@@ -55,6 +55,7 @@ export function Calendar() {
     };
   }
   */
+  const [disableSubmit, setDisableSubmit] = React.useState(true);
   let selection = { d: -1, a: -1 };
 
   const result = (
@@ -177,6 +178,7 @@ export function Calendar() {
                         }
                       }
                       selection = d.target.__data__;
+                      setDisableSubmit(false);
                       console.log(
                         "click: selection: " + JSON.stringify(selection)
                       );
@@ -208,6 +210,7 @@ export function Calendar() {
                     const td = select(this);
                     console.log(d);
                     if (isNaN(d)) {
+                      td.style("background-color", "steelblue");
                       td.append("div")
                         .text(function (d) {
                           return d.d;
@@ -305,6 +308,7 @@ export function Calendar() {
       <Grid item xs={12} style={{ margin: 0 }}>
         <Box display="flex" justifyContent="center">
           <Button
+            id="buttonNext"
             variant="contained"
             color="secondary"
             disableRipple
@@ -325,7 +329,7 @@ export function Calendar() {
               }*/
               dispatch(nextQuestion());
             }}
-            // disabled={disableSubmit}
+            disabled={disableSubmit}
           >
             {" "}
             Next{" "}
