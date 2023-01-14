@@ -71,6 +71,15 @@ export function Calendar() {
     }
   }, [choice]);
 
+  const onClickCallback = (value) => {
+    dispatch(
+      answer({
+        choice: value,
+        choiceTimestamp: dateToState(DateTime.now()),
+      })
+    );
+  };
+
   const result = (
     <div>
       <Grid container style={styles.root} justifyContent="center">
@@ -112,7 +121,7 @@ export function Calendar() {
                 timeEarlier: q.timeEarlier,
                 amountLater: q.amountLater,
                 timeLater: q.timeLater,
-                // onClickCallback: onClickCallback,
+                onClickCallback: onClickCallback,
                 // choice: choice,
                 horizontalPixels: q.horizontalPixels,
                 verticalPixels: q.verticalPixels,

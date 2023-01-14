@@ -3,7 +3,7 @@ import { select /*, format, scaleLinear, scaleBand, range, drag */ } from "d3";
 // import { DateTime } from "luxon";
 // import { answer } from "../features/questionSlice";
 // import { ViewType } from "../features/ViewType";
-// import { AmountType } from "../features/AmountType";
+import { AmountType } from "../features/AmountType";
 // import { InteractionType } from "../features/InteractionType";
 // import { dateToState } from "../features/ConversionUtil";
 
@@ -13,7 +13,7 @@ import { select /*, format, scaleLinear, scaleBand, range, drag */ } from "d3";
 
 export const drawCalendar = ({
   table: table,
-  setDisableSubmit: setDisableSubmit,
+  // setDisableSubmit: setDisableSubmit,
   // question: q,
   // monthDate: monthDate,
   // tableWidthIn: tableWidthIn,
@@ -23,6 +23,7 @@ export const drawCalendar = ({
   // numIconRow: numIconRow,
   // dragCallback: dragCallback,
   // dispatchCallback: dispatchCallback,
+  onClickCallback: onClickCallback,
 }) => {
   let selection = { d: -1, a: -1 };
   /*
@@ -104,17 +105,19 @@ export const drawCalendar = ({
           console.log("click: setselection");
           if (d.target.__data__.k !== selection.k) {
             if (selection.k === "earlierAmount") {
+              onClickCallback(AmountType.earlierAmount);
               body
                 .selectAll("#earlierAmount")
                 .style("background-color", "steelblue");
             } else {
+              onClickCallback(AmountType.laterAmount);
               body
                 .selectAll("#laterAmount")
                 .style("background-color", "steelblue");
             }
           }
           selection = d.target.__data__;
-          setDisableSubmit(false);
+          // setDisableSubmit(false);
           console.log("click: selection: " + JSON.stringify(selection));
           select(this).style("background-color", "lightblue");
         }
