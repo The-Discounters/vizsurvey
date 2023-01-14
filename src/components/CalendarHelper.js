@@ -1,28 +1,195 @@
-import * as d3 from "d3";
-import { select, format, scaleLinear, scaleBand, range, drag } from "d3";
-import { DateTime } from "luxon";
-import { answer } from "../features/questionSlice";
-import { ViewType } from "../features/ViewType";
-import { AmountType } from "../features/AmountType";
-import { InteractionType } from "../features/InteractionType";
-import { dateToState } from "../features/ConversionUtil";
+//import * as d3 from "d3";
+import { select /*, format, scaleLinear, scaleBand, range, drag */ } from "d3";
+// import { DateTime } from "luxon";
+// import { answer } from "../features/questionSlice";
+// import { ViewType } from "../features/ViewType";
+// import { AmountType } from "../features/AmountType";
+// import { InteractionType } from "../features/InteractionType";
+// import { dateToState } from "../features/ConversionUtil";
 
-var calendarMatrix = require("calendar-matrix");
+// var calendarMatrix = require("calendar-matrix");
 
-export const dayNames = ["S", "M", "T", "W", "T", "F", "S"];
+// export const dayNames = ["S", "M", "T", "W", "T", "F", "S"];
 
 export const drawCalendar = ({
   table: table,
-  question: q,
-  monthDate: monthDate,
-  tableWidthIn: tableWidthIn,
-  showYear: showYear,
-  showAmountOnBar: showAmountOnBar,
-  numIconCol: numIconCol,
-  numIconRow: numIconRow,
-  dragCallback: dragCallback,
-  dispatchCallback: dispatchCallback,
+  setDisableSubmit: setDisableSubmit,
+  // question: q,
+  // monthDate: monthDate,
+  // tableWidthIn: tableWidthIn,
+  // showYear: showYear,
+  // showAmountOnBar: showAmountOnBar,
+  // numIconCol: numIconCol,
+  // numIconRow: numIconRow,
+  // dragCallback: dragCallback,
+  // dispatchCallback: dispatchCallback,
 }) => {
+  let selection = { d: -1, a: -1 };
+  /*
+  var table = svg
+    .selectAll(".plot-area")
+    .data([null])
+    .join("g")
+    .attr("class", "plot-area");
+  */
+  const month = [
+    [1, 2, { d: 3, a: 100, k: "earlierAmount" }, 4, 5, 6, 7],
+    [8, 9, 10, 11, 12, 13, 14],
+    [15, 16, { d: 17, a: 200 }, 18, 19, 20, 21],
+    [22, 23, 24, 25, 26, 27, 28],
+    [29, 30, 31, -1, -2, -3, -4],
+  ];
+  const monthNames = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
+  const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  const monthNum = 9;
+
+  const header = table.append("thead");
+  const body = table.append("tbody");
+
+  header
+    .append("tr")
+    .append("td")
+    .attr("colspan", 7)
+    .append("h2")
+    .text(monthNames[monthNum])
+    .style("text-align", "center")
+    .style("font-size", "40px");
+
+  header
+    .append("tr")
+    .selectAll("td")
+    .data(dayNames)
+    .enter()
+    .append("td")
+    .text(function (d) {
+      return d;
+    })
+    .style("text-align", "center")
+    .style("font-size", "20px");
+
+  let boxLength = "100px";
+  month.forEach(function (week) {
+    body
+      .append("tr")
+      .selectAll("td")
+      .data(week)
+      .enter()
+      .append("td")
+      .attr("class", function (d) {
+        return d > 0 ? "" : "empty";
+      })
+      .style("border-style", "solid")
+      .style("border-width", "3px")
+      .style("border-color", "rgb(0,0,0)")
+      .style("width", boxLength)
+      .style("height", boxLength)
+      .on("click", (d) => {
+        console.log("click: target: " + JSON.stringify(d.target.__data__));
+        if (isNaN(d.target.__data__)) {
+          console.log("click: setselection");
+          if (d.target.__data__.k !== selection.k) {
+            if (selection.k === "earlierAmount") {
+              body
+                .selectAll("#earlierAmount")
+                .style("background-color", "steelblue");
+            } else {
+              body
+                .selectAll("#laterAmount")
+                .style("background-color", "steelblue");
+            }
+          }
+          selection = d.target.__data__;
+          setDisableSubmit(false);
+          console.log("click: selection: " + JSON.stringify(selection));
+          select(this).style("background-color", "lightblue");
+        }
+        // TODO add selection mechanism
+      })
+      .on("mouseover", function (d) {
+        console.log("mouseover: target: " + JSON.stringify(d.target.__data__));
+        if (isNaN(d.target.__data__)) {
+          select(this).style("background-color", "lightblue");
+        }
+      })
+      .on("mouseout", function (d) {
+        console.log("mouseout: target: " + JSON.stringify(d.target.__data__));
+        console.log("mouseout: selection: " + selection.d);
+        if (isNaN(d.target.__data__) && d.target.__data__.d != selection.d) {
+          select(this).style("background-color", "steelblue");
+        }
+      })
+      .each(function (d) {
+        const td = select(this);
+        console.log(d);
+        if (isNaN(d)) {
+          td.style("background-color", "steelblue");
+          td.append("div")
+            .text(function (d) {
+              return d.d;
+            })
+            .style("width", boxLength)
+            .style("height", "10px")
+            .style("top", "-33px")
+            .style("position", "relative")
+            .on("click", () => {})
+            .on("mouseover", function () {})
+            .on("mouseout", function () {});
+          td.append("div")
+            .text(function (d) {
+              return "$" + d.a;
+            })
+            .style("width", "95px")
+            .style("text-align", "center")
+            .style("top", "-5px")
+            .style("position", "relative")
+            .style("font-size", "25px");
+          if (d.k === "earlierAmount") td.attr("id", "earlierAmount");
+          else td.attr("id", "laterAmount");
+        } else {
+          td.append("div")
+            .text(function (d) {
+              if (!d) return "";
+              if (d < 1) return "";
+              return d;
+            })
+            .style("width", boxLength)
+            .style("height", boxLength);
+        }
+      });
+  });
+
+  /*drawCalendar({
+              table: table,
+              question: q,
+              monthDate: stateToDate(q.dateEarlier),
+              tableWidthIn: q.widthIn,
+              showYear: true,
+              showAmountOnBar: true,
+              numIconCol: 10,
+              numIconRow: 10,
+              iconSize: 3,
+              dragCallback: (amount) => {
+                dragAmount = amount;
+              },
+              dispatchCallback: (answer) => {
+                dispatch(answer);
+              },
+            });*/
+
+  /*
   console.log(q);
   const dpi = 100; //window.devicePixelRatio >= 2 ? 132 : 96;
   const tableSquareSizeIn = tableWidthIn / 7;
@@ -442,4 +609,5 @@ export const drawCalendar = ({
     });
     dragHandler(table.selectAll(".bar"));
   }
+  */
 };

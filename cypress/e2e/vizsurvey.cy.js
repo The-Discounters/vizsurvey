@@ -317,6 +317,7 @@ describe("vizsurvey", () => {
     visitTreatment(5, 1280, 720);
     cy.tick(4000);
     answerMELForm();
+    answerMELForm();
   });
   /*
   it("survey invalid", () => {
