@@ -56,6 +56,8 @@ export const drawCalendar = ({
   const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
   const monthNum = 9;
 
+  table.selectAll("table > *").remove();
+
   const header = table.append("thead");
   const body = table.append("tbody");
 
