@@ -14,7 +14,7 @@ import { AmountType } from "../features/AmountType";
 export const drawCalendar = ({
   table: table,
   // setDisableSubmit: setDisableSubmit,
-  // question: q,
+  question: q,
   // monthDate: monthDate,
   // tableWidthIn: tableWidthIn,
   // showYear: showYear,
@@ -34,9 +34,9 @@ export const drawCalendar = ({
     .attr("class", "plot-area");
   */
   const month = [
-    [1, 2, { d: 3, a: 100, k: "earlierAmount" }, 4, 5, 6, 7],
+    [1, 2, { d: 3, a: q.amountEarlier, k: "earlierAmount" }, 4, 5, 6, 7],
     [8, 9, 10, 11, 12, 13, 14],
-    [15, 16, { d: 17, a: 200 }, 18, 19, 20, 21],
+    [15, 16, { d: 17, a: q.amountLater }, 18, 19, 20, 21],
     [22, 23, 24, 25, 26, 27, 28],
     [29, 30, 31, -1, -2, -3, -4],
   ];

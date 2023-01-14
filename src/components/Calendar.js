@@ -112,6 +112,7 @@ export function Calendar() {
             (table) => {
               drawCalendar({
                 table: table,
+                question: q,
                 setDisableSubmit: setDisableSubmit,
                 maxTime: q.maxTime,
                 maxAmount: q.maxAmount,
