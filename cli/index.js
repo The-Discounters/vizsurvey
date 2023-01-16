@@ -1,21 +1,92 @@
 #!/usr/bin/env node
-/* eslint-disable no-unused-vars */
 import chalk from "chalk";
 import clear from "clear";
 import figlet from "figlet";
 import Configstore from "configstore";
 import { Command } from "commander";
-import { readFileSync, writeFileSync } from "fs";
-import { dirname, sep } from "path";
+import fs from "fs";
+import path from "path";
+import { csvParse } from "d3";
+import csv from "to-csv";
 
-import { getCurrentDirectoryBase, directoryExists } from "./src/files.js";
-import {
-  AMAZON_S3_BUCKET_KEY,
-  AMAZON_REGION__KEY,
-  AMAZON_ACCESS_KEY_ID,
-  AMAZON_SECRET_ACCESS_KEY,
-  askS3BucketInfo,
-} from "./src/inquier.js";
+import { askS3BucketInfo } from "./src/inquier.js";
+
+export const AMAZON_S3_BUCKET_KEY = "amazonS3Bucket";
+export const AMAZON_REGION__KEY = "amazonRegion";
+export const AMAZON_ACCESS_KEY_ID = "amazonAccessKeyId";
+export const AMAZON_SECRET_ACCESS_KEY = "amazonSecretAccessKey";
+
+const createMergeFile = (filename) => {};
+
+const createCSVFromJSONFile = (filename, callback) => {
+  console.log(`...parsing file ${filename}`);
+  const jsonString = fs.readFileSync(filename);
+  const answers = JSON.parse(jsonString);
+  const pathroot = path.dirname(filename);
+  if (answers.surveyAnswers) {
+    const filename = `${pathroot}${path.sep}${answers.surveyAnswers.filename}`;
+    console.log(`...writing ${filename} ...`);
+    fs.writeFileSync(filename, answers.surveyAnswers.data);
+    callback(filename, answers.surveyAnswers.data);
+    console.log(`...file written.`);
+  }
+  if (answers.answerTimestamps) {
+    const filename = `${pathroot}${path.sep}${answers.answerTimestamps.filename}`;
+    console.log(`...writing ${filename} ...`);
+    fs.writeFileSync(filename, answers.answerTimestamps.data);
+    callback(filename, answers.answerTimestamps.data);
+    console.log(`...file written.`);
+  }
+  if (answers.discountLitSurvey) {
+    const filename = `${pathroot}${path.sep}${answers.discountLitSurvey.filename}`;
+    console.log(`...writing ${filename} ...`);
+    fs.writeFileSync(filename, answers.discountLitSurvey.data);
+    callback(filename, answers.discountLitSurvey.data);
+    console.log(`...file written.`);
+  }
+  if (answers.financialLitSurvey) {
+    const filename = `${pathroot}${path.sep}${answers.financialLitSurvey.filename}`;
+    console.log(`...writing ${filename} ...`);
+    fs.writeFileSync(filename, answers.financialLitSurvey.data);
+    callback(filename, answers.financialLitSurvey.data);
+    console.log(`...file written.`);
+  }
+  if (answers.purposeSurvey) {
+    const filename = `${pathroot}${path.sep}${answers.purposeSurvey.filename}`;
+    console.log(`...writing ${filename} ...`);
+    fs.writeFileSync(filename, answers.purposeSurvey.data);
+    callback(filename, answers.purposeSurvey.data);
+    console.log(`...file written.`);
+  }
+  if (answers.demographics) {
+    const filename = `${pathroot}${path.sep}${answers.demographics.filename}`;
+    console.log(`...writing ${filename} ...`);
+    fs.writeFileSync(filename, answers.demographics.data);
+    callback(filename, answers.demographics.data);
+    console.log(`...file written.`);
+  }
+  if (answers.legal) {
+    const filename = `${pathroot}${path.sep}${answers.legal.filename}`;
+    console.log(`...writing ${filename} ...`);
+    fs.writeFileSync(filename, answers.legal.data);
+    callback(filename, answers.legal.data);
+    console.log(`...file written.`);
+  }
+  if (answers.feedback) {
+    const filename = `${pathroot}${path.sep}${answers.feedback.filename}`;
+    console.log(`...writing ${filename} ...`);
+    fs.writeFileSync(filename, answers.feedback.data);
+    callback(filename, answers.feedback.data);
+    console.log(`...file written.`);
+  }
+  if (answers.debriefTimestamps) {
+    const filename = `${pathroot}${path.sep}${answers.debriefTimestamps.filename}`;
+    console.log(`...writing ${filename} ...`);
+    fs.writeFileSync(filename, answers.debriefTimestamps.data);
+    callback(filename, answers.debriefTimestamps.data);
+    console.log(`...file written.`);
+  }
+};
 
 clear();
 
@@ -41,71 +112,58 @@ const run = async () => {
   program
     .command("split")
     .description(
-      "Splits out the CSV files that are in the JSON file.  The CSV files will be writen to the same folder as the JSON file."
+      "Splits out the CSV files that are in the JSON file if a single file is passed with -f or all JSON files in the directory if a directory is passed with -d.  The CSV files will be writen to the same folder as the JSON file."
     )
-    .argument("<filename>", "filename to split")
-    .action((filename, options) => {
-      console.log(`Loading file ${filename} for slitting...`);
+    .argument("<filename or directory>", "filename or directory to split")
+    .option("-f, --filename", "the single json filename to split")
+    .option(
+      "-d, --directory",
+      "the directory path containing the json files to split."
+    )
+    .action((source, options) => {
+      console.log(`Loading file "${source}" for splitting...`);
       try {
-        // Note that jsonString will be a <Buffer> since we did not specify an
-        // encoding type for the file. But it'll still work because JSON.parse() will
-        // use <Buffer>.toString().
-        const jsonString = readFileSync(filename);
-        const answers = JSON.parse(jsonString);
-        const pathroot = dirname(filename);
-        if (answers.surveyAnswers) {
-          const filename = `${pathroot}${sep}${answers.surveyAnswers.filename}`;
-          console.log(`Writing ${filename} ...`);
-          writeFileSync(filename, answers.surveyAnswers.data);
-          console.log(`File written.`);
-        }
-        if (answers.answerTimestamps) {
-          const filename = `${pathroot}${sep}${answers.answerTimestamps.filename}`;
-          console.log(`Writing ${filename} ...`);
-          writeFileSync(filename, answers.answerTimestamps.data);
-          console.log(`File written.`);
-        }
-        if (answers.discountLitSurvey) {
-          const filename = `${pathroot}${sep}${answers.discountLitSurvey.filename}`;
-          console.log(`Writing ${filename} ...`);
-          writeFileSync(filename, answers.discountLitSurvey.data);
-          console.log(`File written.`);
-        }
-        if (answers.financialLitSurvey) {
-          const filename = `${pathroot}${sep}${answers.financialLitSurvey.filename}`;
-          console.log(`Writing ${filename} ...`);
-          writeFileSync(filename, answers.financialLitSurvey.data);
-          console.log(`File written.`);
-        }
-        if (answers.purposeSurvey) {
-          const filename = `${pathroot}${sep}${answers.purposeSurvey.filename}`;
-          console.log(`Writing ${filename} ...`);
-          writeFileSync(filename, answers.purposeSurvey.data);
-          console.log(`File written.`);
-        }
-        if (answers.demographics) {
-          const filename = `${pathroot}${sep}${answers.demographics.filename}`;
-          console.log(`Writing ${filename} ...`);
-          writeFileSync(filename, answers.demographics.data);
-          console.log(`File written.`);
-        }
-        if (answers.legal) {
-          const filename = `${pathroot}${sep}${answers.legal.filename}`;
-          console.log(`Writing ${filename} ...`);
-          writeFileSync(filename, answers.legal.data);
-          console.log(`File written.`);
-        }
-        if (answers.feedback) {
-          const filename = `${pathroot}${sep}${answers.feedback.filename}`;
-          console.log(`Writing ${filename} ...`);
-          writeFileSync(filename, answers.feedback.data);
-          console.log(`File written.`);
-        }
-        if (answers.debriefTimestamps) {
-          const filename = `${pathroot}${sep}${answers.debriefTimestamps.filename}`;
-          console.log(`Writing ${filename} ...`);
-          writeFileSync(filename, answers.debriefTimestamps.data);
-          console.log(`File written.`);
+        const mergedData = new Map();
+
+        if (options.filename) {
+          console.log(`...splitting filename "${source}"`);
+          createCSVFromJSONFile(source);
+        } else if (options.directory) {
+          console.log(`...splitting files in directory "${source}"`);
+          const files = fs.readdirSync(source).filter((file) => {
+            return path.extname(file).toLowerCase() === ".json";
+          });
+          for (const file of files) {
+            createCSVFromJSONFile(source + path.sep + file);
+          }
+
+          var mergeFilename = `${pathroot}${path.sep}answers-merged.csv`;
+          console.log(`...creating merged file ${mergeFilename}...`);
+          createMergeFile(mergeFilename);
+          mergeFilename = `${pathroot}${path.sep}answers-timestamps-merged.csv`;
+          console.log(`...creating merged file ${mergeFilename}...`);
+          createMergeFile(mergeFilename);
+          mergeFilename = `${pathroot}${path.sep}financial-lit-survey-merged.csv`;
+          console.log(`...creating merged file ${mergeFilename}...`);
+          createMergeFile(mergeFilename);
+          mergeFilename = `${pathroot}${path.sep}discount-lit-survey-merged.csv`;
+          console.log(`...creating merged file ${mergeFilename}...`);
+          createMergeFile(mergeFilename);
+          mergeFilename = `${pathroot}${path.sep}legal-merged.csv`;
+          console.log(`...creating merged file ${mergeFilename}...`);
+          createMergeFile(mergeFilename);
+          mergeFilename = `${pathroot}${path.sep}demographics-merged.csv`;
+          console.log(`...creating merged file ${mergeFilename}...`);
+          createMergeFile(mergeFilename);
+          mergeFilename = `${pathroot}${path.sep}purpose-survey-merged.csv`;
+          console.log(`...creating merged file ${mergeFilename}...`);
+          createMergeFile(mergeFilename);
+          mergeFilename = `${pathroot}${path.sep}debrief-merged.csv`;
+          console.log(`...creating merged file ${mergeFilename}...`);
+          createMergeFile(mergeFilename);
+          const mergeFilename = `${pathroot}${path.sep}feedback-merged.csv`;
+          console.log(`...concatenating ${filename} to ${mergeFilename}...`);
+          catToMergeFile(`${filename}`, mergeFilename);
         }
       } catch (err) {
         console.log(err);
@@ -116,7 +174,3 @@ const run = async () => {
 };
 
 run();
-// if (directoryExists(".git")) {
-//   console.log(chalk.red("Already a Git repository!"));
-//   process.exit();
-// }

@@ -43,5 +43,17 @@
             "console": "integratedTerminal",
             "internalConsoleOptions": "neverOpen"
         },
+                {
+            "name": "Debug CLI",
+            "type": "node",
+            "request": "launch",
+            "runtimeExecutable": "/Users/pete/.nvm/versions/node/v19.3.0/bin/node",
+            "program": "${workspaceFolder}/cli/index.js",
+            "args": ["split", "/Users/pete/Library/CloudStorage/OneDrive-WorcesterPolytechnicInstitute(wpi.edu)/thesis/shared/data/pilot study 2",  "-d"],
+            "cwd": "${workspaceRoot}",
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen"
+       },
+
     ]
 }
