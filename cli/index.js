@@ -16,76 +16,63 @@ export const AMAZON_REGION__KEY = "amazonRegion";
 export const AMAZON_ACCESS_KEY_ID = "amazonAccessKeyId";
 export const AMAZON_SECRET_ACCESS_KEY = "amazonSecretAccessKey";
 
-const createMergeFile = (filename) => {};
+const createMergeFile = (filename, mergedData) => {
+  if (mergedData && mergedData.length > 0) {
+    console.log(`...creating merged file ${filename}...`);
+    const CSV = csv(mergedData);
+    fs.writeFileSync(filename, CSV);
+  } else {
+    console.log(`...no data for merged file ${filename}...`);
+  }
+};
+
+const createCSVFileFromData = (propertyName, pathroot, answers) => {
+  if (answers[propertyName]) {
+    const filename = `${pathroot}${path.sep}${answers[propertyName].filename}`;
+    console.log(`...writing ${filename} ...`);
+    fs.writeFileSync(filename, answers[propertyName].data);
+    console.log(`...file written.`);
+    return answers[propertyName].data;
+  } else {
+    return null;
+  }
+};
 
 const createCSVFromJSONFile = (filename, callback) => {
   console.log(`...parsing file ${filename}`);
   const jsonString = fs.readFileSync(filename);
   const answers = JSON.parse(jsonString);
   const pathroot = path.dirname(filename);
-  if (answers.surveyAnswers) {
-    const filename = `${pathroot}${path.sep}${answers.surveyAnswers.filename}`;
-    console.log(`...writing ${filename} ...`);
-    fs.writeFileSync(filename, answers.surveyAnswers.data);
-    callback(filename, answers.surveyAnswers.data);
-    console.log(`...file written.`);
-  }
-  if (answers.answerTimestamps) {
-    const filename = `${pathroot}${path.sep}${answers.answerTimestamps.filename}`;
-    console.log(`...writing ${filename} ...`);
-    fs.writeFileSync(filename, answers.answerTimestamps.data);
-    callback(filename, answers.answerTimestamps.data);
-    console.log(`...file written.`);
-  }
-  if (answers.discountLitSurvey) {
-    const filename = `${pathroot}${path.sep}${answers.discountLitSurvey.filename}`;
-    console.log(`...writing ${filename} ...`);
-    fs.writeFileSync(filename, answers.discountLitSurvey.data);
-    callback(filename, answers.discountLitSurvey.data);
-    console.log(`...file written.`);
-  }
-  if (answers.financialLitSurvey) {
-    const filename = `${pathroot}${path.sep}${answers.financialLitSurvey.filename}`;
-    console.log(`...writing ${filename} ...`);
-    fs.writeFileSync(filename, answers.financialLitSurvey.data);
-    callback(filename, answers.financialLitSurvey.data);
-    console.log(`...file written.`);
-  }
-  if (answers.purposeSurvey) {
-    const filename = `${pathroot}${path.sep}${answers.purposeSurvey.filename}`;
-    console.log(`...writing ${filename} ...`);
-    fs.writeFileSync(filename, answers.purposeSurvey.data);
-    callback(filename, answers.purposeSurvey.data);
-    console.log(`...file written.`);
-  }
-  if (answers.demographics) {
-    const filename = `${pathroot}${path.sep}${answers.demographics.filename}`;
-    console.log(`...writing ${filename} ...`);
-    fs.writeFileSync(filename, answers.demographics.data);
-    callback(filename, answers.demographics.data);
-    console.log(`...file written.`);
-  }
-  if (answers.legal) {
-    const filename = `${pathroot}${path.sep}${answers.legal.filename}`;
-    console.log(`...writing ${filename} ...`);
-    fs.writeFileSync(filename, answers.legal.data);
-    callback(filename, answers.legal.data);
-    console.log(`...file written.`);
-  }
-  if (answers.feedback) {
-    const filename = `${pathroot}${path.sep}${answers.feedback.filename}`;
-    console.log(`...writing ${filename} ...`);
-    fs.writeFileSync(filename, answers.feedback.data);
-    callback(filename, answers.feedback.data);
-    console.log(`...file written.`);
-  }
-  if (answers.debriefTimestamps) {
-    const filename = `${pathroot}${path.sep}${answers.debriefTimestamps.filename}`;
-    console.log(`...writing ${filename} ...`);
-    fs.writeFileSync(filename, answers.debriefTimestamps.data);
-    callback(filename, answers.debriefTimestamps.data);
-    console.log(`...file written.`);
-  }
+  callback(
+    "surveyAnswers",
+    createCSVFileFromData("surveyAnswers", pathroot, answers)
+  );
+  callback(
+    "answerTimestamps",
+    createCSVFileFromData("answerTimestamps", pathroot, answers)
+  );
+  callback(
+    "discountLitSurvey",
+    createCSVFileFromData("discountLitSurvey", pathroot, answers)
+  );
+  callback(
+    "financialLitSurvey",
+    createCSVFileFromData("financialLitSurvey", pathroot, answers)
+  );
+  callback(
+    "purposeSurvey",
+    createCSVFileFromData("purposeSurvey", pathroot, answers)
+  );
+  callback(
+    "demographics",
+    createCSVFileFromData("demographics", pathroot, answers)
+  );
+  callback("legal", createCSVFileFromData("legal", pathroot, answers));
+  callback("feedback", createCSVFileFromData("feedback", pathroot, answers));
+  callback(
+    "debriefTimestamps",
+    createCSVFileFromData("debriefTimestamps", pathroot, answers)
+  );
 };
 
 clear();
@@ -125,45 +112,62 @@ const run = async () => {
       try {
         const mergedData = new Map();
 
+        const mergeCallback = (propertyName, CSVData) => {
+          console.log(`...merging ${propertyName}`);
+          if (CSVData) {
+            const parsedCSV = csvParse(CSVData);
+            if (mergedData.has(propertyName)) {
+              mergedData.set(
+                propertyName,
+                mergedData.get(propertyName).concat(parsedCSV)
+              );
+            } else {
+              mergedData.set(propertyName, parsedCSV);
+            }
+            console.log(`...data merged`);
+          } else {
+            console.log(`...no data to merge`);
+          }
+        };
+
         if (options.filename) {
           console.log(`...splitting filename "${source}"`);
-          createCSVFromJSONFile(source);
+          createCSVFromJSONFile(source, createCSVFromJSONFile);
         } else if (options.directory) {
           console.log(`...splitting files in directory "${source}"`);
           const files = fs.readdirSync(source).filter((file) => {
             return path.extname(file).toLowerCase() === ".json";
           });
           for (const file of files) {
-            createCSVFromJSONFile(source + path.sep + file);
+            createCSVFromJSONFile(source + path.sep + file, mergeCallback);
           }
 
-          var mergeFilename = `${pathroot}${path.sep}answers-merged.csv`;
-          console.log(`...creating merged file ${mergeFilename}...`);
-          createMergeFile(mergeFilename);
-          mergeFilename = `${pathroot}${path.sep}answers-timestamps-merged.csv`;
-          console.log(`...creating merged file ${mergeFilename}...`);
-          createMergeFile(mergeFilename);
-          mergeFilename = `${pathroot}${path.sep}financial-lit-survey-merged.csv`;
-          console.log(`...creating merged file ${mergeFilename}...`);
-          createMergeFile(mergeFilename);
-          mergeFilename = `${pathroot}${path.sep}discount-lit-survey-merged.csv`;
-          console.log(`...creating merged file ${mergeFilename}...`);
-          createMergeFile(mergeFilename);
-          mergeFilename = `${pathroot}${path.sep}legal-merged.csv`;
-          console.log(`...creating merged file ${mergeFilename}...`);
-          createMergeFile(mergeFilename);
-          mergeFilename = `${pathroot}${path.sep}demographics-merged.csv`;
-          console.log(`...creating merged file ${mergeFilename}...`);
-          createMergeFile(mergeFilename);
-          mergeFilename = `${pathroot}${path.sep}purpose-survey-merged.csv`;
-          console.log(`...creating merged file ${mergeFilename}...`);
-          createMergeFile(mergeFilename);
-          mergeFilename = `${pathroot}${path.sep}debrief-merged.csv`;
-          console.log(`...creating merged file ${mergeFilename}...`);
-          createMergeFile(mergeFilename);
-          const mergeFilename = `${pathroot}${path.sep}feedback-merged.csv`;
-          console.log(`...concatenating ${filename} to ${mergeFilename}...`);
-          catToMergeFile(`${filename}`, mergeFilename);
+          var mergeFilename = `${source}${path.sep}answers-merged.csv`;
+          createMergeFile(mergeFilename, mergedData.get("surveyAnswers"));
+
+          mergeFilename = `${source}${path.sep}answers-timestamps-merged.csv`;
+          createMergeFile(mergeFilename, mergedData.get("answerTimestamps"));
+
+          mergeFilename = `${source}${path.sep}financial-lit-survey-merged.csv`;
+          createMergeFile(mergeFilename, mergedData.get("financialLitSurvey"));
+
+          mergeFilename = `${source}${path.sep}purpose-lit-survey-merged.csv`;
+          createMergeFile(mergeFilename, mergedData.get("purposeSurvey"));
+
+          mergeFilename = `${source}${path.sep}demographics-merged.csv`;
+          createMergeFile(mergeFilename, mergedData.get("demographics"));
+
+          mergeFilename = `${source}${path.sep}legal-merged.csv`;
+          createMergeFile(mergeFilename, mergedData.get("legal"));
+
+          mergeFilename = `${source}${path.sep}demographics-merged.csv`;
+          createMergeFile(mergeFilename, mergedData.get("demographics"));
+
+          mergeFilename = `${source}${path.sep}feedback.csv`;
+          createMergeFile(mergeFilename, mergedData.get("feedback"));
+
+          mergeFilename = `${source}${path.sep}debrief-merged.csv`;
+          createMergeFile(mergeFilename, mergedData.get("debriefTimestamps"));
         }
       } catch (err) {
         console.log(err);
