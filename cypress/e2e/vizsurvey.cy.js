@@ -317,7 +317,19 @@ describe("vizsurvey", () => {
     visitTreatment(5, 1280, 720);
     cy.tick(4000);
     answerMELForm();
+
+    cy.get("#attention-check-strongly-disagree").click();
+    cy.get("button").contains("Next").click();
+
     answerMELForm();
+    answerMELForm();
+    cy.tick(1000);
+
+    postsurvey([
+      "5,1,calendarWord,none,none,500,2,,1000,5",
+      "5,2,calendarWord,none,none,50,2,,300,7",
+      "5,3,calendarWord,none,none,250,2,,1000,3",
+    ]);
   });
   /*
   it("survey invalid", () => {

@@ -6,6 +6,7 @@ import { DateTime } from "luxon";
 import {
   getCurrentQuestion,
   getCurrentChoice,
+  getCurrentQuestionIndex,
   getStatus,
   setQuestionShownTimestamp,
   nextQuestion,
@@ -13,7 +14,6 @@ import {
 } from "../features/questionSlice";
 import { useD3 } from "../hooks/useD3";
 import { AmountType } from "../features/AmountType";
-import { StatusType } from "../features/StatusType";
 import { InteractionType } from "../features/InteractionType";
 import { drawCalendar } from "./CalendarHelper";
 //import { dateToState, stateToDate } from "../features/ConversionUtil";
@@ -21,10 +21,12 @@ import { dateToState } from "../features/ConversionUtil";
 import Grid from "@mui/material/Unstable_Grid2";
 import { styles } from "./ScreenHelper";
 import { Button, Box } from "@mui/material";
+import { navigateFromStatus } from "./Navigate";
 
 export function Calendar() {
   const dispatch = useDispatch();
   const q = useSelector(getCurrentQuestion);
+  const qi = useSelector(getCurrentQuestionIndex);
   const choice = useSelector(getCurrentChoice);
   const status = useSelector(getStatus);
   const navigate = useNavigate();
@@ -59,6 +61,10 @@ export function Calendar() {
   const [disableSubmit, setDisableSubmit] = React.useState(true);
 
   useEffect(() => {
+    dispatch(setQuestionShownTimestamp(dateToState(DateTime.now())));
+  }, [qi]);
+
+  useEffect(() => {
     switch (choice) {
       case AmountType.earlierAmount:
         setDisableSubmit(false);
@@ -70,6 +76,11 @@ export function Calendar() {
         setDisableSubmit(true);
     }
   }, [choice]);
+
+  useEffect(() => {
+    const path = navigateFromStatus(status);
+    navigate(path);
+  }, [status]);
 
   const onClickCallback = (value) => {
     dispatch(
@@ -203,11 +214,6 @@ export function Calendar() {
     </div>
   );
 
-  if (status === StatusType.FinancialQuestionaire) {
-    navigate("/questionaire");
-  } else {
-    dispatch(setQuestionShownTimestamp(dateToState(DateTime.now())));
-  }
   return result;
 }
 
