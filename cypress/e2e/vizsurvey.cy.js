@@ -9,9 +9,9 @@ let studyId = 1;
 let fetching = true;
 let fetching1 = true;
 function postsurvey(expects) {
-  cy.get("label").contains("1,360").click();
-  cy.get("label").contains("1,350").click();
-  cy.get("label").contains("20%").click();
+  cy.get("label").contains("more than $102").click();
+  cy.get("#less-than").click();
+  cy.get("label").contains("false").click();
   cy.get("button").contains("Next").click();
   cy.tick(1000);
   cy.get("#posdiff-strongly-disagree").click();
