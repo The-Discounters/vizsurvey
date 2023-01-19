@@ -75,7 +75,7 @@ export const drawCalendar = ({
     "December",
   ];
   const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-  const monthNum = 9;
+  const monthNum = date.getMonth();
 
   table.selectAll("table > *").remove();
 
