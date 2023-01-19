@@ -43,8 +43,8 @@
             "console": "integratedTerminal",
             "internalConsoleOptions": "neverOpen"
         },
-                {
-            "name": "Debug CLI",
+        {
+            "name": "Debug CLI split",
             "type": "node",
             "request": "launch",
             "runtimeExecutable": "/Users/pete/.nvm/versions/node/v19.3.0/bin/node",
@@ -54,6 +54,16 @@
             "console": "integratedTerminal",
             "internalConsoleOptions": "neverOpen"
        },
-
+        {
+            "name": "Debug CLI download",
+            "type": "node",
+            "request": "launch",
+            "runtimeExecutable": "/Users/pete/.nvm/versions/node/v19.3.0/bin/node",
+            "program": "${workspaceFolder}/cli/index.js",
+            "args": ["download", "/Users/pete/Library/CloudStorage/OneDrive-WorcesterPolytechnicInstitute(wpi.edu)/thesis/shared/data/pilot study 3",],
+            "cwd": "${workspaceRoot}",
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen"
+       },
     ]
 }

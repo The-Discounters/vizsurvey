@@ -10,6 +10,7 @@ import { csvParse } from "d3";
 import csv from "to-csv";
 
 import { askS3BucketInfo } from "./src/inquier.js";
+import { init, downloadFiles } from "./src/S3.js";
 
 export const AMAZON_S3_BUCKET_KEY = "amazonS3Bucket";
 export const AMAZON_REGION__KEY = "amazonRegion";
@@ -88,6 +89,8 @@ const run = async () => {
     conf.set(settings);
   }
 
+  init(conf);
+
   const program = new Command();
   program
     .name("discounters")
@@ -99,7 +102,7 @@ const run = async () => {
   program
     .command("split")
     .description(
-      "Splits out the CSV files that are in the JSON file if a single file is passed with -f or all JSON files in the directory if a directory is passed with -d.  The CSV files will be writen to the same folder as the JSON file."
+      "Splits out the CSV files that are in the JSON file if a single file is passed or all JSON files in the directory if a directory is passed.  The CSV files will be writen to the same folder as the JSON file."
     )
     .argument("<filename or directory>", "filename or directory to split")
     .option("-f, --filename", "the single json filename to split")
@@ -169,6 +172,19 @@ const run = async () => {
           mergeFilename = `${source}${path.sep}debrief-merged.csv`;
           createMergeFile(mergeFilename, mergedData.get("debriefTimestamps"));
         }
+      } catch (err) {
+        console.log(err);
+        return;
+      }
+    });
+  program
+    .command("download")
+    .description("Downloads files from the S3 bucket.")
+    .argument("<directory>", "directory to store the files in.")
+    .action((source, options) => {
+      console.log(`Downloading files from S3 bucket...`);
+      try {
+        downloadFiles(source + path.sep);
       } catch (err) {
         console.log(err);
         return;
