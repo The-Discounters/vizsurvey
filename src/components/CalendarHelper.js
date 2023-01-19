@@ -36,11 +36,18 @@ export const drawCalendar = ({
   console.log("q: " + JSON.stringify(q, null, 2));
   console.log("q.dateEalier: " + q.dateEarlier);
   console.log("q.dateEalier: " + q.dateLater);
+  const firstOfMonth = new Date(q.dateEarlier);
+  firstOfMonth.setDate(1);
+  const lastOfMonth = new Date(q.dateEarlier);
+  lastOfMonth.setMonth(lastOfMonth.getMonth() + 1);
+  lastOfMonth.setDate(0);
+  console.log("lastOfMonth: " + lastOfMonth);
   const date = new Date(q.dateEarlier);
   const dateLater = new Date(q.dateLater);
   console.log("date: " + date);
   console.log("date.getDate(): " + date.getDate());
-  const month = [
+  const month = [];
+  /*const month = [
     //[1, 2, { d: 3, a: q.amountEarlier, k: "earlierAmount" }, 4, 5, 6, 7],
     [1, 2, 3, 4, 5, 6, 7],
     [8, 9, 10, 11, 12, 13, 14],
@@ -48,17 +55,27 @@ export const drawCalendar = ({
     [15, 16, 17, 18, 19, 20, 21],
     [22, 23, 24, 25, 26, 27, 28],
     [29, 30, 31, -1, -2, -3, -4],
-  ];
-  for (let i = 0; i < month.length; i++) {
-    let week = month[i];
-    for (let j = 0; j < week.length; j++) {
-      let day = week[j];
-      if (day === date.getDate()) {
-        week[j] = { d: day, a: q.amountEarlier, k: "earlierAmount" };
-      } else if (day === dateLater.getDate()) {
-        week[j] = { d: day, a: q.amountLater };
+  ];*/
+  let counter = -1 * firstOfMonth.getDay() + 1;
+  let change = 1;
+  for (let i = 0; i < 6 /* max num of weeks */; i++) {
+    if (counter > lastOfMonth.getDate() || counter < -5) continue;
+    let week = [];
+    for (let j = 0; j < 7 /* length of week */; j++) {
+      if (counter > lastOfMonth.getDate()) {
+        change = -1;
+        counter *= -1;
       }
+      let day = counter;
+      if (day === date.getDate()) {
+        day = { d: day, a: q.amountEarlier, k: "earlierAmount" };
+      } else if (day === dateLater.getDate()) {
+        day = { d: day, a: q.amountLater };
+      }
+      week.push(day);
+      counter += change;
     }
+    month.push(week);
   }
   const monthNames = [
     "January",
