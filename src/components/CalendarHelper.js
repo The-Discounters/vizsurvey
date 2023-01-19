@@ -33,13 +33,33 @@ export const drawCalendar = ({
     .join("g")
     .attr("class", "plot-area");
   */
+  console.log("q: " + JSON.stringify(q, null, 2));
+  console.log("q.dateEalier: " + q.dateEarlier);
+  console.log("q.dateEalier: " + q.dateLater);
+  const date = new Date(q.dateEarlier);
+  const dateLater = new Date(q.dateLater);
+  console.log("date: " + date);
+  console.log("date.getDate(): " + date.getDate());
   const month = [
-    [1, 2, { d: 3, a: q.amountEarlier, k: "earlierAmount" }, 4, 5, 6, 7],
+    //[1, 2, { d: 3, a: q.amountEarlier, k: "earlierAmount" }, 4, 5, 6, 7],
+    [1, 2, 3, 4, 5, 6, 7],
     [8, 9, 10, 11, 12, 13, 14],
-    [15, 16, { d: 17, a: q.amountLater }, 18, 19, 20, 21],
+    //[15, 16, { d: 17, a: q.amountLater }, 18, 19, 20, 21],
+    [15, 16, 17, 18, 19, 20, 21],
     [22, 23, 24, 25, 26, 27, 28],
     [29, 30, 31, -1, -2, -3, -4],
   ];
+  for (let i = 0; i < month.length; i++) {
+    let week = month[i];
+    for (let j = 0; j < week.length; j++) {
+      let day = week[j];
+      if (day === date.getDate()) {
+        week[j] = { d: day, a: q.amountEarlier, k: "earlierAmount" };
+      } else if (day === dateLater.getDate()) {
+        week[j] = { d: day, a: q.amountLater };
+      }
+    }
+  }
   const monthNames = [
     "January",
     "February",
