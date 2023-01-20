@@ -8,6 +8,7 @@ import fs from "fs";
 import path from "path";
 import { csvParse } from "d3";
 import csv from "to-csv";
+import { DateTime } from "luxon";
 
 import { askS3BucketInfo } from "./src/inquier.js";
 import { init, downloadFiles } from "./src/S3.js";
@@ -181,10 +182,18 @@ const run = async () => {
     .command("download")
     .description("Downloads files from the S3 bucket.")
     .argument("<directory>", "directory to store the files in.")
+    .option(
+      "-l, --laterthan <date>",
+      "the date to filter out files that are are equal to or later than"
+    )
     .action((source, options) => {
       console.log(`Downloading files from S3 bucket...`);
       try {
-        downloadFiles(source + path.sep);
+        const laterThanDate = DateTime.fromFormat(
+          options.laterthan,
+          "M/d/yyyy"
+        );
+        downloadFiles(source + path.sep, laterThanDate);
       } catch (err) {
         console.log(err);
         return;

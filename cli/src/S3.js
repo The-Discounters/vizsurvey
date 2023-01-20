@@ -1,5 +1,6 @@
 import AWS from "aws-sdk";
 import fs from "fs";
+import { DateTime } from "luxon";
 
 import {
   AMAZON_ACCESS_KEY_ID,
@@ -25,7 +26,7 @@ export const init = (conf) => {
   bucketName = conf.get(AMAZON_S3_BUCKET_KEY);
 };
 
-export const downloadFiles = (dir) => {
+export const downloadFiles = (dir, laterThanDate) => {
   myBucket.listObjectsV2({ Bucket: `${bucketName}` }, (errList, dataList) => {
     if (errList) {
       console.log("Error", errList);
@@ -34,26 +35,33 @@ export const downloadFiles = (dir) => {
         console.log(
           `...downloading file ${file.Key} of size ${file.Size} created on date ${file.LastModified}`
         );
-        const fullObject = myBucket.getObject(
-          {
-            Bucket: bucketName,
-            Key: file.Key,
-          },
-          (errGet, dataGet) => {
-            if (errGet) {
-              console.log("Error", errGet);
-            } else {
-              const JSONData = dataGet.Body.toString();
-              fs.writeFile(dir + file.Key, JSONData, function (err) {
-                if (err) {
-                  console.log(`error writing file ${file.Key}`, err);
-                  throw err;
-                }
-              });
-              console.log(`...file ${file.Key} downloaded.`);
+        const objectDate = DateTime.fromJSDate(file.LastModified);
+        if (objectDate < laterThanDate) {
+          console.log(
+            `...skipping ${file.Key} since the date is before ${laterThanDate}`
+          );
+        } else {
+          const fullObject = myBucket.getObject(
+            {
+              Bucket: bucketName,
+              Key: file.Key,
+            },
+            (errGet, dataGet) => {
+              if (errGet) {
+                console.log("Error", errGet);
+              } else {
+                const JSONData = dataGet.Body.toString();
+                fs.writeFile(dir + file.Key, JSONData, function (err) {
+                  if (err) {
+                    console.log(`error writing file ${file.Key}`, err);
+                    throw err;
+                  }
+                });
+                console.log(`...file ${file.Key} downloaded.`);
+              }
             }
-          }
-        );
+          );
+        }
       }
     }
   });
