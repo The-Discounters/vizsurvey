@@ -123,29 +123,25 @@ function demographic() {
   cy.get("button").contains("Next").click();
 }
 
-function answerMELForm(word = true, tickAmount = 1000) {
-  let waitAmount = 10;
-  cy.get("#buttonNext").should("be.disabled");
-  cy.tick(500);
+let steelblueRGB = "rgb(70, 130, 180)";
+let lightblueRGB = "rgb(173, 216, 230)";
+let waitAmount = 10;
+
+function checkMELFormBeforeClickOrHover(word) {
   if (word) {
     cy.get("#earlierAmount").should(
       "have.css",
       "backgroundColor",
-      "rgb(70, 130, 180)"
+      steelblueRGB
     );
   } else {
     // bar
     cy.get("#earlierAmount").should("have.attr", "fill", "steelblue");
   }
   cy.wait(waitAmount);
-  /*
-  cy.get("#earlierAmount").should(
-    "have.css",
-    "borderColor",
-    "rgb(255, 255, 255)"
-  );
-*/
-  cy.wait(waitAmount);
+}
+
+function checkMELFormDuringClickOrHover(word) {
   if (word) {
     cy.get("#earlierAmount")
       .realHover()
@@ -157,18 +153,37 @@ function answerMELForm(word = true, tickAmount = 1000) {
     cy.get("#earlierAmount").should("have.attr", "fill", "lightblue");
   }
   cy.wait(waitAmount);
-  if (word) {
-    cy.get("#earlierAmount")
-      .realHover()
-      .should("have.css", "backgroundColor", "rgb(173, 216, 230)");
-  }
-  //cy.get("#earlierAmount").should("have.css", "borderColor", "rgb(0, 0, 0)");
-  cy.wait(waitAmount);
+}
+
+function clickMELFormNextButton() {
   cy.get("button")
     .contains("Next")
     .realHover()
     .should("not.be.disabled")
     .click();
+}
+
+function answerMELForm(word = true, tickAmount = 1000) {
+  cy.get("#buttonNext").should("be.disabled");
+  cy.tick(500);
+  checkMELFormBeforeClickOrHover(word);
+  /*
+  cy.get("#earlierAmount").should(
+    "have.css",
+    "borderColor",
+    "rgb(255, 255, 255)"
+  );
+*/
+  cy.wait(waitAmount);
+  checkMELFormDuringClickOrHover(word);
+  if (word) {
+    cy.get("#earlierAmount")
+      .realHover()
+      .should("have.css", "backgroundColor", lightblueRGB);
+  }
+  //cy.get("#earlierAmount").should("have.css", "borderColor", "rgb(0, 0, 0)");
+  cy.wait(waitAmount);
+  clickMELFormNextButton();
   cy.tick(tickAmount);
 }
 
