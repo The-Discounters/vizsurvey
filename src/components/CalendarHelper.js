@@ -24,6 +24,7 @@ export const drawCalendar = ({
   // dragCallback: dragCallback,
   // dispatchCallback: dispatchCallback,
   onClickCallback: onClickCallback,
+  choice: choice,
 }) => {
   let selection = { d: -1, a: -1 };
   /*
@@ -140,25 +141,26 @@ export const drawCalendar = ({
         console.log("click: target: " + JSON.stringify(d.target.__data__));
         if (isNaN(d.target.__data__)) {
           console.log("click: setselection");
-          if (d.target.__data__.k !== selection.k) {
-            console.log(
-              "click: target: selection: " + JSON.stringify(selection)
-            );
-            if (selection.k === "earlierAmount") {
-              body
-                .selectAll("#laterAmount")
-                .style("background-color", "steelblue");
-            } else {
-              body
-                .selectAll("#earlierAmount")
-                .style("background-color", "steelblue");
-            }
+          console.log("click: target: selection: " + JSON.stringify(selection));
+          if (
+            d.target.__data__.k === "earlierAmount" &&
+            choice !== AmountType.earlierAmount
+          ) {
+            body
+              .selectAll("#laterAmount")
+              .style("background-color", "steelblue");
+          } else if (
+            d.target.__data__.k !== "earlierAmount" &&
+            choice !== AmountType.laterAmount
+          ) {
+            body
+              .selectAll("#earlierAmount")
+              .style("background-color", "steelblue");
           }
-          selection = d.target.__data__;
           // setDisableSubmit(false);
           console.log("click: selection: " + JSON.stringify(selection));
           select(this).style("background-color", "lightblue");
-          if (selection.k === "earlierAmount") {
+          if (d.target.__data__.k === "earlierAmount") {
             console.log("click: target: onClickCallback: earlierAmount");
             onClickCallback(AmountType.earlierAmount);
           } else {
@@ -177,7 +179,13 @@ export const drawCalendar = ({
       .on("mouseout", function (d) {
         console.log("mouseout: target: " + JSON.stringify(d.target.__data__));
         console.log("mouseout: selection: " + selection.d);
-        if (isNaN(d.target.__data__) && d.target.__data__.d != selection.d) {
+        if (
+          isNaN(d.target.__data__) &&
+          ((d.target.__data__.k === "earlierAmount" &&
+            choice !== AmountType.earlierAmount) ||
+            (d.target.__data__.k !== "earlierAmount" &&
+              choice !== AmountType.laterAmount))
+        ) {
           select(this).style("background-color", "steelblue");
         }
       })

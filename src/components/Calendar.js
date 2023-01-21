@@ -134,7 +134,7 @@ export function Calendar() {
                 amountLater: q.amountLater,
                 timeLater: q.timeLater,
                 onClickCallback: onClickCallback,
-                // choice: choice,
+                choice: choice,
                 horizontalPixels: q.horizontalPixels,
                 verticalPixels: q.verticalPixels,
                 leftMarginWidthIn: q.leftMarginWidthIn,

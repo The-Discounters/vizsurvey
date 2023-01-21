@@ -127,46 +127,14 @@ let steelblueRGB = "rgb(70, 130, 180)";
 let lightblueRGB = "rgb(173, 216, 230)";
 let waitAmount = 10;
 
-function checkMELFormBeforeClickOrHover(word) {
+function checkMELFormBeforeClickOrHover(word, id = "#earlierAmount") {
   if (word) {
-    cy.get("#earlierAmount").should(
-      "have.css",
-      "backgroundColor",
-      steelblueRGB
-    );
+    cy.get(id).should("have.css", "backgroundColor", steelblueRGB);
   } else {
     // bar
-    cy.get("#earlierAmount").should("have.attr", "fill", "steelblue");
+    cy.get(id).should("have.attr", "fill", "steelblue");
   }
   cy.wait(waitAmount);
-}
-
-function checkMELFormDuringClickOrHover(word) {
-  if (word) {
-    cy.get("#earlierAmount")
-      .realHover()
-      //.should("have.css", "backgroundColor", "rgb(173, 216, 230)")
-      .click();
-  } else {
-    // bar
-    cy.get("#earlierAmount").click();
-    cy.get("#earlierAmount").should("have.attr", "fill", "lightblue");
-  }
-  cy.wait(waitAmount);
-}
-
-function clickMELFormNextButton() {
-  cy.get("button")
-    .contains("Next")
-    .realHover()
-    .should("not.be.disabled")
-    .click();
-}
-
-function answerMELForm(word = true, tickAmount = 1000) {
-  cy.get("#buttonNext").should("be.disabled");
-  cy.tick(500);
-  checkMELFormBeforeClickOrHover(word);
   /*
   cy.get("#earlierAmount").should(
     "have.css",
@@ -175,16 +143,64 @@ function answerMELForm(word = true, tickAmount = 1000) {
   );
 */
   cy.wait(waitAmount);
-  checkMELFormDuringClickOrHover(word);
+}
+
+function checkMELFormDuringClickOrHover(word, id = "#earlierAmount") {
   if (word) {
-    cy.get("#earlierAmount")
+    cy.get(id)
       .realHover()
+      //.should("have.css", "backgroundColor", "rgb(173, 216, 230)")
+      .click();
+  } else {
+    // bar
+    cy.get(id).click();
+    cy.get(id).should("have.attr", "fill", "lightblue");
+  }
+  cy.wait(waitAmount);
+  if (word) {
+    cy.get(id)
+      //.realHover()
       .should("have.css", "backgroundColor", lightblueRGB);
   }
   //cy.get("#earlierAmount").should("have.css", "borderColor", "rgb(0, 0, 0)");
   cy.wait(waitAmount);
-  clickMELFormNextButton();
+}
+
+function clickMELFormNextButton(
+  word,
+  id = "#earlierAmount",
+  tickAmount = 1000
+) {
+  cy.get("button").contains("Next").realHover();
+  if (word) {
+    cy.get(id)
+      //.realHover()
+      .should("have.css", "backgroundColor", lightblueRGB);
+  }
+  cy.get("button")
+    .contains("Next")
+    .realHover()
+    .should("not.be.disabled")
+    .click();
   cy.tick(tickAmount);
+}
+
+function answerMELForm(word = true, tickAmount = 1000) {
+  cy.get("#buttonNext").should("be.disabled");
+  cy.tick(500);
+
+  cy.get("#earlierAmount").should("have.css", "backgroundColor", steelblueRGB);
+  checkMELFormBeforeClickOrHover(word);
+  checkMELFormDuringClickOrHover(word);
+
+  cy.get("#laterAmount").should("have.css", "backgroundColor", steelblueRGB);
+  checkMELFormBeforeClickOrHover(word, "#laterAmount");
+  checkMELFormDuringClickOrHover(word, "#laterAmount");
+  cy.get("#earlierAmount").should("have.css", "backgroundColor", steelblueRGB);
+  cy.get("#earlierAmount").realHover();
+  cy.get("#earlierAmount").should("have.css", "backgroundColor", steelblueRGB);
+
+  clickMELFormNextButton(word, "#laterAmount", tickAmount);
 }
 
 function introduction(treatmentId) {
