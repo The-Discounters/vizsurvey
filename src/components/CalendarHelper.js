@@ -141,15 +141,16 @@ export const drawCalendar = ({
         if (isNaN(d.target.__data__)) {
           console.log("click: setselection");
           if (d.target.__data__.k !== selection.k) {
+            console.log(
+              "click: target: selection: " + JSON.stringify(selection)
+            );
             if (selection.k === "earlierAmount") {
-              onClickCallback(AmountType.earlierAmount);
-              body
-                .selectAll("#earlierAmount")
-                .style("background-color", "steelblue");
-            } else {
-              onClickCallback(AmountType.laterAmount);
               body
                 .selectAll("#laterAmount")
+                .style("background-color", "steelblue");
+            } else {
+              body
+                .selectAll("#earlierAmount")
                 .style("background-color", "steelblue");
             }
           }
@@ -157,6 +158,13 @@ export const drawCalendar = ({
           // setDisableSubmit(false);
           console.log("click: selection: " + JSON.stringify(selection));
           select(this).style("background-color", "lightblue");
+          if (selection.k === "earlierAmount") {
+            console.log("click: target: onClickCallback: earlierAmount");
+            onClickCallback(AmountType.earlierAmount);
+          } else {
+            console.log("click: target: onClickCallback: laterAmount");
+            onClickCallback(AmountType.laterAmount);
+          }
         }
         // TODO add selection mechanism
       })
