@@ -1,29 +1,255 @@
-import * as d3 from "d3";
-import { select, format, scaleLinear, scaleBand, range, drag } from "d3";
-import { DateTime } from "luxon";
-import { answer } from "../features/questionSlice";
-import { ViewType } from "../features/ViewType";
+//import * as d3 from "d3";
+import { select /*, format, scaleLinear, scaleBand, range, drag */ } from "d3";
+// import { DateTime } from "luxon";
+// import { answer } from "../features/questionSlice";
+// import { ViewType } from "../features/ViewType";
 import { AmountType } from "../features/AmountType";
-import { InteractionType } from "../features/InteractionType";
-import { dateToState } from "../features/ConversionUtil";
+// import { InteractionType } from "../features/InteractionType";
+// import { dateToState } from "../features/ConversionUtil";
 
-var calendarMatrix = require("calendar-matrix");
+// var calendarMatrix = require("calendar-matrix");
 
-export const dayNames = ["S", "M", "T", "W", "T", "F", "S"];
+// export const dayNames = ["S", "M", "T", "W", "T", "F", "S"];
 
 export const drawCalendar = ({
   table: table,
+  // setDisableSubmit: setDisableSubmit,
   question: q,
-  monthDate: monthDate,
-  tableWidthIn: tableWidthIn,
-  showYear: showYear,
-  showAmountOnBar: showAmountOnBar,
-  numIconCol: numIconCol,
-  numIconRow: numIconRow,
-  dragCallback: dragCallback,
-  dispatchCallback: dispatchCallback,
+  // monthDate: monthDate,
+  // tableWidthIn: tableWidthIn,
+  // showYear: showYear,
+  // showAmountOnBar: showAmountOnBar,
+  // numIconCol: numIconCol,
+  // numIconRow: numIconRow,
+  // dragCallback: dragCallback,
+  // dispatchCallback: dispatchCallback,
+  onClickCallback: onClickCallback,
+  choice: choice,
 }) => {
-  const dpi = window.devicePixelRatio >= 2 ? 132 : 96;
+  let selection = { d: -1, a: -1 };
+  /*
+  var table = svg
+    .selectAll(".plot-area")
+    .data([null])
+    .join("g")
+    .attr("class", "plot-area");
+  */
+  console.log("q: " + JSON.stringify(q, null, 2));
+  console.log("q.dateEalier: " + q.dateEarlier);
+  console.log("q.dateEalier: " + q.dateLater);
+  const firstOfMonth = new Date(q.dateEarlier);
+  firstOfMonth.setDate(1);
+  const lastOfMonth = new Date(q.dateEarlier);
+  lastOfMonth.setMonth(lastOfMonth.getMonth() + 1);
+  lastOfMonth.setDate(0);
+  console.log("lastOfMonth: " + lastOfMonth);
+  const date = new Date(q.dateEarlier);
+  const dateLater = new Date(q.dateLater);
+  console.log("date: " + date);
+  console.log("date.getDate(): " + date.getDate());
+  const month = [];
+  /*const month = [
+    //[1, 2, { d: 3, a: q.amountEarlier, k: "earlierAmount" }, 4, 5, 6, 7],
+    [1, 2, 3, 4, 5, 6, 7],
+    [8, 9, 10, 11, 12, 13, 14],
+    //[15, 16, { d: 17, a: q.amountLater }, 18, 19, 20, 21],
+    [15, 16, 17, 18, 19, 20, 21],
+    [22, 23, 24, 25, 26, 27, 28],
+    [29, 30, 31, -1, -2, -3, -4],
+  ];*/
+  let counter = -1 * firstOfMonth.getDay() + 1;
+  let change = 1;
+  for (let i = 0; i < 6 /* max num of weeks */; i++) {
+    if (counter > lastOfMonth.getDate() || counter < -5) continue;
+    let week = [];
+    for (let j = 0; j < 7 /* length of week */; j++) {
+      if (counter > lastOfMonth.getDate()) {
+        change = -1;
+        counter *= -1;
+      }
+      let day = counter;
+      if (day === date.getDate()) {
+        day = { d: day, a: q.amountEarlier, k: "earlierAmount" };
+      } else if (day === dateLater.getDate()) {
+        day = { d: day, a: q.amountLater };
+      }
+      week.push(day);
+      counter += change;
+    }
+    month.push(week);
+  }
+  const monthNames = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
+  const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  const monthNum = date.getMonth();
+
+  table.selectAll("table > *").remove();
+
+  const header = table.append("thead");
+  const body = table.append("tbody");
+
+  header
+    .append("tr")
+    .append("td")
+    .attr("colspan", 7)
+    .append("h2")
+    .text(monthNames[monthNum])
+    .style("text-align", "center")
+    .style("font-size", "40px");
+
+  header
+    .append("tr")
+    .selectAll("td")
+    .data(dayNames)
+    .enter()
+    .append("td")
+    .text(function (d) {
+      return d;
+    })
+    .style("text-align", "center")
+    .style("font-size", "20px");
+
+  let boxLength = "100px";
+  month.forEach(function (week) {
+    body
+      .append("tr")
+      .selectAll("td")
+      .data(week)
+      .enter()
+      .append("td")
+      .attr("class", function (d) {
+        return d > 0 ? "" : "empty";
+      })
+      .style("border-style", "solid")
+      .style("border-width", "3px")
+      .style("border-color", "rgb(0,0,0)")
+      .style("width", boxLength)
+      .style("height", boxLength)
+      .on("click", (d) => {
+        console.log("click: target: " + JSON.stringify(d.target.__data__));
+        if (isNaN(d.target.__data__)) {
+          console.log("click: setselection");
+          console.log("click: target: selection: " + JSON.stringify(selection));
+          if (
+            d.target.__data__.k === "earlierAmount" &&
+            choice !== AmountType.earlierAmount
+          ) {
+            body
+              .selectAll("#laterAmount")
+              .style("background-color", "steelblue");
+          } else if (
+            d.target.__data__.k !== "earlierAmount" &&
+            choice !== AmountType.laterAmount
+          ) {
+            body
+              .selectAll("#earlierAmount")
+              .style("background-color", "steelblue");
+          }
+          // setDisableSubmit(false);
+          console.log("click: selection: " + JSON.stringify(selection));
+          select(this).style("background-color", "lightblue");
+          if (d.target.__data__.k === "earlierAmount") {
+            console.log("click: target: onClickCallback: earlierAmount");
+            onClickCallback(AmountType.earlierAmount);
+          } else {
+            console.log("click: target: onClickCallback: laterAmount");
+            onClickCallback(AmountType.laterAmount);
+          }
+        }
+        // TODO add selection mechanism
+      })
+      .on("mouseover", function (d) {
+        console.log("mouseover: target: " + JSON.stringify(d.target.__data__));
+        if (isNaN(d.target.__data__)) {
+          select(this).style("background-color", "lightblue");
+        }
+      })
+      .on("mouseout", function (d) {
+        console.log("mouseout: target: " + JSON.stringify(d.target.__data__));
+        console.log("mouseout: selection: " + selection.d);
+        if (
+          isNaN(d.target.__data__) &&
+          ((d.target.__data__.k === "earlierAmount" &&
+            choice !== AmountType.earlierAmount) ||
+            (d.target.__data__.k !== "earlierAmount" &&
+              choice !== AmountType.laterAmount))
+        ) {
+          select(this).style("background-color", "steelblue");
+        }
+      })
+      .each(function (d) {
+        const td = select(this);
+        console.log(d);
+        if (isNaN(d)) {
+          td.style("background-color", "steelblue");
+          td.append("div")
+            .text(function (d) {
+              return d.d;
+            })
+            .style("width", boxLength)
+            .style("height", "10px")
+            .style("top", "-33px")
+            .style("position", "relative")
+            .on("click", () => {})
+            .on("mouseover", function () {})
+            .on("mouseout", function () {});
+          td.append("div")
+            .text(function (d) {
+              return "$" + d.a;
+            })
+            .style("width", "95px")
+            .style("text-align", "center")
+            .style("top", "-5px")
+            .style("position", "relative")
+            .style("font-size", "25px");
+          if (d.k === "earlierAmount") td.attr("id", "earlierAmount");
+          else td.attr("id", "laterAmount");
+        } else {
+          td.append("div")
+            .text(function (d) {
+              if (!d) return "";
+              if (d < 1) return "";
+              return d;
+            })
+            .style("width", boxLength)
+            .style("height", boxLength);
+        }
+      });
+  });
+
+  /*drawCalendar({
+              table: table,
+              question: q,
+              monthDate: stateToDate(q.dateEarlier),
+              tableWidthIn: q.widthIn,
+              showYear: true,
+              showAmountOnBar: true,
+              numIconCol: 10,
+              numIconRow: 10,
+              iconSize: 3,
+              dragCallback: (amount) => {
+                dragAmount = amount;
+              },
+              dispatchCallback: (answer) => {
+                dispatch(answer);
+              },
+            });*/
+
+  /*
+  console.log(q);
+  const dpi = 100; //window.devicePixelRatio >= 2 ? 132 : 96;
   const tableSquareSizeIn = tableWidthIn / 7;
   const tableSquareSizePx = Math.round(tableSquareSizeIn * dpi);
 
@@ -55,6 +281,7 @@ export const drawCalendar = ({
       };
     })
   );
+  console.log(monthDaysAmounts); // 2-dimensional array of calendar days
 
   const lastDayOfMonth = Math.max(...[].concat(...monthDays));
   const firstDaysOfWeek = monthDaysAmounts.reduce((acc, cv) => {
@@ -90,7 +317,7 @@ export const drawCalendar = ({
     .data([monthDate])
     .join("td")
     .attr("id", "month-year-cell")
-    .attr("style", "font-size: 14px; box-sizing: border-box;")
+    .attr("style", "font-size: 40px; box-sizing: border-box;") // year title styling
     .attr("colspan", 7)
     .text((d) => `${d.monthLong}${showYear ? " " + d.year : ""}`);
   thead
@@ -104,7 +331,7 @@ export const drawCalendar = ({
     .attr("class", "weekday-name-cell")
     .attr(
       "style",
-      "font-size: 10px; text-align: center; box-sizing: border-box;"
+      "font-size: 20px; text-align: center; box-sizing: border-box;" // weekday abbreviation styling (ex. S,M,T,W,T,F,S)
     )
     .text((d) => d);
 
@@ -339,7 +566,7 @@ export const drawCalendar = ({
             const td = select(this);
             if (d.day >= 0) {
               td.append("div")
-                .attr("style", "font-size: 10px; float: right")
+                .attr("style", "font-size: 20px; float: right") // TODO: still fix first day of month font-size
                 .attr("class", "day-div")
                 .text((d) => {
                   if (d.day <= 0) return "";
@@ -440,4 +667,5 @@ export const drawCalendar = ({
     });
     dragHandler(table.selectAll(".bar"));
   }
+  */
 };

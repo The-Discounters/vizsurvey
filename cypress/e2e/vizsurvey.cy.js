@@ -9,9 +9,9 @@ let studyId = 1;
 let fetching = true;
 let fetching1 = true;
 function postsurvey(expects) {
-  cy.get("label").contains("1,360").click();
-  cy.get("label").contains("1,350").click();
-  cy.get("label").contains("20%").click();
+  cy.get("label").contains("more than $102").click();
+  cy.get("#less-than").click();
+  cy.get("label").contains("false").click();
   cy.get("button").contains("Next").click();
   cy.tick(1000);
   cy.get("#posdiff-strongly-disagree").click();
@@ -123,17 +123,16 @@ function demographic() {
   cy.get("button").contains("Next").click();
 }
 
-function answerMELForm(word = true, tickAmount = 1000) {
-  let waitAmount = 10;
+let steelblueRGB = "rgb(70, 130, 180)";
+let lightblueRGB = "rgb(173, 216, 230)";
+let waitAmount = 10;
+
+function checkMELFormBeforeClickOrHover(word, id = "#earlierAmount") {
   if (word) {
-    cy.get("#earlierAmount").should(
-      "have.css",
-      "backgroundColor",
-      "rgb(70, 130, 180)"
-    );
+    cy.get(id).should("have.css", "backgroundColor", steelblueRGB);
   } else {
     // bar
-    cy.get("#earlierAmount").should("have.attr", "fill", "steelblue");
+    cy.get(id).should("have.attr", "fill", "steelblue");
   }
   cy.wait(waitAmount);
   /*
@@ -144,24 +143,40 @@ function answerMELForm(word = true, tickAmount = 1000) {
   );
 */
   cy.wait(waitAmount);
+}
+
+function checkMELFormDuringClickOrHover(word, id = "#earlierAmount") {
   if (word) {
-    cy.get("#earlierAmount")
+    cy.get(id)
       .realHover()
       //.should("have.css", "backgroundColor", "rgb(173, 216, 230)")
       .click();
   } else {
     // bar
-    cy.get("#earlierAmount").click();
-    cy.get("#earlierAmount").should("have.attr", "fill", "lightblue");
+    cy.get(id).click();
+    cy.get(id).should("have.attr", "fill", "lightblue");
   }
   cy.wait(waitAmount);
   if (word) {
-    cy.get("#earlierAmount")
-      .realHover()
-      .should("have.css", "backgroundColor", "rgb(173, 216, 230)");
+    cy.get(id)
+      //.realHover()
+      .should("have.css", "backgroundColor", lightblueRGB);
   }
   //cy.get("#earlierAmount").should("have.css", "borderColor", "rgb(0, 0, 0)");
   cy.wait(waitAmount);
+}
+
+function clickMELFormNextButton(
+  word,
+  id = "#earlierAmount",
+  tickAmount = 1000
+) {
+  cy.get("button").contains("Next").realHover();
+  if (word) {
+    cy.get(id)
+      //.realHover()
+      .should("have.css", "backgroundColor", lightblueRGB);
+  }
   cy.get("button")
     .contains("Next")
     .realHover()
@@ -170,10 +185,26 @@ function answerMELForm(word = true, tickAmount = 1000) {
   cy.tick(tickAmount);
 }
 
-function introduction(treatmentId) {
+function answerMELForm(word = true, tickAmount = 1000) {
   cy.get("#buttonNext").should("be.disabled");
   cy.tick(500);
-  answerMELForm(treatmentId === 1 || treatmentId === 20);
+
+  cy.get("#earlierAmount").should("have.css", "backgroundColor", steelblueRGB);
+  checkMELFormBeforeClickOrHover(word);
+  checkMELFormDuringClickOrHover(word);
+
+  cy.get("#laterAmount").should("have.css", "backgroundColor", steelblueRGB);
+  checkMELFormBeforeClickOrHover(word, "#laterAmount");
+  checkMELFormDuringClickOrHover(word, "#laterAmount");
+  cy.get("#earlierAmount").should("have.css", "backgroundColor", steelblueRGB);
+  cy.get("#earlierAmount").realHover();
+  cy.get("#earlierAmount").should("have.css", "backgroundColor", steelblueRGB);
+
+  clickMELFormNextButton(word, "#laterAmount", tickAmount);
+}
+
+function introduction(treatmentId) {
+  answerMELForm(treatmentId === 1 || treatmentId === 20 || treatmentId === 5);
 }
 
 function instruction() {
@@ -197,6 +228,7 @@ function visitTreatment(treatmentId, width = 1200, height = 700) {
   instruction();
 }
 describe("vizsurvey", () => {
+  /*
   it("word dev", () => {
     visitTreatment(1);
     answerMELForm();
@@ -307,17 +339,30 @@ describe("vizsurvey", () => {
       }
     );
   });
-  /*
   it("calendar bar", () => {
     visitTreatment(4);
     cy.tick(4000);
     calendar("day", "4", "Bar");
-  });
+  });*/
   it("calendar word", () => {
-    visitTreatment(5);
+    visitTreatment(5, 1280, 720);
     cy.tick(4000);
-    calendar("day", "5", "Word");
+    answerMELForm();
+
+    cy.get("#attention-check-strongly-disagree").click();
+    cy.get("button").contains("Next").click();
+
+    answerMELForm();
+    answerMELForm();
+    cy.tick(1000);
+
+    postsurvey([
+      "5,1,calendarWord,none,none,500,2,,1000,5",
+      "5,2,calendarWord,none,none,50,2,,300,7",
+      "5,3,calendarWord,none,none,250,2,,1000,3",
+    ]);
   });
+  /*
   it("survey invalid", () => {
     cy.viewport(1200, 700);
     cy.visit(baseURL + "?treatment_id=100&session_id=1&participant_id=1");
@@ -345,9 +390,8 @@ describe("vizsurvey", () => {
 });
 
 function calendar(id, treatmentNum, treatmentName) {
-  cy.get("#later-" + id).click();
-  cy.get("#later-" + id).click();
-  cy.get("#later-" + id).click();
+  cy.get("#earlierAmount").click();
+  cy.get("#laterAmount").click();
   postsurvey([
     treatmentNum +
       ",1,calendar" +
