@@ -124,5 +124,5 @@ export const TREATMENTS_PROD_CSV = `treatment_id,position,view_type,interaction,
 4,6,calendarWord,none,none,45,,1/2/2023,70,,1/18/2023,70,,,,,,,,,,,,Worded MEL question experiment 3 of date/delay paper.
 4,7,calendarWord,none,none,66,,1/6/2023,110,,1/24/2023,110,,,,,,,,,,,,Worded MEL question experiment 3 of date/delay paper.
 4,8,calendarWord,none,none,77,,1/3/2023,118,,1/16/2023,120,,,,,,,,,,,,Worded MEL question experiment 3 of date/delay paper.
-4,instructions,calendarWord,none,none,300,,1/2/2023,700,,1/7/2023,1000,,,,,,,,,,,introduction-calendarWord,Worded MEL question experiment 3 of date/delay paper.
+4,instructions,calendarWord,none,none,300,,1/2/2023,700,,1/7/2023,1000,,750,650,,,,,,,,introduction-calendarWord,TODO use width and height during regular drawCalendar calls Worded MEL question experiment 3 of date/delay paper.
 `;
