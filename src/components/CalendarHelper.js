@@ -14,7 +14,6 @@ import { AmountType } from "../features/AmountType";
 export const drawCalendar = ({
   table: table,
   // setDisableSubmit: setDisableSubmit,
-  question: q,
   // monthDate: monthDate,
   // tableWidthIn: tableWidthIn,
   // showYear: showYear,
@@ -25,6 +24,10 @@ export const drawCalendar = ({
   // dispatchCallback: dispatchCallback,
   onClickCallback: onClickCallback,
   choice: choice,
+  qDateEarlier: qDateEarlier,
+  qDateLater: qDateLater,
+  qAmountEarlier: qAmountEarlier,
+  qAmountLater: qAmountLater,
 }) => {
   let selection = { d: -1, a: -1 };
   /*
@@ -34,17 +37,16 @@ export const drawCalendar = ({
     .join("g")
     .attr("class", "plot-area");
   */
-  console.log("q: " + JSON.stringify(q, null, 2));
-  console.log("q.dateEalier: " + q.dateEarlier);
-  console.log("q.dateEalier: " + q.dateLater);
-  const firstOfMonth = new Date(q.dateEarlier);
+  console.log("qDateEarlier: " + qDateEarlier);
+  console.log("qDateLater: " + qDateLater);
+  const firstOfMonth = new Date(qDateEarlier);
   firstOfMonth.setDate(1);
-  const lastOfMonth = new Date(q.dateEarlier);
+  const lastOfMonth = new Date(qDateEarlier);
   lastOfMonth.setMonth(lastOfMonth.getMonth() + 1);
   lastOfMonth.setDate(0);
   console.log("lastOfMonth: " + lastOfMonth);
-  const date = new Date(q.dateEarlier);
-  const dateLater = new Date(q.dateLater);
+  const date = new Date(qDateEarlier);
+  const dateLater = new Date(qDateLater);
   console.log("date: " + date);
   console.log("date.getDate(): " + date.getDate());
   const month = [];
@@ -69,9 +71,9 @@ export const drawCalendar = ({
       }
       let day = counter;
       if (day === date.getDate()) {
-        day = { d: day, a: q.amountEarlier, k: "earlierAmount" };
+        day = { d: day, a: qAmountEarlier, k: "earlierAmount" };
       } else if (day === dateLater.getDate()) {
-        day = { d: day, a: q.amountLater };
+        day = { d: day, a: qAmountLater };
       }
       week.push(day);
       counter += change;

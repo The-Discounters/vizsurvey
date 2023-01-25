@@ -26,6 +26,7 @@ import { styles, theme, calcScreenValues } from "./ScreenHelper";
 import { AmountType } from "../features/AmountType";
 import { MELSelectionForm } from "./MELSelectionForm";
 import { drawBarChart } from "./BarChartComponent";
+import { drawCalendar } from "./CalendarHelper";
 
 const Introduction = () => {
   const dispatch = useDispatch();
@@ -252,17 +253,53 @@ const Introduction = () => {
         return "";
       case ViewType.calendarWord:
         return (
-          <MELSelectionForm // TODO: change to correct mini-calendar word view
-            textShort={"textShort"}
-            error={error}
-            amountEarlier={300}
-            timeEarlier={2}
-            amountLater={700}
-            timeLater={7}
-            helperText={helperText}
-            onClickCallback={onClickCallback}
-            choice={choice}
-          />
+          <table
+            id="calendar"
+            style={{ borderCollapse: "collapse", tableLayout: "fixed" }}
+            ref={useD3(
+              (table) => {
+                drawCalendar({
+                  table: table,
+
+                  qDateEarlier: instructionTreatment.dateEarlier,
+                  qDateLater: instructionTreatment.dateLater,
+                  qAmountEarlier: instructionTreatment.amountEarlier,
+                  qAmountLater: instructionTreatment.amountLater,
+
+                  /*
+                  amountEarlier: instructionTreatment.amountEarlier,
+                  timeEarlier: instructionTreatment.timeEarlier,
+                  amountLater: instructionTreatment.amountLater,
+                  timeLater: instructionTreatment.timeLater,
+*/
+                  /*
+                question: q,
+                setDisableSubmit: setDisableSubmit,
+                maxTime: q.maxTime,
+                maxAmount: q.maxAmount,
+                interaction: q.interaction,
+                variableAmount: q.variableAmount,
+                amountEarlier: q.amountEarlier,
+                timeEarlier: q.timeEarlier,
+                amountLater: q.amountLater,
+                timeLater: q.timeLater,
+*/
+                  onClickCallback: onClickCallback,
+                  choice: choice,
+                  /*  
+              horizontalPixels: q.horizontalPixels,
+                verticalPixels: q.verticalPixels,
+                leftMarginWidthIn: q.leftMarginWidthIn,
+                graphWidthIn: q.graphWidthIn,
+                bottomMarginHeightIn: q.bottomMarginHeightIn,
+                graphHeightIn: q.graphHeightIn,
+                showMinorTicks: q.showMinorTicks,
+*/
+                });
+              },
+              [choice]
+            )}
+          ></table>
         );
       case ViewType.calendarIcon:
         return "";
