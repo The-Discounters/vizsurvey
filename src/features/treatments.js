@@ -17,7 +17,7 @@ export const TREATMENTS_DEV_CSV = `treatment_id,position,view_type,interaction,v
 4,2,calendarBar,none,none,500,,3/1/2022,800,,3/12/2022,1100,,100,100,,,,,8,8,,,Calendar month view with barchart and no interaction.
 4,3,calendarBar,none,none,300,,4/1/2022,1000,,4/15/2022,1100,,100,100,,,,,8,8,,,Calendar month view with barchart and no interaction.
 4,instructions,calendarBar,none,none,300,,4/1/2022,1000,,4/15/2022,1100,,100,100,,,,,8,8,,introduction-calendarBar,Calendar month view with barchart and no interaction instructions.
-5,1,calendarWord,none,none,300,,2/1/2022,700,,2/22/2022,1100,,100,100,,,,,8,8,,,Calendar month view with word and no interaction.
+5,1,calendarWord,none,none,300,,2/1/2022,700,,2/22/2022,1100,,100,100,,,,,8,8,,,Calendar month view with word and no interaction TODO fix dates here so that it represent weeks to match up with MEL Word version.
 5,2,calendarWord,none,none,500,,3/1/2022,800,,3/12/2022,1100,,100,100,,,,,8,8,,,Calendar month view with word and no interaction.
 5,3,calendarWord,none,none,300,,4/1/2022,1000,,4/15/2022,1100,,100,100,,,,,8,8,,,Calendar month view with word and no interaction.
 5,instructions,calendarWord,none,none,300,,4/1/2022,1000,,4/15/2022,1100,,100,100,,,,,8,8,,introduction-calendarWord,Calendar month view with word and no interaction.
