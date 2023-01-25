@@ -123,7 +123,8 @@ export function Calendar() {
             (table) => {
               drawCalendar({
                 table: table,
-                question: q,
+                //question: q,
+                /*
                 setDisableSubmit: setDisableSubmit,
                 maxTime: q.maxTime,
                 maxAmount: q.maxAmount,
@@ -133,8 +134,10 @@ export function Calendar() {
                 timeEarlier: q.timeEarlier,
                 amountLater: q.amountLater,
                 timeLater: q.timeLater,
+*/
                 onClickCallback: onClickCallback,
                 choice: choice,
+                /*
                 horizontalPixels: q.horizontalPixels,
                 verticalPixels: q.verticalPixels,
                 leftMarginWidthIn: q.leftMarginWidthIn,
@@ -142,6 +145,11 @@ export function Calendar() {
                 bottomMarginHeightIn: q.bottomMarginHeightIn,
                 graphHeightIn: q.graphHeightIn,
                 showMinorTicks: q.showMinorTicks,
+*/
+                qDateEarlier: q.dateEarlier,
+                qDateLater: q.dateLater,
+                qAmountEarlier: q.amountEarlier,
+                qAmountLater: q.amountLater,
               });
             },
             [q]
