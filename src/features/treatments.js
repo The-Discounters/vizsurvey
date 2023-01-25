@@ -116,7 +116,7 @@ export const TREATMENTS_PROD_CSV = `treatment_id,position,view_type,interaction,
 3,7,barchart,none,none,66,6,,110,24,,110,49,1200,300,,,,,,,no,,Barchart MEL question experiment 3 of date/delay paper full screen.
 3,8,barchart,none,none,77,3,,118,16,,120,33,1200,300,,,,,,,no,,Barchart MEL question experiment 3 of date/delay paper full screen.
 3,instructions,barchart,none,none,300,2,,700,7,,1000,15,1200,300,,,,,,,no,introduction-barchart-no-ticks-right,Barchart MEL question experiment 3 of date/delay paper full screen.
-4,1,calendarWord,none,none,350,,1/4/2023,430,,1/13/2023,430,,,,,,,,,,,,Worded MEL question experiment 1 date/delay paper.
+4,1,calendarWord,none,none,350,,1/4/2023,430,,1/13/2023,430,,,,,,,,,,,,Worded MEL question experiment 1 date/delay paper TODO fix dates here so that it represent weeks to match up with MEL Word version.
 4,2,calendarWord,none,none,490,,1/2/2023,700,,1/18/2023,700,,,,,,,,,,,,Worded MEL question experiment 1 date/delay paper.
 4,3,calendarWord,none,none,720,,1/6/2023,1390,,1/24/2023,1390,,,,,,,,,,,,Worded MEL question experiment 1 date/delay paper.
 4,4,calendarWord,none,none,840,,1/3/2023,1120,,1/16/2023,1120,,,,,,,,,,,,Worded MEL question experiment 1 date/delay paper.
