@@ -111,9 +111,7 @@ export class QuestionEngine {
 
   setLatestAnswerShown(state, date) {
     const latestAnswer = this.latestAnswer(state);
-    if (latestAnswer.shownTimestamp === null) {
-      latestAnswer.shownTimestamp = date;
-    }
+    latestAnswer.shownTimestamp = date;
   }
 
   // TODO we should renames these xxxQuestion not treatment.
