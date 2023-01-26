@@ -21,9 +21,24 @@ export const questionSlice = createSlice({
     participantId: null,
     sessionId: null,
     studyId: null,
-    discountLitSurvey: { participantId: null, sessionId: null, studyId: null },
-    financialLitSurvey: { participantId: null, sessionId: null, studyId: null },
-    purposeSurvey: { participantId: null, sessionId: null, studyId: null },
+    discountLitSurvey: {
+      treatmentId: null,
+      participantId: null,
+      sessionId: null,
+      studyId: null,
+    },
+    financialLitSurvey: {
+      treatmentId: null,
+      participantId: null,
+      sessionId: null,
+      studyId: null,
+    },
+    purposeSurvey: {
+      treatmentId: null,
+      participantId: null,
+      sessionId: null,
+      studyId: null,
+    },
     countryOfResidence: "",
     vizFamiliarity: "",
     age: "",
@@ -74,21 +89,21 @@ export const questionSlice = createSlice({
     },
     setTreatmentId(state, action) {
       state.treatmentId = action.payload;
-      state.discountLitSurvey.participantId = action.payload;
-      state.financialLitSurvey.participantId = action.payload;
-      state.purposeSurvey.participantId = action.payload;
+      state.discountLitSurvey.treatmentId = action.payload;
+      state.financialLitSurvey.treatmentId = action.payload;
+      state.purposeSurvey.treatmentId = action.payload;
       return state;
     },
     setSessionId(state, action) {
       state.sessionId = action.payload;
-      state.discountLitSurvey.participantId = action.payload;
+      state.discountLitSurvey.sessionId = action.payload;
       state.financialLitSurvey.sessionId = action.payload;
       state.purposeSurvey.sessionId = action.payload;
       return state;
     },
     setStudyId(state, action) {
       state.studyId = action.payload;
-      state.discountLitSurvey.participantId = action.payload;
+      state.discountLitSurvey.studyId = action.payload;
       state.financialLitSurvey.studyId = action.payload;
       state.purposeSurvey.studyId = action.payload;
     },
@@ -321,9 +336,24 @@ export const questionSlice = createSlice({
       state.participantId = null;
       state.sessionId = null;
       state.studyId = null;
-      state.discountLitSurvey = {};
-      state.financialLitSurvey = {};
-      state.purposeSurvey = {};
+      state.discountLitSurvey = {
+        treatmentId: null,
+        participantId: null,
+        sessionId: null,
+        studyId: null,
+      };
+      state.financialLitSurvey = {
+        treatmentId: null,
+        participantId: null,
+        sessionId: null,
+        studyId: null,
+      };
+      state.purposeSurvey = {
+        treatmentId: null,
+        participantId: null,
+        sessionId: null,
+        studyId: null,
+      };
       state.countryOfResidence = "";
       state.vizFamiliarity = "";
       state.age = "";
