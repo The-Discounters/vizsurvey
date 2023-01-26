@@ -155,7 +155,10 @@ const run = async () => {
           mergeFilename = `${source}${path.sep}financial-lit-survey-merged.csv`;
           createMergeFile(mergeFilename, mergedData.get("financialLitSurvey"));
 
-          mergeFilename = `${source}${path.sep}purpose-lit-survey-merged.csv`;
+          mergeFilename = `${source}${path.sep}discount-lit-survey-merged.csv`;
+          createMergeFile(mergeFilename, mergedData.get("discountLitSurvey"));
+
+          mergeFilename = `${source}${path.sep}purpose-survey-merged.csv`;
           createMergeFile(mergeFilename, mergedData.get("purposeSurvey"));
 
           mergeFilename = `${source}${path.sep}demographics-merged.csv`;
