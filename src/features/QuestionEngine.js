@@ -111,9 +111,7 @@ export class QuestionEngine {
 
   setLatestAnswerShown(state, date) {
     const latestAnswer = this.latestAnswer(state);
-    if (latestAnswer.shownTimestamp === null) {
-      latestAnswer.shownTimestamp = date;
-    }
+    latestAnswer.shownTimestamp = date;
   }
 
   // TODO we should renames these xxxQuestion not treatment.
@@ -129,9 +127,7 @@ export class QuestionEngine {
     if (state.treatments.length < 3) {
       return false;
     }
-    const calc = (state.treatments.length - 1) / 2;
-    const result = state.currentQuestionIdx === calc;
-    return result;
+    return state.currentQuestionIdx === Math.floor(state.treatments.length / 2);
   }
 
   incNextQuestion(state) {

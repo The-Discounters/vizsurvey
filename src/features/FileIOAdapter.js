@@ -1,6 +1,7 @@
 import { csvParse } from "d3";
 import { DateTime } from "luxon";
 import csv from "to-csv";
+import * as d3 from "d3";
 
 import { TREATMENTS_DEV_CSV, TREATMENTS_PROD_CSV } from "./treatments";
 import { Question } from "./Question";
@@ -10,6 +11,8 @@ import { AmountType } from "./AmountType";
 import { stringToDate, dateToState } from "./ConversionUtil";
 
 import AWS from "aws-sdk";
+
+export const INSTRUCTIONS_TREATMENT_POSITION = "instructions";
 
 var TREATMENTS_CSV;
 if (process.env.REACT_APP_ENV !== "production") {
@@ -66,28 +69,46 @@ export class FileIOAdapter {
   loadAllTreatments = () => {
     const treatments = csvParse(TREATMENTS_CSV, (e) => {
       return this.fromCSVRow(e);
-    }).sort((a, b) =>
-      a.position < b.position ? -1 : a.position === b.position ? 0 : 1
-    );
+    })
+      .filter((d) => d.position !== INSTRUCTIONS_TREATMENT_POSITION)
+      .sort((a, b) =>
+        a.position < b.position ? -1 : a.position === b.position ? 0 : 1
+      );
     return treatments;
   };
 
   loadTreatment = (treatmentId) => {
     treatmentId = +treatmentId;
-    const questions = csvParse(TREATMENTS_CSV, (e) => {
+    const rows = csvParse(TREATMENTS_CSV, (e) => {
       return this.fromCSVRow(e);
-    })
-      .filter((d) => d.treatmentId === treatmentId)
+    }).filter((d) => d.treatmentId === treatmentId);
+    const grouped = d3.group(rows, (d) =>
+      Number.isInteger(d.position)
+        ? "questions"
+        : INSTRUCTIONS_TREATMENT_POSITION
+    );
+    const questions = grouped
+      .get("questions")
+      .filter((d) => Number.isInteger(d.position))
       .sort((a, b) =>
         a.position < b.position ? -1 : a.position === b.position ? 0 : 1
       );
-    return questions;
+
+    return {
+      questions: questions,
+      instructions: grouped.get(INSTRUCTIONS_TREATMENT_POSITION),
+    };
   };
 
   fromCSVRow(row) {
     return Question({
       treatmentId: row.treatment_id ? +row.treatment_id : undefined,
-      position: row.position ? +row.position : undefined,
+      position:
+        row.position === INSTRUCTIONS_TREATMENT_POSITION
+          ? row.position
+          : row.position
+          ? +row.position
+          : undefined,
       viewType: row.view_type ? ViewType[row.view_type] : undefined,
       interaction: row.interaction
         ? InteractionType[row.interaction]
@@ -126,6 +147,7 @@ export class FileIOAdapter {
           ? true
           : false
         : false,
+      instructionGifPrefix: row.instruction_gif_prefix,
       comment: row.comment,
     });
   }

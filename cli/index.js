@@ -1,21 +1,81 @@
 #!/usr/bin/env node
-/* eslint-disable no-unused-vars */
 import chalk from "chalk";
 import clear from "clear";
 import figlet from "figlet";
 import Configstore from "configstore";
 import { Command } from "commander";
-import { readFileSync, writeFileSync } from "fs";
-import { dirname, sep } from "path";
+import fs from "fs";
+import path from "path";
+import { csvParse } from "d3";
+import csv from "to-csv";
+import { DateTime } from "luxon";
 
-import { getCurrentDirectoryBase, directoryExists } from "./src/files.js";
-import {
-  AMAZON_S3_BUCKET_KEY,
-  AMAZON_REGION__KEY,
-  AMAZON_ACCESS_KEY_ID,
-  AMAZON_SECRET_ACCESS_KEY,
-  askS3BucketInfo,
-} from "./src/inquier.js";
+import { askS3BucketInfo } from "./src/inquier.js";
+import { init, downloadFiles } from "./src/S3.js";
+
+export const AMAZON_S3_BUCKET_KEY = "amazonS3Bucket";
+export const AMAZON_REGION__KEY = "amazonRegion";
+export const AMAZON_ACCESS_KEY_ID = "amazonAccessKeyId";
+export const AMAZON_SECRET_ACCESS_KEY = "amazonSecretAccessKey";
+
+const createMergeFile = (filename, mergedData) => {
+  if (mergedData && mergedData.length > 0) {
+    console.log(`...creating merged file ${filename}...`);
+    const CSV = csv(mergedData);
+    fs.writeFileSync(filename, CSV);
+  } else {
+    console.log(`...no data for merged file ${filename}...`);
+  }
+};
+
+const createCSVFileFromData = (propertyName, pathroot, answers) => {
+  if (answers[propertyName]) {
+    const filename = `${pathroot}${path.sep}${answers[propertyName].filename}`;
+    console.log(`...writing ${filename} ...`);
+    fs.writeFileSync(filename, answers[propertyName].data);
+    console.log(`...file written.`);
+    return answers[propertyName].data;
+  } else {
+    return null;
+  }
+};
+
+const createCSVFromJSONFile = (filename, callback) => {
+  console.log(`...parsing file ${filename}`);
+  const jsonString = fs.readFileSync(filename);
+  const answers = JSON.parse(jsonString);
+  const pathroot = path.dirname(filename);
+  callback(
+    "surveyAnswers",
+    createCSVFileFromData("surveyAnswers", pathroot, answers)
+  );
+  callback(
+    "answerTimestamps",
+    createCSVFileFromData("answerTimestamps", pathroot, answers)
+  );
+  callback(
+    "discountLitSurvey",
+    createCSVFileFromData("discountLitSurvey", pathroot, answers)
+  );
+  callback(
+    "financialLitSurvey",
+    createCSVFileFromData("financialLitSurvey", pathroot, answers)
+  );
+  callback(
+    "purposeSurvey",
+    createCSVFileFromData("purposeSurvey", pathroot, answers)
+  );
+  callback(
+    "demographics",
+    createCSVFileFromData("demographics", pathroot, answers)
+  );
+  callback("legal", createCSVFileFromData("legal", pathroot, answers));
+  callback("feedback", createCSVFileFromData("feedback", pathroot, answers));
+  callback(
+    "debriefTimestamps",
+    createCSVFileFromData("debriefTimestamps", pathroot, answers)
+  );
+};
 
 clear();
 
@@ -30,6 +90,8 @@ const run = async () => {
     conf.set(settings);
   }
 
+  init(conf);
+
   const program = new Command();
   program
     .name("discounters")
@@ -41,72 +103,97 @@ const run = async () => {
   program
     .command("split")
     .description(
-      "Splits out the CSV files that are in the JSON file.  The CSV files will be writen to the same folder as the JSON file."
+      "Splits out the CSV files that are in the JSON file if a single file is passed or all JSON files in the directory if a directory is passed.  The CSV files will be writen to the same folder as the JSON file."
     )
-    .argument("<filename>", "filename to split")
-    .action((filename, options) => {
-      console.log(`Loading file ${filename} for slitting...`);
+    .argument("<filename or directory>", "filename or directory to split")
+    .option("-f, --filename", "the single json filename to split")
+    .option(
+      "-d, --directory",
+      "the directory path containing the json files to split."
+    )
+    .action((source, options) => {
+      console.log(`Loading file "${source}" for splitting...`);
       try {
-        // Note that jsonString will be a <Buffer> since we did not specify an
-        // encoding type for the file. But it'll still work because JSON.parse() will
-        // use <Buffer>.toString().
-        const jsonString = readFileSync(filename);
-        const answers = JSON.parse(jsonString);
-        const pathroot = dirname(filename);
-        if (answers.surveyAnswers) {
-          const filename = `${pathroot}${sep}${answers.surveyAnswers.filename}`;
-          console.log(`Writing ${filename} ...`);
-          writeFileSync(filename, answers.surveyAnswers.data);
-          console.log(`File written.`);
+        const mergedData = new Map();
+
+        const mergeCallback = (propertyName, CSVData) => {
+          console.log(`...merging ${propertyName}`);
+          if (CSVData) {
+            const parsedCSV = csvParse(CSVData);
+            if (mergedData.has(propertyName)) {
+              mergedData.set(
+                propertyName,
+                mergedData.get(propertyName).concat(parsedCSV)
+              );
+            } else {
+              mergedData.set(propertyName, parsedCSV);
+            }
+            console.log(`...data merged`);
+          } else {
+            console.log(`...no data to merge`);
+          }
+        };
+
+        if (options.filename) {
+          console.log(`...splitting filename "${source}"`);
+          createCSVFromJSONFile(source, createCSVFromJSONFile);
+        } else if (options.directory) {
+          console.log(`...splitting files in directory "${source}"`);
+          const files = fs.readdirSync(source).filter((file) => {
+            return path.extname(file).toLowerCase() === ".json";
+          });
+          for (const file of files) {
+            createCSVFromJSONFile(source + path.sep + file, mergeCallback);
+          }
+
+          var mergeFilename = `${source}${path.sep}answers-merged.csv`;
+          createMergeFile(mergeFilename, mergedData.get("surveyAnswers"));
+
+          mergeFilename = `${source}${path.sep}answers-timestamps-merged.csv`;
+          createMergeFile(mergeFilename, mergedData.get("answerTimestamps"));
+
+          mergeFilename = `${source}${path.sep}financial-lit-survey-merged.csv`;
+          createMergeFile(mergeFilename, mergedData.get("financialLitSurvey"));
+
+          mergeFilename = `${source}${path.sep}discount-lit-survey-merged.csv`;
+          createMergeFile(mergeFilename, mergedData.get("discountLitSurvey"));
+
+          mergeFilename = `${source}${path.sep}purpose-survey-merged.csv`;
+          createMergeFile(mergeFilename, mergedData.get("purposeSurvey"));
+
+          mergeFilename = `${source}${path.sep}demographics-merged.csv`;
+          createMergeFile(mergeFilename, mergedData.get("demographics"));
+
+          mergeFilename = `${source}${path.sep}legal-merged.csv`;
+          createMergeFile(mergeFilename, mergedData.get("legal"));
+
+          mergeFilename = `${source}${path.sep}feedback.csv`;
+          createMergeFile(mergeFilename, mergedData.get("feedback"));
+
+          mergeFilename = `${source}${path.sep}debrief-merged.csv`;
+          createMergeFile(mergeFilename, mergedData.get("debriefTimestamps"));
         }
-        if (answers.answerTimestamps) {
-          const filename = `${pathroot}${sep}${answers.answerTimestamps.filename}`;
-          console.log(`Writing ${filename} ...`);
-          writeFileSync(filename, answers.answerTimestamps.data);
-          console.log(`File written.`);
-        }
-        if (answers.discountLitSurvey) {
-          const filename = `${pathroot}${sep}${answers.discountLitSurvey.filename}`;
-          console.log(`Writing ${filename} ...`);
-          writeFileSync(filename, answers.discountLitSurvey.data);
-          console.log(`File written.`);
-        }
-        if (answers.financialLitSurvey) {
-          const filename = `${pathroot}${sep}${answers.financialLitSurvey.filename}`;
-          console.log(`Writing ${filename} ...`);
-          writeFileSync(filename, answers.financialLitSurvey.data);
-          console.log(`File written.`);
-        }
-        if (answers.purposeSurvey) {
-          const filename = `${pathroot}${sep}${answers.purposeSurvey.filename}`;
-          console.log(`Writing ${filename} ...`);
-          writeFileSync(filename, answers.purposeSurvey.data);
-          console.log(`File written.`);
-        }
-        if (answers.demographics) {
-          const filename = `${pathroot}${sep}${answers.demographics.filename}`;
-          console.log(`Writing ${filename} ...`);
-          writeFileSync(filename, answers.demographics.data);
-          console.log(`File written.`);
-        }
-        if (answers.legal) {
-          const filename = `${pathroot}${sep}${answers.legal.filename}`;
-          console.log(`Writing ${filename} ...`);
-          writeFileSync(filename, answers.legal.data);
-          console.log(`File written.`);
-        }
-        if (answers.feedback) {
-          const filename = `${pathroot}${sep}${answers.feedback.filename}`;
-          console.log(`Writing ${filename} ...`);
-          writeFileSync(filename, answers.feedback.data);
-          console.log(`File written.`);
-        }
-        if (answers.debriefTimestamps) {
-          const filename = `${pathroot}${sep}${answers.debriefTimestamps.filename}`;
-          console.log(`Writing ${filename} ...`);
-          writeFileSync(filename, answers.debriefTimestamps.data);
-          console.log(`File written.`);
-        }
+      } catch (err) {
+        console.log(err);
+        return;
+      }
+    });
+  program
+    .command("download")
+    .description("Downloads files from the S3 bucket.")
+    .argument("<directory>", "directory to store the files in.")
+    .option(
+      "-l, --laterthan <date>",
+      "the date to filter out files that are are equal to or later than"
+    )
+    .action((source, options) => {
+      console.log(`Downloading files from S3 bucket...`);
+      try {
+        const laterThanDate = DateTime.fromFormat(
+          options.laterthan,
+          "M/d/yyyy"
+        );
+        downloadFiles(source + path.sep, laterThanDate);
       } catch (err) {
         console.log(err);
         return;
@@ -116,7 +203,3 @@ const run = async () => {
 };
 
 run();
-// if (directoryExists(".git")) {
-//   console.log(chalk.red("Already a Git repository!"));
-//   process.exit();
-// }

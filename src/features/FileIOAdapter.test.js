@@ -49,7 +49,7 @@ describe("Regular express test", () => {
 describe("FileIOAdapter tests", () => {
   test("Validate loadTreatment loads CSV fields correctly.", async () => {
     const io = new FileIOAdapter();
-    var questions = await io.loadTreatment(1);
+    var { questions, instructions } = await io.loadTreatment(1);
     expect(questions.length).toBe(3);
     expect(questions[0].treatmentId).toBe(1);
     expect(questions[0].position).toBe(1);
@@ -73,18 +73,17 @@ describe("FileIOAdapter tests", () => {
     expect(questions[0].widthIn).toBe(4);
     expect(questions[0].heightIn).toBe(4);
 
-    const showMinorTicks = "yes";
-    const value = showMinorTicks
-      ? "yes" === showMinorTicks.trim().toLowerCase()
-        ? true
-        : false
-      : false;
-    expect(value).toBe(true);
     expect(questions[0].showMinorTicks).toBe(false);
     expect(questions[0].comment).toBe(
       "Worded with no interaction and Read 2001 example values."
     );
-    questions = await io.loadTreatment(3);
+    expect(instructions.length).toBe(1);
+    expect(instructions[0].amountEarlier).toBe(300);
+    expect(instructions[0].timeEarlier).toBe(2);
+    expect(instructions[0].amountLater).toBe(700);
+    expect(instructions[0].timeLater).toBe(7);
+
+    ({ questions, instructions } = await io.loadTreatment(3));
     expect(questions.length).toBe(5);
     expect(questions[0].treatmentId).toBe(3);
     expect(questions[0].position).toBe(1);
@@ -110,12 +109,17 @@ describe("FileIOAdapter tests", () => {
     expect(questions[0].comment).toBe(
       "Barchart MEL question with no interaction pixels."
     );
+    expect(instructions.length).toBe(1);
+    expect(instructions[0].amountEarlier).toBe(300);
+    expect(instructions[0].timeEarlier).toBe(2);
+    expect(instructions[0].amountLater).toBe(700);
+    expect(instructions[0].timeLater).toBe(7);
   });
 
   test("Validate loadAllTreatments loads all treatments correctly.", async () => {
     const io = new FileIOAdapter();
     var questions = await io.loadAllTreatments();
-    expect(questions.length).toBe(65);
+    expect(questions.length).toBe(66);
   });
 
   test("Validate answer CSV fields are written correctly.", async () => {

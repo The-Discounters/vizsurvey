@@ -17,6 +17,7 @@ import {
   introductionShown,
   introductionCompleted,
   fetchCurrentTreatment,
+  getInstructionTreatment,
   getStatus,
   startSurvey,
 } from "../features/questionSlice";
@@ -25,11 +26,11 @@ import { styles, theme, calcScreenValues } from "./ScreenHelper";
 import { AmountType } from "../features/AmountType";
 import { MELSelectionForm } from "./MELSelectionForm";
 import { drawBarChart } from "./BarChartComponent";
-import { InteractionType } from "../features/InteractionType";
 
 const Introduction = () => {
   const dispatch = useDispatch();
   const treatment = useSelector(fetchCurrentTreatment);
+  const instructionTreatment = useSelector(getInstructionTreatment);
   const navigate = useNavigate();
 
   const [choice, setChoice] = useState(AmountType.none);
@@ -38,6 +39,16 @@ const Introduction = () => {
   const [helperText, setHelperText] = React.useState("");
   const [showNextPrevious, setShowNextPrevious] = useState(false);
   const status = useSelector(getStatus);
+
+  const { totalSVGWidth, totalSVGHeight, totalUCWidth, totalUCHeight } =
+    calcScreenValues(
+      instructionTreatment.horizontalPixels,
+      instructionTreatment.verticalPixels,
+      instructionTreatment.leftMarginWidthIn,
+      instructionTreatment.graphWidthIn,
+      instructionTreatment.bottomMarginHeightIn,
+      instructionTreatment.graphHeightIn
+    );
 
   useEffect(() => {
     dispatch(introductionShown(dateToState(DateTime.now())));
@@ -77,26 +88,19 @@ const Introduction = () => {
     setError(false);
   };
 
-  const radioButtonGif = new Array(
-    "introduction-radio-button-earlier.gif",
-    "introduction-radio-button-later.gif"
-  );
+  /**
+   * @returns The name of the animated gif filename to show in the instructions page.
+   */
+  const gifFilename = () => {
+    const randIndex = Math.floor(Math.random() * 2);
+    const randAmountType = AmountType[Object.keys(AmountType)[randIndex + 1]];
 
-  const barchartGif = new Array(
-    "introduction-barchart-later-" +
-      (treatment.showMinorTicks ? "ticks" : "no-ticks") +
-      ".gif",
-    "introduction-barchart-earlier-" +
-      (treatment.showMinorTicks ? "ticks" : "no-ticks") +
-      ".gif"
-  );
-
-  const testGif = new Array("test.png");
+    return `${instructionTreatment.instructionGifPrefix}-${randAmountType}.gif`;
+  };
 
   const instructions = (
     description,
     clickDesc,
-    gifs,
     gifAltText,
     tryLeftDesc,
     tryRightDesc,
@@ -125,8 +129,10 @@ const Introduction = () => {
         </Typography>
         <Typography paragraph>
           <img
-            src={gifs[Math.floor(Math.random() * gifs.length)]}
+            src={gifFilename()}
             alt={gifAltText}
+            width={totalSVGWidth}
+            height={totalSVGHeight}
           ></img>
         </Typography>
         <Typography paragraph>
@@ -140,13 +146,12 @@ const Introduction = () => {
     );
   };
 
-  const vizExplanation = (viewType) => {
-    switch (viewType) {
+  const vizExplanation = () => {
+    switch (instructionTreatment.viewType) {
       case ViewType.word:
         return instructions(
           "radio buttons",
           "buttons",
-          radioButtonGif,
           "Radio button example",
           "button on the left",
           "button on the right",
@@ -156,7 +161,6 @@ const Introduction = () => {
         return instructions(
           "a bar chart",
           "bars",
-          barchartGif,
           "Bar chart button example",
           "bar on the left",
           "bar on the right",
@@ -166,7 +170,6 @@ const Introduction = () => {
         return instructions(
           "calendar bar chart",
           "bars",
-          testGif,
           "Radio button example",
           "button on the left",
           "button on the right",
@@ -176,7 +179,6 @@ const Introduction = () => {
         return instructions(
           "calendar word chart",
           "amounts",
-          testGif,
           "Calendar word chart example",
           "bar on the earlier day",
           "bar on the laster day",
@@ -186,7 +188,6 @@ const Introduction = () => {
         return instructions(
           "calendar icon chart",
           "icon charts",
-          testGif,
           "Calendar icon chart example",
           "icon chart on the earlier day",
           "icon chart on the laster day",
@@ -197,28 +198,17 @@ const Introduction = () => {
     }
   };
 
-  const vizTry = (viewType) => {
-    const horizontalPixels = 800;
-    const verticalPixels = 400;
-    const { totalSVGWidth, totalSVGHeight, totalUCWidth, totalUCHeight } =
-      calcScreenValues(
-        horizontalPixels,
-        verticalPixels,
-        null,
-        null,
-        null,
-        null
-      );
-    switch (viewType) {
+  const vizTry = () => {
+    switch (instructionTreatment.viewType) {
       case ViewType.word:
         return (
           <MELSelectionForm
             textShort={"textShort"}
             error={error}
-            amountEarlier={300}
-            timeEarlier={2}
-            amountLater={700}
-            timeLater={7}
+            amountEarlier={instructionTreatment.amountEarlier}
+            timeEarlier={instructionTreatment.timeEarlier}
+            amountLater={instructionTreatment.amountLater}
+            timeLater={instructionTreatment.timeLater}
             helperText={helperText}
             onClickCallback={onClickCallback}
             choice={choice}
@@ -234,23 +224,24 @@ const Introduction = () => {
               (svg) => {
                 drawBarChart({
                   svg: svg,
-                  maxTime: 8,
-                  maxAmount: 1000,
-                  interaction: InteractionType.none,
-                  variableAmount: AmountType.none,
-                  amountEarlier: 300,
-                  timeEarlier: 2,
-                  amountLater: 700,
-                  timeLater: 7,
+                  maxTime: instructionTreatment.maxTime,
+                  maxAmount: instructionTreatment.maxAmount,
+                  interaction: instructionTreatment.interaction,
+                  variableAmount: instructionTreatment.variableAmount,
+                  amountEarlier: instructionTreatment.amountEarlier,
+                  timeEarlier: instructionTreatment.timeEarlier,
+                  amountLater: instructionTreatment.amountLater,
+                  timeLater: instructionTreatment.timeLater,
                   onClickCallback: onClickCallback,
                   choice: choice,
-                  horizontalPixels: horizontalPixels,
-                  verticalPixels: verticalPixels,
-                  leftMarginWidthIn: null,
-                  graphWidthIn: null,
-                  bottomMarginHeightIn: null,
-                  graphHeightIn: null,
-                  showMinorTicks: treatment.showMinorTicks,
+                  horizontalPixels: instructionTreatment.horizontalPixels,
+                  verticalPixels: instructionTreatment.verticalPixels,
+                  leftMarginWidthIn: instructionTreatment.leftMarginWidthIn,
+                  graphWidthIn: instructionTreatment.graphWidthIn,
+                  bottomMarginHeightIn:
+                    instructionTreatment.bottomMarginHeightIn,
+                  graphHeightIn: instructionTreatment.graphHeightIn,
+                  showMinorTicks: instructionTreatment.showMinorTicks,
                 });
               },
               [choice]
@@ -294,8 +285,8 @@ const Introduction = () => {
           />
         </Grid>
         <Grid item xs={12}>
-          {vizExplanation(treatment.viewType)}
-          {vizTry(treatment.viewType)}
+          {vizExplanation()}
+          {vizTry()}
           {showNextPrevious && (
             <>
               <hr
