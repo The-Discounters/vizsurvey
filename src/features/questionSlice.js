@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import { FileIOAdapter } from "./FileIOAdapter";
 import { QuestionEngine } from "./QuestionEngine";
 import { StatusType } from "./StatusType";
+import { stateToDate } from "./ConversionUtil";
 
 // Define the initial state of the store for this slicer.
 const qe = new QuestionEngine();
@@ -21,12 +22,6 @@ export const questionSlice = createSlice({
     participantId: null,
     sessionId: null,
     studyId: null,
-    discountLitSurvey: {
-      treatmentId: null,
-      participantId: null,
-      sessionId: null,
-      studyId: null,
-    },
     financialLitSurvey: {
       treatmentId: null,
       participantId: null,
@@ -56,8 +51,6 @@ export const questionSlice = createSlice({
     instructionsShownTimestamp: null,
     feedback: "",
     instructionsCompletedTimestamp: null,
-    discountLitSurveyQuestionsShownTimestamp: null,
-    discountLitSurveyQuestionsCompletedTimestamp: null,
     financialLitSurveyQuestionsShownTimestamp: null,
     financialLitSurveyQuestionsCompletedTimestamp: null,
     purposeSurveyQuestionsShownTimestamp: null,
@@ -82,28 +75,24 @@ export const questionSlice = createSlice({
     },
     setParticipantId(state, action) {
       state.participantId = action.payload;
-      state.discountLitSurvey.participantId = action.payload;
       state.financialLitSurvey.participantId = action.payload;
       state.purposeSurvey.participantId = action.payload;
       return state;
     },
     setTreatmentId(state, action) {
       state.treatmentId = action.payload;
-      state.discountLitSurvey.treatmentId = action.payload;
       state.financialLitSurvey.treatmentId = action.payload;
       state.purposeSurvey.treatmentId = action.payload;
       return state;
     },
     setSessionId(state, action) {
       state.sessionId = action.payload;
-      state.discountLitSurvey.sessionId = action.payload;
       state.financialLitSurvey.sessionId = action.payload;
       state.purposeSurvey.sessionId = action.payload;
       return state;
     },
     setStudyId(state, action) {
       state.studyId = action.payload;
-      state.discountLitSurvey.studyId = action.payload;
       state.financialLitSurvey.studyId = action.payload;
       state.purposeSurvey.studyId = action.payload;
     },
@@ -133,14 +122,6 @@ export const questionSlice = createSlice({
     },
     setProfession(state, action) {
       state.profession = action.payload;
-    },
-    initDiscountLitSurveyQuestion(state, action) {
-      if (state.discountLitSurvey[action.payload] == undefined) {
-        state.discountLitSurvey[action.payload] = "";
-      }
-    },
-    setDiscountLitSurveyQuestion(state, action) {
-      state.discountLitSurvey[action.payload.key] = action.payload.value;
     },
     initFinancialLitSurveyQuestion(state, action) {
       if (state.financialLitSurvey[action.payload] == undefined) {
@@ -222,12 +203,6 @@ export const questionSlice = createSlice({
     nextQuestion(state) {
       qe.incNextQuestion(state);
     },
-    discountLitSurveyQuestionsShown(state, action) {
-      state.discountLitSurveyQuestionsShownTimestamp = action.payload;
-    },
-    discountLitSurveyQuestionsCompleted(state, action) {
-      state.discountLitSurveyQuestionsCompletedTimestamp = action.payload;
-    },
     financialLitSurveyQuestionsShown(state, action) {
       state.financialLitSurveyQuestionsShownTimestamp = action.payload;
     },
@@ -257,6 +232,13 @@ export const questionSlice = createSlice({
         studyId: state.studyId,
         debriefShownTimestamp: state.debriefShownTimestamp,
         debriefCompletedTimestamp: state.debriefCompletedTimestamp,
+        debriefTimeSec:
+          state.debriefShownTimestamp && state.debriefCompletedTimestamp
+            ? stateToDate(state.debriefCompletedTimestamp).diff(
+                stateToDate(state.debriefShownTimestamp),
+                ["seconds"]
+              ).seconds
+            : "",
       };
       io.writeFeedback(
         state.participantId,
@@ -289,27 +271,79 @@ export const questionSlice = createSlice({
         studyId: state.studyId,
         consentShownTimestamp: state.consentShownTimestamp,
         consentCompletedTimestamp: state.consentCompletedTimestamp,
+        consentTimeSec:
+          state.consentCompletedTimestamp && state.consentShownTimestamp
+            ? stateToDate(state.consentCompletedTimestamp).diff(
+                stateToDate(state.consentShownTimestamp),
+                ["seconds"]
+              ).seconds
+            : "",
         introductionShowTimestamp: state.introductionShowTimestamp,
         introductionCompletedTimestamp: state.introductionCompletedTimestamp,
+        introductionTimeSec:
+          state.introductionCompletedTimestamp &&
+          state.introductionShowTimestamp
+            ? stateToDate(state.introductionCompletedTimestamp).diff(
+                stateToDate(state.introductionShowTimestamp),
+                ["seconds"]
+              ).seconds
+            : "",
         instructionsShownTimestamp: state.instructionsShownTimestamp,
         instructionsCompletedTimestamp: state.instructionsCompletedTimestamp,
+        instructionsTimeSec:
+          state.instructionsCompletedTimestamp &&
+          state.instructionsShownTimestamp
+            ? stateToDate(state.instructionsCompletedTimestamp).diff(
+                stateToDate(state.instructionsShownTimestamp),
+                ["seconds"]
+              ).seconds
+            : "",
         attentionCheckShownTimestamp: state.attentionCheckShownTimestamp,
         attentionCheckCompletedTimestamp:
           state.attentionCheckCompletedTimestamp,
-        discountLitSurveyQuestionsShownTimestamp:
-          state.discountLitSurveyQuestionsShownTimestamp,
-        discountLitSurveyQuestionsCompletedTimestamp:
-          state.discountLitSurveyQuestionsCompletedTimestamp,
+        attentionCheckTimeSec:
+          state.attentionCheckCompletedTimestamp &&
+          state.attentionCheckShownTimestamp
+            ? stateToDate(state.attentionCheckCompletedTimestamp).diff(
+                stateToDate(state.attentionCheckShownTimestamp),
+                ["seconds"]
+              ).seconds
+            : "",
         financialLitSurveyQuestionsShownTimestamp:
           state.financialLitSurveyQuestionsShownTimestamp,
         financialLitSurveyQuestionsCompletedTimestamp:
           state.financialLitSurveyQuestionsCompletedTimestamp,
+        financialLitSurveyQuestionsTimeSec:
+          state.financialLitSurveyQuestionsCompletedTimestamp &&
+          state.financialLitSurveyQuestionsShownTimestamp
+            ? stateToDate(
+                state.financialLitSurveyQuestionsCompletedTimestamp
+              ).diff(
+                stateToDate(state.financialLitSurveyQuestionsShownTimestamp),
+                ["seconds"]
+              ).seconds
+            : "",
         purposeSurveyQuestionsShownTimestamp:
           state.purposeSurveyQuestionsShownTimestamp,
         purposeSurveyQuestionsCompletedTimestamp:
           state.purposeSurveyQuestionsCompletedTimestamp,
+        purposeSurveyQuestionsTimeSec:
+          state.purposeSurveyQuestionsCompletedTimestamp &&
+          state.purposeSurveyQuestionsShownTimestamp
+            ? stateToDate(state.purposeSurveyQuestionsCompletedTimestamp).diff(
+                stateToDate(state.purposeSurveyQuestionsShownTimestamp),
+                ["seconds"]
+              ).seconds
+            : "",
         theEndShownTimestamp: state.theEndShownTimestamp,
         theEndCompletedTimestamp: state.theEndCompletedTimestamp,
+        theEndShownTimeSec:
+          state.theEndCompletedTimestamp && state.theEndShownTimestamp
+            ? stateToDate(state.theEndCompletedTimestamp).diff(
+                stateToDate(state.theEndShownTimestamp),
+                ["seconds"]
+              ).seconds
+            : "",
       };
       const legal = {
         participantId: state.participantId,
@@ -318,12 +352,20 @@ export const questionSlice = createSlice({
         consentChecked: state.consentChecked,
         attentionCheck: state.attentioncheck,
       };
+      for (const answer of state.answers) {
+        answer["choiceTimeSec"] =
+          answer.choiceTimestamp && answer.shownTimestamp
+            ? stateToDate(answer.choiceTimestamp).diff(
+                stateToDate(answer.shownTimestamp),
+                ["seconds"]
+              ).seconds
+            : "";
+      }
       io.writeAnswers(
         state.participantId,
         state.studyId,
         state.answers,
         timestamps,
-        state.discountLitSurvey,
         state.financialLitSurvey,
         state.purposeSurvey,
         demographic,
@@ -336,12 +378,6 @@ export const questionSlice = createSlice({
       state.participantId = null;
       state.sessionId = null;
       state.studyId = null;
-      state.discountLitSurvey = {
-        treatmentId: null,
-        participantId: null,
-        sessionId: null,
-        studyId: null,
-      };
       state.financialLitSurvey = {
         treatmentId: null,
         participantId: null,
@@ -371,8 +407,6 @@ export const questionSlice = createSlice({
       state.instructionsShownTimestamp = null;
       state.feedback = "";
       state.instructionsCompletedTimestamp = null;
-      state.discountLitSurveyQuestionsShownTimestamp = null;
-      state.discountLitSurveyQuestionsCompletedTimestamp = null;
       state.financialLitSurveyQuestionsShownTimestamp = null;
       state.financialLitSurveyQuestionsCompletedTimestamp = null;
       state.purposeSurveyQuestionsShownTimestamp = null;
@@ -438,9 +472,6 @@ export const getProfession = (state) => state.questions.profession;
 export const getFinancialLitSurveyQuestion = (questionId) => (state) => {
   return state.questions.financialLitSurvey[questionId];
 };
-export const getDiscountLitSurveyQuestion = (questionId) => (state) => {
-  return state.questions.discountLitSurvey[questionId];
-};
 export const getPurposeSurveyQuestion = (questionId) => (state) => {
   return state.questions.purposeSurvey[questionId];
 };
@@ -502,8 +533,6 @@ export const {
   setGender,
   setSelfDescribeGender,
   setProfession,
-  initDiscountLitSurveyQuestion,
-  setDiscountLitSurveyQuestion,
   initFinancialLitSurveyQuestion,
   setFinancialLitSurveyQuestion,
   setSurveyQuestion,
@@ -516,8 +545,6 @@ export const {
   introductionShown,
   introductionCompleted,
   attentionCheckShown,
-  discountLitSurveyQuestionsShown,
-  discountLitSurveyQuestionsCompleted,
   financialLitSurveyQuestionsShown,
   financialLitSurveyQuestionsCompleted,
   purposeSurveyQuestionsShown,

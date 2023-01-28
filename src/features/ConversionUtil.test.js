@@ -19,7 +19,7 @@ describe("ConversionUtil test.", () => {
   // we need to be able to convert from a date object to a primitive while
   // preserving the timezone since we want to know what timezone the user was
   // in and have to store state in redux as primitives.
-  test("CTest dateToState and stateToDate.", async () => {
+  test("Test dateToState and stateToDate.", async () => {
     const stringValue = "1974-11-08T00:00:00.000-05:00";
     const dateValue = DateTime.fromISO(stringValue);
     expect(dateToState(dateValue)).toBe("1974-11-08T00:00:00.000-05:00");
@@ -38,5 +38,13 @@ describe("ConversionUtil test.", () => {
     const dateStr = "11/8/1974";
     const date = stringToDate(dateStr);
     expect(date.toISO()).toBe("1974-11-08T00:00:00.000-05:00");
+  });
+
+  test("Test stateToDate and dateToState undefined and null dates.", async () => {
+    var result = stateToDate(null);
+    expect(result).toBeNull();
+    expect(stateToDate(null)).toBeNull();
+    expect(stateToDate(undefined)).toBeNull();
+    expect(stateToDate(undefined)).toBeNull();
   });
 });
