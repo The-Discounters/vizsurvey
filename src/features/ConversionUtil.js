@@ -1,11 +1,17 @@
 import { DateTime } from "luxon";
 
 export function dateToState(date) {
-  return date.toISO();
+  if (date) {
+    return date.toISO();
+  }
+  return null;
 }
 
 export function stateToDate(date) {
-  return DateTime.fromISO(date);
+  if (date) {
+    return DateTime.fromISO(date);
+  }
+  return null;
 }
 
 export function stringToDate(date) {

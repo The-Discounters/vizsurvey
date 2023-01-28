@@ -117,25 +117,6 @@ app.post("/test", (req, res) => {
       }
     );
   }
-  if (data.discountLitSurvey) {
-    console.log(
-      "data.discountLitSurvey.filename: " +
-        data.discountLitSurvey.filename +
-        ", " +
-        "data.discountLitSurvey.data: " +
-        data.discountLitSurvey.data
-    );
-    fs.writeFile(
-      dir + data.discountLitSurvey.filename,
-      data.discountLitSurvey.data,
-      function (err) {
-        if (err) {
-          console.log(err);
-          throw err;
-        }
-      }
-    );
-  }
   if (data.financialLitSurvey) {
     console.log(
       "data.financialLitSurvey.filename: " +
@@ -246,7 +227,7 @@ app.post("/test", (req, res) => {
       }
     );
   }
-  res.send(JSON.stringify({ test: 123 }, null, 2));
+  res.send(JSON.stringify({ status: "server wrote file" }, null, 2));
 });
 
 console.log("server starting...");
