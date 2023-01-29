@@ -17,11 +17,10 @@ import Introduction from "./components/Introduction";
 import Demographic from "./components/Demographic";
 import Instructions from "./components/Instructions";
 import Survey from "./components/Survey";
-import PostSurveyDiscountLit from "./components/PostSurveyDiscountLit";
+import PostSurveyFinancialLit from "./components/PostSurveyFinancialLit";
 import PostSurveySenseOfPurpose from "./components/PostSurveySenseOfPurpose";
 import AttentionCheck from "./components/AttentionCheck";
 import Debrief from "./components/Debrief";
-import TheEnd from "./components/TheEnd";
 import InvalidSurveyLink from "./components/InvalidSurveyLink";
 import {
   loadAllTreatments,
@@ -85,14 +84,13 @@ const App = () => {
               <Route path={"survey"} element={<Survey />} />
               <Route
                 path={"financialquestionaire"}
-                element={<PostSurveyDiscountLit />}
+                element={<PostSurveyFinancialLit />}
               />
               <Route
                 path={"purposequestionaire"}
                 element={<PostSurveySenseOfPurpose />}
               />
               <Route path={"attentioncheck"} element={<AttentionCheck />} />
-              <Route path={"theend"} element={<TheEnd />} />
               <Route path={"debrief"} element={<Debrief />} />
               <Route path={"invalidlink"} element={<InvalidSurveyLink />} />
               <Route path="*" element={<InvalidSurveyLink />} />

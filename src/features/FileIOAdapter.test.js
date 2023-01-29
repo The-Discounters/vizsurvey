@@ -213,7 +213,7 @@ describe("FileIOAdapter tests", () => {
 22,23,24,25,26,barchart,drag,earlierAmount,27,28,2001-01-02T01:01:01.001Z,29,30,2001-01-02T02:01:01.001Z,31,32,33,34,35,36,37,38,39,40,false,laterAmount,,2001-01-02T03:01:01.001Z,2001-01-02T04:01:01.001Z,41,42·`);
   });
 
-  test("Validate timestamp file is written correctly.", async () => {
+  test("Validate writeCSV writes data correctly.", async () => {
     const timestamp = DateTime.fromFormat("1/1/2001", "M/d/yyyy", {
       zone: "utc",
     }).toMillis();
@@ -315,17 +315,28 @@ describe("FileIOAdapter tests", () => {
       participantId: 1,
       consentShownTimestamp: timestamp,
       consentCompletedTimestamp: timestamp,
-      introductionShowTimestamp: timestamp,
+      consentTimeSec: 1,
+      demographicShownTimestamp: timestamp,
+      demographicCompletedTimestamp: timestamp,
+      demographicTimeSec: 2,
+      introductionShownTimestamp: timestamp,
       introductionCompletedTimestamp: timestamp,
+      introductionTimeSec: 3,
       instructionsShownTimestamp: timestamp,
       instructionsCompletedTimestamp: timestamp,
+      instructionsTimeSec: 4,
       attentionCheckShownTimestamp: timestamp,
       attentionCheckCompletedTimestamp: timestamp,
+      attentionCheckTimeSec: 5,
       financialLitSurveyQuestionsShownTimestamp: timestamp,
+      financialLitSurveyQuestionsCompletedTimestamp: timestamp,
+      financialLitSurveyTimeSec: 6,
       purposeSurveyQuestionsShownTimestamp: timestamp,
+      purposeSurveyQuestionsCompletedTimestamp: timestamp,
+      purposeSurveyTimeSec: 7,
       debriefShownTimestamp: timestamp,
       debriefCompletedTimestamp: timestamp,
-      theEndShownTimestamp: timestamp,
+      debriefTimeSec: 8,
     };
 
     const demographic = {
@@ -345,16 +356,23 @@ describe("FileIOAdapter tests", () => {
     };
 
     const io = new FileIOAdapter();
-    io.writeAnswers(
-      1,
-      1,
+    io.writeCSV(1, 2, 3, "answers", {
       answers,
+    });
+    io.writeCSV(1, 2, 3, "timestamps", {
       timestamps,
+    });
+    io.writeCSV(1, 2, 3, "discount", {
       discountSurvey,
+    });
+    io.writeCSV(1, 2, 3, "financial", {
       financialLitSurvey,
-      purposeSurvey,
+    });
+    io.writeCSV(1, 2, 3, "demographic", {
       demographic,
-      legal
-    );
+    });
+    io.writeCSV(1, 2, 3, "legal", {
+      legal,
+    });
   });
 });

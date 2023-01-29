@@ -9,7 +9,6 @@ export const StatusType = {
   Attention: "attention",
   FinancialQuestionaire: "financialquestionaire",
   PurposeQuestionaire: "purposequestionaire",
-  Done: "done",
   Debrief: "debrief",
   Finished: "finished",
   Error: "error",

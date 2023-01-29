@@ -19,7 +19,6 @@ import {
   getStatus,
   purposeSurveyQuestionsShown,
   purposeSurveyQuestionsCompleted,
-  nextQuestion,
   initPurposeSurveyQuestion,
   setPurposeSurveyQuestion,
   getPurposeSurveyQuestion,
@@ -204,7 +203,6 @@ export function PostSurvey() {
                         dateToState(DateTime.now())
                       )
                     );
-                    dispatch(nextQuestion());
                   }, 400);
                 }}
                 disabled={disableSubmit}

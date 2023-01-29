@@ -52,7 +52,6 @@ describe("QuestionEngine tests", () => {
     expect((state.status = qe.nextStatus(state, true))).toBe(
       StatusType.PurposeQuestionaire
     );
-    expect((state.status = qe.nextStatus(state, false))).toBe(StatusType.Done);
     expect((state.status = qe.nextStatus(state, false))).toBe(
       StatusType.Debrief
     );
@@ -74,10 +73,7 @@ describe("QuestionEngine tests", () => {
     expect((state.status = qe.previousStatus(state, false))).toBe(
       StatusType.Debrief
     );
-    state.status = StatusType.Done;
-    expect((state.status = qe.previousStatus(state, false))).toBe(
-      StatusType.PurposeQuestionaire
-    );
+    state.status = StatusType.PurposeQuestionaire;
     expect((state.status = qe.previousStatus(state, false))).toBe(
       StatusType.FinancialQuestionaire
     );

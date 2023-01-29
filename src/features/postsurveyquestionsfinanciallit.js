@@ -1,6 +1,6 @@
 export const POST_SURVEY_QUESTIONS = {
   promptShort: "fincanialLit",
-  prompt: "Please answer these to the best of your knowledge.",
+  prompt: "Please answer these questions to the best of your ability.",
   questionsType: "multiple choice",
   questions: [
     /*

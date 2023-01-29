@@ -22,8 +22,6 @@ export const navigateFromStatus = (status) => {
       return "/financialquestionaire";
     case StatusType.PurposeQuestionaire:
       return "/purposequestionaire";
-    case StatusType.Done:
-      return "/theend";
     case StatusType.Debrief:
       return "/debrief";
     case StatusType.Finished:

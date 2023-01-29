@@ -54,10 +54,6 @@ const createCSVFromJSONFile = (filename, callback) => {
     createCSVFileFromData("answerTimestamps", pathroot, answers)
   );
   callback(
-    "discountLitSurvey",
-    createCSVFileFromData("discountLitSurvey", pathroot, answers)
-  );
-  callback(
     "financialLitSurvey",
     createCSVFileFromData("financialLitSurvey", pathroot, answers)
   );
@@ -155,7 +151,7 @@ const run = async () => {
           mergeFilename = `${source}${path.sep}financial-lit-survey-merged.csv`;
           createMergeFile(mergeFilename, mergedData.get("financialLitSurvey"));
 
-          mergeFilename = `${source}${path.sep}purpose-lit-survey-merged.csv`;
+          mergeFilename = `${source}${path.sep}purpose-survey-merged.csv`;
           createMergeFile(mergeFilename, mergedData.get("purposeSurvey"));
 
           mergeFilename = `${source}${path.sep}demographics-merged.csv`;
@@ -186,10 +182,9 @@ const run = async () => {
     .action((source, options) => {
       console.log(`Downloading files from S3 bucket...`);
       try {
-        const laterThanDate = DateTime.fromFormat(
-          options.laterthan,
-          "M/d/yyyy"
-        );
+        const laterThanDate = options.laterthan
+          ? DateTime.fromFormat(options.laterthan, "M/d/yyyy")
+          : null;
         downloadFiles(source + path.sep, laterThanDate);
       } catch (err) {
         console.log(err);

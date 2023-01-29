@@ -49,14 +49,11 @@ function postsurvey(expects) {
           response.text().then((text) => {
             console.log("file1 text: " + text);
             expect(JSON.parse(text)).to.deep.equal({
-              surveys: {
-                discountLit: {
-                  qdoublediscount: "v1360",
-                  qsinglediscount: "v1350",
-                  qfinddiscount: "v20p",
-                },
+              financialLitSurvey: {
+                qdoublediscount: "v1360",
+                qsinglediscount: "v1350",
+                qfinddiscount: "v20p",
               },
-              financialLitSurvey: {},
 
               purposeSurvey: {
                 posdiff: "strongly-disagree",
@@ -79,12 +76,14 @@ function postsurvey(expects) {
               timestamps: {
                 consentShownTimestamp: 500,
                 consentCompletedTimestamp: 1000,
-                introductionShowTimestamp: 1500,
+                introductionShownTimestamp: 1500,
                 introductionCompletedTimestamp: 2000,
-                instructionsShownTimestamp: 2000,
-                instructionsCompletedTimestamp: 4000,
-                attentionCheckShownTimestamp: 4000,
-                attentionCheckCompletedTimestamp: 5000,
+                demographicShownTimestamp: 2000,
+                demographicCompletedTimestamp: 4000,
+                instructionsShownTimestamp: 4000,
+                instructionsCompletedTimestamp: 5000,
+                attentionCheckShownTimestamp: 5000,
+                attentionCheckCompletedTimestamp: 6000,
                 financialLitSurveyQuestionsShownTimestamp: 6000,
                 purposeSurveyQuestionsShownTimestamp: 9000,
                 debriefShownTimestamp: null, // TODO

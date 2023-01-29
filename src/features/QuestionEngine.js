@@ -2,6 +2,7 @@ import { StatusType } from "./StatusType";
 import { AmountType } from "./AmountType";
 import { InteractionType } from "./InteractionType";
 import { Answer } from "./Answer";
+import { secondsBetween } from "./ConversionUtil";
 
 export const TIMESTAMP_FORMAT = "MM/dd/yyyy H:mm:ss:SSS ZZZZ";
 
@@ -111,8 +112,16 @@ export class QuestionEngine {
 
   setLatestAnswerShown(state, date) {
     const latestAnswer = this.latestAnswer(state);
-    if (latestAnswer.shownTimestamp === null) {
-      latestAnswer.shownTimestamp = date;
+    latestAnswer.shownTimestamp = date;
+    if (this.isFirstTreatment(state)) {
+      state.screenAttributes.screenAvailHeight = window.availHeight;
+      state.screenAttributes.screenAvailWidth = window.availWidth;
+      state.screenAttributes.windowInnerHeight = window.innerHeight;
+      state.screenAttributes.windowInnerWidth = window.innerWidth;
+      state.screenAttributes.windowOuterHeight = window.outerHeight;
+      state.screenAttributes.windowOuterWidth = window.outerWidth;
+      state.screenAttributes.windowScreenLeft = window.screenLeft;
+      state.screenAttributes.windowScreenTop = window.screenTop;
     }
   }
 
@@ -129,9 +138,7 @@ export class QuestionEngine {
     if (state.treatments.length < 3) {
       return false;
     }
-    const calc = (state.treatments.length - 1) / 2;
-    const result = state.currentQuestionIdx === calc;
-    return result;
+    return state.currentQuestionIdx === Math.floor(state.treatments.length / 2);
   }
 
   incNextQuestion(state) {
@@ -241,6 +248,10 @@ export class QuestionEngine {
       this.currentTreatmentAndLatestAnswer(state);
     latestAnswer.choice = payload.choice;
     latestAnswer.choiceTimestamp = payload.choiceTimestamp;
+    latestAnswer.choiceTimeSec = secondsBetween(
+      latestAnswer.shownTimestamp,
+      latestAnswer.choiceTimestamp
+    );
     latestAnswer.dragAmount = payload.dragAmount;
     if (treatment.interaction === InteractionType.titration) {
       throw new Error("Tirtration experiments not supported");
@@ -311,8 +322,6 @@ export class QuestionEngine {
       case StatusType.FinancialQuestionaire:
         return StatusType.PurposeQuestionaire;
       case StatusType.PurposeQuestionaire:
-        return StatusType.Done;
-      case StatusType.Done:
         return StatusType.Debrief;
       case StatusType.Debrief:
         return StatusType.Finished;
@@ -351,8 +360,6 @@ export class QuestionEngine {
         return StatusType.Survey;
       case StatusType.PurposeQuestionaire:
         return StatusType.FinancialQuestionaire;
-      case StatusType.Done:
-        return StatusType.PurposeQuestionaire;
       case StatusType.Debrief:
         return StatusType.Debrief; // once they have submitted answers, don't let them go back.
       case StatusType.Error:
