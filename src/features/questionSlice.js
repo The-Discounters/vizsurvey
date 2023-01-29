@@ -4,7 +4,6 @@ import { QuestionEngine } from "./QuestionEngine";
 import { StatusType } from "./StatusType";
 import { stateToDate } from "./ConversionUtil";
 
-// Define the initial state of the store for this slicer.
 const qe = new QuestionEngine();
 const io = new FileIOAdapter();
 
@@ -14,6 +13,7 @@ function getRandomIntInclusive(min, max) {
   return Math.floor(Math.random() * (max - min + 1) + min); //The maximum is inclusive and the minimum is inclusive
 }
 
+// Define the initial state of the store for this slicer.
 export const questionSlice = createSlice({
   name: "questions", // I believe the global state is partitioned by the name value thus the terminology "slice"
   initialState: {
@@ -33,6 +33,25 @@ export const questionSlice = createSlice({
       participantId: null,
       sessionId: null,
       studyId: null,
+    },
+    screenAttributes: {
+      // screen properties
+      screenAvailHeight: null,
+      screenAvailWidth: null,
+      screenColorDepth: screen.colorDepth,
+      screenWidth: screen.width,
+      screenHeight: screen.height,
+      screenOrientationAngle: screen.orientation.angle,
+      screenOrientationType: screen.orientation.type,
+      screenPixelDepth: screen.pixelDepth,
+      // window properties
+      windowDevicePixelRatio: window.devicePixelRatio,
+      windowInnerHeight: null,
+      windowInnerWidth: null,
+      windowOuterHeight: null,
+      windowOuterWidth: null,
+      windowScreenLeft: null,
+      windowScreenTop: null,
     },
     countryOfResidence: "",
     vizFamiliarity: "",
@@ -254,16 +273,19 @@ export const questionSlice = createSlice({
     theEndCompleted(state, action) {
       state.theEndCompletedTimestamp = action.payload;
       const demographic = {
-        participantId: state.participantId,
-        sessionId: state.sessionId,
-        studyId: state.studyId,
-        countryOfResidence: state.countryOfResidence,
-        vizFamiliarity: state.vizFamiliarity,
-        age: state.age,
-        gender: state.gender,
-        selfDescribeGender: state.selfDescribeGender,
-        profession: state.profession,
-        userAgent: state.userAgent,
+        ...{
+          participantId: state.participantId,
+          sessionId: state.sessionId,
+          studyId: state.studyId,
+          countryOfResidence: state.countryOfResidence,
+          vizFamiliarity: state.vizFamiliarity,
+          age: state.age,
+          gender: state.gender,
+          selfDescribeGender: state.selfDescribeGender,
+          profession: state.profession,
+          userAgent: state.userAgent,
+        },
+        ...state.screenAttributes,
       };
       const timestamps = {
         participantId: state.participantId,
