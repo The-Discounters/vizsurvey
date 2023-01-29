@@ -19,7 +19,6 @@ import {
   getStatus,
   financialLitSurveyQuestionsShown,
   financialLitSurveyQuestionsCompleted,
-  nextQuestion,
   initFinancialLitSurveyQuestion,
   setFinancialLitSurveyQuestion,
   getFinancialLitSurveyQuestion,
@@ -212,7 +211,6 @@ export function PostSurvey() {
                         dateToState(DateTime.now())
                       )
                     );
-                    dispatch(nextQuestion());
                   }, 400);
                 }}
                 disabled={disableSubmit}

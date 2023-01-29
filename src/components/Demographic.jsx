@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import { DateTime } from "luxon";
 import { useNavigate } from "react-router-dom";
 import {
   Grid,
@@ -29,9 +30,11 @@ import {
   setGender,
   setSelfDescribeGender,
   setProfession,
-  nextQuestion,
+  demographicShown,
+  demographicCompleted,
   getStatus,
 } from "../features/questionSlice";
+import { dateToState } from "../features/ConversionUtil";
 import { styles, theme } from "./ScreenHelper";
 import "../App.css";
 
@@ -61,7 +64,9 @@ export function Consent() {
 
   const navigate = useNavigate();
 
-  useEffect(() => {}, []);
+  useEffect(() => {
+    dispatch(demographicShown(dateToState(DateTime.now())));
+  }, []);
 
   useEffect(() => {
     const path = navigateFromStatus(status);
@@ -320,7 +325,7 @@ export function Consent() {
                 disableFocusRipple
                 style={styles.button}
                 onClick={() => {
-                  dispatch(nextQuestion());
+                  dispatch(demographicCompleted(dateToState(DateTime.now())));
                 }}
                 disabled={disableSubmit}
               >

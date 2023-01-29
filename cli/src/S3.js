@@ -36,7 +36,7 @@ export const downloadFiles = (dir, laterThanDate) => {
           `...downloading file ${file.Key} of size ${file.Size} created on date ${file.LastModified}`
         );
         const objectDate = DateTime.fromJSDate(file.LastModified);
-        if (objectDate < laterThanDate) {
+        if (laterThanDate && objectDate < laterThanDate) {
           console.log(
             `...skipping ${file.Key} since the date is before ${laterThanDate}`
           );

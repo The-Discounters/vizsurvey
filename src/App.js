@@ -21,7 +21,6 @@ import PostSurveyFinancialLit from "./components/PostSurveyFinancialLit";
 import PostSurveySenseOfPurpose from "./components/PostSurveySenseOfPurpose";
 import AttentionCheck from "./components/AttentionCheck";
 import Debrief from "./components/Debrief";
-import TheEnd from "./components/TheEnd";
 import InvalidSurveyLink from "./components/InvalidSurveyLink";
 import {
   loadAllTreatments,
@@ -92,7 +91,6 @@ const App = () => {
                 element={<PostSurveySenseOfPurpose />}
               />
               <Route path={"attentioncheck"} element={<AttentionCheck />} />
-              <Route path={"theend"} element={<TheEnd />} />
               <Route path={"debrief"} element={<Debrief />} />
               <Route path={"invalidlink"} element={<InvalidSurveyLink />} />
               <Route path="*" element={<InvalidSurveyLink />} />

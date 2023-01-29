@@ -182,10 +182,9 @@ const run = async () => {
     .action((source, options) => {
       console.log(`Downloading files from S3 bucket...`);
       try {
-        const laterThanDate = DateTime.fromFormat(
-          options.laterthan,
-          "M/d/yyyy"
-        );
+        const laterThanDate = options.laterthan
+          ? DateTime.fromFormat(options.laterthan, "M/d/yyyy")
+          : null;
         downloadFiles(source + path.sep, laterThanDate);
       } catch (err) {
         console.log(err);

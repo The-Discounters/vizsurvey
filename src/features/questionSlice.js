@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import { FileIOAdapter } from "./FileIOAdapter";
 import { QuestionEngine } from "./QuestionEngine";
 import { StatusType } from "./StatusType";
-import { stateToDate } from "./ConversionUtil";
+import { secondsBetween } from "./ConversionUtil";
 
 const qe = new QuestionEngine();
 const io = new FileIOAdapter();
@@ -12,6 +12,23 @@ function getRandomIntInclusive(min, max) {
   max = Math.floor(max);
   return Math.floor(Math.random() * (max - min + 1) + min); //The maximum is inclusive and the minimum is inclusive
 }
+
+const writeTimestamps = (state) => {
+  io.writeCSV(
+    state.participantId,
+    state.studyId,
+    state.sessionId,
+    "timestamps",
+    {
+      ...{
+        participantId: state.participantId,
+        sessionId: state.sessionId,
+        studyId: state.studyId,
+      },
+      ...state.timestamps,
+    }
+  );
+};
 
 // Define the initial state of the store for this slicer.
 export const questionSlice = createSlice({
@@ -60,24 +77,34 @@ export const questionSlice = createSlice({
     selfDescribeGender: "",
     profession: "",
     consentChecked: null,
-    consentCompletedTimestamp: false,
+    timestamps: {
+      consentShownTimestamp: null,
+      consentCompletedTimestamp: null,
+      consentTimeSec: null,
+      demographicShownTimestamp: null,
+      demographicCompletedTimestamp: null,
+      demographicTimeSec: null,
+      introductionShownTimestamp: null,
+      introductionCompletedTimestamp: null,
+      introductionTimeSec: null,
+      instructionsShownTimestamp: null,
+      instructionsCompletedTimestamp: null,
+      instructionsTimeSec: null,
+      attentionCheckShownTimestamp: null,
+      attentionCheckCompletedTimestamp: null,
+      attentionCheckTimeSec: null,
+      financialLitSurveyQuestionsShownTimestamp: null,
+      financialLitSurveyQuestionsCompletedTimestamp: null,
+      financialLitSurveyTimeSec: null,
+      purposeSurveyQuestionsShownTimestamp: null,
+      purposeSurveyQuestionsCompletedTimestamp: null,
+      purposeSurveyTimeSec: null,
+      debriefShownTimestamp: null,
+      debriefCompletedTimestamp: null,
+      debriefTimeSec: null,
+    },
     attentioncheck: null,
-    attentionCheckShownTimestamp: null,
-    attentionCheckCompletedTimestamp: null,
-    consentShownTimestamp: null,
-    introductionShowTimestamp: null,
-    introductionCompletedTimestamp: null,
-    instructionsShownTimestamp: null,
     feedback: "",
-    instructionsCompletedTimestamp: null,
-    financialLitSurveyQuestionsShownTimestamp: null,
-    financialLitSurveyQuestionsCompletedTimestamp: null,
-    purposeSurveyQuestionsShownTimestamp: null,
-    purposeSurveyQuestionsCompletedTimestamp: null,
-    debriefShownTimestamp: null,
-    debriefCompletedTimestamp: null,
-    theEndShownTimestamp: null,
-    theEndCompletedTimestamp: null,
     treatments: [],
     instructionTreatment: null,
     answers: [],
@@ -115,15 +142,6 @@ export const questionSlice = createSlice({
       state.financialLitSurvey.studyId = action.payload;
       state.purposeSurvey.studyId = action.payload;
     },
-    setDemographic(state, action) {
-      state.countryOfResidence = action.payload.countryOfResidence;
-      state.vizFamiliarity = action.payload.vizFamiliarity;
-      state.age = action.payload.age;
-      state.gender = action.payload.gender;
-      state.selfDescribeGender = action.payload.selfDescribeGender;
-      state.profession = action.payload.profession;
-      state.status = qe.nextStatus(state, false);
-    },
     setCountryOfResidence(state, action) {
       state.countryOfResidence = action.payload;
     },
@@ -160,7 +178,13 @@ export const questionSlice = createSlice({
     },
     setAttentionCheck(state, action) {
       state.attentioncheck = action.payload.value;
-      state.attentionCheckCompletedTimestamp = action.payload.timestamp;
+      state.timestamps.attentionCheckCompletedTimestamp =
+        action.payload.timestamp;
+      state.timestamps.attentionCheckTimeSec = secondsBetween(
+        state.timestamps.attentionCheckShownTimestamp,
+        state.timestamps.attentionCheckCompletedTimestamp
+      );
+      writeTimestamps(state);
       state.status = qe.nextStatus(state, false);
     },
     loadTreatment(state) {
@@ -178,28 +202,90 @@ export const questionSlice = createSlice({
       return state;
     },
     consentShown(state, action) {
-      state.consentShownTimestamp = action.payload;
+      state.timestamps.consentShownTimestamp = action.payload;
     },
     consentCompleted(state, action) {
       state.consentChecked = true;
-      state.consentCompletedTimestamp = action.payload;
+      state.timestamps.consentCompletedTimestamp = action.payload;
+      state.timestamps.consentTimeSec = secondsBetween(
+        state.timestamps.consentShownTimestamp,
+        state.timestamps.consentCompletedTimestamp
+      );
+      io.writeCSV(
+        state.participantId,
+        state.studyId,
+        state.sessionId,
+        "legal",
+        {
+          participantId: state.participantId,
+          sessionId: state.sessionId,
+          studyId: state.studyId,
+          consentChecked: state.consentChecked,
+        }
+      );
+      writeTimestamps(state);
+      state.status = qe.nextStatus(state, false);
+    },
+    demographicShown(state, action) {
+      state.timestamps.demographicShownTimestamp = action.payload;
+    },
+    demographicCompleted(state, action) {
+      state.timestamps.demographicCompletedTimestamp = action.payload;
+      state.timestamps.demographicTimeSec = secondsBetween(
+        state.timestamps.demographicShownTimestamp,
+        state.timestamps.demographicCompletedTimestamp
+      );
+      io.writeCSV(
+        state.participantId,
+        state.studyId,
+        state.sessionId,
+        "demographic",
+        {
+          ...{
+            participantId: state.participantId,
+            sessionId: state.sessionId,
+            studyId: state.studyId,
+            countryOfResidence: state.countryOfResidence,
+            vizFamiliarity: state.vizFamiliarity,
+            age: state.age,
+            gender: state.gender,
+            selfDescribeGender: state.selfDescribeGender,
+            profession: state.profession,
+            userAgent: state.userAgent,
+          },
+          ...state.screenAttributes,
+        }
+      );
+      writeTimestamps(state);
       state.status = qe.nextStatus(state, false);
     },
     introductionShown(state, action) {
-      state.introductionShowTimestamp = action.payload;
+      state.timestamps.introductionShownTimestamp = action.payload;
     },
     introductionCompleted(state, action) {
-      state.introductionCompletedTimestamp = action.payload;
+      state.timestamps.introductionCompletedTimestamp = action.payload;
+      state.timestamps.introductionTimeSec = secondsBetween(
+        state.timestamps.introductionShownTimestamp,
+        state.timestamps.introductionCompletedTimestamp
+      );
+      // TODO I could record the participants choice on the instructions
+      writeTimestamps(state);
+      state.status = qe.nextStatus(state, false);
     },
     instructionsShown(state, action) {
-      state.instructionsShownTimestamp = action.payload;
+      state.timestamps.instructionsShownTimestamp = action.payload;
+    },
+    instructionsCompleted(state, action) {
+      state.timestamps.instructionsCompletedTimestamp = action.payload;
+      state.timestamps.instructionsTimeSec = secondsBetween(
+        state.timestamps.instructionsShownTimestamp,
+        state.timestamps.instructionsCompletedTimestamp
+      );
+      writeTimestamps(state);
+      state.status = qe.nextStatus(state, false);
     },
     setFeedback(state, action) {
       state.feedback = action.payload;
-    },
-    instructionsCompleted(state, action) {
-      state.instructionsCompletedTimestamp = action.payload;
-      state.status = qe.nextStatus(state, false);
     },
     startSurvey(state) {
       qe.startSurvey(state);
@@ -210,11 +296,18 @@ export const questionSlice = createSlice({
       return state;
     },
     attentionCheckShown(state, action) {
-      state.attentionCheckShownTimestamp = action.payload;
+      state.timestamps.attentionCheckShownTimestamp = action.payload;
     },
     // we define our actions on the slice of global store data here.
     answer(state, action) {
       qe.answerCurrentQuestion(state, action.payload);
+      io.writeCSV(
+        state.participantId,
+        state.studyId,
+        state.sessionId,
+        "answers",
+        state.answers
+      );
     },
     previousQuestion(state) {
       qe.decPreviousQuestion(state);
@@ -223,176 +316,69 @@ export const questionSlice = createSlice({
       qe.incNextQuestion(state);
     },
     financialLitSurveyQuestionsShown(state, action) {
-      state.financialLitSurveyQuestionsShownTimestamp = action.payload;
+      state.timestamps.financialLitSurveyQuestionsShownTimestamp =
+        action.payload;
     },
     financialLitSurveyQuestionsCompleted(state, action) {
-      state.financialLitSurveyQuestionsCompletedTimestamp = action.payload;
-    },
-    purposeSurveyQuestionsShown(state, action) {
-      state.purposeSurveyQuestionsShownTimestamp = action.payload;
-    },
-    purposeSurveyQuestionsCompleted(state, action) {
-      state.purposeSurveyQuestionsCompletedTimestamp = action.payload;
-    },
-    debriefShownTimestamp(state, action) {
-      state.debriefShownTimestamp = action.payload;
-    },
-    debriefCompleted(state, action) {
-      state.debriefCompletedTimestamp = action.payload;
-      const feedback = {
-        participantId: state.participantId,
-        sessionId: state.sessionId,
-        studyId: state.studyId,
-        feedback: state.feedback,
-      };
-      const timestamps = {
-        participantId: state.participantId,
-        sessionId: state.sessionId,
-        studyId: state.studyId,
-        debriefShownTimestamp: state.debriefShownTimestamp,
-        debriefCompletedTimestamp: state.debriefCompletedTimestamp,
-        debriefTimeSec:
-          state.debriefShownTimestamp && state.debriefCompletedTimestamp
-            ? stateToDate(state.debriefCompletedTimestamp).diff(
-                stateToDate(state.debriefShownTimestamp),
-                ["seconds"]
-              ).seconds
-            : "",
-      };
-      io.writeFeedback(
+      state.timestamps.financialLitSurveyQuestionsCompletedTimestamp =
+        action.payload;
+      state.timestamps.financialLitSurveyTimeSec = secondsBetween(
+        state.timestamps.financialLitSurveyQuestionsShownTimestamp,
+        state.timestamps.financialLitSurveyQuestionsCompletedTimestamp
+      );
+      io.writeCSV(
         state.participantId,
         state.studyId,
-        feedback,
-        timestamps
+        state.sessionId,
+        "financial-lit-survey",
+        state.financialLitSurvey
       );
+      writeTimestamps(state);
       state.status = qe.nextStatus(state, false);
     },
-    theEndShownTimestamp(state, action) {
-      state.theEndShownTimestamp = action.payload;
+    purposeSurveyQuestionsShown(state, action) {
+      state.timestamps.purposeSurveyQuestionsShownTimestamp = action.payload;
     },
-    theEndCompleted(state, action) {
-      state.theEndCompletedTimestamp = action.payload;
-      const demographic = {
-        ...{
+    purposeSurveyQuestionsCompleted(state, action) {
+      state.timestamps.purposeSurveyQuestionsCompletedTimestamp =
+        action.payload;
+      state.timestamps.purposeSurveyTimeSec = secondsBetween(
+        state.timestamps.purposeSurveyQuestionsShownTimestamp,
+        state.timestamps.purposeSurveyQuestionsCompletedTimestamp
+      );
+      io.writeCSV(
+        state.participantId,
+        state.studyId,
+        state.sessionId,
+        "purpose-survey",
+        state.purposeSurvey
+      );
+      writeTimestamps(state);
+      state.status = qe.nextStatus(state, false);
+    },
+    debriefShownTimestamp(state, action) {
+      state.timestamps.debriefShownTimestamp = action.payload;
+    },
+    debriefCompleted(state, action) {
+      state.timestamps.debriefCompletedTimestamp = action.payload;
+      state.timestamps.debriefTimeSec = secondsBetween(
+        state.timestamps.debriefShownTimestamp,
+        state.timestamps.debriefCompletedTimestamp
+      );
+      io.writeCSV(
+        state.participantId,
+        state.studyId,
+        state.sessionId,
+        "feedback",
+        {
           participantId: state.participantId,
           sessionId: state.sessionId,
           studyId: state.studyId,
-          countryOfResidence: state.countryOfResidence,
-          vizFamiliarity: state.vizFamiliarity,
-          age: state.age,
-          gender: state.gender,
-          selfDescribeGender: state.selfDescribeGender,
-          profession: state.profession,
-          userAgent: state.userAgent,
-        },
-        ...state.screenAttributes,
-      };
-      const timestamps = {
-        participantId: state.participantId,
-        sessionId: state.sessionId,
-        studyId: state.studyId,
-        consentShownTimestamp: state.consentShownTimestamp,
-        consentCompletedTimestamp: state.consentCompletedTimestamp,
-        consentTimeSec:
-          state.consentCompletedTimestamp && state.consentShownTimestamp
-            ? stateToDate(state.consentCompletedTimestamp).diff(
-                stateToDate(state.consentShownTimestamp),
-                ["seconds"]
-              ).seconds
-            : "",
-        introductionShowTimestamp: state.introductionShowTimestamp,
-        introductionCompletedTimestamp: state.introductionCompletedTimestamp,
-        introductionTimeSec:
-          state.introductionCompletedTimestamp &&
-          state.introductionShowTimestamp
-            ? stateToDate(state.introductionCompletedTimestamp).diff(
-                stateToDate(state.introductionShowTimestamp),
-                ["seconds"]
-              ).seconds
-            : "",
-        instructionsShownTimestamp: state.instructionsShownTimestamp,
-        instructionsCompletedTimestamp: state.instructionsCompletedTimestamp,
-        instructionsTimeSec:
-          state.instructionsCompletedTimestamp &&
-          state.instructionsShownTimestamp
-            ? stateToDate(state.instructionsCompletedTimestamp).diff(
-                stateToDate(state.instructionsShownTimestamp),
-                ["seconds"]
-              ).seconds
-            : "",
-        attentionCheckShownTimestamp: state.attentionCheckShownTimestamp,
-        attentionCheckCompletedTimestamp:
-          state.attentionCheckCompletedTimestamp,
-        attentionCheckTimeSec:
-          state.attentionCheckCompletedTimestamp &&
-          state.attentionCheckShownTimestamp
-            ? stateToDate(state.attentionCheckCompletedTimestamp).diff(
-                stateToDate(state.attentionCheckShownTimestamp),
-                ["seconds"]
-              ).seconds
-            : "",
-        financialLitSurveyQuestionsShownTimestamp:
-          state.financialLitSurveyQuestionsShownTimestamp,
-        financialLitSurveyQuestionsCompletedTimestamp:
-          state.financialLitSurveyQuestionsCompletedTimestamp,
-        financialLitSurveyQuestionsTimeSec:
-          state.financialLitSurveyQuestionsCompletedTimestamp &&
-          state.financialLitSurveyQuestionsShownTimestamp
-            ? stateToDate(
-                state.financialLitSurveyQuestionsCompletedTimestamp
-              ).diff(
-                stateToDate(state.financialLitSurveyQuestionsShownTimestamp),
-                ["seconds"]
-              ).seconds
-            : "",
-        purposeSurveyQuestionsShownTimestamp:
-          state.purposeSurveyQuestionsShownTimestamp,
-        purposeSurveyQuestionsCompletedTimestamp:
-          state.purposeSurveyQuestionsCompletedTimestamp,
-        purposeSurveyQuestionsTimeSec:
-          state.purposeSurveyQuestionsCompletedTimestamp &&
-          state.purposeSurveyQuestionsShownTimestamp
-            ? stateToDate(state.purposeSurveyQuestionsCompletedTimestamp).diff(
-                stateToDate(state.purposeSurveyQuestionsShownTimestamp),
-                ["seconds"]
-              ).seconds
-            : "",
-        theEndShownTimestamp: state.theEndShownTimestamp,
-        theEndCompletedTimestamp: state.theEndCompletedTimestamp,
-        theEndShownTimeSec:
-          state.theEndCompletedTimestamp && state.theEndShownTimestamp
-            ? stateToDate(state.theEndCompletedTimestamp).diff(
-                stateToDate(state.theEndShownTimestamp),
-                ["seconds"]
-              ).seconds
-            : "",
-      };
-      const legal = {
-        participantId: state.participantId,
-        sessionId: state.sessionId,
-        studyId: state.studyId,
-        consentChecked: state.consentChecked,
-        attentionCheck: state.attentioncheck,
-      };
-      for (const answer of state.answers) {
-        answer["choiceTimeSec"] =
-          answer.choiceTimestamp && answer.shownTimestamp
-            ? stateToDate(answer.choiceTimestamp).diff(
-                stateToDate(answer.shownTimestamp),
-                ["seconds"]
-              ).seconds
-            : "";
-      }
-      io.writeAnswers(
-        state.participantId,
-        state.studyId,
-        state.answers,
-        timestamps,
-        state.financialLitSurvey,
-        state.purposeSurvey,
-        demographic,
-        legal
+          feedback: state.feedback,
+        }
       );
+      writeTimestamps(state);
+      state.status = qe.nextStatus(state, false);
     },
     clearState(state) {
       state.allTreatments = null;
@@ -418,22 +404,35 @@ export const questionSlice = createSlice({
       state.gender = "";
       state.selfDescribeGender = "";
       state.profession = "";
+      state.timestamps = {
+        consentShownTimestamp: null,
+        consentCompletedTimestamp: null,
+        consentTimeSec: null,
+        demographicShownTimestamp: null,
+        demographicCompletedTimestamp: null,
+        demographicTimeSec: null,
+        introductionShownTimestamp: null,
+        introductionCompletedTimestamp: null,
+        introductionTimeSec: null,
+        instructionsShownTimestamp: null,
+        instructionsCompletedTimestamp: null,
+        instructionsTimeSec: null,
+        attentionCheckShownTimestamp: null,
+        attentionCheckCompletedTimestamp: null,
+        attentionCheckTimeSec: null,
+        financialLitSurveyQuestionsShownTimestamp: null,
+        financialLitSurveyQuestionsCompletedTimestamp: null,
+        financialLitSurveyTimeSec: null,
+        purposeSurveyQuestionsShownTimestamp: null,
+        purposeSurveyQuestionsCompletedTimestamp: null,
+        purposeSurveyTimeSec: null,
+        debriefShownTimestamp: null,
+        debriefCompletedTimestamp: null,
+        debriefTimeSec: null,
+      };
       state.attentioncheck = null;
-      state.attentionCheckShownTimestamp = null;
-      state.attentionCheckCompletedTimestamp = null;
-      state.consentShownTimestamp = null;
       state.consentChecked = false;
-      state.consentCompletedTimestamp = null;
-      state.introductionShowTimestamp = null;
-      state.introductionCompletedTimestamp = null;
-      state.instructionsShownTimestamp = null;
       state.feedback = "";
-      state.instructionsCompletedTimestamp = null;
-      state.financialLitSurveyQuestionsShownTimestamp = null;
-      state.financialLitSurveyQuestionsCompletedTimestamp = null;
-      state.purposeSurveyQuestionsShownTimestamp = null;
-      state.purposeSurveyQuestionsCompletedTimestamp = null;
-      state.debriefShownTimestamp = null;
       state.treatments = [];
       state.instructionTreatment = null;
       state.answers = [];
@@ -548,7 +547,8 @@ export const {
   setStudyId,
   consentShown,
   consentCompleted,
-  setDemographic,
+  demographicShown,
+  demographicCompleted,
   setCountryOfResidence,
   setVizFamiliarity,
   setAge,
@@ -573,8 +573,6 @@ export const {
   purposeSurveyQuestionsCompleted,
   debriefShownTimestamp,
   debriefCompleted,
-  theEndShownTimestamp,
-  theEndCompleted,
   clearState,
   genRandomTreatment,
   nextStatus,

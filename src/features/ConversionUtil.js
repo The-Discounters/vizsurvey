@@ -20,3 +20,9 @@ export function stringToDate(date) {
   const result = DateTime.fromFormat(date, "M/d/yyyy");
   return result;
 }
+
+export const secondsBetween = (before, after) => {
+  return after && before
+    ? stateToDate(after).diff(stateToDate(before), ["seconds"]).seconds
+    : "";
+};

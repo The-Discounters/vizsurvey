@@ -37,7 +37,7 @@ const Instructions = () => {
     <ThemeProvider theme={theme}>
       <Grid container style={styles.root}>
         <Grid item xs={12}>
-          <Typography variant="h4">Instructions Continued</Typography>
+          <Typography variant="h4">Instructions (Continued)</Typography>
           <hr
             style={{
               color: "#ea3433",
@@ -50,24 +50,12 @@ const Instructions = () => {
           <Typography paragraph>
             <b>Survey questions: </b>
             After making your money choice selections, you will be presented
-            with two short surveys of questions to learn more about you and then
-            a screen to submit your final answers.{" "}
-            <b>
-              You must click on the button to submit your final answers to get
-              paid.
-            </b>
-          </Typography>
-          <Typography paragraph>
-            After you submit your answers, you will be presented with a more
+            with two short surveys of questions to learn more about you. You
+            will then be presented with the last screen which has a more
             detailed explanation of the goals behind this research along with a
-            section to submit feedback. The researchers greatly appreciate any
-            feedback you are willing to share.
+            section to submit feedback and a{" "}
+            <b>code you must enter into Prolific to get paid.</b>
           </Typography>
-          <img
-            width="100%"
-            src="submit-and-exit.png"
-            alt="Submit answers button."
-          ></img>
           <Typography paragraph>
             <b>Click the Next button to start the survey!</b>
           </Typography>{" "}
