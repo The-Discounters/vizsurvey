@@ -24,6 +24,7 @@ const writeTimestamps = (state) => {
         participantId: state.participantId,
         sessionId: state.sessionId,
         studyId: state.studyId,
+        treatmentId: state.treatmentId,
       },
       ...state.timestamps,
     }
@@ -40,16 +41,16 @@ export const questionSlice = createSlice({
     sessionId: null,
     studyId: null,
     financialLitSurvey: {
-      treatmentId: null,
       participantId: null,
       sessionId: null,
       studyId: null,
+      treatmentId: null,
     },
     purposeSurvey: {
-      treatmentId: null,
       participantId: null,
       sessionId: null,
       studyId: null,
+      treatmentId: null,
     },
     screenAttributes: {
       // screen properties
@@ -220,6 +221,7 @@ export const questionSlice = createSlice({
           participantId: state.participantId,
           sessionId: state.sessionId,
           studyId: state.studyId,
+          treatmentId: state.treatmentId,
           consentChecked: state.consentChecked,
         }
       );
@@ -245,6 +247,7 @@ export const questionSlice = createSlice({
             participantId: state.participantId,
             sessionId: state.sessionId,
             studyId: state.studyId,
+            treatmentId: state.treatmentId,
             countryOfResidence: state.countryOfResidence,
             vizFamiliarity: state.vizFamiliarity,
             age: state.age,
@@ -374,6 +377,7 @@ export const questionSlice = createSlice({
           participantId: state.participantId,
           sessionId: state.sessionId,
           studyId: state.studyId,
+          treatmentId: state.treatmentId,
           feedback: state.feedback,
         }
       );
@@ -387,16 +391,16 @@ export const questionSlice = createSlice({
       state.sessionId = null;
       state.studyId = null;
       state.financialLitSurvey = {
-        treatmentId: null,
         participantId: null,
         sessionId: null,
         studyId: null,
+        treatmentId: null,
       };
       state.purposeSurvey = {
-        treatmentId: null,
         participantId: null,
         sessionId: null,
         studyId: null,
+        treatmentId: null,
       };
       state.countryOfResidence = "";
       state.vizFamiliarity = "";
