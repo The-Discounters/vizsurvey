@@ -112,6 +112,16 @@ export class QuestionEngine {
   setLatestAnswerShown(state, date) {
     const latestAnswer = this.latestAnswer(state);
     latestAnswer.shownTimestamp = date;
+    if (this.isFirstTreatment(state)) {
+      state.screenAttributes.screenAvailHeight = window.availHeight;
+      state.screenAttributes.screenAvailWidth = window.availWidth;
+      state.screenAttributes.windowInnerHeight = window.innerHeight;
+      state.screenAttributes.windowInnerWidth = window.innerWidth;
+      state.screenAttributes.windowOuterHeight = window.outerHeight;
+      state.screenAttributes.windowOuterWidth = window.outerWidth;
+      state.screenAttributes.windowScreenLeft = window.screenLeft;
+      state.screenAttributes.windowScreenTop = window.screenTop;
+    }
   }
 
   // TODO we should renames these xxxQuestion not treatment.
