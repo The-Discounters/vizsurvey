@@ -113,7 +113,7 @@ const Introduction = () => {
           You will be presented with a series of hypothetical choices of
           receiving two different amounts of money at two different times. Both
           amounts are in United States Dollars (USD) and both times are the
-          delay in months from now.{" "}
+          delay in months from now. {/* TODO: YAHEL: FIX THIS WORDING*/}
           <b>
             All amounts and delay times in the questions are hypothetical. We do
             ask that you imagine to the best of your ability that you are in
