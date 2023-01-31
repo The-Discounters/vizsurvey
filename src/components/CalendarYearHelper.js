@@ -11,6 +11,7 @@ export const drawCalendarYear = ({
   qAmountLater: qAmountLater,
 }) => {
   let selection = { d: -1, a: -1 };
+  /*
   console.log("qDateEarlier: " + qDateEarlier);
   console.log("qDateLater: " + qDateLater);
   const firstOfMonth = new Date(qDateEarlier);
@@ -19,32 +20,43 @@ export const drawCalendarYear = ({
   lastOfMonth.setMonth(lastOfMonth.getMonth() + 1);
   lastOfMonth.setDate(0);
   console.log("lastOfMonth: " + lastOfMonth);
+  */
   const date = new Date(qDateEarlier);
   const dateLater = new Date(qDateLater);
   console.log("date: " + date);
-  console.log("date.getDate(): " + date.getDate());
-  const month = [];
-  let counter = -1 * firstOfMonth.getDay() + 1;
+  console.log("date.getMonth(): " + date.getMonth());
+  console.log("dateLater: " + dateLater);
+  console.log("dateLater.getMonth(): " + dateLater.getMonth());
+  const year = [];
+  //const month = [];
+  // let counter = -1 * firstOfMonth.getDay() + 1;
+  let counter = 0;
   let change = 1;
-  for (let i = 0; i < 6 /* max num of weeks */; i++) {
-    if (counter > lastOfMonth.getDate() || counter < -5) continue;
-    let week = [];
-    for (let j = 0; j < 7 /* length of week */; j++) {
-      if (counter > lastOfMonth.getDate()) {
+  // for (let i = 0; i < 6 /* max num of weeks */; i++) {
+  for (let i = 0; i < 3 /* 3 rows of monthsr */; i++) {
+    // if (counter > lastOfMonth.getDate() || counter < -5) continue;
+    let row = [];
+    //let week = [];
+    // for (let j = 0; j < 7 /* length of week */; j++) {
+    for (let j = 0; j < 4 /* 4 months in a row */; j++) {
+      /*if (counter > lastOfMonth.getDate()) {
         change = -1;
         counter *= -1;
+      }*/
+      let month = counter;
+      // let day = counter;
+      if (month === date.getMonth()) {
+        month = { d: month, a: qAmountEarlier, k: "earlierAmount" };
+      } else if (month === dateLater.getMonth()) {
+        month = { d: month, a: qAmountLater };
       }
-      let day = counter;
-      if (day === date.getDate()) {
-        day = { d: day, a: qAmountEarlier, k: "earlierAmount" };
-      } else if (day === dateLater.getDate()) {
-        day = { d: day, a: qAmountLater };
-      }
-      week.push(day);
+      row.push(month);
       counter += change;
     }
-    month.push(week);
+    year.push(row);
+    // month.push(week);
   }
+  /*
   const monthNames = [
     "Yahel January",
     "February",
@@ -59,14 +71,15 @@ export const drawCalendarYear = ({
     "November",
     "December",
   ];
-  const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-  const monthNum = date.getMonth();
+  */
+  //const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  //const monthNum = date.getMonth();
 
   table.selectAll("table > *").remove();
 
-  const header = table.append("thead");
+  //const header = table.append("thead");
   const body = table.append("tbody");
-
+  /*
   header
     .append("tr")
     .append("td")
@@ -87,13 +100,15 @@ export const drawCalendarYear = ({
     })
     .style("text-align", "center")
     .style("font-size", "20px");
+  */
 
+  console.log("year: " + JSON.stringify(year));
   let boxLength = "100px";
-  month.forEach(function (week) {
+  year.forEach(function (row) {
     body
       .append("tr")
       .selectAll("td")
-      .data(week)
+      .data(row)
       .enter()
       .append("td")
       .attr("class", function (d) {
