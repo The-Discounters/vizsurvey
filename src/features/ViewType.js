@@ -3,6 +3,7 @@ export const ViewType = {
   barchart: "barchart",
   calendarBar: "calendarBar",
   calendarWord: "calendarWord",
+  calendarWordYear: "calendarWordYear",
   calendarIcon: "calendarIcon",
 };
 

@@ -30,6 +30,7 @@ export function Survey() {
           case ViewType.calendarBar:
           case ViewType.calendarIcon:
           case ViewType.calendarWord:
+          case ViewType.calendarWordYear:
             if (
               stateToDate(q.dateLater)
                 .diff(stateToDate(q.dateEarlier), "months")

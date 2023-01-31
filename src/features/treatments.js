@@ -125,4 +125,13 @@ export const TREATMENTS_PROD_CSV = `treatment_id,position,view_type,interaction,
 4,7,calendarWord,none,none,66,,1/6/2023,110,,1/24/2023,110,,,,,,,,,,,,Worded MEL question experiment 3 of date/delay paper.
 4,8,calendarWord,none,none,77,,1/3/2023,118,,1/16/2023,120,,,,,,,,,,,,Worded MEL question experiment 3 of date/delay paper.
 4,instructions,calendarWord,none,none,300,,1/2/2023,700,,1/7/2023,1000,,750,650,,,,,,,,introduction-calendarWord,TODO use width and height during regular drawCalendar calls Worded MEL question experiment 3 of date/delay paper.
+5,1,calendarWordYear,none,none,350,,1/4/2023,430,,1/13/2023,430,,,,,,,,,,,,Worded MEL question experiment 1 date/delay paper TODO fix dates here so that it represent weeks to match up with MEL Word version.
+5,2,calendarWordYear,none,none,490,,1/2/2023,700,,1/18/2023,700,,,,,,,,,,,,Worded MEL question experiment 1 date/delay paper.
+5,3,calendarWordYear,none,none,720,,1/6/2023,1390,,1/24/2023,1390,,,,,,,,,,,,Worded MEL question experiment 1 date/delay paper.
+5,4,calendarWordYear,none,none,840,,1/3/2023,1120,,1/16/2023,1120,,,,,,,,,,,,Worded MEL question experiment 1 date/delay paper.
+5,5,calendarWordYear,none,none,32,,1/4/2023,39,13,1/13/2023,40,,,,,,,,,,,,Worded MEL question experiment 3 of date/delay paper.
+5,6,calendarWordYear,none,none,45,,1/2/2023,70,,1/18/2023,70,,,,,,,,,,,,Worded MEL question experiment 3 of date/delay paper.
+5,7,calendarWordYear,none,none,66,,1/6/2023,110,,1/24/2023,110,,,,,,,,,,,,Worded MEL question experiment 3 of date/delay paper.
+5,8,calendarWordYear,none,none,77,,1/3/2023,118,,1/16/2023,120,,,,,,,,,,,,Worded MEL question experiment 3 of date/delay paper.
+5,instructions,calendarWordYear,none,none,300,,1/2/2023,700,,1/7/2023,1000,,750,650,,,,,,,,introduction-calendarWord,TODO use width and height during regular drawCalendar calls Worded MEL question experiment 3 of date/delay paper.
 `;

@@ -177,6 +177,7 @@ const Introduction = () => {
           "clicking the button"
         );
       case ViewType.calendarWord:
+      case ViewType.calendarWordYear:
         return instructions(
           "calendar word chart",
           "amounts",
@@ -260,41 +261,33 @@ const Introduction = () => {
               (table) => {
                 drawCalendar({
                   table: table,
-
                   qDateEarlier: instructionTreatment.dateEarlier,
                   qDateLater: instructionTreatment.dateLater,
                   qAmountEarlier: instructionTreatment.amountEarlier,
                   qAmountLater: instructionTreatment.amountLater,
-
-                  /*
-                  amountEarlier: instructionTreatment.amountEarlier,
-                  timeEarlier: instructionTreatment.timeEarlier,
-                  amountLater: instructionTreatment.amountLater,
-                  timeLater: instructionTreatment.timeLater,
-*/
-                  /*
-                question: q,
-                setDisableSubmit: setDisableSubmit,
-                maxTime: q.maxTime,
-                maxAmount: q.maxAmount,
-                interaction: q.interaction,
-                variableAmount: q.variableAmount,
-                amountEarlier: q.amountEarlier,
-                timeEarlier: q.timeEarlier,
-                amountLater: q.amountLater,
-                timeLater: q.timeLater,
-*/
                   onClickCallback: onClickCallback,
                   choice: choice,
-                  /*  
-              horizontalPixels: q.horizontalPixels,
-                verticalPixels: q.verticalPixels,
-                leftMarginWidthIn: q.leftMarginWidthIn,
-                graphWidthIn: q.graphWidthIn,
-                bottomMarginHeightIn: q.bottomMarginHeightIn,
-                graphHeightIn: q.graphHeightIn,
-                showMinorTicks: q.showMinorTicks,
-*/
+                });
+              },
+              [choice]
+            )}
+          ></table>
+        );
+      case ViewType.calendarWordYear:
+        return (
+          <table
+            id="calendar"
+            style={{ borderCollapse: "collapse", tableLayout: "fixed" }}
+            ref={useD3(
+              (table) => {
+                drawCalendar({
+                  table: table,
+                  qDateEarlier: instructionTreatment.dateEarlier,
+                  qDateLater: instructionTreatment.dateLater,
+                  qAmountEarlier: instructionTreatment.amountEarlier,
+                  qAmountLater: instructionTreatment.amountLater,
+                  onClickCallback: onClickCallback,
+                  choice: choice,
                 });
               },
               [choice]

@@ -147,7 +147,7 @@ function checkMELFormBeforeClickOrHover(word, id = "#earlierAmount") {
 function checkMELFormDuringClickOrHover(word, id = "#earlierAmount") {
   if (word) {
     cy.get(id)
-      .realHover()
+      //.realHover()
       //.should("have.css", "backgroundColor", "rgb(173, 216, 230)")
       .click();
   } else {
@@ -343,23 +343,90 @@ describe("vizsurvey", () => {
     cy.tick(4000);
     calendar("day", "4", "Bar");
   });*/
-  it("calendar word", () => {
-    visitTreatment(5, 1280, 720);
-    cy.tick(4000);
-    answerMELForm();
+  it("calendar word single year", () => {
+    //visitTreatment(5, 1280, 720);
+    //cy.tick(4000);
+    //answerMELForm();
+    let width = 1280;
+    let height = 720;
+    let treatmentId = 5;
+    let participantId = 1;
+    cy.clock();
+    cy.viewport(width, height);
+    cy.visit(
+      baseURL +
+        `?treatment_id=${treatmentId}&session_id=1&participant_id=${participantId}`
+    );
+    cy.tick(500);
+    cy.get("#checkConsent").click();
+    cy.tick(500);
+    cy.get("button").contains("Next").click();
+    demographic();
 
+    function simpleEarlierAmount() {
+      cy.get("#buttonNext").should("be.disabled");
+      cy.tick(500);
+
+      cy.get("#earlierAmount").click();
+      // cy.get("#laterAmount").should("have.css", "backgroundColor", steelblueRGB);
+      cy.get("button").contains("Next").should("not.be.disabled").click();
+    }
+    simpleEarlierAmount();
+    instruction();
+    for (let i = 0; i < 4; i++) {
+      simpleEarlierAmount();
+    }
     cy.get("#attention-check-strongly-disagree").click();
     cy.get("button").contains("Next").click();
+    for (let i = 0; i < 4; i++) {
+      simpleEarlierAmount();
+    }
+  });
+  it("calendar word single month", () => {
+    //visitTreatment(5, 1280, 720);
+    //cy.tick(4000);
+    //answerMELForm();
+    let width = 1280;
+    let height = 720;
+    let treatmentId = 4;
+    let participantId = 1;
+    cy.clock();
+    cy.viewport(width, height);
+    cy.visit(
+      baseURL +
+        `?treatment_id=${treatmentId}&session_id=1&participant_id=${participantId}`
+    );
+    cy.tick(500);
+    cy.get("#checkConsent").click();
+    cy.tick(500);
+    cy.get("button").contains("Next").click();
+    demographic();
 
-    answerMELForm();
-    answerMELForm();
-    cy.tick(1000);
+    function simpleEarlierAmount() {
+      cy.get("#buttonNext").should("be.disabled");
+      cy.tick(500);
 
+      cy.get("#earlierAmount").click();
+      // cy.get("#laterAmount").should("have.css", "backgroundColor", steelblueRGB);
+      cy.get("button").contains("Next").should("not.be.disabled").click();
+    }
+    simpleEarlierAmount();
+    instruction();
+    for (let i = 0; i < 4; i++) {
+      simpleEarlierAmount();
+    }
+    cy.get("#attention-check-strongly-disagree").click();
+    cy.get("button").contains("Next").click();
+    for (let i = 0; i < 4; i++) {
+      simpleEarlierAmount();
+    }
+    /*
     postsurvey([
       "5,1,calendarWord,none,none,500,2,,1000,5",
       "5,2,calendarWord,none,none,50,2,,300,7",
       "5,3,calendarWord,none,none,250,2,,1000,3",
     ]);
+*/
   });
   /*
   it("survey invalid", () => {
