@@ -56,9 +56,8 @@ export const drawCalendarYear = ({
     year.push(row);
     // month.push(week);
   }
-  /*
   const monthNames = [
-    "Yahel January",
+    "January",
     "February",
     "March",
     "April",
@@ -71,7 +70,6 @@ export const drawCalendarYear = ({
     "November",
     "December",
   ];
-  */
   //const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
   //const monthNum = date.getMonth();
 
@@ -114,11 +112,6 @@ export const drawCalendarYear = ({
       .attr("class", function (d) {
         return d > 0 ? "" : "empty";
       })
-      .style("border-style", "solid")
-      .style("border-width", "3px")
-      .style("border-color", "rgb(0,0,0)")
-      .style("width", boxLength)
-      .style("height", boxLength)
       .on("click", (d) => {
         console.log("click: target: " + JSON.stringify(d.target.__data__));
         if (isNaN(d.target.__data__)) {
@@ -140,7 +133,12 @@ export const drawCalendarYear = ({
               .style("background-color", "steelblue");
           }
           console.log("click: selection: " + JSON.stringify(selection));
-          select(this).style("background-color", "lightblue");
+          select(this)
+            .selectAll("#laterAmount")
+            .style("background-color", "lightblue");
+          select(this)
+            .selectAll("#earlierAmount")
+            .style("background-color", "lightblue");
           if (d.target.__data__.k === "earlierAmount") {
             console.log("click: target: onClickCallback: earlierAmount");
             onClickCallback(AmountType.earlierAmount);
@@ -153,7 +151,12 @@ export const drawCalendarYear = ({
       .on("mouseover", function (d) {
         console.log("mouseover: target: " + JSON.stringify(d.target.__data__));
         if (isNaN(d.target.__data__)) {
-          select(this).style("background-color", "lightblue");
+          select(this)
+            .selectAll("#laterAmount")
+            .style("background-color", "lightblue");
+          select(this)
+            .selectAll("#earlierAmount")
+            .style("background-color", "lightblue");
         }
       })
       .on("mouseout", function (d) {
@@ -166,43 +169,61 @@ export const drawCalendarYear = ({
             (d.target.__data__.k !== "earlierAmount" &&
               choice !== AmountType.laterAmount))
         ) {
-          select(this).style("background-color", "steelblue");
+          select(this)
+            .selectAll("#laterAmount")
+            .style("background-color", "steelblue");
+          select(this)
+            .selectAll("#earlierAmount")
+            .style("background-color", "steelblue");
         }
       })
       .each(function (d) {
         const td = select(this);
         console.log(d);
         if (isNaN(d)) {
-          td.style("background-color", "steelblue");
           td.append("div")
             .text(function (d) {
-              return d.d;
+              return monthNames[d.d];
             })
+            .style("text-align", "center")
+            .style("margin", "0px 5px 0px 5px")
             .style("width", boxLength)
-            .style("height", "10px")
-            .style("top", "-33px")
-            .style("position", "relative")
+            //.style("height", "10px")
+            //.style("top", "-33px")
+            //.style("position", "relative")
             .on("click", () => {})
             .on("mouseover", function () {})
             .on("mouseout", function () {});
-          td.append("div")
+          let selectionDiv = td
+            .append("div")
             .text(function (d) {
               return "$" + d.a;
             })
-            .style("width", "95px")
+            .style("background-color", "steelblue")
+            .style("border-style", "solid")
+            .style("border-width", "3px")
+            .style("border-color", "rgb(0,0,0)")
+            .style("width", boxLength)
+            .style("height", boxLength)
             .style("text-align", "center")
-            .style("top", "-5px")
-            .style("position", "relative")
+            //.style("top", "-5px")
+            //.style("position", "relative")
             .style("font-size", "25px");
-          if (d.k === "earlierAmount") td.attr("id", "earlierAmount");
-          else td.attr("id", "laterAmount");
+          if (d.k === "earlierAmount") selectionDiv.attr("id", "earlierAmount");
+          else selectionDiv.attr("id", "laterAmount");
         } else {
           td.append("div")
             .text(function (d) {
               if (!d) return "";
               if (d < 1) return "";
-              return d;
+              return monthNames[d];
             })
+            .style("text-align", "center");
+          td.append("div")
+            .style("border-style", "solid")
+            .style("border-width", "3px")
+            .style("border-color", "rgb(0,0,0)")
+            .style("margin", "0px 5px 0px 5px")
             .style("width", boxLength)
             .style("height", boxLength);
         }
