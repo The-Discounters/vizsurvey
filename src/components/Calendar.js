@@ -17,6 +17,7 @@ import { AmountType } from "../features/AmountType";
 import { InteractionType } from "../features/InteractionType";
 import { drawCalendar } from "./CalendarHelper";
 import { drawCalendarYear } from "./CalendarYearHelper";
+import { drawCalendarYearDual } from "./CalendarYearDualHelper";
 import { ViewType } from "../features/ViewType";
 import { dateToState } from "../features/ConversionUtil";
 import Grid from "@mui/material/Unstable_Grid2";
@@ -90,6 +91,17 @@ export function Calendar() {
                   break;
                 case ViewType.calendarWordYear:
                   drawCalendarYear({
+                    table: table,
+                    onClickCallback: onClickCallback,
+                    choice: choice,
+                    qDateEarlier: q.dateEarlier,
+                    qDateLater: q.dateLater,
+                    qAmountEarlier: q.amountEarlier,
+                    qAmountLater: q.amountLater,
+                  });
+                  break;
+                case ViewType.calendarWordYearDual:
+                  drawCalendarYearDual({
                     table: table,
                     onClickCallback: onClickCallback,
                     choice: choice,

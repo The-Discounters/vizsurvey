@@ -4,6 +4,7 @@ export const ViewType = {
   calendarBar: "calendarBar",
   calendarWord: "calendarWord",
   calendarWordYear: "calendarWordYear",
+  calendarWordYeariDual: "calendarWordYearDual",
   calendarIcon: "calendarIcon",
 };
 

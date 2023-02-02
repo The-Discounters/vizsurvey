@@ -31,6 +31,7 @@ export function Survey() {
           case ViewType.calendarIcon:
           case ViewType.calendarWord:
           case ViewType.calendarWordYear:
+          case ViewType.calendarWordYearDual:
             /*
             if (
               stateToDate(q.dateLater)

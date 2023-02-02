@@ -178,6 +178,7 @@ const Introduction = () => {
         );
       case ViewType.calendarWord:
       case ViewType.calendarWordYear:
+      case ViewType.calendarWordYearDual:
         return instructions(
           "calendar word chart",
           "amounts",
@@ -274,6 +275,7 @@ const Introduction = () => {
           ></table>
         );
       case ViewType.calendarWordYear:
+      case ViewType.calendarWordYearDual:
         return (
           <table
             id="calendar"
