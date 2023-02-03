@@ -94,6 +94,9 @@ export const questionSlice = createSlice({
       attentionCheckShownTimestamp: null,
       attentionCheckCompletedTimestamp: null,
       attentionCheckTimeSec: null,
+      experienceSurveyQuestionsShownTimestamp: null,
+      experienceSurveyQuestionsCompletedTimestamp: null,
+      experienceSurveyTimeSec: null,
       financialLitSurveyQuestionsShownTimestamp: null,
       financialLitSurveyQuestionsCompletedTimestamp: null,
       financialLitSurveyTimeSec: null,
@@ -122,24 +125,28 @@ export const questionSlice = createSlice({
     },
     setParticipantId(state, action) {
       state.participantId = action.payload;
+      state.experienceSurvey.participantId = action.payload;
       state.financialLitSurvey.participantId = action.payload;
       state.purposeSurvey.participantId = action.payload;
       return state;
     },
     setTreatmentId(state, action) {
       state.treatmentId = action.payload;
+      state.experienceSurvey.treatmentId = action.payload;
       state.financialLitSurvey.treatmentId = action.payload;
       state.purposeSurvey.treatmentId = action.payload;
       return state;
     },
     setSessionId(state, action) {
       state.sessionId = action.payload;
+      state.experienceSurvey.sessionId = action.payload;
       state.financialLitSurvey.sessionId = action.payload;
       state.purposeSurvey.sessionId = action.payload;
       return state;
     },
     setStudyId(state, action) {
       state.studyId = action.payload;
+      state.experienceSurvey.studyId = action.payload;
       state.financialLitSurvey.studyId = action.payload;
       state.purposeSurvey.studyId = action.payload;
     },
@@ -160,6 +167,14 @@ export const questionSlice = createSlice({
     },
     setProfession(state, action) {
       state.profession = action.payload;
+    },
+    initExperienceSurveyQuestion(state, action) {
+      if (state.experienceSurvey[action.payload] == undefined) {
+        state.experienceSurvey[action.payload] = "";
+      }
+    },
+    setExperienceSurveyQuestion(state, action) {
+      state.experienceSurvey[action.payload.key] = action.payload.value;
     },
     initFinancialLitSurveyQuestion(state, action) {
       if (state.financialLitSurvey[action.payload] == undefined) {
@@ -318,6 +333,26 @@ export const questionSlice = createSlice({
     nextQuestion(state) {
       qe.incNextQuestion(state);
     },
+    experienceSurveyQuestionsShown(state, action) {
+      state.timestamps.experienceSurveyQuestionsShownTimestamp = action.payload;
+    },
+    experienceSurveyQuestionsCompleted(state, action) {
+      state.timestamps.experienceSurveyQuestionsCompletedTimestamp =
+        action.payload;
+      state.timestamps.experienceSurveyTimeSec = secondsBetween(
+        state.timestamps.experienceSurveyQuestionsShownTimestamp,
+        state.timestamps.experienceSurveyQuestionsCompletedTimestamp
+      );
+      io.writeCSV(
+        state.participantId,
+        state.studyId,
+        state.sessionId,
+        "experience-survey",
+        state.experienceSurvey
+      );
+      writeTimestamps(state);
+      state.status = qe.nextStatus(state, false);
+    },
     financialLitSurveyQuestionsShown(state, action) {
       state.timestamps.financialLitSurveyQuestionsShownTimestamp =
         action.payload;
@@ -390,6 +425,12 @@ export const questionSlice = createSlice({
       state.participantId = null;
       state.sessionId = null;
       state.studyId = null;
+      state.experienceSurvey = {
+        participantId: null,
+        sessionId: null,
+        studyId: null,
+        treatmentId: null,
+      };
       state.financialLitSurvey = {
         participantId: null,
         sessionId: null,
@@ -424,6 +465,9 @@ export const questionSlice = createSlice({
         attentionCheckShownTimestamp: null,
         attentionCheckCompletedTimestamp: null,
         attentionCheckTimeSec: null,
+        experienceSurveyQuestionsShownTimestamp: null,
+        experienceSurveyQuestionsCompletedTimestamp: null,
+        experienceSurveyTimeSec: null,
         financialLitSurveyQuestionsShownTimestamp: null,
         financialLitSurveyQuestionsCompletedTimestamp: null,
         financialLitSurveyTimeSec: null,
@@ -494,9 +538,14 @@ export const getSelfDescribeGender = (state) =>
 
 export const getProfession = (state) => state.questions.profession;
 
+export const getExperienceSurveyQuestion = (questionId) => (state) => {
+  return state.questions.experienceSurvey[questionId];
+};
+
 export const getFinancialLitSurveyQuestion = (questionId) => (state) => {
   return state.questions.financialLitSurvey[questionId];
 };
+
 export const getPurposeSurveyQuestion = (questionId) => (state) => {
   return state.questions.purposeSurvey[questionId];
 };
@@ -559,6 +608,8 @@ export const {
   setGender,
   setSelfDescribeGender,
   setProfession,
+  initExperienceSurveyQuestion,
+  setExperienceSurveyQuestion,
   initFinancialLitSurveyQuestion,
   setFinancialLitSurveyQuestion,
   setSurveyQuestion,
@@ -571,6 +622,8 @@ export const {
   introductionShown,
   introductionCompleted,
   attentionCheckShown,
+  experienceSurveyQuestionsShown,
+  experienceSurveyQuestionsCompleted,
   financialLitSurveyQuestionsShown,
   financialLitSurveyQuestionsCompleted,
   purposeSurveyQuestionsShown,

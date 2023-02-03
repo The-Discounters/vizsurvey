@@ -6,7 +6,6 @@ import { Grid, Box, Button, ThemeProvider } from "@mui/material";
 
 import { DateTime } from "luxon";
 import { AmountType } from "../features/AmountType";
-import { StatusType } from "../features/StatusType";
 import {
   getCurrentQuestion,
   getCurrentChoice,
@@ -19,6 +18,7 @@ import {
 import { dateToState } from "../features/ConversionUtil";
 import { drawBarChart } from "./BarChartComponent";
 import { styles, theme, calcScreenValues } from "./ScreenHelper";
+import { navigateFromStatus } from "./Navigate";
 
 function BarChart() {
   const dispatch = useDispatch();
@@ -48,17 +48,8 @@ function BarChart() {
   }, [choice]);
 
   useEffect(() => {
-    switch (status) {
-      case StatusType.Instructions:
-        navigate("/instruction");
-        break;
-      case StatusType.FinancialQuestionaire:
-        navigate("/financialquestionaire");
-        break;
-      case StatusType.Attention:
-        navigate("/attentioncheck");
-        break;
-    }
+    const path = navigateFromStatus(status);
+    navigate(path);
   }, [status]);
 
   const onClickCallback = (value) => {

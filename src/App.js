@@ -17,6 +17,7 @@ import Introduction from "./components/Introduction";
 import Demographic from "./components/Demographic";
 import Instructions from "./components/Instructions";
 import Survey from "./components/Survey";
+import PostSurveyExperience from "./components/PostSurveyExperience";
 import PostSurveyFinancialLit from "./components/PostSurveyFinancialLit";
 import PostSurveySenseOfPurpose from "./components/PostSurveySenseOfPurpose";
 import AttentionCheck from "./components/AttentionCheck";
@@ -82,6 +83,10 @@ const App = () => {
               <Route path={"introduction"} element={<Introduction />} />
               <Route path={"instruction"} element={<Instructions />} />
               <Route path={"survey"} element={<Survey />} />
+              <Route
+                path={"experiencequestionaire"}
+                element={<PostSurveyExperience />}
+              />
               <Route
                 path={"financialquestionaire"}
                 element={<PostSurveyFinancialLit />}

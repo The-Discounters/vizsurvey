@@ -17,14 +17,14 @@ import {
 import { makeStyles } from "@material-ui/core/styles";
 import {
   getStatus,
-  purposeSurveyQuestionsShown,
-  purposeSurveyQuestionsCompleted,
-  initPurposeSurveyQuestion,
-  setPurposeSurveyQuestion,
-  getPurposeSurveyQuestion,
+  experienceSurveyQuestionsShown,
+  experienceSurveyQuestionsCompleted,
+  initExperienceSurveyQuestion,
+  setExperienceSurveyQuestion,
+  getExperienceSurveyQuestion,
 } from "../features/questionSlice";
 import { dateToState } from "../features/ConversionUtil";
-import { POST_SURVEY_QUESTIONS } from "../features/postsurveyquestionssenseofpurpose";
+import { POST_SURVEY_QUESTIONS } from "../features/postsurveyquestionssurveyexperience";
 import { styles, theme } from "./ScreenHelper";
 import { navigateFromStatus } from "./Navigate";
 
@@ -59,13 +59,15 @@ export function PostSurvey() {
 
   let qList = [];
   surveys.questions.forEach((q) => {
-    dispatch(initPurposeSurveyQuestion(q.question.textShort));
-    const value = useSelector(getPurposeSurveyQuestion(q.question.textShort));
+    dispatch(initExperienceSurveyQuestion(q.question.textShort));
+    const value = useSelector(
+      getExperienceSurveyQuestion(q.question.textShort)
+    );
     qList.push(value);
   });
 
   useEffect(() => {
-    dispatch(purposeSurveyQuestionsShown(dateToState(DateTime.now())));
+    dispatch(experienceSurveyQuestionsShown(dateToState(DateTime.now())));
   }, []);
 
   useEffect(() => {
@@ -92,7 +94,7 @@ export function PostSurvey() {
       <div>
         <Grid container style={styles.root}>
           <Grid item xs={12}>
-            <Typography variant="h4">Additional Questions 3 of 3</Typography>
+            <Typography variant="h4">Additional Questions 1 of 3</Typography>
             <hr
               style={{
                 color: "#ea3433",
@@ -138,7 +140,7 @@ export function PostSurvey() {
                             label={option.textFull}
                             onChange={(event) => {
                               dispatch(
-                                setPurposeSurveyQuestion({
+                                setExperienceSurveyQuestion({
                                   key: surveys.questions[index].question
                                     .textShort,
                                   value: event.target.value,
@@ -148,12 +150,11 @@ export function PostSurvey() {
                           />
                         ))
                       : [
-                          "strongly-disagree",
-                          "disagree",
-                          "neutral",
-                          "agree",
-                          "strongly-agree",
-                          "prefer not to answer",
+                          "not-at-all-or-very-slightly",
+                          "a-little",
+                          "moderately",
+                          "quite-a-bit",
+                          "extremely",
                         ].map((option, index1) => (
                           <FormControlLabel
                             key={`radio-${index1}`}
@@ -167,7 +168,7 @@ export function PostSurvey() {
                             label={option.replace("-", " ")}
                             onChange={(event) => {
                               dispatch(
-                                setPurposeSurveyQuestion({
+                                setExperienceSurveyQuestion({
                                   key: surveys.questions[index].question
                                     .textShort,
                                   value: event.target.value,
@@ -199,7 +200,7 @@ export function PostSurvey() {
                 onClick={() => {
                   setTimeout(() => {
                     dispatch(
-                      purposeSurveyQuestionsCompleted(
+                      experienceSurveyQuestionsCompleted(
                         dateToState(DateTime.now())
                       )
                     );

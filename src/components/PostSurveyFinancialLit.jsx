@@ -76,13 +76,8 @@ export function PostSurvey() {
     navigate(path);
   }, [status]);
 
-  const [exited, setExited] = React.useState(false);
   useEffect(() => {
     checkEnableSubmit();
-    if (!exited && process.env.REACT_APP_FULLSCREEN === "enabled") {
-      document.exitFullscreen();
-      setExited(true);
-    }
   }, qList);
 
   const checkEnableSubmit = () => {
@@ -100,7 +95,7 @@ export function PostSurvey() {
       <div>
         <Grid container style={styles.root}>
           <Grid item xs={12}>
-            <Typography variant="h4">Additional Questions</Typography>
+            <Typography variant="h4">Additional Questions 2 of 3</Typography>
             <hr
               style={{
                 color: "#ea3433",

@@ -79,153 +79,163 @@ app.post("/test", (req, res) => {
 
   const data = JSON.parse(req.body.data);
 
-  if (data.surveyAnswers) {
-    console.log(
-      "data.surveyAnswers.filename: " +
-        data.surveyAnswers.filename +
-        ", " +
-        "data.surveyAnswers.data: " +
-        data.surveyAnswers.data
-    );
-    fs.writeFile(
-      dir + data.surveyAnswers.filename,
-      data.surveyAnswers.data,
-      function (err) {
-        if (err) {
-          console.log(err);
-          throw err;
-        }
-      }
-    );
-  }
-  if (data.answerTimestamps) {
-    console.log(
-      "data.answerTimestamps.filename: " +
-        data.answerTimestamps.filename +
-        ", " +
-        "data.answerTimestamps.data: " +
-        data.answerTimestamps.data
-    );
-    fs.writeFile(
-      dir + data.answerTimestamps.filename,
-      data.answerTimestamps.data,
-      function (err) {
-        if (err) {
-          console.log(err);
-          throw err;
-        }
-      }
-    );
-  }
-  if (data.financialLitSurvey) {
-    console.log(
-      "data.financialLitSurvey.filename: " +
-        data.financialLitSurvey.filename +
-        ", " +
-        "data.financialLitSurvey.data: " +
-        data.financialLitSurvey.data
-    );
-    fs.writeFile(
-      dir + data.financialLitSurvey.filename,
-      data.financialLitSurvey.data,
-      function (err) {
-        if (err) {
-          console.log(err);
-          throw err;
-        }
-      }
-    );
-  }
-  if (data.purposeSurvey) {
-    console.log(
-      "data.purposeSurvey.filename: " +
-        data.purposeSurvey.filename +
-        ", " +
-        "data.purposeSurvey.data: " +
-        data.purposeSurvey.data
-    );
-    fs.writeFile(
-      dir + data.purposeSurvey.filename,
-      data.purposeSurvey.data,
-      function (err) {
-        if (err) {
-          console.log(err);
-          throw err;
-        }
-      }
-    );
-  }
-  if (data.demographics) {
-    console.log(
-      "data.demographic.filename: " +
-        data.demographics.filename +
-        ", " +
-        "data.demographic.data: " +
-        data.demographics.data
-    );
-    fs.writeFile(
-      dir + data.demographics.filename,
-      data.demographics.data,
-      function (err) {
-        if (err) {
-          console.log(err);
-          throw err;
-        }
-      }
-    );
-  }
-  if (data.legal) {
-    console.log(
-      "req.body.data.legal.filename: " +
-        data.legal.filename +
-        ", " +
-        "req.body.data.legal.data: " +
-        data.legal.data
-    );
-    fs.writeFile(dir + data.legal.filename, data.legal.data, function (err) {
+  if (data.name && data.answer) {
+    console.log("data.name: " + data.name + ", " + "data.data: " + data.data);
+    fs.writeFile(dir + data.name, data.data, function (err) {
       if (err) {
         console.log(err);
         throw err;
       }
     });
-  }
-  if (data.feedback) {
-    console.log(
-      "req.body.data.feedback.filename: " +
-        data.feedback.filename +
-        ", " +
-        "req.body.data.feedback.data: " +
-        data.feedback.data
-    );
-    fs.writeFile(
-      dir + data.feedback.filename,
-      data.feedback.data,
-      function (err) {
+  } else {
+    if (data.surveyAnswers) {
+      console.log(
+        "data.surveyAnswers.filename: " +
+          data.surveyAnswers.filename +
+          ", " +
+          "data.surveyAnswers.data: " +
+          data.surveyAnswers.data
+      );
+      fs.writeFile(
+        dir + data.surveyAnswers.filename,
+        data.surveyAnswers.data,
+        function (err) {
+          if (err) {
+            console.log(err);
+            throw err;
+          }
+        }
+      );
+    }
+    if (data.answerTimestamps) {
+      console.log(
+        "data.answerTimestamps.filename: " +
+          data.answerTimestamps.filename +
+          ", " +
+          "data.answerTimestamps.data: " +
+          data.answerTimestamps.data
+      );
+      fs.writeFile(
+        dir + data.answerTimestamps.filename,
+        data.answerTimestamps.data,
+        function (err) {
+          if (err) {
+            console.log(err);
+            throw err;
+          }
+        }
+      );
+    }
+    if (data.financialLitSurvey) {
+      console.log(
+        "data.financialLitSurvey.filename: " +
+          data.financialLitSurvey.filename +
+          ", " +
+          "data.financialLitSurvey.data: " +
+          data.financialLitSurvey.data
+      );
+      fs.writeFile(
+        dir + data.financialLitSurvey.filename,
+        data.financialLitSurvey.data,
+        function (err) {
+          if (err) {
+            console.log(err);
+            throw err;
+          }
+        }
+      );
+    }
+    if (data.purposeSurvey) {
+      console.log(
+        "data.purposeSurvey.filename: " +
+          data.purposeSurvey.filename +
+          ", " +
+          "data.purposeSurvey.data: " +
+          data.purposeSurvey.data
+      );
+      fs.writeFile(
+        dir + data.purposeSurvey.filename,
+        data.purposeSurvey.data,
+        function (err) {
+          if (err) {
+            console.log(err);
+            throw err;
+          }
+        }
+      );
+    }
+    if (data.demographics) {
+      console.log(
+        "data.demographic.filename: " +
+          data.demographics.filename +
+          ", " +
+          "data.demographic.data: " +
+          data.demographics.data
+      );
+      fs.writeFile(
+        dir + data.demographics.filename,
+        data.demographics.data,
+        function (err) {
+          if (err) {
+            console.log(err);
+            throw err;
+          }
+        }
+      );
+    }
+    if (data.legal) {
+      console.log(
+        "req.body.data.legal.filename: " +
+          data.legal.filename +
+          ", " +
+          "req.body.data.legal.data: " +
+          data.legal.data
+      );
+      fs.writeFile(dir + data.legal.filename, data.legal.data, function (err) {
         if (err) {
           console.log(err);
           throw err;
         }
-      }
-    );
-  }
-  if (data.debriefTimestamps) {
-    console.log(
-      "req.body.data.debriefTimestamps.filename: " +
-        data.debriefTimestamps.filename +
-        ", " +
-        "req.body.data.debriefTimestamps.data: " +
-        data.debriefTimestamps.data
-    );
-    fs.writeFile(
-      dir + data.debriefTimestamps.filename,
-      data.debriefTimestamps.data,
-      function (err) {
-        if (err) {
-          console.log(err);
-          throw err;
+      });
+    }
+    if (data.feedback) {
+      console.log(
+        "req.body.data.feedback.filename: " +
+          data.feedback.filename +
+          ", " +
+          "req.body.data.feedback.data: " +
+          data.feedback.data
+      );
+      fs.writeFile(
+        dir + data.feedback.filename,
+        data.feedback.data,
+        function (err) {
+          if (err) {
+            console.log(err);
+            throw err;
+          }
         }
-      }
-    );
+      );
+    }
+    if (data.debriefTimestamps) {
+      console.log(
+        "req.body.data.debriefTimestamps.filename: " +
+          data.debriefTimestamps.filename +
+          ", " +
+          "req.body.data.debriefTimestamps.data: " +
+          data.debriefTimestamps.data
+      );
+      fs.writeFile(
+        dir + data.debriefTimestamps.filename,
+        data.debriefTimestamps.data,
+        function (err) {
+          if (err) {
+            console.log(err);
+            throw err;
+          }
+        }
+      );
+    }
   }
   res.send(JSON.stringify({ status: "server wrote file" }, null, 2));
 });
