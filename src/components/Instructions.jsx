@@ -50,10 +50,10 @@ const Instructions = () => {
           <Typography paragraph>
             <b>Survey questions: </b>
             After making your money choice selections, you will be presented
-            with two short surveys of questions to learn more about you. You
-            will then be presented with the last screen which has a more
-            detailed explanation of the goals behind this research along with a
-            section to submit feedback and a{" "}
+            with three short surveys of questions to learn more about what you
+            thought of this survey and yourself. You will then be presented with
+            the last screen which has a more detailed explanation of the goals
+            behind this research along with a section to submit feedback and a{" "}
             <b>code you must enter into Prolific to get paid.</b>
           </Typography>
           <Typography paragraph>
@@ -76,8 +76,6 @@ const Instructions = () => {
               style={styles.button}
               onClick={() => {
                 dispatch(instructionsCompleted(dateToState(DateTime.now())));
-                if (process.env.REACT_APP_FULLSCREEN === "enabled")
-                  document.body.requestFullscreen();
               }}
             >
               {" "}
