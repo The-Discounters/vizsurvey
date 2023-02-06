@@ -5,72 +5,63 @@ import figlet from "figlet";
 import Configstore from "configstore";
 import { Command } from "commander";
 import fs from "fs";
-import path from "path";
-import { csvParse } from "d3";
-import csv from "to-csv";
 import { DateTime } from "luxon";
-
+import { parseCSV, parseJSON } from "./src/parser.js";
+import {
+  writeFile,
+  loadFile,
+  fullPath,
+  appendSepToPath,
+  isCSVExt,
+  isJSONExt,
+  createCSVStringFromArray,
+} from "./src/files.js";
 import { askS3BucketInfo } from "./src/inquier.js";
 import { init, downloadFiles } from "./src/S3.js";
+//import { DataType, dataTypeFromFilename } from "../src/features/DataType.js";
 
 export const AMAZON_S3_BUCKET_KEY = "amazonS3Bucket";
 export const AMAZON_REGION__KEY = "amazonRegion";
 export const AMAZON_ACCESS_KEY_ID = "amazonAccessKeyId";
 export const AMAZON_SECRET_ACCESS_KEY = "amazonSecretAccessKey";
 
-const createMergeFile = (filename, mergedData) => {
-  if (mergedData && mergedData.length > 0) {
-    console.log(`...creating merged file ${filename}...`);
-    const CSV = csv(mergedData);
-    fs.writeFileSync(filename, CSV);
-  } else {
-    console.log(`...no data for merged file ${filename}...`);
-  }
+/// TODO this is a total hack.  I can't get the import to work when it points to the src folder in the main code base.
+const DataType = {
+  Answers: { key: "surveyAnswers", filenamePrefix: "answers" },
+  Timestamps: {
+    key: "answerTimestamps",
+    filenamePrefix: "answer-timestamps",
+  },
+  SurveyExperience: {
+    key: "surveyExperienceSurvey",
+    filenamePrefix: "survey-experience-survey",
+  },
+  FinancialSurvey: {
+    key: "financialLitSurvey",
+    filenamePrefix: "financial-lit-survey",
+  },
+  PurposeSurvey: {
+    key: "purposeSurvey",
+    filenamePrefix: "purpose-survey",
+  },
+  Demographic: {
+    key: "demographics",
+    filenamePrefix: "demographics",
+  },
+  Legal: { key: "legal", filenamePrefix: "legal" },
+  Feedback: { key: "feedback", filenamePrefix: "feedback.csv" },
+  DebriefTimestamps: {
+    key: "debriefTimestamps",
+    filenamePrefix: "debrief",
+  },
 };
 
-const createCSVFileFromData = (propertyName, pathroot, answers) => {
-  if (answers[propertyName]) {
-    const filename = `${pathroot}${path.sep}${answers[propertyName].filename}`;
-    console.log(`...writing ${filename} ...`);
-    fs.writeFileSync(filename, answers[propertyName].data);
-    console.log(`...file written.`);
-    return answers[propertyName].data;
-  } else {
-    return null;
-  }
-};
+Object.freeze(DataType);
 
-const createCSVFromJSONFile = (filename, callback) => {
-  console.log(`...parsing file ${filename}`);
-  const jsonString = fs.readFileSync(filename);
-  const answers = JSON.parse(jsonString);
-  const pathroot = path.dirname(filename);
-  callback(
-    "surveyAnswers",
-    createCSVFileFromData("surveyAnswers", pathroot, answers)
-  );
-  callback(
-    "answerTimestamps",
-    createCSVFileFromData("answerTimestamps", pathroot, answers)
-  );
-  callback(
-    "financialLitSurvey",
-    createCSVFileFromData("financialLitSurvey", pathroot, answers)
-  );
-  callback(
-    "purposeSurvey",
-    createCSVFileFromData("purposeSurvey", pathroot, answers)
-  );
-  callback(
-    "demographics",
-    createCSVFileFromData("demographics", pathroot, answers)
-  );
-  callback("legal", createCSVFileFromData("legal", pathroot, answers));
-  callback("feedback", createCSVFileFromData("feedback", pathroot, answers));
-  callback(
-    "debriefTimestamps",
-    createCSVFileFromData("debriefTimestamps", pathroot, answers)
-  );
+const dataTypeFromFilename = (filename) => {
+  for (const type in DataType) {
+    if (filename.includes(DataType[type].filenamePrefix)) return type;
+  }
 };
 
 clear();
@@ -78,6 +69,25 @@ clear();
 console.log(
   chalk.yellow(figlet.textSync("Discounters", { horizontalLayout: "full" }))
 );
+
+const mergeCSVData = (propertyName, CSVData, mergedData) => {
+  console.log(
+    `...merging ${CSVData.length} ros for ${propertyName} type of data`
+  );
+  if (CSVData) {
+    if (mergedData.has(propertyName)) {
+      mergedData.set(
+        propertyName,
+        mergedData.get(propertyName).concat(CSVData)
+      );
+    } else {
+      mergedData.set(propertyName, CSVData);
+    }
+    console.log(`...data merged`);
+  } else {
+    console.log(`...no data to merge`);
+  }
+};
 
 const run = async () => {
   const conf = new Configstore("discounters");
@@ -96,6 +106,15 @@ const run = async () => {
     )
     .version("1.0.0");
 
+  const createMergeFile = (filename, mergedData) => {
+    if (mergedData && mergedData.length > 0) {
+      console.log(`...creating merged file ${filename}`);
+      writeFile(filename, createCSVStringFromArray(mergedData));
+    } else {
+      console.log(`...no data for merged file ${filename}...`);
+    }
+  };
+
   program
     .command("split")
     .description(
@@ -110,67 +129,35 @@ const run = async () => {
     .action((source, options) => {
       console.log(`Loading file "${source}" for splitting...`);
       try {
-        const mergedData = new Map();
+        console.log(
+          `...splitting "${
+            options.filename ? "" : "files in directory "
+          }"${source}`
+        );
+        const files = options.filename
+          ? options.filename
+          : fs.readdirSync(source).filter((file) => {
+              return isJSONExt(file);
+            });
 
-        const mergeCallback = (propertyName, CSVData) => {
-          console.log(`...merging ${propertyName}`);
-          if (CSVData) {
-            const parsedCSV = csvParse(CSVData);
-            if (mergedData.has(propertyName)) {
-              mergedData.set(
-                propertyName,
-                mergedData.get(propertyName).concat(parsedCSV)
+        for (const file of files) {
+          console.log(`...parsing file ${file}`);
+          const answers = parseJSON(loadFile(fullPath(source, file)));
+          for (const JSONKey in DataType) {
+            if (answers[DataType[JSONKey].key]) {
+              writeFile(
+                fullPath(source, answers[DataType[JSONKey].key].filename),
+                answers[DataType[JSONKey].key].data
               );
-            } else {
-              mergedData.set(propertyName, parsedCSV);
             }
-            console.log(`...data merged`);
-          } else {
-            console.log(`...no data to merge`);
           }
-        };
-
-        if (options.filename) {
-          console.log(`...splitting filename "${source}"`);
-          createCSVFromJSONFile(source, createCSVFromJSONFile);
-        } else if (options.directory) {
-          console.log(`...splitting files in directory "${source}"`);
-          const files = fs.readdirSync(source).filter((file) => {
-            return path.extname(file).toLowerCase() === ".json";
-          });
-          for (const file of files) {
-            createCSVFromJSONFile(source + path.sep + file, mergeCallback);
-          }
-
-          var mergeFilename = `${source}${path.sep}answers-merged.csv`;
-          createMergeFile(mergeFilename, mergedData.get("surveyAnswers"));
-
-          mergeFilename = `${source}${path.sep}answers-timestamps-merged.csv`;
-          createMergeFile(mergeFilename, mergedData.get("answerTimestamps"));
-
-          mergeFilename = `${source}${path.sep}financial-lit-survey-merged.csv`;
-          createMergeFile(mergeFilename, mergedData.get("financialLitSurvey"));
-
-          mergeFilename = `${source}${path.sep}purpose-survey-merged.csv`;
-          createMergeFile(mergeFilename, mergedData.get("purposeSurvey"));
-
-          mergeFilename = `${source}${path.sep}demographics-merged.csv`;
-          createMergeFile(mergeFilename, mergedData.get("demographics"));
-
-          mergeFilename = `${source}${path.sep}legal-merged.csv`;
-          createMergeFile(mergeFilename, mergedData.get("legal"));
-
-          mergeFilename = `${source}${path.sep}feedback.csv`;
-          createMergeFile(mergeFilename, mergedData.get("feedback"));
-
-          mergeFilename = `${source}${path.sep}debrief-merged.csv`;
-          createMergeFile(mergeFilename, mergedData.get("debriefTimestamps"));
         }
       } catch (err) {
         console.log(err);
         return;
       }
     });
+
   program
     .command("download")
     .description("Downloads files from the S3 bucket.")
@@ -185,12 +172,87 @@ const run = async () => {
         const laterThanDate = options.laterthan
           ? DateTime.fromFormat(options.laterthan, "M/d/yyyy")
           : null;
-        downloadFiles(source + path.sep, laterThanDate);
+        downloadFiles(appendSepToPath(source), laterThanDate);
       } catch (err) {
         console.log(err);
         return;
       }
     });
+
+  program
+    .command("merge")
+    .description(
+      "Creates a merge file from CSV files in the directory passed as an argument.  The CSV files will be writen to the same folder as the CSV files."
+    )
+    .argument("<directory>", "directory containg csv files to merge")
+    .option("-c, --columns", "the answer rows will be converted to columns.")
+    .action((source, options) => {
+      // TODO implement -c option
+      console.log(`Scanning directory ${source} for merging...`);
+      try {
+        const mergedData = new Map();
+        console.log(`merging ${source}`);
+        const files = options.filename
+          ? options.filename
+          : fs.readdirSync(source).filter((file) => {
+              return isCSVExt(file);
+            });
+        for (const file of files) {
+          console.log(`considering merging file ${file}`);
+          const type = dataTypeFromFilename(file);
+          if (type) {
+            console.log(
+              `...detected file of type ${type}, merging data from file`
+            );
+            mergeCSVData(
+              DataType[type].key,
+              parseCSV(loadFile(fullPath(source, file))),
+              mergedData
+            );
+          } else {
+            console.log(
+              `...detected unknown file type for file ${file} so skipping.`
+            );
+          }
+        }
+        for (const key in DataType) {
+          createMergeFile(
+            `${fullPath(source, DataType[key].filenamePrefix)}-merged.csv`,
+            mergedData.get(DataType[key].key)
+          );
+        }
+      } catch (err) {
+        console.log(err);
+        return;
+      }
+    });
+
+  program
+    .command("monitor")
+    .description(
+      "Monitors the status of an experiment running by downloading the S3 files and reporting summary statistics in real time to the screen."
+    )
+    .argument(
+      "<date>",
+      "the date to filter out files that are are equal to or later than"
+    )
+    .action((source, options) => {
+      // TODO implement monitoring
+      console.log(
+        `Monitoring experiment for files with a timestamp equal to or greater than ${source}" ...`
+      );
+      // download the answer-timestamps- files
+      // create the answer-timestamps- merge file
+      // count the number of completed partcipants
+      // count the number of inprogress participants - this number shoul bounce up and go to zero and will get stuck at what is incomplete
+      // download the demographic files
+      // create the demographic merge file
+      // count the number of gbr and usa and show it
+      // add an option to show feedback as a log stream by downloading the feedback files, parsing them and showing the feedback.
+      // download the survey experience files and create the merge file
+      // show the toatal summary by each of the questions.
+    });
+
   program.parse();
 };
 

@@ -3,6 +3,7 @@ import { FileIOAdapter } from "./FileIOAdapter";
 import { QuestionEngine } from "./QuestionEngine";
 import { StatusType } from "./StatusType";
 import { secondsBetween } from "./ConversionUtil";
+import { DataType } from "./DataType";
 
 const qe = new QuestionEngine();
 const io = new FileIOAdapter();
@@ -18,7 +19,7 @@ const writeTimestamps = (state) => {
     state.participantId,
     state.studyId,
     state.sessionId,
-    "timestamps",
+    DataType.Timestamps.filenamePrefix,
     {
       ...{
         participantId: state.participantId,
@@ -231,7 +232,7 @@ export const questionSlice = createSlice({
         state.participantId,
         state.studyId,
         state.sessionId,
-        "legal",
+        DataType.legal.filenamePrefix,
         {
           participantId: state.participantId,
           sessionId: state.sessionId,
@@ -256,7 +257,7 @@ export const questionSlice = createSlice({
         state.participantId,
         state.studyId,
         state.sessionId,
-        "demographic",
+        DataType.Demographic.filenamePrefix,
         {
           ...{
             participantId: state.participantId,
@@ -323,7 +324,7 @@ export const questionSlice = createSlice({
         state.participantId,
         state.studyId,
         state.sessionId,
-        "answers",
+        DataType.Answers.filenamePrefix,
         state.answers
       );
     },
@@ -347,7 +348,7 @@ export const questionSlice = createSlice({
         state.participantId,
         state.studyId,
         state.sessionId,
-        "experience-survey",
+        DataType.SurveyExperience.filenamePrefix,
         state.experienceSurvey
       );
       writeTimestamps(state);
@@ -368,7 +369,7 @@ export const questionSlice = createSlice({
         state.participantId,
         state.studyId,
         state.sessionId,
-        "financial-lit-survey",
+        DataType.FinancialSurvey.filenamePrefix,
         state.financialLitSurvey
       );
       writeTimestamps(state);
@@ -388,7 +389,7 @@ export const questionSlice = createSlice({
         state.participantId,
         state.studyId,
         state.sessionId,
-        "purpose-survey",
+        DataType.PurposeSurvey.filenamePrefix,
         state.purposeSurvey
       );
       writeTimestamps(state);
@@ -407,7 +408,7 @@ export const questionSlice = createSlice({
         state.participantId,
         state.studyId,
         state.sessionId,
-        "feedback",
+        DataType.Feedback.filenamePrefix,
         {
           participantId: state.participantId,
           sessionId: state.sessionId,

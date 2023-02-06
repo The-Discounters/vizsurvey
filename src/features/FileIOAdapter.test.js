@@ -1,9 +1,10 @@
+import { DateTime } from "luxon";
 import { FileIOAdapter } from "./FileIOAdapter";
 import { InteractionType } from "./InteractionType";
 import { AmountType } from "./AmountType";
 import { ViewType } from "./ViewType";
 import { Answer } from "./Answer";
-import { DateTime } from "luxon";
+import { DataType } from "./DataType";
 
 describe("Enum tests", () => {
   const result = ViewType["barchart"];
@@ -294,18 +295,7 @@ describe("FileIOAdapter tests", () => {
     });
     const answers = [answer1, answer2];
 
-    const financialLitSurvey = {
-      participantId: 1,
-      key1: "value1",
-      key2: "value2",
-    };
-    const purposeSurvey = {
-      participantId: 1,
-      key1: "value1",
-      key2: "value2",
-    };
-
-    const discountSurvey = {
+    const survey = {
       participantId: 1,
       key1: "value1",
       key2: "value2",
@@ -355,24 +345,39 @@ describe("FileIOAdapter tests", () => {
       attentionCheck: true,
     };
 
+    const feedback = {
+      participantId: 1,
+      sessionId: 2,
+      studyId: 3,
+      treatmentId: 1,
+      feedback: "feedback comment",
+    };
+
     const io = new FileIOAdapter();
-    io.writeCSV(1, 2, 3, "answers", {
+
+    io.writeCSV(1, 2, 3, DataType.Answer.filenamePrefix, {
       answers,
     });
-    io.writeCSV(1, 2, 3, "timestamps", {
+    io.writeCSV(1, 2, 3, DataType.Timestamps.filenamePrefix, {
       timestamps,
     });
-    io.writeCSV(1, 2, 3, "discount", {
-      discountSurvey,
+    io.writeCSV(1, 2, 3, DataType.FinancialSurvey.filenamePrefix, {
+      survey,
     });
-    io.writeCSV(1, 2, 3, "financial", {
-      financialLitSurvey,
+    io.writeCSV(1, 2, 3, DataType.SurveyExperience.filenamePrefix, {
+      survey,
     });
-    io.writeCSV(1, 2, 3, "demographic", {
+    io.writeCSV(1, 2, 3, DataType.SurveyPurpose.filenamePrefix, {
+      survey,
+    });
+    io.writeCSV(1, 2, 3, DataType.Demographic.filenamePrefix, {
       demographic,
     });
-    io.writeCSV(1, 2, 3, "legal", {
+    io.writeCSV(1, 2, 3, DataType.Legal.filenamePrefix, {
       legal,
+    });
+    io.writeCSV(1, 2, 3, DataType.Feedback.filenamePrefix, {
+      feedback,
     });
   });
 });
