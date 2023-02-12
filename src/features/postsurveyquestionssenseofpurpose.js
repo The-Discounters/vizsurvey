@@ -22,7 +22,7 @@ export const POST_SURVEY_QUESTIONS = {
     {
       question: {
         textFull: "I am striving to make a positive difference in society.",
-        textShort: "purpose_survey_differnce",
+        textShort: "purpose_survey_difference",
         disabled: false,
       },
     },

@@ -42,8 +42,10 @@ const writeStateAsCSV = (state) => {
     selfDescribeGender: state.selfDescribeGender,
     profession: state.profession,
     userAgent: state.userAgent,
+    ...state.screenAttributes,
     // answers
     ...answersAsObj,
+    attentionCheck: state.attentionCheck,
     // experience survey
     ...state.experienceSurvey,
     // financial literacy survey
@@ -130,7 +132,7 @@ export const questionSlice = createSlice({
       debriefCompletedTimestamp: null,
       debriefTimeSec: null,
     },
-    attentioncheck: null,
+    attentionCheck: null,
     feedback: "",
     treatments: [],
     instructionTreatment: null,
@@ -140,7 +142,7 @@ export const questionSlice = createSlice({
     lowdown: undefined,
     status: StatusType.Unitialized,
     error: null,
-    userAgen: null,
+    userAgent: null,
   }, // the initial state of our global data (under name slice)
   reducers: {
     setUserAgent(state, action) {
@@ -207,7 +209,7 @@ export const questionSlice = createSlice({
       state.purposeSurvey[action.payload.key] = action.payload.value;
     },
     setAttentionCheck(state, action) {
-      state.attentioncheck = action.payload.value;
+      state.attentionCheck = action.payload.value;
       state.timestamps.attentionCheckCompletedTimestamp =
         action.payload.timestamp;
       state.timestamps.attentionCheckTimeSec = secondsBetween(
@@ -402,7 +404,7 @@ export const questionSlice = createSlice({
         debriefCompletedTimestamp: null,
         debriefTimeSec: null,
       };
-      state.attentioncheck = null;
+      state.attentionCheck = null;
       state.consentChecked = false;
       state.feedback = "";
       state.treatments = [];
@@ -479,7 +481,7 @@ export const getFinancialLitSurvey = (state) =>
 
 export const getPurposeSurvey = (state) => state.questions.getPurposeSurvey;
 
-export const getAttentionCheck = (state) => state.questions.attentioncheck;
+export const getAttentionCheck = (state) => state.questions.attentionCheck;
 
 export const getCurrentQuestionIndex = (state) =>
   state.questions.currentQuestionIdx;

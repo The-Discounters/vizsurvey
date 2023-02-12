@@ -15,5 +15,5 @@ export const CSVDataFilenameFromKey = (uniqueKey) => {
 };
 
 export const stateFormatFilename = (dataObj) => {
-  return `state-format-${stateUniqueKey(dataObj)}`;
+  return `state-format-${stateUniqueKey(dataObj)}.json`;
 };

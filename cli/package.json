@@ -8,7 +8,7 @@
     "discounters": "./index.js"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
   },
   "keywords": [
     "CLI",
@@ -26,7 +26,9 @@
     "configstore": "^6.0.0",
     "figlet": "^1.5.2",
     "inquirer": "^9.1.4",
-    "jest": "^29.4.1",
     "lodash": "^4.17.21"
+  },
+  "devDependencies": {
+    "jest": "^29.4.2"
   }
 }

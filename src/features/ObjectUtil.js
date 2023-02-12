@@ -14,7 +14,7 @@ export const convertKeysToUnderscore = (obj) => {
 export const convertAnswersAryToObj = (answersAry) => {
   const result = answersAry.reduce((acc, current) => {
     // eslint-disable-next-line no-undef
-    const answerObj = _.mapKeys(current, function (value, key, object) {
+    const answerObj = _.mapKeys(current, (value, key, object) => {
       if (
         key === "participant_id" ||
         key === "participantId" ||
