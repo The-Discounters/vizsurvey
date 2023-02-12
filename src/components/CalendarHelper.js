@@ -1,13 +1,12 @@
 import * as d3 from "d3";
 import { select, format, scaleLinear, scaleBand, range, drag } from "d3";
 import { DateTime } from "luxon";
-import { answer } from "../features/questionSlice";
-import { ViewType } from "../features/ViewType";
-import { AmountType } from "../features/AmountType";
-import { InteractionType } from "../features/InteractionType";
-import { dateToState } from "../features/ConversionUtil";
-
-var calendarMatrix = require("calendar-matrix");
+import { answer } from "../features/questionSlice.js";
+import { ViewType } from "../features/ViewType.js";
+import { AmountType } from "../features/AmountType.js";
+import { InteractionType } from "../features/InteractionType.js";
+import { dateToState } from "../features/ConversionUtil.js";
+import { calendarMatrix } from "calendar-matrix";
 
 export const dayNames = ["S", "M", "T", "W", "T", "F", "S"];
 

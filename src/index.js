@@ -1,13 +1,11 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { enableAllPlugins } from "immer";
-
 import { Provider } from "react-redux";
-import { store } from "./app/store";
-
+import { store } from "./app/store.js";
 import "./index.css";
-import App from "./App";
-import reportWebVitals from "./reportWebVitals";
+import App from "./App.js";
+import reportWebVitals from "./reportWebVitals.js";
 
 enableAllPlugins();
 

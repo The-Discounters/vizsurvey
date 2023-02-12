@@ -1,6 +1,5 @@
 import fs from "fs";
 import path from "path";
-import csv from "to-csv";
 
 export const isJSONExt = (filename) => {
   return path.extname(filename).toLowerCase() === ".json";
@@ -10,8 +9,8 @@ export const isCSVExt = (filename) => {
   return path.extname(filename).toLowerCase() === ".csv";
 };
 
-export const appendSepToPath = (path) => {
-  return `${path}${path.sep}`;
+export const appendSepToPath = (dir) => {
+  return `${dir}${path.sep}`;
 };
 
 export const fullPath = (root, filename) => {
@@ -25,10 +24,6 @@ export function getCurrentDirectoryBase() {
 export function directoryExists(filePath) {
   return fs.existsSync(filePath);
 }
-
-export const createCSVStringFromArray = (arrayData) => {
-  return csv(arrayData);
-};
 
 export const loadFile = (filename) => {
   console.log(`...reading file ${filename}`);

@@ -77,6 +77,17 @@
             "internalConsoleOptions": "neverOpen"
         },
         {
+            "name": "Debug CLI download test folder all",
+            "type": "node",
+            "request": "launch",
+            "runtimeExecutable": "/Users/pete/.nvm/versions/node/v19.3.0/bin/node",
+            "program": "${workspaceFolder}/cli/index.js",
+            "args": ["download", "./S3-downloaded"],
+            "cwd": "${workspaceRoot}/cli",
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen"
+        },
+        {
             "name": "Debug CLI download test folder 12/27/22",
             "type": "node",
             "request": "launch",
@@ -109,5 +120,16 @@
             "console": "integratedTerminal",
             "internalConsoleOptions": "neverOpen"
         },
+        {
+            "name": "Debug CLI merge public test folder",
+            "type": "node",
+            "request": "launch",
+            "runtimeExecutable": "/Users/pete/.nvm/versions/node/v19.3.0/bin/node",
+            "program": "${workspaceFolder}/cli/index.js",
+            "args": ["merge", "../test/public"],
+            "cwd": "${workspaceRoot}/cli",
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen"
+        }
     ]
 }

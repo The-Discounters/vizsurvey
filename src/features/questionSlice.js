@@ -1,9 +1,15 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { FileIOAdapter } from "./FileIOAdapter";
-import { QuestionEngine } from "./QuestionEngine";
-import { StatusType } from "./StatusType";
-import { secondsBetween } from "./ConversionUtil";
-import { DataType } from "./DataType";
+import { FileIOAdapter } from "./FileIOAdapter.js";
+import { QuestionEngine } from "./QuestionEngine.js";
+import { StatusType } from "./StatusType.js";
+import { secondsBetween } from "./ConversionUtil.js";
+import {
+  convertKeysToUnderscore,
+  convertAnswersAryToObj,
+  setAllPropertiesEmpty,
+} from "./ObjectUtil.js";
+import { convertToCSV } from "./parserUtil.js";
+import { CSVDataFilename, stateFormatFilename } from "./QuestionSliceUtil.js";
 
 const qe = new QuestionEngine();
 const io = new FileIOAdapter();
@@ -14,22 +20,47 @@ function getRandomIntInclusive(min, max) {
   return Math.floor(Math.random() * (max - min + 1) + min); //The maximum is inclusive and the minimum is inclusive
 }
 
-const writeTimestamps = (state) => {
-  io.writeCSV(
-    state.participantId,
-    state.studyId,
-    state.sessionId,
-    DataType.Timestamps.filenamePrefix,
-    {
-      ...{
-        participantId: state.participantId,
-        sessionId: state.sessionId,
-        studyId: state.studyId,
-        treatmentId: state.treatmentId,
-      },
-      ...state.timestamps,
-    }
-  );
+const writeStateAsCSV = (state) => {
+  // turn answer rows into columns with position number as suffix
+  const answersAsObj = convertAnswersAryToObj(state.answers);
+
+  const flattenedState = {
+    ...{
+      participantId: state.participantId,
+      sessionId: state.sessionId,
+      studyId: state.studyId,
+      treatmentId: state.treatmentId,
+    },
+    ...state.timestamps,
+    // consent
+    consentChecked: state.consentChecked,
+    // demographic
+    countryOfResidence: state.countryOfResidence,
+    vizFamiliarity: state.vizFamiliarity,
+    age: state.age,
+    gender: state.gender,
+    selfDescribeGender: state.selfDescribeGender,
+    profession: state.profession,
+    userAgent: state.userAgent,
+    // answers
+    ...answersAsObj,
+    // experience survey
+    ...state.experienceSurvey,
+    // financial literacy survey
+    ...state.financialLitSurvey,
+    // purpose survey
+    ...state.purposeSurvey,
+    // feedback
+    feedback: state.feedback,
+  };
+
+  const allKeysState = JSON.stringify(setAllPropertiesEmpty(flattenedState));
+
+  io.writeFile(stateFormatFilename(state), allKeysState);
+  // change capital letter in camel case to _ with lower case letter to make the column headers easier to read when importing to excel
+  const underscoreKeys = convertKeysToUnderscore(flattenedState);
+  const filename = CSVDataFilename(state);
+  io.writeFile(filename, convertToCSV(underscoreKeys));
 };
 
 // Define the initial state of the store for this slicer.
@@ -41,18 +72,9 @@ export const questionSlice = createSlice({
     participantId: null,
     sessionId: null,
     studyId: null,
-    financialLitSurvey: {
-      participantId: null,
-      sessionId: null,
-      studyId: null,
-      treatmentId: null,
-    },
-    purposeSurvey: {
-      participantId: null,
-      sessionId: null,
-      studyId: null,
-      treatmentId: null,
-    },
+    experienceSurvey: {},
+    financialLitSurvey: {},
+    purposeSurvey: {},
     screenAttributes: {
       // screen properties
       screenAvailHeight: null,
@@ -126,23 +148,14 @@ export const questionSlice = createSlice({
     },
     setParticipantId(state, action) {
       state.participantId = action.payload;
-      state.experienceSurvey.participantId = action.payload;
-      state.financialLitSurvey.participantId = action.payload;
-      state.purposeSurvey.participantId = action.payload;
       return state;
     },
     setTreatmentId(state, action) {
       state.treatmentId = action.payload;
-      state.experienceSurvey.treatmentId = action.payload;
-      state.financialLitSurvey.treatmentId = action.payload;
-      state.purposeSurvey.treatmentId = action.payload;
       return state;
     },
     setSessionId(state, action) {
       state.sessionId = action.payload;
-      state.experienceSurvey.sessionId = action.payload;
-      state.financialLitSurvey.sessionId = action.payload;
-      state.purposeSurvey.sessionId = action.payload;
       return state;
     },
     setStudyId(state, action) {
@@ -201,7 +214,7 @@ export const questionSlice = createSlice({
         state.timestamps.attentionCheckShownTimestamp,
         state.timestamps.attentionCheckCompletedTimestamp
       );
-      writeTimestamps(state);
+      writeStateAsCSV(state);
       state.status = qe.nextStatus(state, false);
     },
     loadTreatment(state) {
@@ -228,20 +241,7 @@ export const questionSlice = createSlice({
         state.timestamps.consentShownTimestamp,
         state.timestamps.consentCompletedTimestamp
       );
-      io.writeCSV(
-        state.participantId,
-        state.studyId,
-        state.sessionId,
-        DataType.legal.filenamePrefix,
-        {
-          participantId: state.participantId,
-          sessionId: state.sessionId,
-          studyId: state.studyId,
-          treatmentId: state.treatmentId,
-          consentChecked: state.consentChecked,
-        }
-      );
-      writeTimestamps(state);
+      writeStateAsCSV(state);
       state.status = qe.nextStatus(state, false);
     },
     demographicShown(state, action) {
@@ -253,29 +253,7 @@ export const questionSlice = createSlice({
         state.timestamps.demographicShownTimestamp,
         state.timestamps.demographicCompletedTimestamp
       );
-      io.writeCSV(
-        state.participantId,
-        state.studyId,
-        state.sessionId,
-        DataType.Demographic.filenamePrefix,
-        {
-          ...{
-            participantId: state.participantId,
-            sessionId: state.sessionId,
-            studyId: state.studyId,
-            treatmentId: state.treatmentId,
-            countryOfResidence: state.countryOfResidence,
-            vizFamiliarity: state.vizFamiliarity,
-            age: state.age,
-            gender: state.gender,
-            selfDescribeGender: state.selfDescribeGender,
-            profession: state.profession,
-            userAgent: state.userAgent,
-          },
-          ...state.screenAttributes,
-        }
-      );
-      writeTimestamps(state);
+      writeStateAsCSV(state);
       state.status = qe.nextStatus(state, false);
     },
     introductionShown(state, action) {
@@ -288,7 +266,7 @@ export const questionSlice = createSlice({
         state.timestamps.introductionCompletedTimestamp
       );
       // TODO I could record the participants choice on the instructions
-      writeTimestamps(state);
+      writeStateAsCSV(state);
       state.status = qe.nextStatus(state, false);
     },
     instructionsShown(state, action) {
@@ -300,7 +278,7 @@ export const questionSlice = createSlice({
         state.timestamps.instructionsShownTimestamp,
         state.timestamps.instructionsCompletedTimestamp
       );
-      writeTimestamps(state);
+      writeStateAsCSV(state);
       state.status = qe.nextStatus(state, false);
     },
     setFeedback(state, action) {
@@ -320,13 +298,7 @@ export const questionSlice = createSlice({
     // we define our actions on the slice of global store data here.
     answer(state, action) {
       qe.answerCurrentQuestion(state, action.payload);
-      io.writeCSV(
-        state.participantId,
-        state.studyId,
-        state.sessionId,
-        DataType.Answers.filenamePrefix,
-        state.answers
-      );
+      writeStateAsCSV(state);
     },
     previousQuestion(state) {
       qe.decPreviousQuestion(state);
@@ -344,14 +316,7 @@ export const questionSlice = createSlice({
         state.timestamps.experienceSurveyQuestionsShownTimestamp,
         state.timestamps.experienceSurveyQuestionsCompletedTimestamp
       );
-      io.writeCSV(
-        state.participantId,
-        state.studyId,
-        state.sessionId,
-        DataType.SurveyExperience.filenamePrefix,
-        state.experienceSurvey
-      );
-      writeTimestamps(state);
+      writeStateAsCSV(state);
       state.status = qe.nextStatus(state, false);
     },
     financialLitSurveyQuestionsShown(state, action) {
@@ -365,14 +330,7 @@ export const questionSlice = createSlice({
         state.timestamps.financialLitSurveyQuestionsShownTimestamp,
         state.timestamps.financialLitSurveyQuestionsCompletedTimestamp
       );
-      io.writeCSV(
-        state.participantId,
-        state.studyId,
-        state.sessionId,
-        DataType.FinancialSurvey.filenamePrefix,
-        state.financialLitSurvey
-      );
-      writeTimestamps(state);
+      writeStateAsCSV(state);
       state.status = qe.nextStatus(state, false);
     },
     purposeSurveyQuestionsShown(state, action) {
@@ -385,14 +343,7 @@ export const questionSlice = createSlice({
         state.timestamps.purposeSurveyQuestionsShownTimestamp,
         state.timestamps.purposeSurveyQuestionsCompletedTimestamp
       );
-      io.writeCSV(
-        state.participantId,
-        state.studyId,
-        state.sessionId,
-        DataType.PurposeSurvey.filenamePrefix,
-        state.purposeSurvey
-      );
-      writeTimestamps(state);
+      writeStateAsCSV(state);
       state.status = qe.nextStatus(state, false);
     },
     debriefShownTimestamp(state, action) {
@@ -404,20 +355,7 @@ export const questionSlice = createSlice({
         state.timestamps.debriefShownTimestamp,
         state.timestamps.debriefCompletedTimestamp
       );
-      io.writeCSV(
-        state.participantId,
-        state.studyId,
-        state.sessionId,
-        DataType.Feedback.filenamePrefix,
-        {
-          participantId: state.participantId,
-          sessionId: state.sessionId,
-          studyId: state.studyId,
-          treatmentId: state.treatmentId,
-          feedback: state.feedback,
-        }
-      );
-      writeTimestamps(state);
+      writeStateAsCSV(state);
       state.status = qe.nextStatus(state, false);
     },
     clearState(state) {
@@ -426,24 +364,9 @@ export const questionSlice = createSlice({
       state.participantId = null;
       state.sessionId = null;
       state.studyId = null;
-      state.experienceSurvey = {
-        participantId: null,
-        sessionId: null,
-        studyId: null,
-        treatmentId: null,
-      };
-      state.financialLitSurvey = {
-        participantId: null,
-        sessionId: null,
-        studyId: null,
-        treatmentId: null,
-      };
-      state.purposeSurvey = {
-        participantId: null,
-        sessionId: null,
-        studyId: null,
-        treatmentId: null,
-      };
+      state.experienceSurvey = {};
+      state.financialLitSurvey = {};
+      state.purposeSurvey = {};
       state.countryOfResidence = "";
       state.vizFamiliarity = "";
       state.age = "";

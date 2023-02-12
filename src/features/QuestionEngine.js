@@ -1,8 +1,8 @@
-import { StatusType } from "./StatusType";
-import { AmountType } from "./AmountType";
-import { InteractionType } from "./InteractionType";
-import { Answer } from "./Answer";
-import { secondsBetween } from "./ConversionUtil";
+import { StatusType } from "./StatusType.js";
+import { AmountType } from "./AmountType.js";
+import { InteractionType } from "./InteractionType.js";
+import { Answer } from "./Answer.js";
+import { secondsBetween } from "./ConversionUtil.js";
 
 export const TIMESTAMP_FORMAT = "MM/dd/yyyy H:mm:ss:SSS ZZZZ";
 
