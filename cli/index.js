@@ -80,9 +80,9 @@ console.log(
 );
 
 const mergeCSVData = (CSVData, mergedData) => {
-  console.log(`...merging data ${CSVData.length} rows`);
   if (CSVData) {
-    mergedData.concat(CSVData);
+    console.log(`...merging data ${CSVData.length} rows`);
+    mergedData.push(CSVData[0]);
     console.log(`...data merged`);
   } else {
     console.log(`...no data to merge`);
@@ -204,12 +204,7 @@ const run = async () => {
           console.log(`considering merging file ${file}`);
           mergeCSVData(parseCSV(loadFile(fullPath(source, file))), mergedData);
         }
-        for (const key in DataType) {
-          createMergeFile(
-            `${fullPath(source, DataType[key].filenamePrefix)}-merged.csv`,
-            mergedData
-          );
-        }
+        createMergeFile(fullPath(source, "data-merged.csv"), mergedData);
       } catch (err) {
         console.log(chalk.red(err));
         return;
