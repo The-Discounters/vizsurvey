@@ -403,6 +403,13 @@ export class MergedData {
         console.log(
           "...detected answer data (multiple rows) so converting to single row"
         );
+        // patchup the time spent on each question column values
+        entry.forEach((e) => {
+          e.choiceTimeSec = secondsBetween(
+            stateToDate(e.shownTimestamp),
+            stateToDate(e.choiceTimestamp)
+          );
+        });
         this.#data.set(key, {
           ...existingData,
           // for the legacy files from the pilot study, convert the multiple answer rows to a single row
