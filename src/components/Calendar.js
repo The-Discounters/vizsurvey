@@ -87,6 +87,7 @@ export function Calendar() {
                     qDateLater: q.dateLater,
                     qAmountEarlier: q.amountEarlier,
                     qAmountLater: q.amountLater,
+                    monthNumber: new Date(q.dateEarlier).getMonth(),
                   });
                   break;
                 case ViewType.calendarWordYear:

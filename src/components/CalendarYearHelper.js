@@ -1,5 +1,6 @@
 import { select /*, format, scaleLinear, scaleBand, range, drag */ } from "d3";
 import { AmountType } from "../features/AmountType";
+import { drawCalendar } from "./CalendarHelper";
 
 export const drawCalendarYear = ({
   table: table,
@@ -56,6 +57,7 @@ export const drawCalendarYear = ({
     year.push(row);
     // month.push(week);
   }
+  /*
   const monthNames = [
     "January",
     "February",
@@ -70,6 +72,7 @@ export const drawCalendarYear = ({
     "November",
     "December",
   ];
+  */
   //const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
   //const monthNum = date.getMonth();
 
@@ -101,7 +104,8 @@ export const drawCalendarYear = ({
   */
 
   console.log("year: " + JSON.stringify(year));
-  let boxLength = "100px";
+  //let boxLength = "100px";
+  //let boxLength01 = "10px";
   year.forEach(function (row) {
     body
       .append("tr")
@@ -180,53 +184,19 @@ export const drawCalendarYear = ({
       .each(function (d) {
         const td = select(this);
         console.log(d);
-        if (isNaN(d)) {
-          td.append("div")
-            .text(function (d) {
-              return monthNames[d.d];
-            })
-            .style("text-align", "center")
-            .style("margin", "0px 5px 0px 5px")
-            .style("width", boxLength)
-            //.style("height", "10px")
-            //.style("top", "-33px")
-            //.style("position", "relative")
-            .on("click", () => {})
-            .on("mouseover", function () {})
-            .on("mouseout", function () {});
-          let selectionDiv = td
-            .append("div")
-            .text(function (d) {
-              return "$" + d.a;
-            })
-            .style("background-color", "steelblue")
-            .style("border-style", "solid")
-            .style("border-width", "3px")
-            .style("border-color", "rgb(0,0,0)")
-            .style("width", boxLength)
-            .style("height", boxLength)
-            .style("text-align", "center")
-            //.style("top", "-5px")
-            //.style("position", "relative")
-            .style("font-size", "25px");
-          if (d.k === "earlierAmount") selectionDiv.attr("id", "earlierAmount");
-          else selectionDiv.attr("id", "laterAmount");
-        } else {
-          td.append("div")
-            .text(function (d) {
-              if (!d) return "";
-              if (d < 1) return "";
-              return monthNames[d];
-            })
-            .style("text-align", "center");
-          td.append("div")
-            .style("border-style", "solid")
-            .style("border-width", "3px")
-            .style("border-color", "rgb(0,0,0)")
-            .style("margin", "0px 5px 0px 5px")
-            .style("width", boxLength)
-            .style("height", boxLength);
-        }
+        let table01 = td.append("table");
+        drawCalendar({
+          table: table01,
+          onClickCallback: onClickCallback,
+          choice: choice,
+          qDateEarlier: qDateEarlier,
+          qDateLater: qDateLater,
+          qAmountEarlier: qAmountEarlier,
+          qAmountLater: qAmountLater,
+          minimalStyle: true,
+          boxLengthOverride: 0.15,
+          monthNumber: isNaN(d) ? d.d : d,
+        });
       });
   });
 };
