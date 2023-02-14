@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { SystemZone } from "luxon";
 import { FileIOAdapter } from "./FileIOAdapter.js";
 import { QuestionEngine } from "./QuestionEngine.js";
 import { StatusType } from "./StatusType.js";
@@ -41,6 +42,7 @@ const writeStateAsCSV = (state) => {
     gender: state.gender,
     selfDescribeGender: state.selfDescribeGender,
     profession: state.profession,
+    timezone: state.timezone,
     userAgent: state.userAgent,
     ...state.screenAttributes,
     // answers
@@ -103,6 +105,7 @@ export const questionSlice = createSlice({
     selfDescribeGender: "",
     profession: "",
     consentChecked: null,
+    timezone: null,
     timestamps: {
       consentShownTimestamp: null,
       consentCompletedTimestamp: null,
@@ -243,6 +246,7 @@ export const questionSlice = createSlice({
         state.timestamps.consentShownTimestamp,
         state.timestamps.consentCompletedTimestamp
       );
+      state.timezone = SystemZone.instance.name;
       writeStateAsCSV(state);
       state.status = qe.nextStatus(state, false);
     },
@@ -375,6 +379,7 @@ export const questionSlice = createSlice({
       state.gender = "";
       state.selfDescribeGender = "";
       state.profession = "";
+      state.timezone = null;
       state.timestamps = {
         consentShownTimestamp: null,
         consentCompletedTimestamp: null,

@@ -48,6 +48,7 @@ const BLANK_STATE_JSON = {
   gender: "",
   selfDescribeGender: "",
   profession: "",
+  timezone: "",
   userAgent: "",
   screenAvailHeight: "",
   screenAvailWidth: "",

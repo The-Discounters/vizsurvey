@@ -153,7 +153,7 @@ export function PostSurvey() {
                           "neutral",
                           "agree",
                           "strongly-agree",
-                          "prefer not to answer",
+                          "prefer-not-to-answer",
                         ].map((option, index1) => (
                           <FormControlLabel
                             key={`radio-${index1}`}
