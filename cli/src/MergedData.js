@@ -333,11 +333,21 @@ export class MergedData {
     if (entry) {
       const key = participantUniqueKey(entry[0]);
       console.log(`...merging data for key ${key}`);
-
       let existingData = this.#data.has(key)
         ? this.#data.get(key)
         : BLANK_STATE_JSON;
       if (entry.length === 1) {
+        if (
+          entry[0].participantId === "5d7e8ddd4a8468000138c24e2" ||
+          entry[0].participantId === "63853f2e1e9627b509ddeda0" ||
+          entry[0].participantId === "63853f2e1e9627b509ddeda0" ||
+          entry[0].participantId === "63bf6a1798241e6c697023f2"
+        ) {
+          console.log(
+            chalk.red(`found bad partcipant id ${entry[0].partcipantId}`)
+          );
+          process.exit(-1);
+        }
         console.log("...merging single row entry");
         // patch up misspelled peroperties in the pilot group dataset
         const newEntry = { ...existingData, ...entry[0] };
@@ -353,6 +363,21 @@ export class MergedData {
         this.patchupProperty(newEntry, "descrpurp", "purpose_survey_describe");
         this.patchupProperty(newEntry, "effort", "purpose_survey_effort");
         this.patchupProperty(newEntry, "servsoc", "purpose_survey_serve");
+        this.patchupProperty(
+          newEntry,
+          "qNumeracy",
+          "financial_lit_survey_numeracy"
+        );
+        this.patchupProperty(
+          newEntry,
+          "qInflation",
+          "financial_lit_survey_inflation"
+        );
+        this.patchupProperty(
+          newEntry,
+          "qRiskDiversification",
+          "financial_lit_survey_risk"
+        );
         newEntry.consentTimeSec = secondsBetween(
           stateToDate(newEntry.consentShownTimestamp),
           stateToDate(newEntry.consentCompletedTimestamp)
@@ -409,6 +434,16 @@ export class MergedData {
             stateToDate(e.shownTimestamp),
             stateToDate(e.choiceTimestamp)
           );
+
+          if (
+            e.participantId === "5d7e8ddd4a8468000138c24e2" ||
+            e.participantId === "63853f2e1e9627b509ddeda0" ||
+            e.participantId === "63853f2e1e9627b509ddeda0" ||
+            entry[0].participantId === "63bf6a1798241e6c697023f2"
+          ) {
+            console.log(chalk.red(`found bad partcipant id ${e.partcipantId}`));
+            process.exit(-1);
+          }
         });
         this.#data.set(key, {
           ...existingData,

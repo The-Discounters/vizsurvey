@@ -168,6 +168,7 @@ const run = async () => {
           for (const property in JSONData) {
             // store the data as a merged object by participantId-studyId-sessionId
             const CSVData = parseCSV(JSONData[property].data);
+            console.log(`...merging data for property ${property}`);
             surveyData.addEntry(CSVData);
           }
         }
