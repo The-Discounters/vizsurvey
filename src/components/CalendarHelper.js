@@ -182,7 +182,10 @@ export const drawCalendar = ({
           let borderLeftColor = "rgb(200,200,200)";
           let borderRightColor = "rgb(200,200,200)";
           let borderTopColor = "rgb(200,200,200)";
+          let posTop = "0px";
+          let posLeft = "0px";
           console.log(d);
+          let dayNum = isNaN(d) ? d.d : d;
           if (!isNaN(d) && d < 1) {
             //borderWidth = "0px";
             borderBottom = "0px";
@@ -194,17 +197,33 @@ export const drawCalendar = ({
           if (monthNumber !== "same") {
             date01.setMonth(monthNumber);
           }
-          date01.setDate(d);
-          if (d <= 7) {
+          date01.setDate(dayNum);
+          if (dayNum <= 7) {
             borderTopColor = "rgb(0,0,0)";
           }
-          if (d > lastOfMonth.getDate() - 7) {
+          let posLeftAdd = 0;
+          if (dayNum <= 7) {
+            posTop = "5px";
+          } else if (dayNum > lastOfMonth.getDate() - 7) {
+            posTop = "-30px";
+          } else {
+            posTop = "-15px";
+            posLeftAdd = 5;
+          }
+          if (date01.getDay() < 3) {
+            posLeft = 20 + posLeftAdd + "px";
+          } else if (date01.getDay() > 3) {
+            posLeft = -50 - posLeftAdd + "px";
+          } else {
+            posLeft = -20 - posLeftAdd + "px";
+          }
+          if (dayNum > lastOfMonth.getDate() - 7) {
             borderBottomColor = "rgb(0,0,0)";
           }
-          if (date01.getDay() === 0 || d === 1) {
+          if (date01.getDay() === 0 || dayNum === 1) {
             borderLeftColor = "rgb(0,0,0)";
           }
-          if (date01.getDay() === 6 || d === lastOfMonth.getDate()) {
+          if (date01.getDay() === 6 || dayNum === lastOfMonth.getDate()) {
             borderRightColor = "rgb(0,0,0)";
           }
           td.style("border-style", "solid")
@@ -235,11 +254,18 @@ export const drawCalendar = ({
           }
           if (!minimalStyle) {
             tdDiv.text(function (d) {
-              return "$" + (isNaN(d) ? d.a : "");
+              return isNaN(d) ? "$" + d.a : "";
             });
-            if (!isNaN(d)) {
-              tdDiv.style("color", "white");
-            }
+          } else {
+            tdDiv
+              .text(function (d) {
+                return isNaN(d) ? "$" + d.a : "";
+              })
+              .style("position", "relative")
+              //.style("position", "absolute")
+              .style("top", posTop)
+              .style("left", posLeft)
+              .style("font-size", 20 + "px");
           }
           if (d.k === "earlierAmount") td.attr("id", "earlierAmount");
           else if (d.k) td.attr("id", "laterAmount");
