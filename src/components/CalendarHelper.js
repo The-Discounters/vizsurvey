@@ -251,11 +251,22 @@ export const drawCalendar = ({
               else if (d > 0) return d;
               else return "";
             });
+            if (!isNaN(d)) {
+              tdDiv.style("top", "-45px");
+            }
           }
           if (!minimalStyle) {
-            tdDiv.text(function (d) {
-              return isNaN(d) ? "$" + d.a : "";
-            });
+            tdDiv = td.append("div");
+            tdDiv
+              .text(function (d) {
+                return isNaN(d) ? "$" + d.a : "";
+              })
+              .style("position", "relative")
+              .style("font-size", 20 + "px")
+              .style("top", "-5px");
+            if (d.a < 100) tdDiv.style("left", "30px");
+            if (d.a >= 100 && d.a < 1000) tdDiv.style("left", "25px");
+            if (d.a >= 1000) tdDiv.style("left", "20px");
           } else {
             tdDiv
               .text(function (d) {
