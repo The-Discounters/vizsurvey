@@ -1,11 +1,14 @@
-import MELForm from "./MELForm";
-import BarChart from "./BarChart";
-import Calendar from "./Calendar";
-//import CalendarYear from "./CalendarYear";
+//<<<<<<< HEAD:src/components/Survey.js
+import MELForm from "./MELForm.jsx";
+import BarChart from "./BarChart.js";
+import Calendar from "./Calendar.js";
+//import CalendarYear from "./CalendarYear.js";
 import { useSelector } from "react-redux";
-import { ViewType } from "../features/ViewType";
-import { getCurrentQuestion } from "../features/questionSlice";
-//import { stateToDate } from "../features/ConversionUtil";
+import { ViewType } from "../features/ViewType.js";
+import { getCurrentQuestion } from "../features/questionSlice.js";
+//import { stateToDate } from "../features/ConversionUtil.js";
+//=======
+//>>>>>>> main-calendar:src/components/Survey.jsx
 
 export function Survey() {
   const q = useSelector(getCurrentQuestion);

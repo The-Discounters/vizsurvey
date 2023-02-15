@@ -15,7 +15,7 @@ import FormHelperText from "@material-ui/core/FormHelperText";
 import FormControl from "@material-ui/core/FormControl";
 import NativeSelect from "@material-ui/core/NativeSelect";
 import { useSelector, useDispatch } from "react-redux";
-import { navigateFromStatus } from "./Navigate";
+import { navigateFromStatus } from "./Navigate.js";
 import * as countries from "./countries.json";
 import {
   getCountryOfResidence,
@@ -33,9 +33,9 @@ import {
   demographicShown,
   demographicCompleted,
   getStatus,
-} from "../features/questionSlice";
-import { dateToState } from "../features/ConversionUtil";
-import { styles, theme } from "./ScreenHelper";
+} from "../features/questionSlice.js";
+import { dateToState } from "../features/ConversionUtil.js";
+import { styles, theme } from "./ScreenHelper.js";
 import "../App.css";
 
 const useStyles = makeStyles((theme) => ({

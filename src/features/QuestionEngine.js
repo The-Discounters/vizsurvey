@@ -1,8 +1,8 @@
-import { StatusType } from "./StatusType";
-import { AmountType } from "./AmountType";
-import { InteractionType } from "./InteractionType";
-import { Answer } from "./Answer";
-import { secondsBetween } from "./ConversionUtil";
+import { StatusType } from "./StatusType.js";
+import { AmountType } from "./AmountType.js";
+import { InteractionType } from "./InteractionType.js";
+import { Answer } from "./Answer.js";
+import { secondsBetween } from "./ConversionUtil.js";
 
 export const TIMESTAMP_FORMAT = "MM/dd/yyyy H:mm:ss:SSS ZZZZ";
 
@@ -309,7 +309,7 @@ export class QuestionEngine {
         return StatusType.Survey;
       case StatusType.Survey:
         if (this.isLastTreatment(state) && onLastTreatment) {
-          return StatusType.FinancialQuestionaire;
+          return StatusType.ExperienceQuestionaire;
         } else {
           if (this.isMiddleTreatment(state)) {
             return StatusType.Attention;
@@ -319,6 +319,8 @@ export class QuestionEngine {
         }
       case StatusType.Attention:
         return StatusType.Survey;
+      case StatusType.ExperienceQuestionaire:
+        return StatusType.FinancialQuestionaire;
       case StatusType.FinancialQuestionaire:
         return StatusType.PurposeQuestionaire;
       case StatusType.PurposeQuestionaire:
@@ -356,8 +358,10 @@ export class QuestionEngine {
         }
       case StatusType.Attention:
         return StatusType.Survey;
-      case StatusType.FinancialQuestionaire:
+      case StatusType.ExperienceQuestionaire:
         return StatusType.Survey;
+      case StatusType.FinancialQuestionaire:
+        return StatusType.ExperienceQuestionaire;
       case StatusType.PurposeQuestionaire:
         return StatusType.FinancialQuestionaire;
       case StatusType.Debrief:

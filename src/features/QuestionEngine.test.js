@@ -1,12 +1,12 @@
 import { DateTime } from "luxon";
-import { QuestionEngine } from "./QuestionEngine";
-import { ViewType } from "./ViewType";
-import { StatusType } from "./StatusType";
-import { Question } from "./Question";
-import { InteractionType } from "./InteractionType";
-import { AmountType } from "./AmountType";
-import { Answer } from "./Answer";
-import { dateToState } from "./ConversionUtil";
+import { QuestionEngine } from "./QuestionEngine.js";
+import { ViewType } from "./ViewType.js";
+import { StatusType } from "./StatusType.js";
+import { Question } from "./Question.js";
+import { InteractionType } from "./InteractionType.js";
+import { AmountType } from "./AmountType.js";
+import { Answer } from "./Answer.js";
+import { dateToState } from "./ConversionUtil.js";
 
 describe("QuestionEngine tests", () => {
   test("nextStatus testing state transitions.", () => {
@@ -47,6 +47,9 @@ describe("QuestionEngine tests", () => {
       StatusType.Survey
     );
     expect((state.status = qe.nextStatus(state, true))).toBe(
+      StatusType.ExperienceQuestionaire
+    );
+    expect((state.status = qe.nextStatus(state, true))).toBe(
       StatusType.FinancialQuestionaire
     );
     expect((state.status = qe.nextStatus(state, true))).toBe(
@@ -76,6 +79,9 @@ describe("QuestionEngine tests", () => {
     state.status = StatusType.PurposeQuestionaire;
     expect((state.status = qe.previousStatus(state, false))).toBe(
       StatusType.FinancialQuestionaire
+    );
+    expect((state.status = qe.previousStatus(state, false))).toBe(
+      StatusType.ExperienceQuestionaire
     );
     expect((state.status = qe.previousStatus(state, false))).toBe(
       StatusType.Survey
@@ -221,7 +227,7 @@ describe("QuestionEngine tests", () => {
     expect(state.status).toBe(StatusType.Survey);
     qe.incNextQuestion(state);
     expect(state.currentQuestionIdx).toBe(2);
-    expect(state.status).toBe(StatusType.FinancialQuestionaire);
+    expect(state.status).toBe(StatusType.ExperienceQuestionaire);
   });
 
   test("decPreviousQuestion for single treatment should update state to post survey.", () => {

@@ -9,19 +9,19 @@ import {
   Link,
 } from "react-router-dom";
 import { Typography } from "@mui/material";
-//import { redirect } from "react-router-dom";
 import { Container } from "@material-ui/core";
 import "./App.css";
-import { navigateFromStatus } from "./components/Navigate";
-import Introduction from "./components/Introduction";
-import Demographic from "./components/Demographic";
-import Instructions from "./components/Instructions";
-import Survey from "./components/Survey";
-import PostSurveyFinancialLit from "./components/PostSurveyFinancialLit";
-import PostSurveySenseOfPurpose from "./components/PostSurveySenseOfPurpose";
-import AttentionCheck from "./components/AttentionCheck";
-import Debrief from "./components/Debrief";
-import InvalidSurveyLink from "./components/InvalidSurveyLink";
+import { navigateFromStatus } from "./components/Navigate.js";
+import Introduction from "./components/Introduction.jsx";
+import Demographic from "./components/Demographic.jsx";
+import Instructions from "./components/Instructions.jsx";
+import Survey from "./components/Survey.jsx";
+import PostSurveyExperience from "./components/PostSurveyExperience.jsx";
+import PostSurveyFinancialLit from "./components/PostSurveyFinancialLit.jsx";
+import PostSurveySenseOfPurpose from "./components/PostSurveySenseOfPurpose.jsx";
+import AttentionCheck from "./components/AttentionCheck.jsx";
+import Debrief from "./components/Debrief.jsx";
+import InvalidSurveyLink from "./components/InvalidSurveyLink.jsx";
 import {
   loadAllTreatments,
   fetchAllTreatments,
@@ -35,9 +35,9 @@ import {
   setUserAgent,
   loadTreatment,
   nextStatus,
-} from "./features/questionSlice";
-import { StatusType } from "./features/StatusType";
-import { Consent } from "./components/Consent";
+} from "./features/questionSlice.js";
+import { StatusType } from "./features/StatusType.js";
+import { Consent } from "./components/Consent.jsx";
 
 class ErrorBoundary extends React.Component {
   constructor(props) {
@@ -82,6 +82,10 @@ const App = () => {
               <Route path={"introduction"} element={<Introduction />} />
               <Route path={"instruction"} element={<Instructions />} />
               <Route path={"survey"} element={<Survey />} />
+              <Route
+                path={"experiencequestionaire"}
+                element={<PostSurveyExperience />}
+              />
               <Route
                 path={"financialquestionaire"}
                 element={<PostSurveyFinancialLit />}

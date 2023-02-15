@@ -1,6 +1,6 @@
 import { select /*, format, scaleLinear, scaleBand, range, drag */ } from "d3";
-import { AmountType } from "../features/AmountType";
-import { drawCalendar } from "./CalendarHelper";
+import { AmountType } from "../features/AmountType.js";
+import { drawCalendar } from "./CalendarHelper.js";
 
 export const drawCalendarYear = ({
   table: table,

@@ -11,19 +11,22 @@ import {
   setQuestionShownTimestamp,
   nextQuestion,
   answer,
-} from "../features/questionSlice";
-import { useD3 } from "../hooks/useD3";
-import { AmountType } from "../features/AmountType";
-import { InteractionType } from "../features/InteractionType";
-import { drawCalendar } from "./CalendarHelper";
-import { drawCalendarYear } from "./CalendarYearHelper";
-import { drawCalendarYearDual } from "./CalendarYearDualHelper";
-import { ViewType } from "../features/ViewType";
-import { dateToState } from "../features/ConversionUtil";
-import Grid from "@mui/material/Unstable_Grid2";
-import { styles } from "./ScreenHelper";
+} from "../features/questionSlice.js";
+//<<<<<<< HEAD
+import { useD3 } from "../hooks/useD3.js";
+import { AmountType } from "../features/AmountType.js";
+import { InteractionType } from "../features/InteractionType.js";
+import { drawCalendar } from "./CalendarHelper.js";
+import { drawCalendarYear } from "./CalendarYearHelper.js";
+import { drawCalendarYearDual } from "./CalendarYearDualHelper.js";
+import { ViewType } from "../features/ViewType.js";
+import { dateToState } from "../features/ConversionUtil.js";
+import { Grid } from "@material-ui/core";
+import { styles } from "./ScreenHelper.js";
+//=======
+//>>>>>>> main-calendar
 import { Button, Box } from "@mui/material";
-import { navigateFromStatus } from "./Navigate";
+import { navigateFromStatus } from "./Navigate.js";
 
 export function Calendar() {
   const dispatch = useDispatch();

@@ -5,9 +5,9 @@ import { DateTime } from "luxon";
 import { Button, Box, ThemeProvider } from "@mui/material";
 import Grid from "@mui/material/Unstable_Grid2";
 
-import { MELSelectionForm } from "./MELSelectionForm";
+import { MELSelectionForm } from "./MELSelectionForm.jsx";
 
-import { AmountType } from "../features/AmountType";
+import { AmountType } from "../features/AmountType.js";
 import {
   getCurrentQuestion,
   getCurrentChoice,
@@ -16,10 +16,10 @@ import {
   setQuestionShownTimestamp,
   nextQuestion,
   answer,
-} from "../features/questionSlice";
-import { dateToState } from "../features/ConversionUtil";
-import { styles, theme } from "./ScreenHelper";
-import { navigateFromStatus } from "./Navigate";
+} from "../features/questionSlice.js";
+import { dateToState } from "../features/ConversionUtil.js";
+import { styles, theme } from "./ScreenHelper.js";
+import { navigateFromStatus } from "./Navigate.js";
 
 function MELForm() {
   const dispatch = useDispatch();

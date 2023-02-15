@@ -8,4 +8,33 @@ describe("questionSlice tests", () => {
     );
     expect(elapsedTimeInSec.seconds).toBe(60 * 60 * 24);
   });
+
+  test("Spread operator behavior on objects with the same property names", () => {
+    const obj1 = { prop1: "value1", prop2: "value2", unique: "valueunique" };
+    const obj2 = {
+      prop1: "value1",
+      prop2: "value2",
+      uniqueSecond: "valueuniquesecond",
+    };
+    const obj3 = { ...obj1, ...obj2 };
+    expect(obj3).toStrictEqual({
+      prop1: "value1",
+      prop2: "value2",
+      unique: "valueunique",
+      uniqueSecond: "valueuniquesecond",
+    });
+    const obj4 = {
+      prop1: "value1",
+      prop2: "value2x",
+      uniqueSecond: "valueuniquesecond",
+    };
+    const obj5 = { ...obj1, ...obj4 };
+    expect(obj5).toStrictEqual({
+      prop1: "value1",
+      prop2: "value2",
+      prop2: "value2x",
+      unique: "valueunique",
+      uniqueSecond: "valueuniquesecond",
+    });
+  });
 });

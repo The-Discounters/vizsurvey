@@ -22,11 +22,11 @@ import {
   initFinancialLitSurveyQuestion,
   setFinancialLitSurveyQuestion,
   getFinancialLitSurveyQuestion,
-} from "../features/questionSlice";
-import { dateToState } from "../features/ConversionUtil";
-import { POST_SURVEY_QUESTIONS } from "../features/postsurveyquestionsfinanciallit";
-import { styles, theme } from "./ScreenHelper";
-import { navigateFromStatus } from "./Navigate";
+} from "../features/questionSlice.js";
+import { dateToState } from "../features/ConversionUtil.js";
+import { POST_SURVEY_QUESTIONS } from "../features/postsurveyquestionsfinanciallit.js";
+import { styles, theme } from "./ScreenHelper.js";
+import { navigateFromStatus } from "./Navigate.js";
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
@@ -76,13 +76,8 @@ export function PostSurvey() {
     navigate(path);
   }, [status]);
 
-  const [exited, setExited] = React.useState(false);
   useEffect(() => {
     checkEnableSubmit();
-    if (!exited && process.env.REACT_APP_FULLSCREEN === "enabled") {
-      document.exitFullscreen();
-      setExited(true);
-    }
   }, qList);
 
   const checkEnableSubmit = () => {
@@ -100,7 +95,7 @@ export function PostSurvey() {
       <div>
         <Grid container style={styles.root}>
           <Grid item xs={12}>
-            <Typography variant="h4">Additional Questions</Typography>
+            <Typography variant="h4">Additional Questions 2 of 3</Typography>
             <hr
               style={{
                 color: "#ea3433",
