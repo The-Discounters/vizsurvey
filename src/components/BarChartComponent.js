@@ -8,9 +8,9 @@ import {
   drag,
   select,
 } from "d3";
-import { InteractionType } from "../features/InteractionType";
-import { AmountType } from "../features/AmountType";
-import { calcScreenValues } from "./ScreenHelper";
+import { InteractionType } from "../features/InteractionType.js";
+import { AmountType } from "../features/AmountType.js";
+import { calcScreenValues } from "./ScreenHelper.js";
 
 export const drawBarChart = ({
   svg: svg,

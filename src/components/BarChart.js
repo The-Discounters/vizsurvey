@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { useD3 } from "../hooks/useD3";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { Grid, Box, Button, ThemeProvider } from "@mui/material";
-
 import { DateTime } from "luxon";
-import { AmountType } from "../features/AmountType";
-import { StatusType } from "../features/StatusType";
+import { ThemeProvider, Box, Button } from "@mui/material";
+import { Grid } from "@material-ui/core";
+import { useD3 } from "../hooks/useD3.js";
+import { AmountType } from "../features/AmountType.js";
 import {
   getCurrentQuestion,
   getCurrentChoice,
@@ -15,10 +14,11 @@ import {
   setQuestionShownTimestamp,
   nextQuestion,
   answer,
-} from "../features/questionSlice";
-import { dateToState } from "../features/ConversionUtil";
-import { drawBarChart } from "./BarChartComponent";
-import { styles, theme, calcScreenValues } from "./ScreenHelper";
+} from "../features/questionSlice.js";
+import { dateToState } from "../features/ConversionUtil.js";
+import { drawBarChart } from "./BarChartComponent.js";
+import { styles, theme, calcScreenValues } from "./ScreenHelper.js";
+import { navigateFromStatus } from "./Navigate.js";
 
 function BarChart() {
   const dispatch = useDispatch();
@@ -48,17 +48,8 @@ function BarChart() {
   }, [choice]);
 
   useEffect(() => {
-    switch (status) {
-      case StatusType.Instructions:
-        navigate("/instruction");
-        break;
-      case StatusType.FinancialQuestionaire:
-        navigate("/financialquestionaire");
-        break;
-      case StatusType.Attention:
-        navigate("/attentioncheck");
-        break;
-    }
+    const path = navigateFromStatus(status);
+    navigate(path);
   }, [status]);
 
   const onClickCallback = (value) => {

@@ -14,10 +14,10 @@ import {
   instructionsShown,
   instructionsCompleted,
   getStatus,
-} from "../features/questionSlice";
-import { dateToState } from "../features/ConversionUtil";
-import { navigateFromStatus } from "./Navigate";
-import { styles, theme } from "./ScreenHelper";
+} from "../features/questionSlice.js";
+import { dateToState } from "../features/ConversionUtil.js";
+import { navigateFromStatus } from "./Navigate.js";
+import { styles, theme } from "./ScreenHelper.js";
 
 const Instructions = () => {
   const dispatch = useDispatch();
@@ -37,7 +37,7 @@ const Instructions = () => {
     <ThemeProvider theme={theme}>
       <Grid container style={styles.root}>
         <Grid item xs={12}>
-          <Typography variant="h4">Instructions Continued</Typography>
+          <Typography variant="h4">Instructions (Continued)</Typography>
           <hr
             style={{
               color: "#ea3433",
@@ -50,24 +50,12 @@ const Instructions = () => {
           <Typography paragraph>
             <b>Survey questions: </b>
             After making your money choice selections, you will be presented
-            with two short surveys of questions to learn more about you and then
-            a screen to submit your final answers.{" "}
-            <b>
-              You must click on the button to submit your final answers to get
-              paid.
-            </b>
+            with three short surveys of questions to learn more about what you
+            thought of this survey and yourself. You will then be presented with
+            the last screen which has a more detailed explanation of the goals
+            behind this research along with a section to submit feedback and a{" "}
+            <b>code you must enter into Prolific to get paid.</b>
           </Typography>
-          <Typography paragraph>
-            After you submit your answers, you will be presented with a more
-            detailed explanation of the goals behind this research along with a
-            section to submit feedback. The researchers greatly appreciate any
-            feedback you are willing to share.
-          </Typography>
-          <img
-            width="100%"
-            src="submit-and-exit.png"
-            alt="Submit answers button."
-          ></img>
           <Typography paragraph>
             <b>Click the Next button to start the survey!</b>
           </Typography>{" "}
@@ -88,8 +76,6 @@ const Instructions = () => {
               style={styles.button}
               onClick={() => {
                 dispatch(instructionsCompleted(dateToState(DateTime.now())));
-                if (process.env.REACT_APP_FULLSCREEN === "enabled")
-                  document.body.requestFullscreen();
               }}
             >
               {" "}

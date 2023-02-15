@@ -14,10 +14,10 @@ import {
   setFeedback,
   debriefShownTimestamp,
   debriefCompleted,
-} from "../features/questionSlice";
-import { dateToState } from "../features/ConversionUtil";
-import { styles, theme } from "./ScreenHelper";
-import { StatusType } from "../features/StatusType";
+} from "../features/questionSlice.js";
+import { dateToState } from "../features/ConversionUtil.js";
+import { styles, theme } from "./ScreenHelper.js";
+import { StatusType } from "../features/StatusType.js";
 
 const Debrief = () => {
   const dispatch = useDispatch();

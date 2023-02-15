@@ -33,10 +33,10 @@ export const downloadFiles = (dir, laterThanDate) => {
     } else {
       for (const file of dataList.Contents) {
         console.log(
-          `...downloading file ${file.Key} of size ${file.Size} created on date ${file.LastModified}`
+          `...downloading file ${file.Key} of size ${file.Size} to ${dir} created on date ${file.LastModified}`
         );
         const objectDate = DateTime.fromJSDate(file.LastModified);
-        if (objectDate < laterThanDate) {
+        if (laterThanDate && objectDate < laterThanDate) {
           console.log(
             `...skipping ${file.Key} since the date is before ${laterThanDate}`
           );

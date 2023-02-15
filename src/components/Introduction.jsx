@@ -8,11 +8,11 @@ import {
   ThemeProvider,
 } from "@material-ui/core";
 import { useSelector, useDispatch } from "react-redux";
-import { useD3 } from "../hooks/useD3";
 import { DateTime } from "luxon";
+import { useD3 } from "../hooks/useD3.js";
 import "../App.css";
-import { ViewType } from "../features/ViewType";
-import { navigateFromStatus } from "./Navigate";
+import { ViewType } from "../features/ViewType.js";
+import { navigateFromStatus } from "./Navigate.js";
 import {
   introductionShown,
   introductionCompleted,
@@ -20,12 +20,13 @@ import {
   getInstructionTreatment,
   getStatus,
   startSurvey,
-} from "../features/questionSlice";
-import { dateToState } from "../features/ConversionUtil";
-import { styles, theme, calcScreenValues } from "./ScreenHelper";
-import { AmountType } from "../features/AmountType";
-import { MELSelectionForm } from "./MELSelectionForm";
-import { drawBarChart } from "./BarChartComponent";
+} from "../features/questionSlice.js";
+import { dateToState } from "../features/ConversionUtil.js";
+import { styles, theme, calcScreenValues } from "./ScreenHelper.js";
+import { AmountType } from "../features/AmountType.js";
+import { MELSelectionForm } from "./MELSelectionForm.jsx";
+import { drawBarChart } from "./BarChartComponent.js";
+import { drawCalendar } from "./CalendarHelper.js";
 
 const Introduction = () => {
   const dispatch = useDispatch();
@@ -176,6 +177,8 @@ const Introduction = () => {
           "clicking the button"
         );
       case ViewType.calendarWord:
+      case ViewType.calendarWordYear:
+      case ViewType.calendarWordYearDual:
         return instructions(
           "calendar word chart",
           "amounts",
@@ -252,17 +255,46 @@ const Introduction = () => {
         return "";
       case ViewType.calendarWord:
         return (
-          <MELSelectionForm // TODO: change to correct mini-calendar word view
-            textShort={"textShort"}
-            error={error}
-            amountEarlier={300}
-            timeEarlier={2}
-            amountLater={700}
-            timeLater={7}
-            helperText={helperText}
-            onClickCallback={onClickCallback}
-            choice={choice}
-          />
+          <table
+            id="calendar"
+            style={{ borderCollapse: "collapse", tableLayout: "fixed" }}
+            ref={useD3(
+              (table) => {
+                drawCalendar({
+                  table: table,
+                  qDateEarlier: instructionTreatment.dateEarlier,
+                  qDateLater: instructionTreatment.dateLater,
+                  qAmountEarlier: instructionTreatment.amountEarlier,
+                  qAmountLater: instructionTreatment.amountLater,
+                  onClickCallback: onClickCallback,
+                  choice: choice,
+                });
+              },
+              [choice]
+            )}
+          ></table>
+        );
+      case ViewType.calendarWordYear:
+      case ViewType.calendarWordYearDual:
+        return (
+          <table
+            id="calendar"
+            style={{ borderCollapse: "collapse", tableLayout: "fixed" }}
+            ref={useD3(
+              (table) => {
+                drawCalendar({
+                  table: table,
+                  qDateEarlier: instructionTreatment.dateEarlier,
+                  qDateLater: instructionTreatment.dateLater,
+                  qAmountEarlier: instructionTreatment.amountEarlier,
+                  qAmountLater: instructionTreatment.amountLater,
+                  onClickCallback: onClickCallback,
+                  choice: choice,
+                });
+              },
+              [choice]
+            )}
+          ></table>
         );
       case ViewType.calendarIcon:
         return "";

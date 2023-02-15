@@ -1,6 +1,6 @@
 export const POST_SURVEY_QUESTIONS = {
   promptShort: "fincanialLit",
-  prompt: "Please answer these to the best of your knowledge.",
+  prompt: "Please answer these questions to the best of your ability.",
   questionsType: "multiple choice",
   questions: [
     /*
@@ -10,7 +10,7 @@ export const POST_SURVEY_QUESTIONS = {
       question: {
         textFull:
           "Suppose you had $100 in a savings account and the interest rate was 2% per year. After 5 years, how much do you think you would have in the account if you left the money to grow?",
-        textShort: "qNumeracy",
+        textShort: "financial_lit_survey_numeracy",
       },
       options: [
         {
@@ -39,7 +39,7 @@ export const POST_SURVEY_QUESTIONS = {
       question: {
         textFull:
           "Imagine that the interest rate on your savings account was 1% per year and inflation was 2% per year. After 1 year, would you be able to buy more than, exactly the same as, or less than today with the money in this account?",
-        textShort: "qInflation",
+        textShort: "financial_lit_survey_inflation",
       },
       options: [
         {
@@ -68,7 +68,7 @@ export const POST_SURVEY_QUESTIONS = {
       question: {
         textFull:
           "Do you think that the following statement is true or false? ‘Buying a single company stock usually provides a safer return than a stock mutual fund.’",
-        textShort: "qRiskDiversification",
+        textShort: "financial_lit_survey_risk",
       },
       options: [
         {

@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import { DateTime } from "luxon";
 import { useNavigate } from "react-router-dom";
 import {
   Grid,
@@ -14,7 +15,7 @@ import FormHelperText from "@material-ui/core/FormHelperText";
 import FormControl from "@material-ui/core/FormControl";
 import NativeSelect from "@material-ui/core/NativeSelect";
 import { useSelector, useDispatch } from "react-redux";
-import { navigateFromStatus } from "./Navigate";
+import { navigateFromStatus } from "./Navigate.js";
 import * as countries from "./countries.json";
 import {
   getCountryOfResidence,
@@ -29,10 +30,12 @@ import {
   setGender,
   setSelfDescribeGender,
   setProfession,
-  nextQuestion,
+  demographicShown,
+  demographicCompleted,
   getStatus,
-} from "../features/questionSlice";
-import { styles, theme } from "./ScreenHelper";
+} from "../features/questionSlice.js";
+import { dateToState } from "../features/ConversionUtil.js";
+import { styles, theme } from "./ScreenHelper.js";
 import "../App.css";
 
 const useStyles = makeStyles((theme) => ({
@@ -61,7 +64,9 @@ export function Consent() {
 
   const navigate = useNavigate();
 
-  useEffect(() => {}, []);
+  useEffect(() => {
+    dispatch(demographicShown(dateToState(DateTime.now())));
+  }, []);
 
   useEffect(() => {
     const path = navigateFromStatus(status);
@@ -320,7 +325,7 @@ export function Consent() {
                 disableFocusRipple
                 style={styles.button}
                 onClick={() => {
-                  dispatch(nextQuestion());
+                  dispatch(demographicCompleted(dateToState(DateTime.now())));
                 }}
                 disabled={disableSubmit}
               >
