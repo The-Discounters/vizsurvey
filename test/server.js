@@ -1,13 +1,12 @@
-const express = require("express");
+import express from "express";
+import fs from "fs";
+import cors from "cors";
+import http from "http";
+import https from "https";
+import chalk from "chalk";
+import { DateTime } from "luxon";
+
 const app = express();
-const fs = require("fs");
-
-const cors = require("cors");
-
-const http = require("http");
-const https = require("https");
-
-const { DateTime } = require("luxon");
 
 const options = {
   key: fs.readFileSync("key.pem"),
@@ -55,7 +54,7 @@ app.get("/files", (req, res) => {
     console.log("Returning result " + result);
     res.send(JSON.stringify(result));
   } catch (err) {
-    console.log(err);
+    console.log(chalk.red(err));
     res.send(err);
   }
 });

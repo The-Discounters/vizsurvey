@@ -11,16 +11,16 @@ import {
   setQuestionShownTimestamp,
   nextQuestion,
   answer,
-} from "../features/questionSlice";
-import { useD3 } from "../hooks/useD3";
-import { AmountType } from "../features/AmountType";
-import { InteractionType } from "../features/InteractionType";
-import { drawCalendar } from "./CalendarHelper";
-import { dateToState } from "../features/ConversionUtil";
-import Grid from "@mui/material/Unstable_Grid2";
-import { styles } from "./ScreenHelper";
+} from "../features/questionSlice.js";
+import { useD3 } from "../hooks/useD3.js";
+import { AmountType } from "../features/AmountType.js";
+import { InteractionType } from "../features/InteractionType.js";
+import { drawCalendar } from "./CalendarHelper.js";
+import { dateToState } from "../features/ConversionUtil.js";
+import { Grid } from "@material-ui/core";
+import { styles } from "./ScreenHelper.js";
 import { Button, Box } from "@mui/material";
-import { navigateFromStatus } from "./Navigate";
+import { navigateFromStatus } from "./Navigate.js";
 
 export function Calendar() {
   const dispatch = useDispatch();

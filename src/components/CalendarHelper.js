@@ -1,5 +1,7 @@
-import { select /*, format, scaleLinear, scaleBand, range, drag */ } from "d3";
-import { AmountType } from "../features/AmountType";
+import { select } from "d3";
+import { AmountType } from "../features/AmountType.js";
+
+export const dayNames = ["S", "M", "T", "W", "T", "F", "S"];
 
 export const drawCalendar = ({
   table: table,

@@ -14,10 +14,10 @@ import {
   instructionsShown,
   instructionsCompleted,
   getStatus,
-} from "../features/questionSlice";
-import { dateToState } from "../features/ConversionUtil";
-import { navigateFromStatus } from "./Navigate";
-import { styles, theme } from "./ScreenHelper";
+} from "../features/questionSlice.js";
+import { dateToState } from "../features/ConversionUtil.js";
+import { navigateFromStatus } from "./Navigate.js";
+import { styles, theme } from "./ScreenHelper.js";
 
 const Instructions = () => {
   const dispatch = useDispatch();

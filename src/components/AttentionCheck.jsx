@@ -18,10 +18,10 @@ import {
   getStatus,
   attentionCheckShown,
   setAttentionCheck,
-} from "../features/questionSlice";
-import { dateToState } from "../features/ConversionUtil";
-import { styles, theme } from "./ScreenHelper";
-import { navigateFromStatus } from "./Navigate";
+} from "../features/questionSlice.js";
+import { dateToState } from "../features/ConversionUtil.js";
+import { styles, theme } from "./ScreenHelper.js";
+import { navigateFromStatus } from "./Navigate.js";
 
 export function AttentionCheck() {
   const dispatch = useDispatch();

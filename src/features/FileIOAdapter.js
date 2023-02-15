@@ -1,15 +1,12 @@
 import { csvParse } from "d3";
-import csv from "to-csv";
 import * as d3 from "d3";
-
-import { TREATMENTS_DEV_CSV, TREATMENTS_PROD_CSV } from "./treatments";
-import { Question } from "./Question";
-import { ViewType } from "./ViewType";
-import { InteractionType } from "./InteractionType";
-import { AmountType } from "./AmountType";
-import { stringToDate, dateToState } from "./ConversionUtil";
-
 import AWS from "aws-sdk";
+import { TREATMENTS_DEV_CSV, TREATMENTS_PROD_CSV } from "./treatments.js";
+import { Question } from "./Question.js";
+import { ViewType } from "./ViewType.js";
+import { InteractionType } from "./InteractionType.js";
+import { AmountType } from "./AmountType.js";
+import { stringToDate, dateToState } from "./ConversionUtil.js";
 
 export const INSTRUCTIONS_TREATMENT_POSITION = "instructions";
 
@@ -151,33 +148,18 @@ export class FileIOAdapter {
     });
   }
 
-  convertToCSV(answers) {
-    return csv(answers);
-  }
-
-  generateFilenameSuffix(participantId, studyId, sessionId) {
-    return `${participantId}-${studyId}-${sessionId}`;
-  }
-
-  writeCSV = async (
-    participantId,
-    studyId,
-    sessionId,
-    filenamePrefix,
-    data
-  ) => {
-    const filename = `${filenamePrefix}-${this.generateFilenameSuffix(
-      participantId,
-      studyId,
-      sessionId
-    )}.csv`;
-    const CSV = this.convertToCSV(data);
+  writeFile = async (filename, strData) => {
     if (process.env.REACT_APP_AWS_ENABLED) {
       console.log("AWS ENABLED");
-      uploadFile(filename, CSV);
+      uploadFile(filename, strData);
     } else {
       console.log("AWS DISABLED");
-      uploadFileOffline(filename, CSV);
+      uploadFileOffline(filename, strData);
     }
+  };
+
+  writeCSV = async (filename, data) => {
+    const CSV = this.convertToCSV(data);
+    this.writeFile(filename, CSV);
   };
 }

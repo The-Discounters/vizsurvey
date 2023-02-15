@@ -22,11 +22,11 @@ import {
   initPurposeSurveyQuestion,
   setPurposeSurveyQuestion,
   getPurposeSurveyQuestion,
-} from "../features/questionSlice";
-import { dateToState } from "../features/ConversionUtil";
-import { POST_SURVEY_QUESTIONS } from "../features/postsurveyquestionssenseofpurpose";
-import { styles, theme } from "./ScreenHelper";
-import { navigateFromStatus } from "./Navigate";
+} from "../features/questionSlice.js";
+import { dateToState } from "../features/ConversionUtil.js";
+import { POST_SURVEY_QUESTIONS } from "../features/postsurveyquestionssenseofpurpose.js";
+import { styles, theme } from "./ScreenHelper.js";
+import { navigateFromStatus } from "./Navigate.js";
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
@@ -153,7 +153,7 @@ export function PostSurvey() {
                           "neutral",
                           "agree",
                           "strongly-agree",
-                          "prefer not to answer",
+                          "prefer-not-to-answer",
                         ].map((option, index1) => (
                           <FormControlLabel
                             key={`radio-${index1}`}
