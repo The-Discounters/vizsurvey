@@ -12,13 +12,19 @@ import {
   nextQuestion,
   answer,
 } from "../features/questionSlice.js";
+//<<<<<<< HEAD
 import { useD3 } from "../hooks/useD3.js";
 import { AmountType } from "../features/AmountType.js";
 import { InteractionType } from "../features/InteractionType.js";
 import { drawCalendar } from "./CalendarHelper.js";
+import { drawCalendarYear } from "./CalendarYearHelper.js";
+import { drawCalendarYearDual } from "./CalendarYearDualHelper.js";
+import { ViewType } from "../features/ViewType.js";
 import { dateToState } from "../features/ConversionUtil.js";
 import { Grid } from "@material-ui/core";
 import { styles } from "./ScreenHelper.js";
+//=======
+//>>>>>>> main-calendar
 import { Button, Box } from "@mui/material";
 import { navigateFromStatus } from "./Navigate.js";
 
@@ -73,15 +79,43 @@ export function Calendar() {
           style={{ borderCollapse: "collapse", tableLayout: "fixed" }}
           ref={useD3(
             (table) => {
-              drawCalendar({
-                table: table,
-                onClickCallback: onClickCallback,
-                choice: choice,
-                qDateEarlier: q.dateEarlier,
-                qDateLater: q.dateLater,
-                qAmountEarlier: q.amountEarlier,
-                qAmountLater: q.amountLater,
-              });
+              console.log("====== q.viewType: ======= " + q.viewType);
+              switch (q.viewType) {
+                case ViewType.calendarWord:
+                  drawCalendar({
+                    table: table,
+                    onClickCallback: onClickCallback,
+                    choice: choice,
+                    qDateEarlier: q.dateEarlier,
+                    qDateLater: q.dateLater,
+                    qAmountEarlier: q.amountEarlier,
+                    qAmountLater: q.amountLater,
+                    monthNumber: new Date(q.dateEarlier).getMonth(),
+                  });
+                  break;
+                case ViewType.calendarWordYear:
+                  drawCalendarYear({
+                    table: table,
+                    onClickCallback: onClickCallback,
+                    choice: choice,
+                    qDateEarlier: q.dateEarlier,
+                    qDateLater: q.dateLater,
+                    qAmountEarlier: q.amountEarlier,
+                    qAmountLater: q.amountLater,
+                  });
+                  break;
+                case ViewType.calendarWordYearDual:
+                  drawCalendarYearDual({
+                    table: table,
+                    onClickCallback: onClickCallback,
+                    choice: choice,
+                    qDateEarlier: q.dateEarlier,
+                    qDateLater: q.dateLater,
+                    qAmountEarlier: q.amountEarlier,
+                    qAmountLater: q.amountLater,
+                  });
+                  break;
+              }
             },
             [q]
           )}
