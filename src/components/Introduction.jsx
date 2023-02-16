@@ -27,6 +27,7 @@ import { AmountType } from "../features/AmountType.js";
 import { MELSelectionForm } from "./MELSelectionForm.jsx";
 import { drawBarChart } from "./BarChartComponent.js";
 import { drawCalendar } from "./CalendarHelper.js";
+import { drawCalendarYear } from "./CalendarYearHelper.js";
 
 const Introduction = () => {
   const dispatch = useDispatch();
@@ -282,7 +283,7 @@ const Introduction = () => {
             style={{ borderCollapse: "collapse", tableLayout: "fixed" }}
             ref={useD3(
               (table) => {
-                drawCalendar({
+                drawCalendarYear({
                   table: table,
                   qDateEarlier: instructionTreatment.dateEarlier,
                   qDateLater: instructionTreatment.dateLater,
