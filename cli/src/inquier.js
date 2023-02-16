@@ -1,9 +1,11 @@
 import inquirer from "inquirer";
 
-export const AMAZON_S3_BUCKET_KEY = "amazonS3Bucket";
-export const AMAZON_REGION__KEY = "amazonRegion";
-export const AMAZON_ACCESS_KEY_ID = "amazonAccessKeyId";
-export const AMAZON_SECRET_ACCESS_KEY = "amazonSecretAccessKey";
+import {
+  AMAZON_S3_BUCKET_KEY,
+  AMAZON_REGION__KEY,
+  AMAZON_ACCESS_KEY_ID,
+  AMAZON_SECRET_ACCESS_KEY,
+} from "../index.js";
 
 export function askS3BucketInfo() {
   const questions = [

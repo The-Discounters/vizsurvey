@@ -43,5 +43,93 @@
             "console": "integratedTerminal",
             "internalConsoleOptions": "neverOpen"
         },
+        {
+            "name": "Debug CLI download production 12/27/22",
+            "type": "node",
+            "request": "launch",
+            "runtimeExecutable": "/Users/pete/.nvm/versions/node/v19.3.0/bin/node",
+            "program": "${workspaceFolder}/cli/index.js",
+            "args": ["download", "/Users/pete/Library/CloudStorage/OneDrive-WorcesterPolytechnicInstitute(wpi.edu)/thesis/shared/data/pilot study 3","-l", "12/27/2022"],
+            "cwd": "${workspaceRoot}/cli",
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen"
+        },
+        {
+            "name": "Debug CLI split production",
+            "type": "node",
+            "request": "launch",
+            "runtimeExecutable": "/Users/pete/.nvm/versions/node/v19.3.0/bin/node",
+            "program": "${workspaceFolder}/cli/index.js",
+            "args": ["split", "/Users/pete/Library/CloudStorage/OneDrive-WorcesterPolytechnicInstitute(wpi.edu)/thesis/shared/data/pilot study 3",  "-d"],
+            "cwd": "${workspaceRoot}/cli",
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen"
+        },
+        {
+            "name": "Debug CLI merge production",
+            "type": "node",
+            "request": "launch",
+            "runtimeExecutable": "/Users/pete/.nvm/versions/node/v19.3.0/bin/node",
+            "program": "${workspaceFolder}/cli/index.js",
+            "args": ["merge", "/Users/pete/Library/CloudStorage/OneDrive-WorcesterPolytechnicInstitute(wpi.edu)/thesis/shared/data/pilot study 3"],
+            "cwd": "${workspaceRoot}/cli",
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen"
+        },
+        {
+            "name": "Debug CLI download test folder all",
+            "type": "node",
+            "request": "launch",
+            "runtimeExecutable": "/Users/pete/.nvm/versions/node/v19.3.0/bin/node",
+            "program": "${workspaceFolder}/cli/index.js",
+            "args": ["download", "./S3-downloaded"],
+            "cwd": "${workspaceRoot}/cli",
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen"
+        },
+        {
+            "name": "Debug CLI download test folder 12/27/22",
+            "type": "node",
+            "request": "launch",
+            "runtimeExecutable": "/Users/pete/.nvm/versions/node/v19.3.0/bin/node",
+            "program": "${workspaceFolder}/cli/index.js",
+            "args": ["download", "./S3-downloaded","-l", "12/27/2022"],
+            "cwd": "${workspaceRoot}/cli",
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen"
+        },
+        {
+            "name": "Debug CLI split test folder",
+            "type": "node",
+            "request": "launch",
+            "runtimeExecutable": "/Users/pete/.nvm/versions/node/v19.3.0/bin/node",
+            "program": "${workspaceFolder}/cli/index.js",
+            "args": ["split", "./S3-downloaded",  "-d"],
+            "cwd": "${workspaceRoot}/cli",
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen"
+        },
+        {
+            "name": "Debug CLI merge test folder",
+            "type": "node",
+            "request": "launch",
+            "runtimeExecutable": "/Users/pete/.nvm/versions/node/v19.3.0/bin/node",
+            "program": "${workspaceFolder}/cli/index.js",
+            "args": ["merge", "./S3-downloaded"],
+            "cwd": "${workspaceRoot}/cli",
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen"
+        },
+        {
+            "name": "Debug CLI merge public test folder",
+            "type": "node",
+            "request": "launch",
+            "runtimeExecutable": "/Users/pete/.nvm/versions/node/v19.3.0/bin/node",
+            "program": "${workspaceFolder}/cli/index.js",
+            "args": ["merge", "../test/public"],
+            "cwd": "${workspaceRoot}/cli",
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen"
+        }
     ]
 }

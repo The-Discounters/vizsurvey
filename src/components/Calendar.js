@@ -9,13 +9,13 @@ import {
   getStatus,
   setQuestionShownTimestamp,
   answer,
-} from "../features/questionSlice";
-import { useD3 } from "../hooks/useD3";
-import { AmountType } from "../features/AmountType";
-import { StatusType } from "../features/StatusType";
-import { InteractionType } from "../features/InteractionType";
-import { drawCalendar } from "./CalendarHelper";
-import { dateToState, stateToDate } from "../features/ConversionUtil";
+} from "../features/questionSlice.js";
+import { useD3 } from "../hooks/useD3.js";
+import { AmountType } from "../features/AmountType.js";
+import { StatusType } from "../features/StatusType.js";
+import { InteractionType } from "../features/InteractionType.js";
+import { drawCalendar } from "./CalendarHelper.js";
+import { dateToState, stateToDate } from "../features/ConversionUtil.js";
 
 export function Calendar() {
   const dispatch = useDispatch();

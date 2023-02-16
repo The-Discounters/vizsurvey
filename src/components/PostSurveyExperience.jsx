@@ -17,17 +17,16 @@ import {
 import { makeStyles } from "@material-ui/core/styles";
 import {
   getStatus,
-  discountLitSurveyQuestionsShown,
-  discountLitSurveyQuestionsCompleted,
-  nextQuestion,
-  initDiscountLitSurveyQuestion,
-  setDiscountLitSurveyQuestion,
-  getDiscountLitSurveyQuestion,
-} from "../features/questionSlice";
-import { dateToState } from "../features/ConversionUtil";
-import { POST_SURVEY_QUESTIONS } from "../features/postsurveyquestionsdiscountlit";
-import { styles, theme } from "./ScreenHelper";
-import { navigateFromStatus } from "./Navigate";
+  experienceSurveyQuestionsShown,
+  experienceSurveyQuestionsCompleted,
+  initExperienceSurveyQuestion,
+  setExperienceSurveyQuestion,
+  getExperienceSurveyQuestion,
+} from "../features/questionSlice.js";
+import { dateToState } from "../features/ConversionUtil.js";
+import { POST_SURVEY_QUESTIONS } from "../features/postsurveyquestionssurveyexperience.js";
+import { styles, theme } from "./ScreenHelper.js";
+import { navigateFromStatus } from "./Navigate.js";
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
@@ -50,7 +49,6 @@ export function PostSurvey() {
   const status = useSelector(getStatus);
 
   const [disableSubmit, setDisableSubmit] = React.useState(true);
-
   surveys.questions = surveys.questions.filter(({ question }) => {
     if (question.disabled === true) {
       return false;
@@ -61,15 +59,15 @@ export function PostSurvey() {
 
   let qList = [];
   surveys.questions.forEach((q) => {
-    dispatch(initDiscountLitSurveyQuestion(q.question.textShort));
+    dispatch(initExperienceSurveyQuestion(q.question.textShort));
     const value = useSelector(
-      getDiscountLitSurveyQuestion(q.question.textShort)
+      getExperienceSurveyQuestion(q.question.textShort)
     );
     qList.push(value);
   });
 
   useEffect(() => {
-    dispatch(discountLitSurveyQuestionsShown(dateToState(DateTime.now())));
+    dispatch(experienceSurveyQuestionsShown(dateToState(DateTime.now())));
   }, []);
 
   useEffect(() => {
@@ -77,13 +75,8 @@ export function PostSurvey() {
     navigate(path);
   }, [status]);
 
-  const [exited, setExited] = React.useState(false);
   useEffect(() => {
     checkEnableSubmit();
-    if (!exited && process.env.REACT_APP_FULLSCREEN === "enabled") {
-      document.exitFullscreen();
-      setExited(true);
-    }
   }, qList);
 
   const checkEnableSubmit = () => {
@@ -101,7 +94,7 @@ export function PostSurvey() {
       <div>
         <Grid container style={styles.root}>
           <Grid item xs={12}>
-            <Typography variant="h4">Additional Questions</Typography>
+            <Typography variant="h4">Additional Questions 1 of 3</Typography>
             <hr
               style={{
                 color: "#ea3433",
@@ -147,7 +140,7 @@ export function PostSurvey() {
                             label={option.textFull}
                             onChange={(event) => {
                               dispatch(
-                                setDiscountLitSurveyQuestion({
+                                setExperienceSurveyQuestion({
                                   key: surveys.questions[index].question
                                     .textShort,
                                   value: event.target.value,
@@ -157,12 +150,11 @@ export function PostSurvey() {
                           />
                         ))
                       : [
-                          "prefer not to answer",
-                          "strongly-disagree",
-                          "disagree",
-                          "neutral",
-                          "agree",
-                          "strongly-agree",
+                          "not-at-all-or-very-slightly",
+                          "a-little",
+                          "moderately",
+                          "quite-a-bit",
+                          "extremely",
                         ].map((option, index1) => (
                           <FormControlLabel
                             key={`radio-${index1}`}
@@ -176,7 +168,7 @@ export function PostSurvey() {
                             label={option.replace("-", " ")}
                             onChange={(event) => {
                               dispatch(
-                                setDiscountLitSurveyQuestion({
+                                setExperienceSurveyQuestion({
                                   key: surveys.questions[index].question
                                     .textShort,
                                   value: event.target.value,
@@ -208,11 +200,10 @@ export function PostSurvey() {
                 onClick={() => {
                   setTimeout(() => {
                     dispatch(
-                      discountLitSurveyQuestionsCompleted(
+                      experienceSurveyQuestionsCompleted(
                         dateToState(DateTime.now())
                       )
                     );
-                    dispatch(nextQuestion());
                   }, 400);
                 }}
                 disabled={disableSubmit}

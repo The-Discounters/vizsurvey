@@ -1,21 +1,77 @@
 #!/usr/bin/env node
-/* eslint-disable no-unused-vars */
 import chalk from "chalk";
 import clear from "clear";
 import figlet from "figlet";
 import Configstore from "configstore";
 import { Command } from "commander";
-import { readFileSync, writeFileSync } from "fs";
-import { dirname, sep } from "path";
-
-import { getCurrentDirectoryBase, directoryExists } from "./src/files.js";
+import fs from "fs";
+import { DateTime } from "luxon";
 import {
-  AMAZON_S3_BUCKET_KEY,
-  AMAZON_REGION__KEY,
-  AMAZON_ACCESS_KEY_ID,
-  AMAZON_SECRET_ACCESS_KEY,
-  askS3BucketInfo,
-} from "./src/inquier.js";
+  parseCSV,
+  parseJSON,
+  convertToCSV,
+} from "../src/features/parserUtil.js";
+import {
+  convertKeysToUnderscore,
+  convertAnswersAryToObj,
+} from "../src/features/ObjectUtil.js";
+import {
+  participantUniqueKey,
+  CSVDataFilenameFromKey,
+} from "../src/features/QuestionSliceUtil.js";
+import {
+  writeFile,
+  loadFile,
+  fullPath,
+  appendSepToPath,
+  isCSVExt,
+  isJSONExt,
+} from "./src/files.js";
+import { askS3BucketInfo } from "./src/inquier.js";
+import { init, downloadFiles } from "./src/S3.js";
+import { MergedData } from "./src/MergedData.js";
+
+export const AMAZON_S3_BUCKET_KEY = "amazonS3Bucket";
+export const AMAZON_REGION__KEY = "amazonRegion";
+export const AMAZON_ACCESS_KEY_ID = "amazonAccessKeyId";
+export const AMAZON_SECRET_ACCESS_KEY = "amazonSecretAccessKey";
+
+/// TODO this is a total hack.  I can't get the import to work when it points to the src folder in the main code base.
+const DataType = {
+  Answers: { key: "surveyAnswers", filenamePrefix: "answers" },
+  Timestamps: {
+    key: "answerTimestamps",
+    filenamePrefix: "answer-timestamps",
+  },
+  SurveyExperience: {
+    key: "surveyExperienceSurvey",
+    filenamePrefix: "survey-experience-survey",
+  },
+  FinancialSurvey: {
+    key: "financialLitSurvey",
+    filenamePrefix: "financial-lit-survey",
+  },
+  PurposeSurvey: {
+    key: "purposeSurvey",
+    filenamePrefix: "purpose-survey",
+  },
+  Demographic: {
+    key: "demographics",
+    filenamePrefix: "demographics",
+  },
+  Legal: { key: "legal", filenamePrefix: "legal" },
+  Feedback: { key: "feedback", filenamePrefix: "feedback.csv" },
+  DebriefTimestamps: {
+    key: "debriefTimestamps",
+    filenamePrefix: "debrief",
+  },
+};
+
+Object.freeze(DataType);
+
+const parseKeyFromFilename = (filename) => {
+  return filename.substring(0, filename.indexOf("-"));
+};
 
 clear();
 
@@ -23,12 +79,33 @@ console.log(
   chalk.yellow(figlet.textSync("Discounters", { horizontalLayout: "full" }))
 );
 
+const mergeCSVData = (CSVData, mergedData) => {
+  if (CSVData) {
+    console.log(`...merging data ${CSVData.length} rows`);
+    mergedData.push(CSVData[0]);
+    console.log(`...data merged`);
+  } else {
+    console.log(`...no data to merge`);
+  }
+};
+
 const run = async () => {
+  const createMergeFile = (filename, mergedData) => {
+    if (mergedData && mergedData.length > 0) {
+      console.log(`...creating merged file ${filename}`);
+      writeFile(filename, convertToCSV(mergedData));
+    } else {
+      console.log(`...no data for merged file ${filename}...`);
+    }
+  };
+
   const conf = new Configstore("discounters");
   if (!conf.has(AMAZON_S3_BUCKET_KEY)) {
     const settings = await askS3BucketInfo();
     conf.set(settings);
   }
+
+  init(conf);
 
   const program = new Command();
   program
@@ -39,84 +116,129 @@ const run = async () => {
     .version("1.0.0");
 
   program
-    .command("split")
-    .description(
-      "Splits out the CSV files that are in the JSON file.  The CSV files will be writen to the same folder as the JSON file."
+    .command("download")
+    .description("Downloads files from the S3 bucket.")
+    .argument("<directory>", "directory to store the files in.")
+    .option(
+      "-l, --laterthan <date>",
+      "the date to filter out files that are are equal to or later than"
     )
-    .argument("<filename>", "filename to split")
-    .action((filename, options) => {
-      console.log(`Loading file ${filename} for slitting...`);
+    .action((source, options) => {
+      console.log(`Downloading files from S3 bucket...`);
       try {
-        // Note that jsonString will be a <Buffer> since we did not specify an
-        // encoding type for the file. But it'll still work because JSON.parse() will
-        // use <Buffer>.toString().
-        const jsonString = readFileSync(filename);
-        const answers = JSON.parse(jsonString);
-        const pathroot = dirname(filename);
-        if (answers.surveyAnswers) {
-          const filename = `${pathroot}${sep}${answers.surveyAnswers.filename}`;
-          console.log(`Writing ${filename} ...`);
-          writeFileSync(filename, answers.surveyAnswers.data);
-          console.log(`File written.`);
-        }
-        if (answers.answerTimestamps) {
-          const filename = `${pathroot}${sep}${answers.answerTimestamps.filename}`;
-          console.log(`Writing ${filename} ...`);
-          writeFileSync(filename, answers.answerTimestamps.data);
-          console.log(`File written.`);
-        }
-        if (answers.discountLitSurvey) {
-          const filename = `${pathroot}${sep}${answers.discountLitSurvey.filename}`;
-          console.log(`Writing ${filename} ...`);
-          writeFileSync(filename, answers.discountLitSurvey.data);
-          console.log(`File written.`);
-        }
-        if (answers.financialLitSurvey) {
-          const filename = `${pathroot}${sep}${answers.financialLitSurvey.filename}`;
-          console.log(`Writing ${filename} ...`);
-          writeFileSync(filename, answers.financialLitSurvey.data);
-          console.log(`File written.`);
-        }
-        if (answers.purposeSurvey) {
-          const filename = `${pathroot}${sep}${answers.purposeSurvey.filename}`;
-          console.log(`Writing ${filename} ...`);
-          writeFileSync(filename, answers.purposeSurvey.data);
-          console.log(`File written.`);
-        }
-        if (answers.demographics) {
-          const filename = `${pathroot}${sep}${answers.demographics.filename}`;
-          console.log(`Writing ${filename} ...`);
-          writeFileSync(filename, answers.demographics.data);
-          console.log(`File written.`);
-        }
-        if (answers.legal) {
-          const filename = `${pathroot}${sep}${answers.legal.filename}`;
-          console.log(`Writing ${filename} ...`);
-          writeFileSync(filename, answers.legal.data);
-          console.log(`File written.`);
-        }
-        if (answers.feedback) {
-          const filename = `${pathroot}${sep}${answers.feedback.filename}`;
-          console.log(`Writing ${filename} ...`);
-          writeFileSync(filename, answers.feedback.data);
-          console.log(`File written.`);
-        }
-        if (answers.debriefTimestamps) {
-          const filename = `${pathroot}${sep}${answers.debriefTimestamps.filename}`;
-          console.log(`Writing ${filename} ...`);
-          writeFileSync(filename, answers.debriefTimestamps.data);
-          console.log(`File written.`);
-        }
+        const laterThanDate = options.laterthan
+          ? DateTime.fromFormat(options.laterthan, "M/d/yyyy")
+          : null;
+        downloadFiles(appendSepToPath(source), laterThanDate);
       } catch (err) {
-        console.log(err);
+        console.log(chalk.red(err));
         return;
       }
     });
+
+  program
+    .command("split")
+    .description(
+      "Splits out the CSV files that are in the JSON file if a single file is passed or all JSON files in the directory if a directory is passed.  The CSV files will be writen to the same folder as the JSON file."
+    )
+    .argument("<filename or directory>", "filename or directory to split")
+    .option("-f, --filename", "the single json filename to split")
+    .option(
+      "-d, --directory",
+      "the directory path containing the json files to split."
+    )
+    .action((source, options) => {
+      const surveyData = new MergedData();
+      try {
+        console.log(
+          `splitting "${
+            options.filename ? "" : "files in directory "
+          }"${source}`
+        );
+        const files = options.filename
+          ? options.filename
+          : fs.readdirSync(source).filter((file) => {
+              return isJSONExt(file);
+            });
+        for (const file of files) {
+          const absolutePath = fullPath(source, file);
+          const JSONStr = loadFile(absolutePath);
+          console.log(`parsing file ${absolutePath}`);
+          const JSONData = parseJSON(JSONStr);
+          for (const property in JSONData) {
+            // store the data as a merged object by participantId-studyId-sessionId
+            const CSVData = parseCSV(JSONData[property].data);
+            console.log(`...merging data for property ${property}`);
+            surveyData.addEntry(CSVData);
+          }
+        }
+        surveyData.callbackOnEntries((value, key) => {
+          const filename = CSVDataFilenameFromKey(key);
+          console.log(`...writing csv file ${filename}`);
+          const underscoreObj = convertKeysToUnderscore(value);
+          writeFile(fullPath(source, filename), convertToCSV([underscoreObj]));
+        });
+      } catch (err) {
+        console.log(chalk.red(err));
+        return;
+      }
+    });
+
+  program
+    .command("merge")
+    .description(
+      "Creates a merge file from CSV files in the directory passed as an argument.  The CSV files will be writen to the same folder as the CSV files."
+    )
+    .argument("<directory>", "directory containg csv files to merge")
+    .action((source, options) => {
+      // TODO implement -c option
+      console.log(`Scanning directory ${source} for merging...`);
+      try {
+        const mergedData = new Array();
+        console.log(`merging ${source}`);
+        const files = options.filename
+          ? options.filename
+          : fs.readdirSync(source).filter((file) => {
+              return isCSVExt(file);
+            });
+        for (const file of files) {
+          console.log(`considering merging file ${file}`);
+          mergeCSVData(parseCSV(loadFile(fullPath(source, file))), mergedData);
+        }
+        createMergeFile(fullPath(source, "data-merged.csv"), mergedData);
+      } catch (err) {
+        console.log(chalk.red(err));
+        return;
+      }
+    });
+
+  program
+    .command("monitor")
+    .description(
+      "Monitors the status of an experiment running by downloading the S3 files and reporting summary statistics in real time to the screen."
+    )
+    .argument(
+      "<date>",
+      "the date to filter out files that are are equal to or later than"
+    )
+    .action((source, options) => {
+      // TODO implement monitoring
+      console.log(
+        `Monitoring experiment for files with a timestamp equal to or greater than ${source}" ...`
+      );
+      // download the answer-timestamps- files
+      // create the answer-timestamps- merge file
+      // count the number of completed partcipants
+      // count the number of inprogress participants - this number shoul bounce up and go to zero and will get stuck at what is incomplete
+      // download the demographic files
+      // create the demographic merge file
+      // count the number of gbr and usa and show it
+      // add an option to show feedback as a log stream by downloading the feedback files, parsing them and showing the feedback.
+      // download the survey experience files and create the merge file
+      // show the toatal summary by each of the questions.
+    });
+
   program.parse();
 };
 
 run();
-// if (directoryExists(".git")) {
-//   console.log(chalk.red("Already a Git repository!"));
-//   process.exit();
-// }

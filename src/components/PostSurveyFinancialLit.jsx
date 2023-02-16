@@ -18,21 +18,23 @@ import { makeStyles } from "@material-ui/core/styles";
 import {
   getStatus,
   financialLitSurveyQuestionsShown,
-  purposeSurveyQuestionsCompleted,
-  nextQuestion,
+  financialLitSurveyQuestionsCompleted,
   initFinancialLitSurveyQuestion,
   setFinancialLitSurveyQuestion,
   getFinancialLitSurveyQuestion,
-} from "../features/questionSlice";
-import { dateToState } from "../features/ConversionUtil";
-import { POST_SURVEY_QUESTIONS } from "../features/postsurveyquestionsfinanciallit";
-import { styles, theme } from "./ScreenHelper";
-import { navigateFromStatus } from "./Navigate";
+} from "../features/questionSlice.js";
+import { dateToState } from "../features/ConversionUtil.js";
+import { POST_SURVEY_QUESTIONS } from "../features/postsurveyquestionsfinanciallit.js";
+import { styles, theme } from "./ScreenHelper.js";
+import { navigateFromStatus } from "./Navigate.js";
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
     margin: theme.spacing(1),
     minWidth: 120,
+  },
+  formLabel: {
+    fontWeight: "bold",
   },
   selectEmpty: {
     marginTop: theme.spacing(2),
@@ -74,13 +76,8 @@ export function PostSurvey() {
     navigate(path);
   }, [status]);
 
-  const [exited, setExited] = React.useState(false);
   useEffect(() => {
     checkEnableSubmit();
-    if (!exited && process.env.REACT_APP_FULLSCREEN === "enabled") {
-      document.exitFullscreen();
-      setExited(true);
-    }
   }, qList);
 
   const checkEnableSubmit = () => {
@@ -96,9 +93,9 @@ export function PostSurvey() {
   return (
     <ThemeProvider theme={theme}>
       <div>
-        <Grid container style={styles.root} justifyContent="center">
+        <Grid container style={styles.root}>
           <Grid item xs={12}>
-            <Typography variant="h4">Additional Questions</Typography>
+            <Typography variant="h4">Additional Questions 2 of 3</Typography>
             <hr
               style={{
                 color: "#ea3433",
@@ -108,27 +105,21 @@ export function PostSurvey() {
             />
           </Grid>
           <Grid item xs={12}>
-            <Typography paragraph>
-              The last step in this survey is to answer the questions below.
-            </Typography>
-            <hr
-              style={{
-                backgroundColor: "#aaaaaa",
-                height: 4,
-              }}
-            />
+            <Typography paragraph>{surveys.prompt}</Typography>
           </Grid>
-          <Grid item xs={12}>
-            <div>
-              <Typography paragraph>{surveys.prompt}</Typography>
-              {surveys.questions.map(({ question, options }, index) => (
+          {surveys.questions.map(({ question, options }, index) => (
+            <div key={`div-${index}`}>
+              <Grid item xs={12} key={`grid-${index}`}>
                 <FormControl
-                  key={index}
+                  key={`form-control-${index}`}
                   className={classes.formControl}
                   required
                 >
-                  <FormLabel id={question.textShort}>
-                    {index + 1 + ". " + question.textFull}
+                  <FormLabel
+                    id={question.textShort}
+                    className={classes.formLabel}
+                  >
+                    {question.textFull}
                   </FormLabel>
                   <RadioGroup
                     row
@@ -140,7 +131,7 @@ export function PostSurvey() {
                     {surveys.questionsType === "multiple choice"
                       ? options.map((option, index1) => (
                           <FormControlLabel
-                            key={index1}
+                            key={`radio-${index1}`}
                             value={option.textShort}
                             checked={qList[index] === option.textShort}
                             style={{
@@ -168,7 +159,7 @@ export function PostSurvey() {
                           "strongly-agree",
                         ].map((option, index1) => (
                           <FormControlLabel
-                            key={index1}
+                            key={`radio-${index1}`}
                             value={option}
                             id={question.textShort + "-" + option}
                             checked={qList[index] === option}
@@ -190,16 +181,17 @@ export function PostSurvey() {
                         ))}
                   </RadioGroup>
                 </FormControl>
-              ))}
-              <hr
-                style={{
-                  backgroundColor: "#aaaaaa",
-                  height: 4,
-                }}
-              />
+              </Grid>
+              <br key={`br-${index}`}></br>
             </div>
-          </Grid>
+          ))}
           <Grid item xs={12} style={{ margin: 0 }}>
+            <hr
+              style={{
+                backgroundColor: "#aaaaaa",
+                height: 4,
+              }}
+            />
             <Box display="flex" justifyContent="center">
               <Button
                 variant="contained"
@@ -210,11 +202,10 @@ export function PostSurvey() {
                 onClick={() => {
                   setTimeout(() => {
                     dispatch(
-                      purposeSurveyQuestionsCompleted(
+                      financialLitSurveyQuestionsCompleted(
                         dateToState(DateTime.now())
                       )
                     );
-                    dispatch(nextQuestion());
                   }, 400);
                 }}
                 disabled={disableSubmit}

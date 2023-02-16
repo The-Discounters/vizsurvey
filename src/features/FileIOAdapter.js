@@ -1,16 +1,12 @@
 import { csvParse } from "d3";
-import { DateTime } from "luxon";
-import csv from "to-csv";
 import * as d3 from "d3";
-
-import { TREATMENTS_DEV_CSV, TREATMENTS_PROD_CSV } from "./treatments";
-import { Question } from "./Question";
-import { ViewType } from "./ViewType";
-import { InteractionType } from "./InteractionType";
-import { AmountType } from "./AmountType";
-import { stringToDate, dateToState } from "./ConversionUtil";
-
 import AWS from "aws-sdk";
+import { TREATMENTS_DEV_CSV, TREATMENTS_PROD_CSV } from "./treatments.js";
+import { Question } from "./Question.js";
+import { ViewType } from "./ViewType.js";
+import { InteractionType } from "./InteractionType.js";
+import { AmountType } from "./AmountType.js";
+import { stringToDate, dateToState } from "./ConversionUtil.js";
 
 export const INSTRUCTIONS_TREATMENT_POSITION = "instructions";
 
@@ -47,7 +43,7 @@ const uploadFileOffline = (name, data) => {
 
 const uploadFile = (name, data) => {
   const params = {
-    ACL: "public-read",
+    ACL: "private",
     Body: data,
     Bucket: S3_BUCKET,
     Key: name,
@@ -152,134 +148,18 @@ export class FileIOAdapter {
     });
   }
 
-  convertToCSV(answers) {
-    return csv(answers);
-  }
-
-  generateFilenameSuffix(participantId, studyId) {
-    return `${participantId}-${studyId}-${DateTime.now().toMillis()}`;
-  }
-
-  writeAnswers = async (
-    participantId,
-    studyId,
-    answers,
-    timestamps,
-    discountLitSurvey,
-    financialLitSurvey,
-    purposeSurvey,
-    demographic,
-    legal
-  ) => {
-    const filename = `answers-${this.generateFilenameSuffix(
-      participantId,
-      studyId
-    )}.json`;
-
-    const answersCSV = this.convertToCSV(answers);
-    const timestampsCSV = this.convertToCSV([timestamps]);
-    const discountLitSurveyCSV = this.convertToCSV([discountLitSurvey]);
-    const financialLitSurveyCSV = this.convertToCSV([financialLitSurvey]);
-    const purposeSurveyCSV = this.convertToCSV([purposeSurvey]);
-    const demographicCSV = this.convertToCSV([demographic]);
-    const legalCSV = this.convertToCSV([legal]);
-
-    const data = {
-      surveyAnswers: {
-        filename: `answers-${this.generateFilenameSuffix(
-          participantId,
-          studyId
-        )}.csv`,
-        data: answersCSV,
-      },
-      answerTimestamps: {
-        filename: `answer-timestamps-${this.generateFilenameSuffix(
-          participantId,
-          studyId
-        )}.csv`,
-        data: timestampsCSV,
-      },
-      discountLitSurvey: {
-        filename: `discount-lit-survey-${this.generateFilenameSuffix(
-          participantId,
-          studyId
-        )}.csv`,
-        data: discountLitSurveyCSV,
-      },
-      financialLitSurvey: {
-        filename: `financial-lit-survey-${this.generateFilenameSuffix(
-          participantId,
-          studyId
-        )}.csv`,
-        data: financialLitSurveyCSV,
-      },
-      purposeSurvey: {
-        filename: `purpose-survey-${this.generateFilenameSuffix(
-          participantId,
-          studyId
-        )}.csv`,
-        data: purposeSurveyCSV,
-      },
-      demographics: {
-        filename: `demographics-${this.generateFilenameSuffix(
-          participantId,
-          studyId
-        )}.csv`,
-        data: demographicCSV,
-      },
-      legal: {
-        filename: `legal-${this.generateFilenameSuffix(
-          participantId,
-          studyId
-        )}.csv`,
-        data: legalCSV,
-      },
-    };
-    const dataJSON = JSON.stringify(data, null, 2);
-
+  writeFile = async (filename, strData) => {
     if (process.env.REACT_APP_AWS_ENABLED) {
       console.log("AWS ENABLED");
-      uploadFile(filename, dataJSON);
+      uploadFile(filename, strData);
     } else {
       console.log("AWS DISABLED");
-      uploadFileOffline(filename, dataJSON);
+      uploadFileOffline(filename, strData);
     }
   };
 
-  writeFeedback = async (participantId, studyId, feedback, timestamps) => {
-    const fileNameFeedback = `debrief-${this.generateFilenameSuffix(
-      participantId,
-      studyId
-    )}.json`;
-
-    const feedbackCSV = this.convertToCSV([feedback]);
-    const timestampsCSV = this.convertToCSV([timestamps]);
-
-    const data = {
-      feedback: {
-        filename: `feedback-${this.generateFilenameSuffix(
-          participantId,
-          studyId
-        )}.csv`,
-        data: feedbackCSV,
-      },
-      debriefTimestamps: {
-        filename: `debrief-timestamps-${this.generateFilenameSuffix(
-          participantId,
-          studyId
-        )}.csv`,
-        data: timestampsCSV,
-      },
-    };
-
-    const dataJSON = JSON.stringify(data, null, 2);
-
-    if (process.env.REACT_APP_AWS_ENABLED) {
-      console.log("AWS ENABLED");
-      uploadFile(fileNameFeedback, dataJSON);
-    } else {
-      console.log("AWS DISABLED");
-      uploadFileOffline(fileNameFeedback, dataJSON);
-    }
+  writeCSV = async (filename, data) => {
+    const CSV = this.convertToCSV(data);
+    this.writeFile(filename, CSV);
   };
 }

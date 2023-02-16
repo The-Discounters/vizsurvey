@@ -8,11 +8,11 @@ import {
   ThemeProvider,
 } from "@material-ui/core";
 import { useSelector, useDispatch } from "react-redux";
-import { useD3 } from "../hooks/useD3";
 import { DateTime } from "luxon";
+import { useD3 } from "../hooks/useD3.js";
 import "../App.css";
-import { ViewType } from "../features/ViewType";
-import { navigateFromStatus } from "./Navigate";
+import { ViewType } from "../features/ViewType.js";
+import { navigateFromStatus } from "./Navigate.js";
 import {
   introductionShown,
   introductionCompleted,
@@ -20,12 +20,12 @@ import {
   getInstructionTreatment,
   getStatus,
   startSurvey,
-} from "../features/questionSlice";
-import { dateToState } from "../features/ConversionUtil";
-import { styles, theme, calcScreenValues } from "./ScreenHelper";
-import { AmountType } from "../features/AmountType";
-import { MELSelectionForm } from "./MELSelectionForm";
-import { drawBarChart } from "./BarChartComponent";
+} from "../features/questionSlice.js";
+import { dateToState } from "../features/ConversionUtil.js";
+import { styles, theme, calcScreenValues } from "./ScreenHelper.js";
+import { AmountType } from "../features/AmountType.js";
+import { MELSelectionForm } from "./MELSelectionForm.jsx";
+import { drawBarChart } from "./BarChartComponent.js";
 
 const Introduction = () => {
   const dispatch = useDispatch();
