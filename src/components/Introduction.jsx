@@ -214,8 +214,10 @@ const Introduction = () => {
             error={error}
             amountEarlier={instructionTreatment.amountEarlier}
             timeEarlier={instructionTreatment.timeEarlier}
+            dateEarlier={instructionTreatment.dateEarlier}
             amountLater={instructionTreatment.amountLater}
             timeLater={instructionTreatment.timeLater}
+            dateLater={instructionTreatment.dateLater}
             helperText={helperText}
             onClickCallback={onClickCallback}
             choice={choice}

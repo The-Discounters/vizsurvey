@@ -15,14 +15,31 @@ export const drawCalendar = ({
   boxLengthOverride: boxLengthOverride = 1.0,
   monthNumber: monthNumber = "same",
 }) => {
+  const monthNames = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
   let selection = { d: -1, a: -1 };
   console.log("qDateEarlier: " + qDateEarlier);
   console.log("qDateLater: " + qDateLater);
   const firstOfMonth = new Date(qDateEarlier);
   const lastOfMonth = new Date(qDateEarlier);
+  firstOfMonth.setDate(1);
+  lastOfMonth.setDate(1);
   if (monthNumber !== "same") {
     firstOfMonth.setMonth(monthNumber);
     lastOfMonth.setMonth(monthNumber + 1);
+    console.log("monthNames[monthNumber]: " + monthNames[monthNumber]);
   }
   firstOfMonth.setDate(1);
   lastOfMonth.setDate(0);
@@ -62,20 +79,6 @@ export const drawCalendar = ({
     }
     month.push(week);
   }
-  const monthNames = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
-  ];
   const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
   //const monthNum = date.getMonth();
 
@@ -205,8 +208,12 @@ export const drawCalendar = ({
           }
           let posLeftAdd = 0;
           if (dayNum <= 7) {
+            posTop = "10px";
+          } else if (dayNum <= 10) {
             posTop = "5px";
           } else if (dayNum > lastOfMonth.getDate() - 7) {
+            posTop = "-40px";
+          } else if (dayNum > lastOfMonth.getDate() - 7 * 2) {
             posTop = "-30px";
           } else {
             posTop = "-15px";
@@ -215,6 +222,7 @@ export const drawCalendar = ({
           if (date01.getDay() < 3) {
             posLeft = 20 + posLeftAdd + "px";
           } else if (date01.getDay() > 3) {
+            if (d.a >= 1000) posLeftAdd += 5;
             posLeft = -50 - posLeftAdd + "px";
           } else {
             posLeft = -20 - posLeftAdd + "px";

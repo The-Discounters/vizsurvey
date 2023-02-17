@@ -28,6 +28,7 @@ export function MELSelectionForm(props) {
     "December",
   ];
   const daySuffix = [
+    "SHOULD NOT BE SEEN",
     "st", // 1st
     "nd",
     "rd",
