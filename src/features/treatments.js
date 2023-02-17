@@ -143,7 +143,13 @@ export const TREATMENTS_PROD_CSV = `treatment_id,position,view_type,interaction,
 6,7,calendarWordYearDual,none,none,66,,1/6/2023,110,,8/24/2023,110,,,,,,,,,,,,Worded MEL question experiment 3 of date/delay paper.
 6,8,calendarWordYearDual,none,none,77,,1/3/2023,118,,9/16/2023,120,,,,,,,,,,,,Worded MEL question experiment 3 of date/delay paper.
 6,instructions,calendarWordYearDual,none,none,300,,10/2/2023,700,,1/7/2023,1000,,750,650,,,,,,,,introduction-calendarWord,TODO use width and height during regular drawCalendar calls Worded MEL question experiment 3 of date/delay paper.
-7,1,word,none,none,350,,1/4/2023,430,,2/13/2023,430,,,,,,,,,,,,Worded MEL question experiment 1 date/delay paper TODO fix dates here so that it represent weeks to match up with MEL Word version.
-7,2,word,none,none,490,,1/2/2023,700,,3/18/2023,700,,,,,,,,,,,,Worded MEL question experiment 1 date/delay paper.
+7,1,word,none,none,350,,4/10/2023,430,,9/8/2023,430,,,,,,,,,,,,Worded MEL question experiment 1 date/delay paper TODO fix dates here so that it represent weeks to match up with MEL Word version.
+7,2,word,none,none,490,,7/24/2023,700,,12/6/2023,700,,,,,,,,,,,,Worded MEL question experiment 1 date/delay paper.
+7,3,word,none,none,720,,5/21/2023,1390,,7/29/2023,1390,,,,,,,,,,,,Worded MEL question experiment 1 date/delay paper.
+7,4,word,none,none,840,,6/15/2023,1120,,9/26/2023,1120,,,,,,,,,,,,Worded MEL question experiment 1 date/delay paper.
+7,5,word,none,none,32,,8/6/2023,39,13,11/14/2023,40,,,,,,,,,,,,Worded MEL question experiment 3 of date/delay paper.
+7,6,word,none,none,45,,5/29/2023,70,,9/17/2023,70,,,,,,,,,,,,Worded MEL question experiment 3 of date/delay paper.
+7,7,word,none,none,66,,9/12/2023,110,,11/8/2023,110,,,,,,,,,,,,Worded MEL question experiment 3 of date/delay paper.
+7,8,word,none,none,77,,7/30/2023,118,,10/15/2023,120,,,,,,,,,,,,Worded MEL question experiment 3 of date/delay paper.
 7,instructions,word,none,none,300,,3/7/2023,700,,10/2/2023,1000,,1100,200,,,,,,,,introduction-wordDate,TODO use width and height during regular drawCalendar calls Worded MEL question experiment 3 of date/delay paper.
 `;
