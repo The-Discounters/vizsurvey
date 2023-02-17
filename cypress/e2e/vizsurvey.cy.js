@@ -311,6 +311,23 @@ describe("vizsurvey", () => {
     cy.tick(4000);
     calendar("day", "4", "Bar");
   });*/
+  it("word date", () => {
+    visitTreatment(7);
+    answerMELForm();
+
+    cy.get("#attention-check-strongly-disagree").click();
+    cy.get("button").contains("Next").click();
+
+    answerMELForm();
+    answerMELForm();
+    cy.tick(1000);
+
+    postsurvey([
+      "1,1,word,none,none,500,2,,1000,5",
+      "1,2,word,none,none,50,2,,300,7",
+      "1,3,word,none,none,250,2,,1000,3",
+    ]);
+  });
   it("calendar word single year", () => {
     //visitTreatment(5, 1280, 720);
     //cy.tick(4000);
