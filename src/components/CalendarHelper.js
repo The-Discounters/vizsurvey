@@ -205,8 +205,12 @@ export const drawCalendar = ({
           }
           let posLeftAdd = 0;
           if (dayNum <= 7) {
+            posTop = "10px";
+          } else if (dayNum <= 10) {
             posTop = "5px";
           } else if (dayNum > lastOfMonth.getDate() - 7) {
+            posTop = "-40px";
+          } else if (dayNum > lastOfMonth.getDate() - 7 * 2) {
             posTop = "-30px";
           } else {
             posTop = "-15px";
@@ -215,6 +219,7 @@ export const drawCalendar = ({
           if (date01.getDay() < 3) {
             posLeft = 20 + posLeftAdd + "px";
           } else if (date01.getDay() > 3) {
+            if (d.a >= 1000) posLeftAdd += 5;
             posLeft = -50 - posLeftAdd + "px";
           } else {
             posLeft = -20 - posLeftAdd + "px";

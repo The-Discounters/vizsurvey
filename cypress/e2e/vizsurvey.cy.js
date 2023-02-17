@@ -352,7 +352,7 @@ describe("vizsurvey", () => {
       cy.get("#buttonNext").should("be.disabled");
       cy.tick(500);
 
-      cy.get("#earlierAmount").click();
+      cy.get("#earlierAmount").click({force: true});
       // cy.get("#laterAmount").should("have.css", "backgroundColor", steelblueRGB);
       cy.get("button").contains("Next").should("not.be.disabled").click();
     }
