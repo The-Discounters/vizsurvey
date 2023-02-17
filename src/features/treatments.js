@@ -145,5 +145,5 @@ export const TREATMENTS_PROD_CSV = `treatment_id,position,view_type,interaction,
 6,instructions,calendarWordYearDual,none,none,300,,10/2/2023,700,,1/7/2023,1000,,750,650,,,,,,,,introduction-calendarWord,TODO use width and height during regular drawCalendar calls Worded MEL question experiment 3 of date/delay paper.
 7,1,word,none,none,350,,1/4/2023,430,,2/13/2023,430,,,,,,,,,,,,Worded MEL question experiment 1 date/delay paper TODO fix dates here so that it represent weeks to match up with MEL Word version.
 7,2,word,none,none,490,,1/2/2023,700,,3/18/2023,700,,,,,,,,,,,,Worded MEL question experiment 1 date/delay paper.
-7,instructions,word,none,none,300,,3/7/2023,700,,10/2/2023,1000,,600,475,,,,,,,,introduction-calendarWordYear,TODO use width and height during regular drawCalendar calls Worded MEL question experiment 3 of date/delay paper.
+7,instructions,word,none,none,300,,3/7/2023,700,,10/2/2023,1000,,1100,200,,,,,,,,introduction-wordDate,TODO use width and height during regular drawCalendar calls Worded MEL question experiment 3 of date/delay paper.
 `;
