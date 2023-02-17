@@ -382,9 +382,11 @@ describe("vizsurvey", () => {
     }
     cy.get("#attention-check-strongly-disagree").click();
     cy.get("button").contains("Next").click();
-    for (let i = 0; i < 4; i++) {
+    //for (let i = 0; i < 4; i++) {
+    for (let i = 0; i < 3; i++) {
       simpleEarlierAmount();
     }
+    cy.wait(100000);
   });
   it("calendar word single month", () => {
     //visitTreatment(5, 1280, 720);

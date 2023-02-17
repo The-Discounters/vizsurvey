@@ -15,14 +15,31 @@ export const drawCalendar = ({
   boxLengthOverride: boxLengthOverride = 1.0,
   monthNumber: monthNumber = "same",
 }) => {
+  const monthNames = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
   let selection = { d: -1, a: -1 };
   console.log("qDateEarlier: " + qDateEarlier);
   console.log("qDateLater: " + qDateLater);
   const firstOfMonth = new Date(qDateEarlier);
   const lastOfMonth = new Date(qDateEarlier);
+  firstOfMonth.setDate(1);
+  lastOfMonth.setDate(1);
   if (monthNumber !== "same") {
     firstOfMonth.setMonth(monthNumber);
     lastOfMonth.setMonth(monthNumber + 1);
+    console.log("monthNames[monthNumber]: " + monthNames[monthNumber]);
   }
   firstOfMonth.setDate(1);
   lastOfMonth.setDate(0);
@@ -62,20 +79,6 @@ export const drawCalendar = ({
     }
     month.push(week);
   }
-  const monthNames = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
-  ];
   const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
   //const monthNum = date.getMonth();
 
