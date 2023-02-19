@@ -6,6 +6,8 @@ import Configstore from "configstore";
 import { Command } from "commander";
 import fs from "fs";
 import { DateTime } from "luxon";
+import Gauge from "clui";
+import { execSync } from "child_process";
 import {
   parseCSV,
   parseJSON,
@@ -93,7 +95,8 @@ const run = async () => {
   const createMergeFile = (filename, mergedData) => {
     if (mergedData && mergedData.length > 0) {
       console.log(`...creating merged file ${filename}`);
-      writeFile(filename, convertToCSV(mergedData));
+      const CSVData = convertToCSV(mergedData);
+      writeFile(filename, CSVData);
     } else {
       console.log(`...no data for merged file ${filename}...`);
     }
@@ -203,7 +206,14 @@ const run = async () => {
             });
         for (const file of files) {
           console.log(`considering merging file ${file}`);
-          mergeCSVData(parseCSV(loadFile(fullPath(source, file))), mergedData);
+          if (file === "data-merged.csv") {
+            console.log(chalk.yellow(`...skipping file ${file}`));
+          } else {
+            mergeCSVData(
+              parseCSV(loadFile(fullPath(source, file))),
+              mergedData
+            );
+          }
         }
         createMergeFile(fullPath(source, "data-merged.csv"), mergedData);
       } catch (err) {
@@ -218,24 +228,76 @@ const run = async () => {
       "Monitors the status of an experiment running by downloading the S3 files and reporting summary statistics in real time to the screen."
     )
     .argument(
-      "<date>",
+      "<number participants>",
+      "the total number of participants the experiment was ran for.  Used to update the percent progress bars"
+    )
+    .option(
+      "-l, --laterthan <date>",
       "the date to filter out files that are are equal to or later than"
     )
     .action((source, options) => {
-      // TODO implement monitoring
-      console.log(
-        `Monitoring experiment for files with a timestamp equal to or greater than ${source}" ...`
-      );
-      // download the answer-timestamps- files
-      // create the answer-timestamps- merge file
-      // count the number of completed partcipants
-      // count the number of inprogress participants - this number shoul bounce up and go to zero and will get stuck at what is incomplete
-      // download the demographic files
-      // create the demographic merge file
-      // count the number of gbr and usa and show it
-      // add an option to show feedback as a log stream by downloading the feedback files, parsing them and showing the feedback.
-      // download the survey experience files and create the merge file
-      // show the toatal summary by each of the questions.
+      try {
+        const laterThanDate = options.laterthan
+          ? DateTime.fromFormat(options.laterthan, "M/d/yyyy")
+          : null;
+        console.log(
+          `Monitoring experiment for files with a timestamp equal to or greater than ${
+            options.laterthan ? options.laterthan : "all"
+          }" ...`
+        );
+        // get a list of the files with .csv created on or after date passed in.
+        // update the count of participants to the file count.
+        // open each file and calcualte the stats (# at each state, country of origin, )
+        var quit = false;
+        console.log(chalk.red("Press Ctrl + C to exit monitor."));
+        var progress = 0;
+        while (!quit) {
+          console.log(Gauge(progress, 1, 20, 1, progress));
+          progress = progress === 1 ? 0 : progress + 0.1;
+          execSync("sleep 1");
+        }
+
+        // export const navigateFromStatus = (status) => {
+        //   switch (status) {
+        //     case StatusType.Consent:
+        //       return "/consent";
+        //     case StatusType.Demographic:
+        //       return "/demographic";
+        //     case StatusType.Introduction:
+        //       return "/introduction";
+        //     case StatusType.Instructions:
+        //       return "/instruction";
+
+        //     survey Question
+
+        //     case StatusType.Attention:
+        //       return "/attentioncheck";
+        //     case StatusType.ExperienceQuestionaire:
+        //       if (process.env.REACT_APP_FULLSCREEN === "enabled")
+        //         document.exitFullscreen();
+        //       return "/experiencequestionaire";
+        //     case StatusType.FinancialQuestionaire:
+        //       return "/financialquestionaire";
+        //     case StatusType.PurposeQuestionaire:
+        //       return "/purposequestionaire";
+        //     case StatusType.Debrief:
+        //       return "/debrief";
+        //     case StatusType.Finished:
+        //       return null;
+        //   }
+
+        //       Attention Question Wrong
+        //       count consent
+        //       count
+        //       count instructions sec
+        //
+        // add an option to show feedback as a log stream by downloading the feedback files, parsing them and showing the feedback.
+        // download the survey experience files and create the merge file
+        // show the toatal summary by each of the questions.
+      } catch (err) {
+        console.log(chalk.red(err));
+        return;
+      }
     });
 
   program.parse();

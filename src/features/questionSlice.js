@@ -33,7 +33,6 @@ const writeStateAsCSV = (state) => {
       treatmentId: state.treatmentId,
     },
     ...state.timestamps,
-    // consent
     consentChecked: state.consentChecked,
     // demographic
     countryOfResidence: state.countryOfResidence,
@@ -45,16 +44,11 @@ const writeStateAsCSV = (state) => {
     timezone: state.timezone,
     userAgent: state.userAgent,
     ...state.screenAttributes,
-    // answers
     ...answersAsObj,
     attentionCheck: state.attentionCheck,
-    // experience survey
     ...state.experienceSurvey,
-    // financial literacy survey
     ...state.financialLitSurvey,
-    // purpose survey
     ...state.purposeSurvey,
-    // feedback
     feedback: state.feedback,
   };
 
@@ -64,7 +58,8 @@ const writeStateAsCSV = (state) => {
   // change capital letter in camel case to _ with lower case letter to make the column headers easier to read when importing to excel
   const underscoreKeys = convertKeysToUnderscore(flattenedState);
   const filename = CSVDataFilename(state);
-  io.writeFile(filename, convertToCSV(underscoreKeys));
+  const CSVData = convertToCSV(underscoreKeys);
+  io.writeFile(filename, CSVData);
 };
 
 // Define the initial state of the store for this slicer.
