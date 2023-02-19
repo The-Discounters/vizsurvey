@@ -28,6 +28,7 @@ export function Answer({
   dragAmount: dragAmount,
   shownTimestamp: shownTimestamp,
   choiceTimestamp: choiceTimestamp,
+  choiceTimeSec: choiceTimeSec,
   highup: highup,
   lowdown: lowdown,
 }) {
@@ -61,6 +62,7 @@ export function Answer({
     dragAmount: dragAmount,
     shownTimestamp: shownTimestamp,
     choiceTimestamp: choiceTimestamp,
+    choiceTimeSec: choiceTimeSec,
     highup: highup,
     lowdown: lowdown,
   };
