@@ -1,3 +1,11 @@
+import { writeFile } from "./FileIOAdapter.js";
+import {
+  convertKeysToUnderscore,
+  convertAnswersAryToObj,
+  setAllPropertiesEmpty,
+} from "./ObjectUtil.js";
+import { convertToCSV } from "./parserUtil.js";
+
 export const participantUniqueKey = (dataObj) => {
   return `${dataObj.participantId}`;
 };
@@ -16,4 +24,51 @@ export const CSVDataFilenameFromKey = (uniqueKey) => {
 
 export const stateFormatFilename = (dataObj) => {
   return `state-format-${stateUniqueKey(dataObj)}.json`;
+};
+
+export const getRandomIntInclusive = (min, max) => {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min + 1) + min); //The maximum is inclusive and the minimum is inclusive
+};
+
+export const writeStateAsCSV = (state) => {
+  // turn answer rows into columns with position number as suffix
+  const answersAsObj = convertAnswersAryToObj(state.answers);
+
+  const flattenedState = {
+    ...{
+      participantId: state.participantId,
+      sessionId: state.sessionId,
+      studyId: state.studyId,
+      treatmentId: state.treatmentId,
+    },
+    ...state.timestamps,
+    consentChecked: state.consentChecked,
+    // demographic
+    countryOfResidence: state.countryOfResidence,
+    vizFamiliarity: state.vizFamiliarity,
+    age: state.age,
+    gender: state.gender,
+    selfDescribeGender: state.selfDescribeGender,
+    profession: state.profession,
+    timezone: state.timezone,
+    userAgent: state.userAgent,
+    ...state.screenAttributes,
+    ...answersAsObj,
+    attentionCheck: state.attentionCheck,
+    ...state.experienceSurvey,
+    ...state.financialLitSurvey,
+    ...state.purposeSurvey,
+    feedback: state.feedback,
+  };
+
+  const allKeysState = JSON.stringify(setAllPropertiesEmpty(flattenedState));
+
+  writeFile(stateFormatFilename(state), allKeysState);
+  // change capital letter in camel case to _ with lower case letter to make the column headers easier to read when importing to excel
+  const underscoreKeys = convertKeysToUnderscore(flattenedState);
+  const filename = CSVDataFilename(state);
+  const CSVData = convertToCSV(underscoreKeys);
+  writeFile(filename, CSVData);
 };
