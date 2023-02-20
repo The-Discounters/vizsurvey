@@ -10,6 +10,7 @@ describe("questionSlice tests", () => {
     );
     expect(elapsedTimeInSec.seconds).toBe(60 * 60 * 24);
   });
+
   test("Spread operator behavior on objects with the same property names", () => {
     const obj1 = { prop1: "value1", prop2: "value2", unique: "valueunique" };
     const obj2 = {
@@ -38,6 +39,83 @@ describe("questionSlice tests", () => {
       uniqueSecond: "valueuniquesecond",
     });
   });
+
+  test("flattenState test.", () => {
+    const input = {
+      participantId: null,
+      sessionId: null,
+      studyId: null,
+      treatmentId: null,
+      experienceSurvey: { experienceAnswer: "experience answer" },
+      financialLitSurvey: { financialLitAnswer: "financial answer" },
+      purposeSurvey: { purposeAnswer: "purpose answer" },
+      screenAttributes: {
+        // screen properties
+        screenAvailHeight: null,
+        screenAvailWidth: null,
+        screenColorDepth: null,
+        screenWidth: null,
+        screenHeight: null,
+        screenOrientationAngle: null,
+        screenOrientationType: null,
+        screenPixelDepth: null,
+        // window properties
+        windowDevicePixelRatio: window.devicePixelRatio,
+        windowInnerHeight: null,
+        windowInnerWidth: null,
+        windowOuterHeight: null,
+        windowOuterWidth: null,
+        windowScreenLeft: null,
+        windowScreenTop: null,
+      },
+      countryOfResidence: null,
+      vizFamiliarity: null,
+      age: null,
+      gender: null,
+      selfDescribeGender: null,
+      profession: null,
+      consentChecked: null,
+      timezone: null,
+      timestamps: {
+        consentShownTimestamp: null,
+        consentCompletedTimestamp: null,
+        consentTimeSec: null,
+        demographicShownTimestamp: null,
+        demographicCompletedTimestamp: null,
+        demographicTimeSec: null,
+        introductionShownTimestamp: null,
+        introductionCompletedTimestamp: null,
+        introductionTimeSec: null,
+        instructionsShownTimestamp: null,
+        instructionsCompletedTimestamp: null,
+        instructionsTimeSec: null,
+        attentionCheckShownTimestamp: null,
+        attentionCheckCompletedTimestamp: null,
+        attentionCheckTimeSec: null,
+        experienceSurveyQuestionsShownTimestamp: null,
+        experienceSurveyQuestionsCompletedTimestamp: null,
+        experienceSurveyTimeSec: null,
+        financialLitSurveyQuestionsShownTimestamp: null,
+        financialLitSurveyQuestionsCompletedTimestamp: null,
+        financialLitSurveyTimeSec: null,
+        purposeSurveyQuestionsShownTimestamp: null,
+        purposeSurveyQuestionsCompletedTimestamp: null,
+        purposeSurveyTimeSec: null,
+        debriefShownTimestamp: null,
+        debriefCompletedTimestamp: null,
+        debriefTimeSec: null,
+      },
+      attentionCheck: null,
+      feedback: null,
+      answers: [],
+      highup: null,
+      lowdown: null,
+      status: null,
+      error: null,
+      userAgent: null,
+    };
+  });
+
   // test("Test getRandomIntInclusive.", () => {
   //   let value = getRandomIntInclusive(0, 0);
   //   expect(value).toBe(0);

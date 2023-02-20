@@ -32,7 +32,7 @@ export const getRandomIntInclusive = (min, max) => {
   return Math.floor(Math.random() * (max - min + 1) + min); //The maximum is inclusive and the minimum is inclusive
 };
 
-export const writeStateAsCSV = (state) => {
+export const flattenState = (state) => {
   // turn answer rows into columns with position number as suffix
   const answersAsObj = convertAnswersAryToObj(state.answers);
 
@@ -62,9 +62,12 @@ export const writeStateAsCSV = (state) => {
     ...state.purposeSurvey,
     feedback: state.feedback,
   };
+  return flattenedState;
+};
 
+export const writeStateAsCSV = (state) => {
+  const flattenedState = flattenState(state);
   const allKeysState = JSON.stringify(setAllPropertiesEmpty(flattenedState));
-
   writeFile(stateFormatFilename(state), allKeysState);
   // change capital letter in camel case to _ with lower case letter to make the column headers easier to read when importing to excel
   const underscoreKeys = convertKeysToUnderscore(flattenedState);
