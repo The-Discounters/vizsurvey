@@ -1,5 +1,8 @@
 import { DateTime } from "luxon";
-import { FileIOAdapter } from "./FileIOAdapter";
+import {
+  loadAllTreatmentsConfiguration,
+  loadTreatmentConfiguration,
+} from "./FileIOAdapter";
 import { InteractionType } from "./InteractionType";
 import { AmountType } from "./AmountType";
 import { ViewType } from "./ViewType";
@@ -49,8 +52,7 @@ describe("Regular express test", () => {
 
 describe("FileIOAdapter tests", () => {
   test("Validate loadTreatment loads CSV fields correctly.", async () => {
-    const io = new FileIOAdapter();
-    var { questions, instructions } = await io.loadTreatment(1);
+    var { questions, instructions } = await loadTreatmentConfiguration(1);
     expect(questions.length).toBe(3);
     expect(questions[0].treatmentId).toBe(1);
     expect(questions[0].position).toBe(1);
@@ -84,7 +86,7 @@ describe("FileIOAdapter tests", () => {
     expect(instructions[0].amountLater).toBe(700);
     expect(instructions[0].timeLater).toBe(7);
 
-    ({ questions, instructions } = await io.loadTreatment(3));
+    ({ questions, instructions } = await loadTreatmentConfiguration(3));
     expect(questions.length).toBe(5);
     expect(questions[0].treatmentId).toBe(3);
     expect(questions[0].position).toBe(1);
@@ -118,8 +120,7 @@ describe("FileIOAdapter tests", () => {
   });
 
   test("Validate loadAllTreatments loads all treatments correctly.", async () => {
-    const io = new FileIOAdapter();
-    var questions = await io.loadAllTreatments();
+    var questions = await loadAllTreatmentsConfiguration();
     expect(questions.length).toBe(66);
   });
 
@@ -352,8 +353,6 @@ describe("FileIOAdapter tests", () => {
   //     treatmentId: 1,
   //     feedback: "feedback comment",
   //   };
-
-  //   const io = new FileIOAdapter();
 
   //   io.writeCSV(1, 2, 3, DataType.Answer.filenamePrefix, {
   //     answers,
