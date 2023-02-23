@@ -6,21 +6,11 @@ import Configstore from "configstore";
 import { Command } from "commander";
 import fs from "fs";
 import { DateTime } from "luxon";
-import Gauge from "clui";
+import clui from "clui";
 import { execSync } from "child_process";
-import {
-  parseCSV,
-  parseJSON,
-  convertToCSV,
-} from "../src/features/parserUtil.js";
-import {
-  convertKeysToUnderscore,
-  convertAnswersAryToObj,
-} from "../src/features/ObjectUtil.js";
-import {
-  participantUniqueKey,
-  CSVDataFilenameFromKey,
-} from "../src/features/QuestionSliceUtil.js";
+import { parseCSV, parseJSON, convertToCSV } from "./src/parserUtil.js";
+import { convertKeysToUnderscore } from "./src/ObjectUtil.js";
+import { CSVDataFilenameFromKey } from "./src/QuestionSliceUtil.js";
 import {
   writeFile,
   loadFile,
@@ -252,7 +242,7 @@ const run = async () => {
         console.log(chalk.red("Press Ctrl + C to exit monitor."));
         var progress = 0;
         while (!quit) {
-          console.log(Gauge(progress, 1, 20, 1, progress));
+          console.log(clui.Gauge(progress, 1, 20, 1, progress));
           progress = progress === 1 ? 0 : progress + 0.1;
           execSync("sleep 1");
         }
