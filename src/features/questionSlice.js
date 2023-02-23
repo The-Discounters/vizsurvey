@@ -3,7 +3,7 @@ import { SystemZone } from "luxon";
 import {
   loadAllTreatmentsConfiguration,
   loadTreatmentConfiguration,
-} from "./FileIOAdapter.js";
+} from "./TreatmentUtil.js";
 import { QuestionEngine } from "./QuestionEngine.js";
 import { StatusType } from "./StatusType.js";
 import { secondsBetween } from "./ConversionUtil.js";
