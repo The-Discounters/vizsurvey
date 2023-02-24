@@ -7,7 +7,9 @@ import { Command } from "commander";
 import fs from "fs";
 import { DateTime } from "luxon";
 import clui from "clui";
-import { execSync } from "child_process";
+import clc from "cli-color";
+import { spawnSync, execSync } from "child_process";
+import readline from "readline";
 import { parseCSV, parseJSON, convertToCSV } from "./src/parserUtil.js";
 import { convertKeysToUnderscore } from "./src/ObjectUtil.js";
 import { CSVDataFilenameFromKey } from "./src/QuestionSliceUtil.js";
@@ -27,43 +29,6 @@ export const AMAZON_S3_BUCKET_KEY = "amazonS3Bucket";
 export const AMAZON_REGION__KEY = "amazonRegion";
 export const AMAZON_ACCESS_KEY_ID = "amazonAccessKeyId";
 export const AMAZON_SECRET_ACCESS_KEY = "amazonSecretAccessKey";
-
-/// TODO this is a total hack.  I can't get the import to work when it points to the src folder in the main code base.
-const DataType = {
-  Answers: { key: "surveyAnswers", filenamePrefix: "answers" },
-  Timestamps: {
-    key: "answerTimestamps",
-    filenamePrefix: "answer-timestamps",
-  },
-  SurveyExperience: {
-    key: "surveyExperienceSurvey",
-    filenamePrefix: "survey-experience-survey",
-  },
-  FinancialSurvey: {
-    key: "financialLitSurvey",
-    filenamePrefix: "financial-lit-survey",
-  },
-  PurposeSurvey: {
-    key: "purposeSurvey",
-    filenamePrefix: "purpose-survey",
-  },
-  Demographic: {
-    key: "demographics",
-    filenamePrefix: "demographics",
-  },
-  Legal: { key: "legal", filenamePrefix: "legal" },
-  Feedback: { key: "feedback", filenamePrefix: "feedback.csv" },
-  DebriefTimestamps: {
-    key: "debriefTimestamps",
-    filenamePrefix: "debrief",
-  },
-};
-
-Object.freeze(DataType);
-
-const parseKeyFromFilename = (filename) => {
-  return filename.substring(0, filename.indexOf("-"));
-};
 
 clear();
 
@@ -226,68 +191,301 @@ const run = async () => {
       "the date to filter out files that are are equal to or later than"
     )
     .action((source, options) => {
+      const drawStatus = (
+        surveysTotal,
+        surveysComplete,
+        surveysInProgress,
+        countryUSA,
+        countryOther,
+        consentComplete,
+        demographicsComplete,
+        introductionComplete,
+        instructionsComplete,
+        surveyComplete,
+        experienceComplete,
+        financialComplete,
+        purposeComplete,
+        debriefComplete,
+        feedback
+      ) => {
+        var outputBuffer = new clui.LineBuffer({
+          x: 0,
+          y: 0,
+          width: "console",
+          height: "console",
+        });
+        var title = new clui.Line(outputBuffer)
+          .column("", 15, [clc.yellow])
+          .column("Totals", 20, [clc.yellow])
+          .fill()
+          .store();
+        var line = new clui.Line(outputBuffer)
+          .column("Surveys Completed", 20, [clc.green])
+          .column(
+            clui.Gauge(
+              surveysComplete,
+              surveysTotal,
+              20,
+              surveysTotal,
+              surveysComplete
+            ),
+            30
+          )
+          .fill()
+          .store();
+        line = new clui.Line(outputBuffer)
+          .column("Surveys In Progress", 20, [clc.green])
+          .column(
+            clui.Gauge(
+              surveysInProgress,
+              surveysTotal,
+              20,
+              surveysTotal,
+              surveysInProgress
+            ),
+            30
+          )
+          .fill()
+          .store();
+        title = new clui.Line(outputBuffer)
+          .column("", 15, [clc.yellow])
+          .column("Breakdown By Country", 20, [clc.yellow])
+          .fill()
+          .store();
+        line = new clui.Line(outputBuffer)
+          .column("USA", 20, [clc.green])
+          .column(
+            clui.Gauge(countryUSA, surveysTotal, 20, surveysTotal, countryUSA),
+            30
+          )
+          .fill()
+          .store();
+        line = new clui.Line(outputBuffer)
+          .column("Non USA", 20, [clc.green])
+          .column(
+            clui.Gauge(countryOther, surveysTotal, 20, 1, countryOther),
+            30
+          )
+          .fill()
+          .store();
+        title = new clui.Line(outputBuffer)
+          .column("", 15, [clc.yellow])
+          .column("Breakdown By Step", 20, [clc.yellow])
+          .fill()
+          .store();
+        var header = new clui.Line(outputBuffer)
+          .column("Step", 20, [clc.green])
+          .column("Progress", 22, [clc.green])
+          .column("Count", 5, [clc.green])
+          .fill()
+          .store();
+        line = new clui.Line(outputBuffer)
+          .column("Consent", 20, [clc.green])
+          .column(
+            clui.Gauge(
+              consentComplete,
+              surveysTotal,
+              20,
+              surveysTotal,
+              consentComplete
+            ),
+            30
+          )
+          .fill()
+          .store();
+        line = new clui.Line(outputBuffer)
+          .column("Demographic", 20, [clc.green])
+          .column(
+            clui.Gauge(
+              demographicsComplete,
+              surveysTotal,
+              20,
+              surveysTotal,
+              demographicsComplete
+            ),
+            30
+          )
+          .fill()
+          .store();
+        line = new clui.Line(outputBuffer)
+          .column("Introduction", 20, [clc.green])
+          .column(
+            clui.Gauge(
+              introductionComplete,
+              surveysTotal,
+              20,
+              surveysTotal,
+              introductionComplete
+            ),
+            30
+          )
+          .fill()
+          .store();
+        line = new clui.Line(outputBuffer)
+          .column("Instruction", 20, [clc.green])
+          .column(
+            clui.Gauge(
+              instructionsComplete,
+              surveysTotal,
+              20,
+              surveysTotal,
+              instructionsComplete
+            ),
+            30
+          )
+          .fill()
+          .store();
+        line = new clui.Line(outputBuffer)
+          .column("Survey", 20, [clc.green])
+          .column(
+            clui.Gauge(
+              surveyComplete,
+              surveysTotal,
+              20,
+              surveysTotal,
+              surveyComplete
+            ),
+            30
+          )
+          .fill()
+          .store();
+        line = new clui.Line(outputBuffer)
+          .column("Experience Survey", 20, [clc.green])
+          .column(
+            clui.Gauge(
+              experienceComplete,
+              surveysTotal,
+              20,
+              surveysTotal,
+              experienceComplete
+            ),
+            30
+          )
+          .fill()
+          .store();
+        line = new clui.Line(outputBuffer)
+          .column("Financial Survey", 20, [clc.green])
+          .column(
+            clui.Gauge(
+              financialComplete,
+              surveysTotal,
+              20,
+              surveysTotal,
+              financialComplete
+            ),
+            30
+          )
+          .fill()
+          .store();
+        line = new clui.Line(outputBuffer)
+          .column("Purpose Survey", 20, [clc.green])
+          .column(
+            clui.Gauge(
+              purposeComplete,
+              surveysTotal,
+              20,
+              surveysTotal,
+              purposeComplete
+            ),
+            30
+          )
+          .fill()
+          .store();
+        line = new clui.Line(outputBuffer)
+          .column("Debrief Survey", 20, [clc.green])
+          .column(
+            clui.Gauge(
+              debriefComplete,
+              surveysTotal,
+              20,
+              surveysTotal,
+              debriefComplete
+            ),
+            30
+          )
+          .fill()
+          .store();
+        var title = new clui.Line(outputBuffer)
+          .column("", 15, [clc.yellow])
+          .column("Feedback", 20, [clc.yellow])
+          .fill()
+          .store();
+        feedback.forEach((e) =>
+          new clui.Line(outputBuffer).column(e, 80, [clc.white]).fill().store()
+        );
+        new clui.Line(outputBuffer)
+          .column("Ctrl + C to exit the monitor.", 40, [clc.red])
+          .fill()
+          .store();
+        // write a for loop with the top 20 feedback comments
+        return outputBuffer;
+      };
+
+      const getUpdatedStates = (laterThanDate) => {
+        downloadFiles(appendSepToPath(source), laterThanDate);
+      };
+
       try {
         const laterThanDate = options.laterthan
           ? DateTime.fromFormat(options.laterthan, "M/d/yyyy")
           : null;
+        const totalParticipants = argument;
         console.log(
-          `Monitoring experiment for files with a timestamp equal to or greater than ${
+          `Monitoring experiment with ${totalParticipants} total participants that started  ${
             options.laterthan ? options.laterthan : "all"
           }" ...`
         );
-        // get a list of the files with .csv created on or after date passed in.
-        // update the count of participants to the file count.
-        // open each file and calcualte the stats (# at each state, country of origin, )
         var quit = false;
-        console.log(chalk.red("Press Ctrl + C to exit monitor."));
-        var progress = 0;
-        while (!quit) {
-          console.log(clui.Gauge(progress, 1, 20, 1, progress));
-          progress = progress === 1 ? 0 : progress + 0.1;
-          execSync("sleep 1");
-        }
-
-        // export const navigateFromStatus = (status) => {
-        //   switch (status) {
-        //     case StatusType.Consent:
-        //       return "/consent";
-        //     case StatusType.Demographic:
-        //       return "/demographic";
-        //     case StatusType.Introduction:
-        //       return "/introduction";
-        //     case StatusType.Instructions:
-        //       return "/instruction";
-
-        //     survey Question
-
-        //     case StatusType.Attention:
-        //       return "/attentioncheck";
-        //     case StatusType.ExperienceQuestionaire:
-        //       if (process.env.REACT_APP_FULLSCREEN === "enabled")
-        //         document.exitFullscreen();
-        //       return "/experiencequestionaire";
-        //     case StatusType.FinancialQuestionaire:
-        //       return "/financialquestionaire";
-        //     case StatusType.PurposeQuestionaire:
-        //       return "/purposequestionaire";
-        //     case StatusType.Debrief:
-        //       return "/debrief";
-        //     case StatusType.Finished:
-        //       return null;
-        //   }
-
-        //       Attention Question Wrong
-        //       count consent
-        //       count
-        //       count instructions sec
-        //
-        // add an option to show feedback as a log stream by downloading the feedback files, parsing them and showing the feedback.
-        // download the survey experience files and create the merge file
-        // show the toatal summary by each of the questions.
+        console.log(chalk.red("Press Enter to start monitoring."));
+        var startMonitoring = false;
+        var gaugeFactor = 1;
+        readline.emitKeypressEvents(process.stdin);
+        process.stdin.setRawMode(true);
+        process.stdin.on("keypress", (str, key) => {
+          if (key.ctrl && key.name === "c") {
+            console.log("monitor ending.");
+            process.exit(); // eslint-disable-line no-process-exit
+          } else if (key.name === "return") {
+            startMonitoring = true;
+            clear();
+          } else if (key.name === "+") {
+            gaugeFactor++;
+          } else if (key.name === "-") {
+            gaugeFactor--;
+          }
+        });
+        let nIntervId = setInterval(() => {
+          if (startMonitoring) {
+            const stats = new Map();
+            // get a list of the files with .csv created on or after date passed in.
+            // update the count of participants to the file count.
+            // open each file and calcualte the stats (# at each state, country of origin, )
+            drawStatus(
+              totalParticipants,
+              25,
+              5,
+              25,
+              0,
+              10,
+              5,
+              8,
+              12,
+              18,
+              15,
+              12,
+              11,
+              10,
+              ["comment 1", "comment 2", "comment 3"]
+            ).output();
+          }
+        }, 1000);
       } catch (err) {
         console.log(chalk.red(err));
         return;
       }
+      // while (1) {
+      //   execSync("sleep 1");
+      // }
     });
 
   program.parse();
