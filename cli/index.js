@@ -9,6 +9,7 @@ import { DateTime } from "luxon";
 import clui from "clui";
 import clc from "cli-color";
 import { spawnSync, execSync } from "child_process";
+import readline from "readline";
 import { parseCSV, parseJSON, convertToCSV } from "./src/parserUtil.js";
 import { convertKeysToUnderscore } from "./src/ObjectUtil.js";
 import { CSVDataFilenameFromKey } from "./src/QuestionSliceUtil.js";
@@ -420,73 +421,71 @@ const run = async () => {
         return outputBuffer;
       };
 
+      const getUpdatedStates = (laterThanDate) => {
+        downloadFiles(appendSepToPath(source), laterThanDate);
+      };
+
       try {
         const laterThanDate = options.laterthan
           ? DateTime.fromFormat(options.laterthan, "M/d/yyyy")
           : null;
+        const totalParticipants = argument;
         console.log(
-          `Monitoring experiment for files with a timestamp equal to or greater than ${
+          `Monitoring experiment with ${totalParticipants} total participants that started  ${
             options.laterthan ? options.laterthan : "all"
           }" ...`
         );
-        // get a list of the files with .csv created on or after date passed in.
-        // update the count of participants to the file count.
-        // open each file and calcualte the stats (# at each state, country of origin, )
         var quit = false;
         console.log(chalk.red("Press Enter to start monitoring."));
-        spawnSync("read _ ", { shell: true, stdio: [0, 1, 2] });
-        clear();
-
-        drawStatus(150, 25, 5, 25, 0, 10, 5, 8, 12, 18, 15, 12, 11, 10, [
-          "comment 1",
-          "comment 2",
-          "comment 3",
-        ]).output();
-        while (!quit) {
-          execSync("sleep 1");
-        }
-
-        // export const navigateFromStatus = (status) => {
-        //   switch (status) {
-        //     case StatusType.Consent:
-        //       return "/consent";
-        //     case StatusType.Demographic:
-        //       return "/demographic";
-        //     case StatusType.Introduction:
-        //       return "/introduction";
-        //     case StatusType.Instructions:
-        //       return "/instruction";
-
-        //     survey Question
-
-        //     case StatusType.Attention:
-        //       return "/attentioncheck";
-        //     case StatusType.ExperienceQuestionaire:
-        //       if (process.env.REACT_APP_FULLSCREEN === "enabled")
-        //         document.exitFullscreen();
-        //       return "/experiencequestionaire";
-        //     case StatusType.FinancialQuestionaire:
-        //       return "/financialquestionaire";
-        //     case StatusType.PurposeQuestionaire:
-        //       return "/purposequestionaire";
-        //     case StatusType.Debrief:
-        //       return "/debrief";
-        //     case StatusType.Finished:
-        //       return null;
-        //   }
-
-        //       Attention Question Wrong
-        //       count consent
-        //       count
-        //       count instructions sec
-        //
-        // add an option to show feedback as a log stream by downloading the feedback files, parsing them and showing the feedback.
-        // download the survey experience files and create the merge file
-        // show the toatal summary by each of the questions.
+        var startMonitoring = false;
+        var gaugeFactor = 1;
+        readline.emitKeypressEvents(process.stdin);
+        process.stdin.setRawMode(true);
+        process.stdin.on("keypress", (str, key) => {
+          if (key.ctrl && key.name === "c") {
+            console.log("monitor ending.");
+            process.exit(); // eslint-disable-line no-process-exit
+          } else if (key.name === "return") {
+            startMonitoring = true;
+            clear();
+          } else if (key.name === "+") {
+            gaugeFactor++;
+          } else if (key.name === "-") {
+            gaugeFactor--;
+          }
+        });
+        let nIntervId = setInterval(() => {
+          if (startMonitoring) {
+            const stats = new Map();
+            // get a list of the files with .csv created on or after date passed in.
+            // update the count of participants to the file count.
+            // open each file and calcualte the stats (# at each state, country of origin, )
+            drawStatus(
+              totalParticipants,
+              25,
+              5,
+              25,
+              0,
+              10,
+              5,
+              8,
+              12,
+              18,
+              15,
+              12,
+              11,
+              10,
+              ["comment 1", "comment 2", "comment 3"]
+            ).output();
+          }
+        }, 1000);
       } catch (err) {
         console.log(chalk.red(err));
         return;
       }
+      // while (1) {
+      //   execSync("sleep 1");
+      // }
     });
 
   program.parse();
