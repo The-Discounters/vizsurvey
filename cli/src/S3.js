@@ -26,41 +26,46 @@ export const init = (conf) => {
   bucketName = conf.get(AMAZON_S3_BUCKET_KEY);
 };
 
-export const downloadFiles = (dir, laterThanDate) => {
+export const ProgressType = {
+  downloading: "downloading",
+  downloaded: "downloaded",
+  skip: "skip",
+  error: "error",
+};
+
+Object.freeze(ProgressType);
+
+const downloadFile = (file, progressCallback) => {
+  myBucket.getObject(
+    {
+      Bucket: bucketName,
+      Key: file.Key,
+    },
+    (errGet, dataGet) => {
+      if (errGet) {
+        console.log("Error", errGet);
+      } else {
+        progressCallback(ProgressType.downloaded, {
+          file: file,
+          data: dataGet.Body.toString(),
+        });
+      }
+    }
+  );
+};
+
+export const downloadFiles = (laterThanDate, progressCallback) => {
   myBucket.listObjectsV2({ Bucket: `${bucketName}` }, (errList, dataList) => {
     if (errList) {
-      console.log("Error", errList);
+      progressCallback(ProgressType.error, errList);
     } else {
       for (const file of dataList.Contents) {
-        console.log(
-          `...downloading file ${file.Key} of size ${file.Size} to ${dir} created on date ${file.LastModified}`
-        );
         const objectDate = DateTime.fromJSDate(file.LastModified);
         if (laterThanDate && objectDate < laterThanDate) {
-          console.log(
-            `...skipping ${file.Key} since the date is before ${laterThanDate}`
-          );
+          progressCallback(ProgressType.skip, file);
         } else {
-          const fullObject = myBucket.getObject(
-            {
-              Bucket: bucketName,
-              Key: file.Key,
-            },
-            (errGet, dataGet) => {
-              if (errGet) {
-                console.log("Error", errGet);
-              } else {
-                const JSONData = dataGet.Body.toString();
-                fs.writeFile(dir + file.Key, JSONData, function (err) {
-                  if (err) {
-                    console.log(`error writing file ${file.Key}`, err);
-                    throw err;
-                  }
-                });
-                console.log(`...file ${file.Key} downloaded.`);
-              }
-            }
-          );
+          progressCallback(ProgressType.downloading, file);
+          downloadFile(file, progressCallback);
         }
       }
     }

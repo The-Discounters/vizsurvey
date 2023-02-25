@@ -3,13 +3,11 @@ import chalk from "chalk";
 import clear from "clear";
 import figlet from "figlet";
 import Configstore from "configstore";
-import { Command } from "commander";
+import { Command, InvalidArgumentError } from "commander";
 import fs from "fs";
 import { DateTime } from "luxon";
-import clui from "clui";
-import clc from "cli-color";
-import { spawnSync, execSync } from "child_process";
 import readline from "readline";
+import isValid from "is-valid-path";
 import { parseCSV, parseJSON, convertToCSV } from "./src/parserUtil.js";
 import { convertKeysToUnderscore } from "./src/ObjectUtil.js";
 import { CSVDataFilenameFromKey } from "./src/QuestionSliceUtil.js";
@@ -20,10 +18,13 @@ import {
   appendSepToPath,
   isCSVExt,
   isJSONExt,
+  directoryOrFileExists,
+  getDirectory,
 } from "./src/files.js";
 import { askS3BucketInfo } from "./src/inquier.js";
-import { init, downloadFiles } from "./src/S3.js";
+import { init, downloadFiles, ProgressType } from "./src/S3.js";
 import { MergedData } from "./src/MergedData.js";
+import { drawStatus, calcStats } from "./src/monitorUtil.js";
 
 export const AMAZON_S3_BUCKET_KEY = "amazonS3Bucket";
 export const AMAZON_REGION__KEY = "amazonRegion";
@@ -44,6 +45,32 @@ const mergeCSVData = (CSVData, mergedData) => {
   } else {
     console.log(`...no data to merge`);
   }
+};
+
+const validateInt = (value, dummyPrevious) => {
+  const parsedValue = parseInt(value, 10);
+  if (isNaN(parsedValue)) {
+    throw new InvalidArgumentError("Not a number.");
+  }
+  return parsedValue;
+};
+
+const validateDate = (value, dummyPrevious) => {
+  const result = DateTime.fromFormat(value, "MM/dd/yyyy");
+  if (result.invalidReason) {
+    throw new InvalidArgumentError("Not a valid date.");
+  }
+  return result;
+};
+
+const validatePath = (value, dummyPrevious) => {
+  if (!isValid(value)) {
+    throw new InvalidArgumentError("Not a valid path.");
+  }
+  if (!directoryOrFileExists(value)) {
+    throw new InvalidArgumentError("Path or file does not exist.");
+  }
+  return value;
 };
 
 const run = async () => {
@@ -79,18 +106,44 @@ const run = async () => {
     .argument("<directory>", "directory to store the files in.")
     .option(
       "-l, --laterthan <date>",
-      "the date to filter out files that are are equal to or later than"
+      "the date to filter out files that are are equal to or later than",
+      validateDate
     )
     .action((source, options) => {
-      console.log(`Downloading files from S3 bucket...`);
       try {
-        const laterThanDate = options.laterthan
-          ? DateTime.fromFormat(options.laterthan, "M/d/yyyy")
-          : null;
-        downloadFiles(appendSepToPath(source), laterThanDate);
+        console.log(`Downloading files from S3 bucket...`);
+        downloadFiles(options.laterthan, (progress, param) => {
+          switch (progress) {
+            case ProgressType.downloading:
+              console.log(
+                `...downloading file ${param.Key} created on date ${param.LastModified}`
+              );
+              break;
+            case ProgressType.downloaded:
+              console.log(`...writing file ${param.file.Key}`);
+              fs.writeFile(
+                `${appendSepToPath(source)}${param.file.Key}`,
+                param.data,
+                function (err) {
+                  if (err) {
+                    console.log(`error writing file ${param.file.Key}`, err);
+                    throw err;
+                  }
+                }
+              );
+              break;
+            case ProgressType.skip:
+              console.log(
+                `...skipping ${param.Key} since the date is before ${options.laterthan}`
+              );
+              break;
+            case ProgressType.error:
+              console.log("Error", param);
+              break;
+          }
+        });
       } catch (err) {
         console.log(chalk.red(err));
-        return;
       }
     });
 
@@ -99,27 +152,22 @@ const run = async () => {
     .description(
       "Splits out the CSV files that are in the JSON file if a single file is passed or all JSON files in the directory if a directory is passed.  The CSV files will be writen to the same folder as the JSON file."
     )
-    .argument("<filename or directory>", "filename or directory to split")
-    .option("-f, --filename", "the single json filename to split")
-    .option(
-      "-d, --directory",
-      "the directory path containing the json files to split."
+    .argument(
+      "<filename or directory>",
+      "filename or directory to split",
+      validatePath
     )
-    .action((source, options) => {
+    .action((dirOrFilename, options) => {
       const surveyData = new MergedData();
       try {
-        console.log(
-          `splitting "${
-            options.filename ? "" : "files in directory "
-          }"${source}`
-        );
-        const files = options.filename
-          ? options.filename
-          : fs.readdirSync(source).filter((file) => {
+        console.log(`splitting "${dirOrFilename}`);
+        const files = fs.lstatSync(dirOrFilename).isDirectory()
+          ? fs.readdirSync(dirOrFilename).filter((file) => {
               return isJSONExt(file);
-            });
+            })
+          : dirOrFilename;
         for (const file of files) {
-          const absolutePath = fullPath(source, file);
+          const absolutePath = fullPath(dirOrFilename, file);
           const JSONStr = loadFile(absolutePath);
           console.log(`parsing file ${absolutePath}`);
           const JSONData = parseJSON(JSONStr);
@@ -134,7 +182,10 @@ const run = async () => {
           const filename = CSVDataFilenameFromKey(key);
           console.log(`...writing csv file ${filename}`);
           const underscoreObj = convertKeysToUnderscore(value);
-          writeFile(fullPath(source, filename), convertToCSV([underscoreObj]));
+          writeFile(
+            fullPath(getDirectory(dirOrFilename), filename),
+            convertToCSV([underscoreObj])
+          );
         });
       } catch (err) {
         console.log(chalk.red(err));
@@ -184,261 +235,24 @@ const run = async () => {
     )
     .argument(
       "<number participants>",
-      "the total number of participants the experiment was ran for.  Used to update the percent progress bars"
+      "the total number of participants the experiment was ran for.  Used to update the percent progress bars",
+      validateInt
     )
     .option(
       "-l, --laterthan <date>",
-      "the date to filter out files that are are equal to or later than"
+      "the date to filter out files that are are equal to or later than",
+      validateDate
     )
-    .action((source, options) => {
-      const drawStatus = (
-        surveysTotal,
-        surveysComplete,
-        surveysInProgress,
-        countryUSA,
-        countryOther,
-        consentComplete,
-        demographicsComplete,
-        introductionComplete,
-        instructionsComplete,
-        surveyComplete,
-        experienceComplete,
-        financialComplete,
-        purposeComplete,
-        debriefComplete,
-        feedback
-      ) => {
-        var outputBuffer = new clui.LineBuffer({
-          x: 0,
-          y: 0,
-          width: "console",
-          height: "console",
-        });
-        var title = new clui.Line(outputBuffer)
-          .column("", 15, [clc.yellow])
-          .column("Totals", 20, [clc.yellow])
-          .fill()
-          .store();
-        var line = new clui.Line(outputBuffer)
-          .column("Surveys Completed", 20, [clc.green])
-          .column(
-            clui.Gauge(
-              surveysComplete,
-              surveysTotal,
-              20,
-              surveysTotal,
-              surveysComplete
-            ),
-            30
-          )
-          .fill()
-          .store();
-        line = new clui.Line(outputBuffer)
-          .column("Surveys In Progress", 20, [clc.green])
-          .column(
-            clui.Gauge(
-              surveysInProgress,
-              surveysTotal,
-              20,
-              surveysTotal,
-              surveysInProgress
-            ),
-            30
-          )
-          .fill()
-          .store();
-        title = new clui.Line(outputBuffer)
-          .column("", 15, [clc.yellow])
-          .column("Breakdown By Country", 20, [clc.yellow])
-          .fill()
-          .store();
-        line = new clui.Line(outputBuffer)
-          .column("USA", 20, [clc.green])
-          .column(
-            clui.Gauge(countryUSA, surveysTotal, 20, surveysTotal, countryUSA),
-            30
-          )
-          .fill()
-          .store();
-        line = new clui.Line(outputBuffer)
-          .column("Non USA", 20, [clc.green])
-          .column(
-            clui.Gauge(countryOther, surveysTotal, 20, 1, countryOther),
-            30
-          )
-          .fill()
-          .store();
-        title = new clui.Line(outputBuffer)
-          .column("", 15, [clc.yellow])
-          .column("Breakdown By Step", 20, [clc.yellow])
-          .fill()
-          .store();
-        var header = new clui.Line(outputBuffer)
-          .column("Step", 20, [clc.green])
-          .column("Progress", 22, [clc.green])
-          .column("Count", 5, [clc.green])
-          .fill()
-          .store();
-        line = new clui.Line(outputBuffer)
-          .column("Consent", 20, [clc.green])
-          .column(
-            clui.Gauge(
-              consentComplete,
-              surveysTotal,
-              20,
-              surveysTotal,
-              consentComplete
-            ),
-            30
-          )
-          .fill()
-          .store();
-        line = new clui.Line(outputBuffer)
-          .column("Demographic", 20, [clc.green])
-          .column(
-            clui.Gauge(
-              demographicsComplete,
-              surveysTotal,
-              20,
-              surveysTotal,
-              demographicsComplete
-            ),
-            30
-          )
-          .fill()
-          .store();
-        line = new clui.Line(outputBuffer)
-          .column("Introduction", 20, [clc.green])
-          .column(
-            clui.Gauge(
-              introductionComplete,
-              surveysTotal,
-              20,
-              surveysTotal,
-              introductionComplete
-            ),
-            30
-          )
-          .fill()
-          .store();
-        line = new clui.Line(outputBuffer)
-          .column("Instruction", 20, [clc.green])
-          .column(
-            clui.Gauge(
-              instructionsComplete,
-              surveysTotal,
-              20,
-              surveysTotal,
-              instructionsComplete
-            ),
-            30
-          )
-          .fill()
-          .store();
-        line = new clui.Line(outputBuffer)
-          .column("Survey", 20, [clc.green])
-          .column(
-            clui.Gauge(
-              surveyComplete,
-              surveysTotal,
-              20,
-              surveysTotal,
-              surveyComplete
-            ),
-            30
-          )
-          .fill()
-          .store();
-        line = new clui.Line(outputBuffer)
-          .column("Experience Survey", 20, [clc.green])
-          .column(
-            clui.Gauge(
-              experienceComplete,
-              surveysTotal,
-              20,
-              surveysTotal,
-              experienceComplete
-            ),
-            30
-          )
-          .fill()
-          .store();
-        line = new clui.Line(outputBuffer)
-          .column("Financial Survey", 20, [clc.green])
-          .column(
-            clui.Gauge(
-              financialComplete,
-              surveysTotal,
-              20,
-              surveysTotal,
-              financialComplete
-            ),
-            30
-          )
-          .fill()
-          .store();
-        line = new clui.Line(outputBuffer)
-          .column("Purpose Survey", 20, [clc.green])
-          .column(
-            clui.Gauge(
-              purposeComplete,
-              surveysTotal,
-              20,
-              surveysTotal,
-              purposeComplete
-            ),
-            30
-          )
-          .fill()
-          .store();
-        line = new clui.Line(outputBuffer)
-          .column("Debrief Survey", 20, [clc.green])
-          .column(
-            clui.Gauge(
-              debriefComplete,
-              surveysTotal,
-              20,
-              surveysTotal,
-              debriefComplete
-            ),
-            30
-          )
-          .fill()
-          .store();
-        var title = new clui.Line(outputBuffer)
-          .column("", 15, [clc.yellow])
-          .column("Feedback", 20, [clc.yellow])
-          .fill()
-          .store();
-        feedback.forEach((e) =>
-          new clui.Line(outputBuffer).column(e, 80, [clc.white]).fill().store()
-        );
-        new clui.Line(outputBuffer)
-          .column("Ctrl + C to exit the monitor.", 40, [clc.red])
-          .fill()
-          .store();
-        // write a for loop with the top 20 feedback comments
-        return outputBuffer;
-      };
-
-      const getUpdatedStates = (laterThanDate) => {
-        downloadFiles(appendSepToPath(source), laterThanDate);
-      };
-
+    .action((totalParticipants, options) => {
       try {
-        const laterThanDate = options.laterthan
-          ? DateTime.fromFormat(options.laterthan, "M/d/yyyy")
-          : null;
-        const totalParticipants = argument;
         console.log(
           `Monitoring experiment with ${totalParticipants} total participants that started  ${
             options.laterthan ? options.laterthan : "all"
           }" ...`
         );
-        var quit = false;
-        console.log(chalk.red("Press Enter to start monitoring."));
         var startMonitoring = false;
         var gaugeFactor = 1;
+        console.log(chalk.red("Press Enter to start monitoring."));
         readline.emitKeypressEvents(process.stdin);
         process.stdin.setRawMode(true);
         process.stdin.on("keypress", (str, key) => {
@@ -456,11 +270,11 @@ const run = async () => {
         });
         let nIntervId = setInterval(() => {
           if (startMonitoring) {
-            const stats = new Map();
-            // get a list of the files with .csv created on or after date passed in.
+            const stats = calcStats(options.laterthan, workDir);
             // update the count of participants to the file count.
             // open each file and calcualte the stats (# at each state, country of origin, )
             drawStatus(
+              gaugeFactor,
               totalParticipants,
               25,
               5,
@@ -483,9 +297,6 @@ const run = async () => {
         console.log(chalk.red(err));
         return;
       }
-      // while (1) {
-      //   execSync("sleep 1");
-      // }
     });
 
   program.parse();
