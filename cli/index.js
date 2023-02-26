@@ -112,8 +112,8 @@ const run = async () => {
     .action((source, options) => {
       try {
         console.log(`Downloading files from S3 bucket...`);
-        listFiles().then((allFiles) => {
-          const files = allFiles.Contents.filter((file) => {
+        listFiles().then((response) => {
+          const files = response.Contents.filter((file) => {
             if (
               options.laterthan &&
               DateTime.fromJSDate(file.LastModified) < options.laterthan
@@ -274,27 +274,35 @@ const run = async () => {
         });
         let nIntervId = setInterval(() => {
           if (startMonitoring) {
-            const stats = calcStats(options.laterthan, workDir);
-            // update the count of participants to the file count.
-            // open each file and calcualte the stats (# at each state, country of origin, )
-            drawStatus(
-              gaugeFactor,
-              totalParticipants,
-              25,
-              5,
-              25,
-              0,
-              10,
-              5,
-              8,
-              12,
-              18,
-              15,
-              12,
-              11,
-              10,
-              ["comment 1", "comment 2", "comment 3"]
-            ).output();
+            try {
+              listFiles().then((response) => {
+                const files = response.Contents.filter((file) => {
+                  if (
+                    options.laterthan &&
+                    DateTime.fromJSDate(file.LastModified) < options.laterthan
+                  ) {
+                    return false;
+                  } else {
+                    return true;
+                  }
+                });
+                const fileData = new Array();
+                files.forEach((file) => {
+                  const data = downloadFile(file, (error) => {
+                    //console.log(chalk.red(error));
+                  }).then((data) => {
+                    fileData.push(data);
+                    if (file.Key === files[files.length - 1].Key) {
+                      const stats = calcStats(fileData);
+                      drawStatus = (gaugeFactor, totalParticipants, stats);
+                      fileData.length = 0;
+                    }
+                  });
+                });
+              });
+            } catch (err) {
+              console.log(chalk.red(err));
+            }
           }
         }, 1000);
       } catch (err) {
