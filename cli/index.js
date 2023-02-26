@@ -264,7 +264,6 @@ const run = async () => {
             process.exit(); // eslint-disable-line no-process-exit
           } else if (key.name === "return") {
             startMonitoring = true;
-            clear();
           }
         });
         let stats;
@@ -300,7 +299,11 @@ const run = async () => {
                     updateStats(stats, parseCSV(data)[0]);
                     if (filesDownloaded === files.length) {
                       clear();
-                      drawStatus(totalParticipants, stats).output();
+                      drawStatus(
+                        totalParticipants,
+                        stats,
+                        startMonitoring
+                      ).output();
                     }
                   });
                 });

@@ -2,7 +2,7 @@ import clui from "clui";
 import clc from "cli-color";
 import { stateToDate } from "./ConversionUtil.js";
 
-export const drawStatus = (surveysTotal, stats) => {
+export const drawStatus = (surveysTotal, stats, monitorRunning) => {
   var outputBuffer = new clui.LineBuffer({
     x: 0,
     y: 0,
@@ -224,6 +224,13 @@ export const drawStatus = (surveysTotal, stats) => {
     ])
     .fill()
     .store();
+  new clui.Line(outputBuffer)
+    .column(`Monitor ${monitorRunning ? "Running" : "Paused"}`, 80, [
+      clc.black.bgWhite,
+    ])
+    .fill()
+    .store();
+
   return outputBuffer;
 };
 export const createStat = () => {
