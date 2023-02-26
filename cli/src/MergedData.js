@@ -1,3 +1,4 @@
+import chalk from "chalk";
 import { participantUniqueKey } from "./QuestionSliceUtil.js";
 import { convertAnswersAryToObj } from "./ObjectUtil.js";
 import { secondsBetween } from "./ConversionUtil.js";
@@ -23,6 +24,13 @@ export class MergedData {
       entryData[newProperty] = entryData[oldProperty];
       delete entryData[oldProperty];
     }
+  }
+
+  patchupValue(entryData, propertyName, newValue) {
+    console.log(
+      `...patching up property ${propertyName} current value ${entryData[propertyName]} with value${newValue}`
+    );
+    entryData[propertyName] = newValue;
   }
 
   updateTimeSpent(entryData, timeField, shownTimestamp, completedTimestamp) {
