@@ -35,39 +35,28 @@ export const ProgressType = {
 
 Object.freeze(ProgressType);
 
-const downloadFile = (file, progressCallback) => {
-  myBucket.getObject(
-    {
-      Bucket: bucketName,
-      Key: file.Key,
-    },
-    (errGet, dataGet) => {
-      if (errGet) {
-        console.log("Error", errGet);
-      } else {
-        progressCallback(ProgressType.downloaded, {
-          file: file,
-          data: dataGet.Body.toString(),
-        });
-      }
-    }
-  );
+export const downloadFile = async (file, errorCallback) => {
+  const dataGet = await myBucket
+    .getObject(
+      {
+        Bucket: bucketName,
+        Key: file.Key,
+      } /*,
+      (errGet, dataGet) => {
+        if (errGet) {
+          errorCallback(errGet);
+        } else {
+          return dataGet.Body.toString();
+        }
+      }*/
+    )
+    .promise();
+  return dataGet.Body.toString();
 };
 
-export const downloadFiles = (laterThanDate, progressCallback) => {
-  myBucket.listObjectsV2({ Bucket: `${bucketName}` }, (errList, dataList) => {
-    if (errList) {
-      progressCallback(ProgressType.error, errList);
-    } else {
-      for (const file of dataList.Contents) {
-        const objectDate = DateTime.fromJSDate(file.LastModified);
-        if (laterThanDate && objectDate < laterThanDate) {
-          progressCallback(ProgressType.skip, file);
-        } else {
-          progressCallback(ProgressType.downloading, file);
-          downloadFile(file, progressCallback);
-        }
-      }
-    }
-  });
+export const listFiles = async () => {
+  const fileList = await myBucket
+    .listObjectsV2({ Bucket: `${bucketName}` })
+    .promise();
+  return fileList;
 };

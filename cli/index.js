@@ -22,7 +22,7 @@ import {
   getDirectory,
 } from "./src/files.js";
 import { askS3BucketInfo } from "./src/inquier.js";
-import { init, downloadFiles, ProgressType } from "./src/S3.js";
+import { init, listFiles, downloadFile } from "./src/S3.js";
 import { MergedData } from "./src/MergedData.js";
 import { drawStatus, calcStats } from "./src/monitorUtil.js";
 
@@ -112,35 +112,39 @@ const run = async () => {
     .action((source, options) => {
       try {
         console.log(`Downloading files from S3 bucket...`);
-        downloadFiles(options.laterthan, (progress, param) => {
-          switch (progress) {
-            case ProgressType.downloading:
+        listFiles().then((allFiles) => {
+          const files = allFiles.Contents.filter((file) => {
+            if (
+              options.laterthan &&
+              DateTime.fromJSDate(file.LastModified) < options.laterthan
+            ) {
               console.log(
-                `...downloading file ${param.Key} created on date ${param.LastModified}`
+                `...skipping ${file.Key} since the date is before ${options.laterthan}`
               );
-              break;
-            case ProgressType.downloaded:
-              console.log(`...writing file ${param.file.Key}`);
-              fs.writeFile(
-                `${appendSepToPath(source)}${param.file.Key}`,
-                param.data,
-                function (err) {
-                  if (err) {
-                    console.log(`error writing file ${param.file.Key}`, err);
-                    throw err;
-                  }
+              return false;
+            } else {
+              return true;
+            }
+          });
+          files.forEach((file) => {
+            console.log(
+              `...downloading file ${file.Key} created on date ${file.LastModified}`
+            );
+            const data = downloadFile(file, (error) => {
+              console.log(chalk.red(error));
+            }).then((data) => {
+              const fullPath = `${appendSepToPath(source)}${file.Key}`;
+              console.log(`...writing file ${file.Key}`);
+              fs.writeFile(fullPath, data, (err) => {
+                if (err) {
+                  console.log(
+                    chalk.red(`error writing file ${param.file.Key}`, err)
+                  );
+                  throw err;
                 }
-              );
-              break;
-            case ProgressType.skip:
-              console.log(
-                `...skipping ${param.Key} since the date is before ${options.laterthan}`
-              );
-              break;
-            case ProgressType.error:
-              console.log("Error", param);
-              break;
-          }
+              });
+            });
+          });
         });
       } catch (err) {
         console.log(chalk.red(err));
