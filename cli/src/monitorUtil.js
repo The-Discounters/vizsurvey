@@ -1,8 +1,8 @@
 import clui from "clui";
 import clc from "cli-color";
-import { parseCSV } from "./parserUtil.js";
+import { stateToDate } from "./ConversionUtil.js";
 
-export const drawStatus = (gaugeFactor, surveysTotal, stats) => {
+export const drawStatus = (surveysTotal, stats) => {
   var outputBuffer = new clui.LineBuffer({
     x: 0,
     y: 0,
@@ -63,18 +63,15 @@ export const drawStatus = (gaugeFactor, surveysTotal, stats) => {
     .store();
   line = new clui.Line(outputBuffer)
     .column("Non USA", 20, [clc.green])
-    .column(clui.Gauge(countryOther, surveysTotal, 20, 1, countryOther), 30)
+    .column(
+      clui.Gauge(stats.countryOther, surveysTotal, 20, 1, stats.countryOther),
+      30
+    )
     .fill()
     .store();
   title = new clui.Line(outputBuffer)
     .column("", 15, [clc.yellow])
     .column("Breakdown By Step", 20, [clc.yellow])
-    .fill()
-    .store();
-  var header = new clui.Line(outputBuffer)
-    .column("Step", 20, [clc.green])
-    .column("Progress", 22, [clc.green])
-    .column("Count", 5, [clc.green])
     .fill()
     .store();
   line = new clui.Line(outputBuffer)
@@ -208,23 +205,47 @@ export const drawStatus = (gaugeFactor, surveysTotal, stats) => {
     .column("Feedback", 20, [clc.yellow])
     .fill()
     .store();
-  stats.feedback.forEach((e) =>
-    new clui.Line(outputBuffer).column(e, 80, [clc.white]).fill().store()
-  );
+  stats.feedback
+    .sort((a, b) => {
+      const aDate = stateToDate(a.date);
+      const bDate = stateToDate(b.date);
+      return aDate < bDate ? 1 : aDate > bDate ? -1 : 0;
+    })
+    .slice(0, 4)
+    .forEach((e) =>
+      new clui.Line(outputBuffer)
+        .column(`${e.date}: ${e.feedback}`, "console", [clc.white])
+        .fill()
+        .store()
+    );
   new clui.Line(outputBuffer)
-    .column(
-      `Ctrl + C to exit the monitor.  Guage factor is ${gaugeFactor}`,
-      40,
-      [clc.red]
-    )
+    .column(`Ctrl + C to exit the monitor.  Enter to pause and resume.`, 80, [
+      clc.yellow,
+    ])
     .fill()
     .store();
-  // write a for loop with the top 20 feedback comments
   return outputBuffer;
 };
+export const createStat = () => {
+  return {
+    surveysComplete: 0,
+    surveysInProgress: 0,
+    countryUSA: 0,
+    countryOther: 0,
+    consentComplete: 0,
+    demographicsComplete: 0,
+    introductionComplete: 0,
+    instructionsComplete: 0,
+    surveyComplete: 0,
+    experienceComplete: 0,
+    financialComplete: 0,
+    purposeComplete: 0,
+    debriefComplete: 0,
+    feedback: [],
+  };
+};
 
-export const updateStats = (stats, CSVfile) => {
-  const CSVData = parseCSV(CSVfile);
+export const updateStats = (stats, CSVData) => {
   if (CSVData.country_of_residence === "usa") {
     stats.countryUSA++;
   } else if (CSVData.country_of_residence) {
@@ -256,7 +277,6 @@ export const updateStats = (stats, CSVfile) => {
   }
   if (CSVData.purpose_survey_questions_completed_timestamp) {
     stats.purposeComplete++;
-    stats.surveysComplete++;
   } else {
     stats.surveysInProgress++;
   }
@@ -264,32 +284,10 @@ export const updateStats = (stats, CSVfile) => {
     stats.debriefComplete++;
   }
   if (CSVData.feedback) {
-    stats.feedback.push(CSVData.feedback);
+    stats.feedback.push({
+      date: CSVData.debrief_completed_timestamp,
+      feedback: CSVData.feedback,
+    });
   }
-  return stats;
-};
-
-export const calcStats = (files) => {
-  const stats = files.reduce(
-    (acc, file) => {
-      updateStats(acc, file);
-    },
-    {
-      surveysComplete: 0,
-      surveysInProgress: 0,
-      countryUSA: 0,
-      countryOther: 0,
-      consentComplete: 0,
-      demographicsComplete: 0,
-      introductionComplete: 0,
-      instructionsComplete: 0,
-      surveyComplete: 0,
-      experienceComplete: 0,
-      financialComplete: 0,
-      purposeComplete: 0,
-      debriefComplete: 0,
-      feedback: [],
-    }
-  );
   return stats;
 };

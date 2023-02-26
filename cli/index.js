@@ -24,7 +24,7 @@ import {
 import { askS3BucketInfo } from "./src/inquier.js";
 import { init, listFiles, downloadFile } from "./src/S3.js";
 import { MergedData } from "./src/MergedData.js";
-import { drawStatus, calcStats } from "./src/monitorUtil.js";
+import { drawStatus, updateStats, createStat } from "./src/monitorUtil.js";
 
 export const AMAZON_S3_BUCKET_KEY = "amazonS3Bucket";
 export const AMAZON_REGION__KEY = "amazonRegion";
@@ -255,7 +255,6 @@ const run = async () => {
           }" ...`
         );
         var startMonitoring = false;
-        var gaugeFactor = 1;
         console.log(chalk.red("Press Enter to start monitoring."));
         readline.emitKeypressEvents(process.stdin);
         process.stdin.setRawMode(true);
@@ -266,40 +265,47 @@ const run = async () => {
           } else if (key.name === "return") {
             startMonitoring = true;
             clear();
-          } else if (key.name === "+") {
-            gaugeFactor++;
-          } else if (key.name === "-") {
-            gaugeFactor--;
           }
         });
+        let stats;
+        let inRefresh = false;
         let nIntervId = setInterval(() => {
           if (startMonitoring) {
             try {
+              if (inRefresh) return;
+              inRefresh = true;
               listFiles().then((response) => {
                 const files = response.Contents.filter((file) => {
                   if (
-                    options.laterthan &&
-                    DateTime.fromJSDate(file.LastModified) < options.laterthan
+                    isCSVExt(file.Key) &&
+                    (!options.laterthan ||
+                      (options.laterthan &&
+                        DateTime.fromJSDate(file.LastModified) >=
+                          options.laterthan))
                   ) {
-                    return false;
-                  } else {
                     return true;
+                  } else {
+                    return false;
                   }
                 });
-                const fileData = new Array();
-                files.forEach((file) => {
-                  const data = downloadFile(file, (error) => {
+                stats = createStat();
+                let filesDownloaded = 0;
+                files.forEach((file, index) => {
+                  downloadFile(
+                    file /*, (error) => {
                     //console.log(chalk.red(error));
-                  }).then((data) => {
-                    fileData.push(data);
-                    if (file.Key === files[files.length - 1].Key) {
-                      const stats = calcStats(fileData);
-                      drawStatus = (gaugeFactor, totalParticipants, stats);
-                      fileData.length = 0;
+                  }*/
+                  ).then((data) => {
+                    filesDownloaded++;
+                    updateStats(stats, parseCSV(data)[0]);
+                    if (filesDownloaded === files.length) {
+                      clear();
+                      drawStatus(totalParticipants, stats).output();
                     }
                   });
                 });
               });
+              inRefresh = false;
             } catch (err) {
               console.log(chalk.red(err));
             }
