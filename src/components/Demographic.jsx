@@ -24,12 +24,16 @@ import {
   getGender,
   getSelfDescribeGender,
   getProfession,
+  getEmployment,
+  getSelfDescribeEmployment,
   setCountryOfResidence,
   setVizFamiliarity,
   setAge,
   setGender,
   setSelfDescribeGender,
   setProfession,
+  setEmployment,
+  setSelfDescribeEmployment,
   demographicShown,
   demographicCompleted,
   getStatus,
@@ -53,6 +57,8 @@ export function Consent() {
   const classes = useStyles();
   const [disableSubmit, setDisableSubmit] = React.useState(true);
   const [disableSelfDescribe, setDisableSelfDescribe] = React.useState(true);
+  const [disableSelfDescribeEmployment, setDisableSelfDescribeEmployment] =
+    React.useState(true);
 
   const countryOfResidence = useSelector(getCountryOfResidence);
   const vizFamiliarity = useSelector(getVizFamiliarity);
@@ -60,6 +66,8 @@ export function Consent() {
   const gender = useSelector(getGender);
   const selfDescribeGender = useSelector(getSelfDescribeGender);
   const profession = useSelector(getProfession);
+  const employment = useSelector(getEmployment);
+  const selfDescribeEmployment = useSelector(getSelfDescribeEmployment);
   const status = useSelector(getStatus);
 
   const navigate = useNavigate();
@@ -86,7 +94,10 @@ export function Consent() {
       (gender !== "self-describe" ||
         (selfDescribeGender && selfDescribeGender.length > 0)) &&
       profession &&
-      profession.length > 0
+      profession.length > 0 &&
+      employment.length > 1 &&
+      (employment !== "self-describe" ||
+        (selfDescribeEmployment && selfDescribeEmployment.length > 0))
     ) {
       setDisableSubmit(false);
     } else {
@@ -102,6 +113,16 @@ export function Consent() {
       setSelfDescribeGender("");
       setDisableSelfDescribe(true);
     }
+    if (employment === "self-describe") {
+      setDisableSelfDescribeEmployment(false);
+    } else if (
+      ["full-time", "part-time", "unemployed", "prefer-not-to-say"].includes(
+        employment
+      )
+    ) {
+      setSelfDescribeEmployment("");
+      setDisableSelfDescribeEmployment(true);
+    }
   }, [
     countryOfResidence,
     vizFamiliarity,
@@ -109,6 +130,8 @@ export function Consent() {
     gender,
     selfDescribeGender,
     profession,
+    employment,
+    selfDescribeEmployment,
   ]);
 
   const vizFamiliarityLevel = [
@@ -226,8 +249,6 @@ export function Consent() {
               </FormHelperText>
             </FormControl>
           </Grid>
-          <Grid item xs={3}></Grid>
-          <Grid item xs={3}></Grid>
           <Grid item xs={3}>
             <TextField
               required
@@ -246,6 +267,18 @@ export function Consent() {
                   dispatch(setAge(event.target.value));
                 }
               }}
+            />
+          </Grid>
+          <Grid item xs={3}>
+            <TextField
+              required
+              value={profession}
+              onChange={(event) => {
+                dispatch(setProfession(event.target.value));
+              }}
+              className={classes.formControl}
+              label="Current Profession"
+              id="Current-Profession"
             />
           </Grid>
           <Grid item xs={3}>
@@ -297,15 +330,46 @@ export function Consent() {
             <label style={{ marginLeft: 25 }}> </label>
           </Grid>
           <Grid item xs={3}>
+            <FormControl className={classes.formControl} required>
+              <InputLabel htmlFor="employment-select-helper">
+                Current Employment
+              </InputLabel>
+              <NativeSelect
+                value={employment}
+                onChange={(event) => {
+                  dispatch(setEmployment(event.target.value));
+                }}
+                inputProps={{
+                  name: "employment",
+                  id: "employment-select-helper",
+                }}
+              >
+                <option> </option>
+                {[
+                  { value: "full-time", text: "Full Time" },
+                  { value: "part-time", text: "Part Time" },
+                  { value: "unemployed", text: "Unemployed" },
+                  { value: "prefer-not-to-say", text: "Prefer Not To Say" },
+                  { value: "self-describe", text: "Prefer to self-describe" },
+                ].map(({ value, text }) => (
+                  <option key={value} id={value} value={value}>
+                    {text}
+                  </option>
+                ))}
+              </NativeSelect>
+            </FormControl>
+          </Grid>
+          <Grid item xs={3}>
             <TextField
               required
-              value={profession}
+              value={selfDescribeEmployment}
               onChange={(event) => {
-                dispatch(setProfession(event.target.value));
+                dispatch(setSelfDescribeEmployment(event.target.value));
               }}
               className={classes.formControl}
-              label="Current Profession"
-              id="Current-Profession"
+              label="Describe Employment"
+              id="self-describe-employment"
+              disabled={disableSelfDescribeEmployment}
             />
           </Grid>
           <Grid item xs={12}>

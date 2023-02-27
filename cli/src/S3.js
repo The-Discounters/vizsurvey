@@ -35,7 +35,7 @@ export const ProgressType = {
 
 Object.freeze(ProgressType);
 
-export const downloadFile = async (file, errorCallback) => {
+export const downloadFile = async (file /*, errorCallback*/) => {
   const dataGet = await myBucket
     .getObject(
       {

@@ -48,6 +48,8 @@ export const questionSlice = createSlice({
     gender: "",
     selfDescribeGender: "",
     profession: "",
+    employment: "",
+    selfDescribeEmployment: "",
     consentChecked: null,
     timezone: null,
     timestamps: {
@@ -130,6 +132,12 @@ export const questionSlice = createSlice({
     },
     setProfession(state, action) {
       state.profession = action.payload;
+    },
+    setEmployment(state, action) {
+      state.employment = action.payload;
+    },
+    setSelfDescribeEmployment(state, action) {
+      state.selfDescribeEmployment = action.payload;
     },
     initExperienceSurveyQuestion(state, action) {
       if (state.experienceSurvey[action.payload] == undefined) {
@@ -325,6 +333,8 @@ export const questionSlice = createSlice({
       state.gender = "";
       state.selfDescribeGender = "";
       state.profession = "";
+      state.employment = "";
+      state.selfDescribeEmployment = "";
       state.timezone = null;
       state.timestamps = {
         consentShownTimestamp: null,
@@ -415,6 +425,11 @@ export const getSelfDescribeGender = (state) =>
 
 export const getProfession = (state) => state.questions.profession;
 
+export const getEmployment = (state) => state.questions.employment;
+
+export const getSelfDescribeEmployment = (state) =>
+  state.questions.selfDescribeEmployment;
+
 export const getExperienceSurveyQuestion = (questionId) => (state) => {
   return state.questions.experienceSurvey[questionId];
 };
@@ -485,6 +500,8 @@ export const {
   setGender,
   setSelfDescribeGender,
   setProfession,
+  setEmployment,
+  setSelfDescribeEmployment,
   initExperienceSurveyQuestion,
   setExperienceSurveyQuestion,
   initFinancialLitSurveyQuestion,

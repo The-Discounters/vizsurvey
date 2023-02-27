@@ -1,24 +1,8 @@
 import clui from "clui";
 import clc from "cli-color";
+import { stateToDate } from "./ConversionUtil.js";
 
-export const drawStatus = (
-  gaugeFactor,
-  surveysTotal,
-  surveysComplete,
-  surveysInProgress,
-  countryUSA,
-  countryOther,
-  consentComplete,
-  demographicsComplete,
-  introductionComplete,
-  instructionsComplete,
-  surveyComplete,
-  experienceComplete,
-  financialComplete,
-  purposeComplete,
-  debriefComplete,
-  feedback
-) => {
+export const drawStatus = (surveysTotal, stats, monitorRunning) => {
   var outputBuffer = new clui.LineBuffer({
     x: 0,
     y: 0,
@@ -34,11 +18,11 @@ export const drawStatus = (
     .column("Surveys Completed", 20, [clc.green])
     .column(
       clui.Gauge(
-        surveysComplete,
+        stats.surveysComplete,
         surveysTotal,
         20,
         surveysTotal,
-        surveysComplete
+        stats.surveysComplete
       ),
       30
     )
@@ -48,11 +32,11 @@ export const drawStatus = (
     .column("Surveys In Progress", 20, [clc.green])
     .column(
       clui.Gauge(
-        surveysInProgress,
+        stats.surveysInProgress,
         surveysTotal,
         20,
         surveysTotal,
-        surveysInProgress
+        stats.surveysInProgress
       ),
       30
     )
@@ -66,14 +50,23 @@ export const drawStatus = (
   line = new clui.Line(outputBuffer)
     .column("USA", 20, [clc.green])
     .column(
-      clui.Gauge(countryUSA, surveysTotal, 20, surveysTotal, countryUSA),
+      clui.Gauge(
+        stats.countryUSA,
+        surveysTotal,
+        20,
+        surveysTotal,
+        stats.countryUSA
+      ),
       30
     )
     .fill()
     .store();
   line = new clui.Line(outputBuffer)
     .column("Non USA", 20, [clc.green])
-    .column(clui.Gauge(countryOther, surveysTotal, 20, 1, countryOther), 30)
+    .column(
+      clui.Gauge(stats.countryOther, surveysTotal, 20, 1, stats.countryOther),
+      30
+    )
     .fill()
     .store();
   title = new clui.Line(outputBuffer)
@@ -81,21 +74,15 @@ export const drawStatus = (
     .column("Breakdown By Step", 20, [clc.yellow])
     .fill()
     .store();
-  var header = new clui.Line(outputBuffer)
-    .column("Step", 20, [clc.green])
-    .column("Progress", 22, [clc.green])
-    .column("Count", 5, [clc.green])
-    .fill()
-    .store();
   line = new clui.Line(outputBuffer)
     .column("Consent", 20, [clc.green])
     .column(
       clui.Gauge(
-        consentComplete,
+        stats.consentComplete,
         surveysTotal,
         20,
         surveysTotal,
-        consentComplete
+        stats.consentComplete
       ),
       30
     )
@@ -105,11 +92,11 @@ export const drawStatus = (
     .column("Demographic", 20, [clc.green])
     .column(
       clui.Gauge(
-        demographicsComplete,
+        stats.demographicsComplete,
         surveysTotal,
         20,
         surveysTotal,
-        demographicsComplete
+        stats.demographicsComplete
       ),
       30
     )
@@ -119,11 +106,11 @@ export const drawStatus = (
     .column("Introduction", 20, [clc.green])
     .column(
       clui.Gauge(
-        introductionComplete,
+        stats.introductionComplete,
         surveysTotal,
         20,
         surveysTotal,
-        introductionComplete
+        stats.introductionComplete
       ),
       30
     )
@@ -133,11 +120,11 @@ export const drawStatus = (
     .column("Instruction", 20, [clc.green])
     .column(
       clui.Gauge(
-        instructionsComplete,
+        stats.instructionsComplete,
         surveysTotal,
         20,
         surveysTotal,
-        instructionsComplete
+        stats.instructionsComplete
       ),
       30
     )
@@ -147,11 +134,11 @@ export const drawStatus = (
     .column("Survey", 20, [clc.green])
     .column(
       clui.Gauge(
-        surveyComplete,
+        stats.surveyComplete,
         surveysTotal,
         20,
         surveysTotal,
-        surveyComplete
+        stats.surveyComplete
       ),
       30
     )
@@ -161,11 +148,11 @@ export const drawStatus = (
     .column("Experience Survey", 20, [clc.green])
     .column(
       clui.Gauge(
-        experienceComplete,
+        stats.experienceComplete,
         surveysTotal,
         20,
         surveysTotal,
-        experienceComplete
+        stats.experienceComplete
       ),
       30
     )
@@ -175,11 +162,11 @@ export const drawStatus = (
     .column("Financial Survey", 20, [clc.green])
     .column(
       clui.Gauge(
-        financialComplete,
+        stats.financialComplete,
         surveysTotal,
         20,
         surveysTotal,
-        financialComplete
+        stats.financialComplete
       ),
       30
     )
@@ -189,11 +176,11 @@ export const drawStatus = (
     .column("Purpose Survey", 20, [clc.green])
     .column(
       clui.Gauge(
-        purposeComplete,
+        stats.purposeComplete,
         surveysTotal,
         20,
         surveysTotal,
-        purposeComplete
+        stats.purposeComplete
       ),
       30
     )
@@ -203,11 +190,11 @@ export const drawStatus = (
     .column("Debrief Survey", 20, [clc.green])
     .column(
       clui.Gauge(
-        debriefComplete,
+        stats.debriefComplete,
         surveysTotal,
         20,
         surveysTotal,
-        debriefComplete
+        stats.debriefComplete
       ),
       30
     )
@@ -218,22 +205,96 @@ export const drawStatus = (
     .column("Feedback", 20, [clc.yellow])
     .fill()
     .store();
-  feedback.forEach((e) =>
-    new clui.Line(outputBuffer).column(e, 80, [clc.white]).fill().store()
-  );
+  stats.feedback
+    .sort((a, b) => {
+      const aDate = stateToDate(a.date);
+      const bDate = stateToDate(b.date);
+      return aDate < bDate ? 1 : aDate > bDate ? -1 : 0;
+    })
+    .slice(0, 4)
+    .forEach((e) =>
+      new clui.Line(outputBuffer)
+        .column(`${e.date}: ${e.feedback}`, "console", [clc.white])
+        .fill()
+        .store()
+    );
   new clui.Line(outputBuffer)
-    .column(
-      `Ctrl + C to exit the monitor.  Guage factor is ${gaugeFactor}`,
-      40,
-      [clc.red]
-    )
+    .column(`Ctrl + C to exit the monitor.  Enter to pause and resume.`, 80, [
+      clc.yellow,
+    ])
     .fill()
     .store();
-  // write a for loop with the top 20 feedback comments
+  new clui.Line(outputBuffer)
+    .column(`Monitor ${monitorRunning ? "Running" : "Paused"}`, 80, [
+      clc.black.bgWhite,
+    ])
+    .fill()
+    .store();
+
   return outputBuffer;
 };
+export const createStat = () => {
+  return {
+    surveysComplete: 0,
+    surveysInProgress: 0,
+    countryUSA: 0,
+    countryOther: 0,
+    consentComplete: 0,
+    demographicsComplete: 0,
+    introductionComplete: 0,
+    instructionsComplete: 0,
+    surveyComplete: 0,
+    experienceComplete: 0,
+    financialComplete: 0,
+    purposeComplete: 0,
+    debriefComplete: 0,
+    feedback: [],
+  };
+};
 
-export const calcStats = (laterThanDate, workingDir) => {
-  const stats = new Map();
-  downloadFiles(appendSepToPath(workingDir), laterThanDate);
+export const updateStats = (stats, CSVData) => {
+  if (CSVData.country_of_residence === "usa") {
+    stats.countryUSA++;
+  } else if (CSVData.country_of_residence) {
+    stats.countryOther++;
+  }
+  if (CSVData.consent_completed_timestamp) {
+    stats.consentComplete++;
+  }
+  if (CSVData.choice_timestamp_8) {
+    stats.surveysComplete++;
+  }
+  if (CSVData.demographic_completed_timestamp) {
+    stats.demographicsComplete++;
+  }
+  if (CSVData.introductionComplete) {
+    stats.introductionComplete++;
+  }
+  if (CSVData.instructionsComplete) {
+    stats.instructionsComplete++;
+  }
+  if (CSVData.choice_timestamp_8) {
+    stats.surveyComplete++;
+  }
+  if (CSVData.experience_survey_questions_completed_timestamp) {
+    stats.experienceComplete++;
+  }
+  if (CSVData.financial_lit_survey_questions_completed_timestamp) {
+    stats.financialComplete++;
+  }
+  if (CSVData.purpose_survey_questions_completed_timestamp) {
+    stats.purposeComplete++;
+  } else {
+    stats.surveysInProgress++;
+  }
+  if (CSVData.debrief_completed_timestamp) {
+    stats.debriefComplete++;
+  }
+  if (CSVData.feedback) {
+    stats.feedback.push({
+      date: CSVData.debrief_completed_timestamp,
+      feedback: CSVData.feedback,
+    });
+  }
+  return stats;
 };

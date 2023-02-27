@@ -52,6 +52,8 @@ export const flattenState = (state) => {
     gender: state.gender,
     selfDescribeGender: state.selfDescribeGender,
     profession: state.profession,
+    employment: state.employment,
+    selfDescribeEmployment: state.selfDescribeEmployment,
     timezone: state.timezone,
     userAgent: state.userAgent,
     ...state.screenAttributes,
