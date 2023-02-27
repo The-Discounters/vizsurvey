@@ -43,6 +43,8 @@
   "gender": "",
   "selfDescribeGender": "",
   "profession": "",
+  "employment": "",
+  "selfDescribeEmployment": "",
   "timezone": "",
   "userAgent": "",
   "screenAvailHeight": "",
