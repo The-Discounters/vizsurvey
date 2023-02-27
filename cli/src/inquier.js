@@ -5,7 +5,7 @@ import {
   AMAZON_REGION__KEY,
   AMAZON_ACCESS_KEY_ID,
   AMAZON_SECRET_ACCESS_KEY,
-} from "../index.js";
+} from "./index.js";
 
 export function askS3BucketInfo() {
   const questions = [

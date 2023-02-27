@@ -1,4 +1,6 @@
 #!/usr/bin/env node
+import * as dotenv from "dotenv";
+import express from "express";
 import chalk from "chalk";
 import clear from "clear";
 import figlet from "figlet";
@@ -8,9 +10,9 @@ import fs from "fs";
 import { DateTime } from "luxon";
 import readline from "readline";
 import isValid from "is-valid-path";
-import { parseCSV, parseJSON, convertToCSV } from "./src/parserUtil.js";
-import { convertKeysToUnderscore } from "./src/ObjectUtil.js";
-import { CSVDataFilenameFromKey } from "./src/QuestionSliceUtil.js";
+import { parseCSV, parseJSON, convertToCSV } from "./parserUtil.js";
+import { convertKeysToUnderscore } from "./ObjectUtil.js";
+import { CSVDataFilenameFromKey } from "./QuestionSliceUtil.js";
 import {
   writeFile,
   loadFile,
@@ -20,22 +22,39 @@ import {
   isJSONExt,
   directoryOrFileExists,
   getDirectory,
-} from "./src/files.js";
-import { askS3BucketInfo } from "./src/inquier.js";
-import { init, listFiles, downloadFile } from "./src/S3.js";
-import { MergedData } from "./src/MergedData.js";
-import { drawStatus, updateStats, createStat } from "./src/monitorUtil.js";
+} from "./files.js";
+import { askS3BucketInfo } from "./inquier.js";
+import { init, listFiles, downloadFile } from "./S3.js";
+import { MergedData } from "./MergedData.js";
+import { drawStatus, updateStats, createStat } from "./monitorUtil.js";
 
 export const AMAZON_S3_BUCKET_KEY = "amazonS3Bucket";
 export const AMAZON_REGION__KEY = "amazonRegion";
 export const AMAZON_ACCESS_KEY_ID = "amazonAccessKeyId";
 export const AMAZON_SECRET_ACCESS_KEY = "amazonSecretAccessKey";
 
+dotenv.config();
+
 clear();
 
 console.log(
   chalk.yellow(figlet.textSync("Discounters", { horizontalLayout: "full" }))
 );
+
+console.log(
+  `Environment: ${process.env.ENV}, AWS enabled: ${process.env.AWS_ENABLED}`
+);
+
+if (
+  process.env.ENV === "production" &&
+  process.env.AWS_ENABLED?.toLowerCase?.() === "false"
+) {
+  console.log(
+    chalk.red.bgRed.bold(
+      "WARNING!  Environment is production and AWS is not enabled."
+    )
+  );
+}
 
 const mergeCSVData = (CSVData, mergedData) => {
   if (CSVData) {

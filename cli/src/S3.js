@@ -1,13 +1,11 @@
 import AWS from "aws-sdk";
-import fs from "fs";
-import { DateTime } from "luxon";
 
 import {
   AMAZON_ACCESS_KEY_ID,
   AMAZON_SECRET_ACCESS_KEY,
   AMAZON_REGION__KEY,
   AMAZON_S3_BUCKET_KEY,
-} from "../index.js";
+} from "./index.js";
 
 var myBucket = null;
 var bucketName;
@@ -26,32 +24,17 @@ export const init = (conf) => {
   bucketName = conf.get(AMAZON_S3_BUCKET_KEY);
 };
 
-export const ProgressType = {
-  downloading: "downloading",
-  downloaded: "downloaded",
-  skip: "skip",
-  error: "error",
-};
-
-Object.freeze(ProgressType);
-
-export const downloadFile = async (file /*, errorCallback*/) => {
-  const dataGet = await myBucket
-    .getObject(
-      {
+export const downloadFile = async (file) => {
+  if (process.env.AWS_ENABLED?.toLowerCase?.() === "true") {
+    const dataGet = await myBucket
+      .getObject({
         Bucket: bucketName,
         Key: file.Key,
-      } /*,
-      (errGet, dataGet) => {
-        if (errGet) {
-          errorCallback(errGet);
-        } else {
-          return dataGet.Body.toString();
-        }
-      }*/
-    )
-    .promise();
-  return dataGet.Body.toString();
+      })
+      .promise();
+    return dataGet.Body.toString();
+  } else {
+  }
 };
 
 export const listFiles = async () => {

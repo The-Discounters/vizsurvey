@@ -20,6 +20,21 @@ We looked at code from https://supp-exp-en.netlify.app/ for examples of how to s
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+### Create .env file
+
+Create a .env file in the root and include these settings
+
+REACT_APP_ENV=development
+REACT_APP_VERSION=1.1
+REACT_APP_S3_BUCKET=vizsurvey-data
+REACT_APP_REGION=us-east-2
+REACT_APP_accessKeyId=
+REACT_APP_secretAccessKey=
+REACT_APP_AWS_ENABLED=
+REACT_APP_FULLSCREEN=enabled
+REACT_APP_PAYMENT_AMOUT=\$3
+REACT_APP_PROLIFIC_CODE=
+
 ### Installing Dependencies
 
 ## Available Scripts
