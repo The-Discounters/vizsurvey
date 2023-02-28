@@ -22,18 +22,21 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 ### Create .env file
 
-Create a .env file in the root and include these settings
+Create a .env.development and .env.production file in the root and include these settings
 
-REACT_APP_ENV=development
-REACT_APP_VERSION=1.1
-REACT_APP_S3_BUCKET=vizsurvey-data
-REACT_APP_REGION=us-east-2
-REACT_APP_accessKeyId=
-REACT_APP_secretAccessKey=
-REACT_APP_AWS_ENABLED=
-REACT_APP_FULLSCREEN=enabled
+REACT_APP_ENV=<development or production>
+REACT_APP_VERSION=<product version>
+REACT_APP_S3_BUCKET=<bucket name>
+REACT_APP_REGION=<region>
+REACT_APP_accessKeyId=<access id>
+REACT_APP_secretAccessKey=<secret access key>
+REACT_APP_AWS_ENABLED=<true for enabled blank otherwise>
+REACT_APP_FULLSCREEN=enabled=
 REACT_APP_PAYMENT_AMOUT=\$3
 REACT_APP_PROLIFIC_CODE=
+
+From https://stackoverflow.com/questions/42458434/how-to-set-build-env-variables-when-running-create-react-app-build-script
+npm start will set REACT_APP_NODE_ENV to development, and so it will automatically use the .env.development file, and npm run build sets REACT_APP_NODE_ENV to production, and so it will automatically use .env.production. Values set in these will override the values in your .env.
 
 ### Installing Dependencies
 
@@ -48,6 +51,10 @@ Open [http://localhost:3000/dev] to view it in the browser.
 
 The page will reload if you make edits.\
 You will also see any lint errors in the console.
+
+To run using .env.production use
+
+### `npm run start:prod`
 
 ### Running file server (needed for Cypress tests)
 

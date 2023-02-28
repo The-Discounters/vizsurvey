@@ -1,3 +1,4 @@
+// TODO This really needs to be merged with FileIOAdapter.js in vizsurvey code base.
 import AWS from "aws-sdk";
 
 import {

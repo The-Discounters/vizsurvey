@@ -1,3 +1,4 @@
+import AWS from "aws-sdk";
 import { DateTime } from "luxon";
 import { InteractionType } from "./InteractionType";
 import { AmountType } from "./AmountType";
@@ -137,6 +138,27 @@ describe("FileIOAdapter tests", () => {
 22,23,24,25,26,barchart,drag,earlierAmount,27,28,2001-01-02T01:01:01.001Z,29,30,2001-01-02T02:01:01.001Z,31,32,33,34,35,36,37,38,39,40,false,laterAmount,,2001-01-02T03:01:01.001Z,2001-01-02T04:01:01.001Z,41,42·`);
   });
 
+  // This test uses the write only creds to try and read from the bucket.  I need to figure out how to check
+  // for the AccessDenied error that was retruned.
+  // describe("S3 bucket write only credentials should not be allowed to read.", () => {
+  //   AWS.config.update({
+  //     accessKeyId: process.env.REACT_APP_accessKeyId,
+  //     secretAccessKey: process.env.REACT_APP_secretAccessKey,
+  //   });
+
+  //   const myBucket = new AWS.S3({
+  //     params: { Bucket: "vizsurvey-data-test" },
+  //     region: "us-east-2",
+  //   });
+
+  //   myBucket
+  //     .listObjectsV2({ Bucket: "vizsurvey-data-test" })
+  //     .promise()
+  //     .then((response) => {
+  //       const files = response.Contents;
+  //       expect(files.length);
+  //     });
+  // });
   // This test is kind of meaningless as it is and needs some thought.
   // test("Validate writeCSV writes data correctly.", async () => {
   //   const timestamp = DateTime.fromFormat("1/1/2001", "M/d/yyyy", {
