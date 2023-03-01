@@ -26,16 +26,16 @@ export const init = (conf) => {
 };
 
 export const downloadFile = async (file) => {
-  if (process.env.AWS_ENABLED?.toLowerCase?.() === "true") {
-    const dataGet = await myBucket
-      .getObject({
-        Bucket: bucketName,
-        Key: file.Key,
-      })
-      .promise();
-    return dataGet.Body.toString();
-  } else {
-  }
+  //if (process.env.AWS_ENABLED?.toLowerCase?.() === "true") {
+  const dataGet = await myBucket
+    .getObject({
+      Bucket: bucketName,
+      Key: file.Key,
+    })
+    .promise();
+  return dataGet.Body.toString();
+  //} else {
+  //}
 };
 
 export const listFiles = async () => {

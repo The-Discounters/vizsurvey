@@ -285,8 +285,9 @@ const run = async () => {
             startMonitoring = true;
           }
         });
-        let stats;
+        let stats = createStat();
         let inRefresh = false;
+        let refreshScreen = false;
         let nIntervId = setInterval(() => {
           if (startMonitoring) {
             try {
@@ -306,26 +307,34 @@ const run = async () => {
                     return false;
                   }
                 });
-                stats = createStat();
                 let filesDownloaded = 0;
-                files.forEach((file, index) => {
-                  downloadFile(
-                    file /*, (error) => {
+                if (files.length === 0) {
+                  refreshScreen = true;
+                } else {
+                  files.forEach((file, index) => {
+                    downloadFile(
+                      file /*, (error) => {
                     //console.log(chalk.red(error));
                   }*/
-                  ).then((data) => {
-                    filesDownloaded++;
-                    updateStats(stats, parseCSV(data)[0]);
-                    if (filesDownloaded === files.length) {
-                      clear();
-                      drawStatus(
-                        totalParticipants,
-                        stats,
-                        startMonitoring
-                      ).output();
-                    }
+                    ).then((data) => {
+                      filesDownloaded++;
+                      updateStats(stats, parseCSV(data)[0]);
+                      if (filesDownloaded === files.length) {
+                        refreshScreen = true;
+                      }
+                    });
                   });
-                });
+                }
+                if (refreshScreen) {
+                  clear();
+                  drawStatus(
+                    totalParticipants,
+                    stats,
+                    startMonitoring
+                  ).output();
+                  stats = createStat();
+                  refreshScreen = false;
+                }
               });
               inRefresh = false;
             } catch (err) {

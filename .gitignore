@@ -20,6 +20,8 @@ test/public
 .env.development
 .env.test.local
 .env.production
+discounters.development.json
+discounters.production.json
 
 npm-debug.log*
 yarn-debug.log*
