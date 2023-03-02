@@ -142,7 +142,7 @@ const Introduction = () => {
         <Typography paragraph>
           <b>Try it out below: </b>
           In the example below, the {tryLeftDesc} represents the choice of
-          receiving $300 on March 7th, 2023{/*two months from now*/} and the{" "}
+          receiving $300 on May 7th, 2023{/*two months from now*/} and the{" "}
           {tryRightDesc} represents receiving $700 on October 2nd, 2023
           {/*seven months from now*/}. Select one of the options by {tryAction}{" "}
           for your choice.
