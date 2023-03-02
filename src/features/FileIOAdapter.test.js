@@ -1,8 +1,5 @@
+import AWS from "aws-sdk";
 import { DateTime } from "luxon";
-import {
-  loadAllTreatmentsConfiguration,
-  loadTreatmentConfiguration,
-} from "./FileIOAdapter";
 import { InteractionType } from "./InteractionType";
 import { AmountType } from "./AmountType";
 import { ViewType } from "./ViewType";
@@ -51,79 +48,6 @@ describe("Regular express test", () => {
 });
 
 describe("FileIOAdapter tests", () => {
-  test("Validate loadTreatment loads CSV fields correctly.", async () => {
-    var { questions, instructions } = await loadTreatmentConfiguration(1);
-    expect(questions.length).toBe(3);
-    expect(questions[0].treatmentId).toBe(1);
-    expect(questions[0].position).toBe(1);
-    expect(questions[0].viewType).toBe(ViewType.word);
-    expect(questions[0].interaction).toBe(InteractionType.none);
-    expect(questions[0].variableAmount).toBe(AmountType.none);
-    expect(questions[0].amountEarlier).toBe(500);
-    expect(questions[0].timeEarlier).toBe(2);
-    expect(questions[0].dateEarlier).toBeUndefined();
-    expect(questions[0].amountLater).toBe(1000);
-    expect(questions[0].timeLater).toBe(5);
-    expect(questions[0].dateLater).toBeUndefined();
-    expect(questions[0].maxAmount).toBeUndefined();
-    expect(questions[0].maxTime).toBe(10);
-    expect(questions[0].horizontalPixels).toBeUndefined();
-    expect(questions[0].verticalPixels).toBeUndefined();
-    expect(questions[0].leftMarginWidthIn).toBeUndefined();
-    expect(questions[0].bottomMarginHeightIn).toBeUndefined();
-    expect(questions[0].graphWidthIn).toBeUndefined();
-    expect(questions[0].graphHeightIn).toBeUndefined();
-    expect(questions[0].widthIn).toBe(4);
-    expect(questions[0].heightIn).toBe(4);
-
-    expect(questions[0].showMinorTicks).toBe(false);
-    expect(questions[0].comment).toBe(
-      "Worded with no interaction and Read 2001 example values."
-    );
-    expect(instructions.length).toBe(1);
-    expect(instructions[0].amountEarlier).toBe(300);
-    expect(instructions[0].timeEarlier).toBe(2);
-    expect(instructions[0].amountLater).toBe(700);
-    expect(instructions[0].timeLater).toBe(7);
-
-    ({ questions, instructions } = await loadTreatmentConfiguration(3));
-    expect(questions.length).toBe(5);
-    expect(questions[0].treatmentId).toBe(3);
-    expect(questions[0].position).toBe(1);
-    expect(questions[0].viewType).toBe(ViewType.barchart);
-    expect(questions[0].interaction).toBe(InteractionType.none);
-    expect(questions[0].variableAmount).toBe(AmountType.none);
-    expect(questions[0].amountEarlier).toBe(300);
-    expect(questions[0].timeEarlier).toBe(2);
-    expect(questions[0].dateEarlier).toBeUndefined();
-    expect(questions[0].amountLater).toBe(700);
-    expect(questions[0].timeLater).toBe(5);
-    expect(questions[0].dateLater).toBeUndefined();
-    expect(questions[0].maxAmount).toBe(1100);
-    expect(questions[0].maxTime).toBe(10);
-    expect(questions[0].horizontalPixels).toBe(800);
-    expect(questions[0].verticalPixels).toBe(300);
-    expect(questions[0].leftMarginWidthIn).toBeUndefined();
-    expect(questions[0].bottomMarginHeightIn).toBeUndefined();
-    expect(questions[0].graphWidthIn).toBeUndefined();
-    expect(questions[0].graphHeightIn).toBeUndefined();
-    expect(questions[0].widthIn).toBeUndefined();
-    expect(questions[0].heightIn).toBeUndefined();
-    expect(questions[0].comment).toBe(
-      "Barchart MEL question with no interaction pixels."
-    );
-    expect(instructions.length).toBe(1);
-    expect(instructions[0].amountEarlier).toBe(300);
-    expect(instructions[0].timeEarlier).toBe(2);
-    expect(instructions[0].amountLater).toBe(700);
-    expect(instructions[0].timeLater).toBe(7);
-  });
-
-  test("Validate loadAllTreatments loads all treatments correctly.", async () => {
-    var questions = await loadAllTreatmentsConfiguration();
-    expect(questions.length).toBe(66);
-  });
-
   test("Validate answer CSV fields are written correctly.", async () => {
     const answer1 = Answer({
       participantId: 1,
@@ -214,6 +138,27 @@ describe("FileIOAdapter tests", () => {
 22,23,24,25,26,barchart,drag,earlierAmount,27,28,2001-01-02T01:01:01.001Z,29,30,2001-01-02T02:01:01.001Z,31,32,33,34,35,36,37,38,39,40,false,laterAmount,,2001-01-02T03:01:01.001Z,2001-01-02T04:01:01.001Z,41,42·`);
   });
 
+  // This test uses the write only creds to try and read from the bucket.  I need to figure out how to check
+  // for the AccessDenied error that was retruned.
+  // describe("S3 bucket write only credentials should not be allowed to read.", () => {
+  //   AWS.config.update({
+  //     accessKeyId: process.env.REACT_APP_accessKeyId,
+  //     secretAccessKey: process.env.REACT_APP_secretAccessKey,
+  //   });
+
+  //   const myBucket = new AWS.S3({
+  //     params: { Bucket: "vizsurvey-data-test" },
+  //     region: "us-east-2",
+  //   });
+
+  //   myBucket
+  //     .listObjectsV2({ Bucket: "vizsurvey-data-test" })
+  //     .promise()
+  //     .then((response) => {
+  //       const files = response.Contents;
+  //       expect(files.length);
+  //     });
+  // });
   // This test is kind of meaningless as it is and needs some thought.
   // test("Validate writeCSV writes data correctly.", async () => {
   //   const timestamp = DateTime.fromFormat("1/1/2001", "M/d/yyyy", {

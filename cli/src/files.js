@@ -21,7 +21,7 @@ export function getCurrentDirectoryBase() {
   return path.basename(process.cwd());
 }
 
-export function directoryExists(filePath) {
+export function directoryOrFileExists(filePath) {
   return fs.existsSync(filePath);
 }
 
@@ -39,3 +39,7 @@ export const writeFile = (filename, stringData) => {
     console.log(`...no date to write`);
   }
 };
+
+export function getDirectory(file) {
+  return path.basename(file);
+}
