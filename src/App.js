@@ -10,6 +10,7 @@ import {
 } from "react-router-dom";
 import { Typography } from "@mui/material";
 import { Container } from "@material-ui/core";
+import chalk from "chalk";
 import "./App.css";
 import { navigateFromStatus } from "./components/Navigate.js";
 import Introduction from "./components/Introduction.jsx";
@@ -65,6 +66,7 @@ class ErrorBoundary extends React.Component {
 }
 
 const App = () => {
+  console.log(chalk.yellow(`Running for ${process.env.REACT_APP_ENV}`));
   return (
     <div>
       <ErrorBoundary>

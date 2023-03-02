@@ -1,71 +1,15 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { SystemZone } from "luxon";
-import { FileIOAdapter } from "./FileIOAdapter.js";
+import {
+  loadAllTreatmentsConfiguration,
+  loadTreatmentConfiguration,
+} from "./TreatmentUtil.js";
 import { QuestionEngine } from "./QuestionEngine.js";
 import { StatusType } from "./StatusType.js";
 import { secondsBetween } from "./ConversionUtil.js";
-import {
-  convertKeysToUnderscore,
-  convertAnswersAryToObj,
-  setAllPropertiesEmpty,
-} from "./ObjectUtil.js";
-import { convertToCSV } from "./parserUtil.js";
-import { CSVDataFilename, stateFormatFilename } from "./QuestionSliceUtil.js";
+import { getRandomIntInclusive, writeStateAsCSV } from "./QuestionSliceUtil.js";
 
 const qe = new QuestionEngine();
-const io = new FileIOAdapter();
-
-function getRandomIntInclusive(min, max) {
-  min = Math.ceil(min);
-  max = Math.floor(max);
-  return Math.floor(Math.random() * (max - min + 1) + min); //The maximum is inclusive and the minimum is inclusive
-}
-
-const writeStateAsCSV = (state) => {
-  // turn answer rows into columns with position number as suffix
-  const answersAsObj = convertAnswersAryToObj(state.answers);
-
-  const flattenedState = {
-    ...{
-      participantId: state.participantId,
-      sessionId: state.sessionId,
-      studyId: state.studyId,
-      treatmentId: state.treatmentId,
-    },
-    ...state.timestamps,
-    // consent
-    consentChecked: state.consentChecked,
-    // demographic
-    countryOfResidence: state.countryOfResidence,
-    vizFamiliarity: state.vizFamiliarity,
-    age: state.age,
-    gender: state.gender,
-    selfDescribeGender: state.selfDescribeGender,
-    profession: state.profession,
-    timezone: state.timezone,
-    userAgent: state.userAgent,
-    ...state.screenAttributes,
-    // answers
-    ...answersAsObj,
-    attentionCheck: state.attentionCheck,
-    // experience survey
-    ...state.experienceSurvey,
-    // financial literacy survey
-    ...state.financialLitSurvey,
-    // purpose survey
-    ...state.purposeSurvey,
-    // feedback
-    feedback: state.feedback,
-  };
-
-  const allKeysState = JSON.stringify(setAllPropertiesEmpty(flattenedState));
-
-  io.writeFile(stateFormatFilename(state), allKeysState);
-  // change capital letter in camel case to _ with lower case letter to make the column headers easier to read when importing to excel
-  const underscoreKeys = convertKeysToUnderscore(flattenedState);
-  const filename = CSVDataFilename(state);
-  io.writeFile(filename, convertToCSV(underscoreKeys));
-};
 
 // Define the initial state of the store for this slicer.
 export const questionSlice = createSlice({
@@ -104,6 +48,8 @@ export const questionSlice = createSlice({
     gender: "",
     selfDescribeGender: "",
     profession: "",
+    employment: "",
+    selfDescribeEmployment: "",
     consentChecked: null,
     timezone: null,
     timestamps: {
@@ -187,6 +133,12 @@ export const questionSlice = createSlice({
     setProfession(state, action) {
       state.profession = action.payload;
     },
+    setEmployment(state, action) {
+      state.employment = action.payload;
+    },
+    setSelfDescribeEmployment(state, action) {
+      state.selfDescribeEmployment = action.payload;
+    },
     initExperienceSurveyQuestion(state, action) {
       if (state.experienceSurvey[action.payload] == undefined) {
         state.experienceSurvey[action.payload] = "";
@@ -224,7 +176,9 @@ export const questionSlice = createSlice({
     },
     loadTreatment(state) {
       state.status = StatusType.Fetching;
-      const { questions, instructions } = io.loadTreatment(state.treatmentId);
+      const { questions, instructions } = loadTreatmentConfiguration(
+        state.treatmentId
+      );
       state.treatments = questions;
       state.instructionTreatment = instructions[0];
       state.status = qe.nextStatus(state, false);
@@ -232,7 +186,7 @@ export const questionSlice = createSlice({
     },
     loadAllTreatments(state) {
       state.status = StatusType.Fetching;
-      state.allTreatments = io.loadAllTreatments();
+      state.allTreatments = loadAllTreatmentsConfiguration();
       state.status = qe.nextStatus(state, false);
       return state;
     },
@@ -379,6 +333,8 @@ export const questionSlice = createSlice({
       state.gender = "";
       state.selfDescribeGender = "";
       state.profession = "";
+      state.employment = "";
+      state.selfDescribeEmployment = "";
       state.timezone = null;
       state.timestamps = {
         consentShownTimestamp: null,
@@ -424,7 +380,7 @@ export const questionSlice = createSlice({
     },
     genRandomTreatment(state) {
       // figure out the min and max treatment id
-      const allTreatments = io.loadAllTreatments();
+      const allTreatments = loadAllTreatmentsConfiguration();
       const min = allTreatments.reduce((pv, cv) => {
         return cv.treatmentId < pv ? cv.treatmentId : pv;
       }, allTreatments[0].treatmentId);
@@ -468,6 +424,11 @@ export const getSelfDescribeGender = (state) =>
   state.questions.selfDescribeGender;
 
 export const getProfession = (state) => state.questions.profession;
+
+export const getEmployment = (state) => state.questions.employment;
+
+export const getSelfDescribeEmployment = (state) =>
+  state.questions.selfDescribeEmployment;
 
 export const getExperienceSurveyQuestion = (questionId) => (state) => {
   return state.questions.experienceSurvey[questionId];
@@ -539,6 +500,8 @@ export const {
   setGender,
   setSelfDescribeGender,
   setProfession,
+  setEmployment,
+  setSelfDescribeEmployment,
   initExperienceSurveyQuestion,
   setExperienceSurveyQuestion,
   initFinancialLitSurveyQuestion,

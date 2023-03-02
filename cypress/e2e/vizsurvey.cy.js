@@ -116,8 +116,9 @@ function demographic() {
   cy.get("#country-select-helper").select("United States of America");
   cy.get("[name=familiarity-with-viz]").select("3");
   cy.get("#Age").type("26");
-  cy.get("#gender-select-helper").select("Male");
   cy.get("#Current-Profession").type("Software Developer");
+  cy.get("#gender-select-helper").select("Male");
+  cy.get("#employment-select-helper").select("Full Time");
   cy.tick(500);
   cy.get("button").contains("Next").click();
 }

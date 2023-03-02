@@ -1,13 +1,12 @@
+// TODO This really needs to be merged with FileIOAdapter.js in vizsurvey code base.
 import AWS from "aws-sdk";
-import fs from "fs";
-import { DateTime } from "luxon";
 
 import {
   AMAZON_ACCESS_KEY_ID,
   AMAZON_SECRET_ACCESS_KEY,
   AMAZON_REGION__KEY,
   AMAZON_S3_BUCKET_KEY,
-} from "../index.js";
+} from "./index.js";
 
 var myBucket = null;
 var bucketName;
@@ -26,43 +25,22 @@ export const init = (conf) => {
   bucketName = conf.get(AMAZON_S3_BUCKET_KEY);
 };
 
-export const downloadFiles = (dir, laterThanDate) => {
-  myBucket.listObjectsV2({ Bucket: `${bucketName}` }, (errList, dataList) => {
-    if (errList) {
-      console.log("Error", errList);
-    } else {
-      for (const file of dataList.Contents) {
-        console.log(
-          `...downloading file ${file.Key} of size ${file.Size} to ${dir} created on date ${file.LastModified}`
-        );
-        const objectDate = DateTime.fromJSDate(file.LastModified);
-        if (laterThanDate && objectDate < laterThanDate) {
-          console.log(
-            `...skipping ${file.Key} since the date is before ${laterThanDate}`
-          );
-        } else {
-          const fullObject = myBucket.getObject(
-            {
-              Bucket: bucketName,
-              Key: file.Key,
-            },
-            (errGet, dataGet) => {
-              if (errGet) {
-                console.log("Error", errGet);
-              } else {
-                const JSONData = dataGet.Body.toString();
-                fs.writeFile(dir + file.Key, JSONData, function (err) {
-                  if (err) {
-                    console.log(`error writing file ${file.Key}`, err);
-                    throw err;
-                  }
-                });
-                console.log(`...file ${file.Key} downloaded.`);
-              }
-            }
-          );
-        }
-      }
-    }
-  });
+export const downloadFile = async (file) => {
+  //if (process.env.AWS_ENABLED?.toLowerCase?.() === "true") {
+  const dataGet = await myBucket
+    .getObject({
+      Bucket: bucketName,
+      Key: file.Key,
+    })
+    .promise();
+  return dataGet.Body.toString();
+  //} else {
+  //}
+};
+
+export const listFiles = async () => {
+  const fileList = await myBucket
+    .listObjectsV2({ Bucket: `${bucketName}` })
+    .promise();
+  return fileList;
 };

@@ -55,5 +55,12 @@ export const POST_SURVEY_QUESTIONS = {
         disabled: false,
       },
     },
+    {
+      question: {
+        textFull: "Did you invest mental effort in the choice questions?",
+        textShort: "experience_survey_mental",
+        disabled: false,
+      },
+    },
   ],
 };

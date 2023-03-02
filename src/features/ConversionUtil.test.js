@@ -47,4 +47,8 @@ describe("ConversionUtil test.", () => {
     expect(stateToDate(undefined)).toBeNull();
     expect(stateToDate(undefined)).toBeNull();
   });
+  test("Test what does luxon DateTime.fromFormat return on invalid date.", async () => {
+    const result = DateTime.fromFormat("abc", "MM/dd/yyyy");
+    expect(result.invalidReason).toBeTruthy();
+  });
 });
