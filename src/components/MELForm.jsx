@@ -72,8 +72,10 @@ function MELForm() {
           textShort={q.textShort}
           error={error}
           amountEarlier={q.amountEarlier}
+          dateEarlier={q.dateEarlier}
           timeEarlier={q.timeEarlier}
           amountLater={q.amountLater}
+          dateLater={q.dateLater}
           timeLater={q.timeLater}
           helperText={helperText}
           onClickCallback={onClickCallback}
@@ -90,6 +92,7 @@ function MELForm() {
         <Grid item xs={12} style={{ margin: 0 }}>
           <Box display="flex" justifyContent="center">
             <Button
+              id="buttonNext"
               variant="contained"
               color="secondary"
               disableRipple

@@ -13,8 +13,71 @@ import { AmountType } from "../features/AmountType.js";
 import { formControl } from "./ScreenHelper.js";
 
 export function MELSelectionForm(props) {
-  const todayText = (sooner_time) =>
-    sooner_time === 0 ? "today" : `in ${sooner_time} months`;
+  const monthNames = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
+  const daySuffix = [
+    "SHOULD NOT BE SEEN",
+    "st", // 1st
+    "nd",
+    "rd",
+    "th", // 4th
+    "th",
+    "th",
+    "th",
+    "th",
+    "th",
+    "th", // 10th
+    "th",
+    "th",
+    "th",
+    "th",
+    "th",
+    "th",
+    "th",
+    "th",
+    "th",
+    "th",
+    "th",
+    "st", // 21st
+    "nd",
+    "rd",
+    "th", // 24th
+    "th",
+    "th",
+    "th",
+    "th",
+    "th",
+    "th", // 30th
+    "st", // 31st
+  ];
+  const todayText = function (sooner_time) {
+    const date = new Date(sooner_time);
+    //return sooner_time === 0 ? "today" : `in ${sooner_time} months`;
+    const monthNumber = date.getMonth();
+    const dayNumber = date.getDate();
+    const yearNumber = date.getFullYear();
+    return (
+      "on " +
+      monthNames[monthNumber] +
+      " " +
+      dayNumber +
+      daySuffix[dayNumber] +
+      ", " +
+      yearNumber
+    );
+  };
 
   function questionText(amountEarlier, timeEarlier, amountLater, timeLater) {
     return `Make a choice to receive ${question1stPartText(
@@ -28,7 +91,8 @@ export function MELSelectionForm(props) {
   }
 
   function question2ndPartText(amountLater, timeLater) {
-    return `${format("$,.0f")(amountLater)} in ${timeLater} months`;
+    return `${format("$,.0f")(amountLater)} ${todayText(timeLater)}`;
+    //return `${format("$,.0f")(amountLater)} in ${timeLater} months`;
   }
 
   let useStyles;
@@ -97,9 +161,9 @@ export function MELSelectionForm(props) {
           <p className={classes.qTitle}>
             {questionText(
               props.amountEarlier,
-              props.timeEarlier,
+              props.dateEarlier,
               props.amountLater,
-              props.timeLater
+              props.dateLater
             )}
           </p>
           <FormHelperText>{props.helperText}</FormHelperText>
@@ -128,14 +192,14 @@ export function MELSelectionForm(props) {
                   key: AmountType.earlierAmount,
                   label: question1stPartText(
                     props.amountEarlier,
-                    props.timeEarlier
+                    props.dateEarlier
                   ),
                 },
                 {
                   key: AmountType.laterAmount,
                   label: question2ndPartText(
                     props.amountLater,
-                    props.timeLater
+                    props.dateLater
                   ),
                 },
               ].map(({ key, label }, index) => (

@@ -161,6 +161,18 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/t
 
 I used the sceenshot tool that comes with OSX to screen capture the rario button group as I selected the buttons. I converted the .mov file to an animated gif with Drop to GIF.
 
+TODO: Yahel forgot to follow these instructions. Instead went ahead with another tool.
+https://gist.github.com/SheldonWangRJT/8d3f44a35c8d1386a396b9b49b43c385
+
+Solution
+download HomeBrew
+```
+$brew install ffmpeg
+$brew install gifsicle
+$ffmpeg -i in.mov -pix_fmt rgb8 -r 10 output.gif && gifsicle -O3 output.gif -o output.gif
+```
+`&& gifsicle` ended up not being installed, but it seems to only optimize the gif which I did not need
+
 ### links I found useful while developing
 
 https://styled-components.com/docs/basics
