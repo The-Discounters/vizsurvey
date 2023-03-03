@@ -277,12 +277,23 @@ const run = async () => {
         console.log(chalk.red("Press Enter to start monitoring."));
         readline.emitKeypressEvents(process.stdin);
         process.stdin.setRawMode(true);
+        let inProgressMax = Math.floor(totalParticipants / 10);
         process.stdin.on("keypress", (str, key) => {
           if (key.ctrl && key.name === "c") {
             console.log("monitor ending.");
             process.exit(); // eslint-disable-line no-process-exit
           } else if (key.name === "return") {
             startMonitoring = true;
+          } else if (key.name === "up") {
+            inProgressMax = Math.min(
+              inProgressMax + Math.floor(totalParticipants / 10),
+              totalParticipants
+            );
+          } else if (key.name === "down") {
+            inProgressMax = Math.max(
+              inProgressMax - Math.floor(totalParticipants / 10),
+              totalParticipants / 10
+            );
           }
         });
         let stats = createStat();
@@ -330,7 +341,8 @@ const run = async () => {
                   drawStatus(
                     totalParticipants,
                     stats,
-                    startMonitoring
+                    startMonitoring,
+                    inProgressMax
                   ).output();
                   stats = createStat();
                   refreshScreen = false;
