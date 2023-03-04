@@ -1,4 +1,4 @@
-import MergedData from "./MergedData.js";
+import { MergedData } from "./MergedData.js";
 
 describe("MergedData test ", () => {
   test("Test addEntry single object.", () => {
