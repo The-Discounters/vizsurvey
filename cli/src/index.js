@@ -42,9 +42,10 @@ console.log(
   chalk.yellow(figlet.textSync("Discounters", { horizontalLayout: "full" }))
 );
 
-console.log(
-  `Environment: ${process.env.ENV}, AWS enabled: ${process.env.AWS_ENABLED}`
-);
+// TODO get this working.
+// console.log(
+//   `Environment: ${process.env.ENV}, AWS enabled: ${process.env.AWS_ENABLED}`
+// );
 
 if (
   process.env.ENV === "production" &&
@@ -282,9 +283,13 @@ const run = async () => {
 
       try {
         console.log(
-          `Monitoring experiment with ${totalParticipants} total participants that started  ${
-            options.laterthan ? options.laterthan : "all"
-          }" for ${options.numtreatments} treatments...`
+          chalk.red(
+            `Monitoring S3 bucket ${conf.get(
+              AMAZON_S3_BUCKET_KEY
+            )} with ${totalParticipants} total participants that started  ${
+              options.laterthan ? options.laterthan : "all"
+            }" for ${options.numtreatments} treatments...`
+          )
         );
         var monitorState = MonitorStateType.monitorPaused;
         console.log(chalk.red("Press Enter to start monitoring."));
