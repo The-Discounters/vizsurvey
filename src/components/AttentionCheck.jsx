@@ -70,7 +70,6 @@ export function AttentionCheck() {
       <div>
         <Grid container style={styles.root} justifyContent="center">
           <Grid item xs={12}>
-            <Typography variant="h4">Attention Check</Typography>
             <hr
               style={{
                 color: "#ea3433",

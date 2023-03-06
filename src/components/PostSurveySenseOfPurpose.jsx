@@ -164,7 +164,7 @@ export function PostSurvey() {
                               width: "100%",
                             }}
                             control={<Radio />}
-                            label={option.replace("-", " ")}
+                            label={option.replace(/-/g, " ")}
                             onChange={(event) => {
                               dispatch(
                                 setPurposeSurveyQuestion({
