@@ -8,6 +8,7 @@ export const createStat = (numTreatments) => {
     surveysInProgress: new Array(numberTreatments).fill(0),
     countryUSA: 0,
     countryOther: 0,
+    laterChoice: new Array(numberTreatments).fill(0),
     consentInProgress: new Array(numberTreatments).fill(0),
     consentComplete: new Array(numberTreatments).fill(0),
     demographicsInProgress: new Array(numberTreatments).fill(0),
@@ -72,6 +73,30 @@ export const updateStats = (CSVData) => {
   } else if (CSVData.shown_timestamp_1) {
     stats.choicesInProgress[CSVData.treatment_id - 1]++;
   }
+  if (CSVData.choice_1 === "laterAmount") {
+    stats.laterChoice[CSVData.treatment_id - 1]++;
+  }
+  if (CSVData.choice_2 === "laterAmount") {
+    stats.laterChoice[CSVData.treatment_id - 1]++;
+  }
+  if (CSVData.choice_3 === "laterAmount") {
+    stats.laterChoice[CSVData.treatment_id - 1]++;
+  }
+  if (CSVData.choice_4 === "laterAmount") {
+    stats.laterChoice[CSVData.treatment_id - 1]++;
+  }
+  if (CSVData.choice_5 === "laterAmount") {
+    stats.laterChoice[CSVData.treatment_id - 1]++;
+  }
+  if (CSVData.choice_6 === "laterAmount") {
+    stats.laterChoice[CSVData.treatment_id - 1]++;
+  }
+  if (CSVData.choice_7 === "laterAmount") {
+    stats.laterChoice[CSVData.treatment_id - 1]++;
+  }
+  if (CSVData.choice_8 === "laterAmount") {
+    stats.laterChoice[CSVData.treatment_id - 1]++;
+  }
   if (CSVData.experience_survey_questions_completed_timestamp) {
     stats.experienceComplete[CSVData.treatment_id - 1]++;
   } else if (CSVData.experience_survey_questions_shown_timestamp) {
@@ -108,6 +133,7 @@ export const clearStats = () => {
   stats.surveysInProgress.fill(0);
   stats.countryUSA = 0;
   stats.countryOther = 0;
+  stats.laterChoice.fill(0);
   stats.consentInProgress.fill(0);
   stats.consentComplete.fill(0);
   stats.demographicsInProgress.fill(0);

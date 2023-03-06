@@ -16,11 +16,11 @@ export const drawStatus = (
     height: "console",
   });
 
-  let firstColWidth = Math.floor((outputBuffer.width() - 42) / 2);
+  let firstColWidth = Math.floor((outputBuffer.width() - 35) / 2);
   var title = new clui.Line(outputBuffer)
     .column("", firstColWidth, [clc.yellow])
     .column(
-      "Totals (count / total survey participants)",
+      "Totals (count / total participants)",
       outputBuffer.width() - firstColWidth,
       [clc.yellow]
     )
@@ -101,6 +101,31 @@ export const drawStatus = (
     )
     .fill()
     .store();
+
+  firstColWidth = Math.floor((outputBuffer.width() - 54) / 2);
+  title = new clui.Line(outputBuffer)
+    .column("", firstColWidth, [clc.yellow])
+    .column(
+      "Breakdown By Later Choice (count / total participants)",
+      outputBuffer.width() - firstColWidth,
+      [clc.yellow]
+    )
+    .fill()
+    .store();
+  line = new clui.Line(outputBuffer).column(`Later Choice`, 20, [clc.green]);
+  for (let i = 1; i <= numTreatments; i++) {
+    line.column(
+      clui.Gauge(
+        stats.laterChoice[[i - 1]],
+        surveysTotal,
+        15,
+        surveysTotal,
+        `${stats.laterChoice[i - 1]} / ${surveysTotal}`
+      ),
+      30
+    );
+  }
+  line.fill().store();
 
   firstColWidth = Math.floor((outputBuffer.width() - 45) / 2);
   title = new clui.Line(outputBuffer)
@@ -267,7 +292,7 @@ export const drawStatus = (
       const bDate = stateToDate(b.date);
       return aDate < bDate ? 1 : aDate > bDate ? -1 : 0;
     })
-    .slice(0, outputBuffer.height() - 18)
+    .slice(0, outputBuffer.height() - 20)
     .forEach((e) =>
       new clui.Line(outputBuffer)
         .column(`${e.treatmentId} ${e.date}: ${e.feedback}`, "console", [
