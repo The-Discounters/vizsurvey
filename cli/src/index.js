@@ -292,7 +292,7 @@ const run = async () => {
           )
         );
         var monitorState = MonitorStateType.monitorPaused;
-        console.log(chalk.red("Press Enter to start monitoring."));
+        console.log(chalk.yellow("Press Enter to start monitoring."));
         readline.emitKeypressEvents(process.stdin);
         process.stdin.setRawMode(true);
         let inProgressMax = Math.floor(totalParticipants / 10);
