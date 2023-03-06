@@ -6,7 +6,8 @@ export const drawStatus = (
   surveysTotal,
   stats,
   monitorRunning,
-  inProgressMax
+  inProgressMax,
+  numTreatments
 ) => {
   var outputBuffer = new clui.LineBuffer({
     x: 0,
@@ -14,53 +15,70 @@ export const drawStatus = (
     width: "console",
     height: "console",
   });
+
+  let firstColWidth = Math.floor((outputBuffer.width() - 42) / 2);
   var title = new clui.Line(outputBuffer)
-    .column("", 15, [clc.yellow])
-    .column("Totals (count / total participants)", 40, [clc.yellow])
-    .fill()
-    .store();
-  var line = new clui.Line(outputBuffer)
-    .column("Surveys Completed", 20, [clc.green])
+    .column("", firstColWidth, [clc.yellow])
     .column(
-      clui.Gauge(
-        stats.surveysComplete,
-        surveysTotal,
-        20,
-        surveysTotal,
-        `${stats.surveysComplete} / ${surveysTotal}`
-      ),
-      30
+      "Totals (count / total survey participants)",
+      outputBuffer.width() - firstColWidth,
+      [clc.yellow]
     )
     .fill()
     .store();
-  line = new clui.Line(outputBuffer)
-    .column("Surveys In Progress", 20, [clc.green])
-    .column(
+  var line;
+  line = new clui.Line(outputBuffer).column(`Surveys Completed`, 20, [
+    clc.green,
+  ]);
+  for (let i = 1; i <= numTreatments; i++) {
+    line.column(
       clui.Gauge(
-        stats.surveysInProgress,
+        stats.surveysComplete[i - 1],
         surveysTotal,
-        20,
+        15,
         surveysTotal,
-        stats.surveysInProgress
+        `${stats.surveysComplete[i - 1]} / ${surveysTotal}`
       ),
       30
-    )
-    .fill()
-    .store();
+    );
+  }
+  line.fill().store();
+
+  line = new clui.Line(outputBuffer).column(`Surveys In Progress`, 20, [
+    clc.green,
+  ]);
+  for (let i = 1; i <= numTreatments; i++) {
+    line.column(
+      clui.Gauge(
+        stats.surveysInProgress[i - 1],
+        surveysTotal,
+        15,
+        surveysTotal,
+        stats.surveysInProgress[i - 1]
+      ),
+      30
+    );
+  }
+  line.fill().store();
+
+  firstColWidth = Math.floor((outputBuffer.width() - 49) / 2);
   title = new clui.Line(outputBuffer)
-    .column("", 15, [clc.yellow])
-    .column("Breakdown By Country (count / total participants)", 40, [
-      clc.yellow,
-    ])
+    .column("", firstColWidth, [clc.yellow])
+    .column(
+      "Breakdown By Country (count / total participants)",
+      outputBuffer.width() - firstColWidth,
+      [clc.yellow]
+    )
     .fill()
     .store();
+
   line = new clui.Line(outputBuffer)
     .column("USA", 20, [clc.green])
     .column(
       clui.Gauge(
         stats.countryUSA,
         surveysTotal,
-        20,
+        15,
         surveysTotal,
         `${stats.countryUSA} / ${surveysTotal}`
       ),
@@ -68,13 +86,14 @@ export const drawStatus = (
     )
     .fill()
     .store();
+
   line = new clui.Line(outputBuffer)
     .column("Non USA", 20, [clc.green])
     .column(
       clui.Gauge(
         stats.countryOther,
         surveysTotal,
-        20,
+        15,
         1,
         `${stats.countryOther} / ${surveysTotal}`
       ),
@@ -82,265 +101,193 @@ export const drawStatus = (
     )
     .fill()
     .store();
+
+  firstColWidth = Math.floor((outputBuffer.width() - 45) / 2);
   title = new clui.Line(outputBuffer)
-    .column("", 15, [clc.yellow])
-    .column("Breakdown By Step (count / in progress scale)", 40, [clc.yellow])
-    .fill()
-    .store();
-  line = new clui.Line(outputBuffer)
-    .column("Consent", 20, [clc.green])
+    .column("", firstColWidth, [clc.yellow])
     .column(
-      clui.Gauge(
-        stats.consentShown,
-        inProgressMax,
-        20,
-        inProgressMax,
-        `${stats.consentShown} / ${inProgressMax}`
-      ),
-      30
+      "Breakdown By Step (count / bar max)",
+      outputBuffer.width() - firstColWidth,
+      [clc.yellow]
     )
     .fill()
     .store();
-  line = new clui.Line(outputBuffer)
-    .column("Demographic", 20, [clc.green])
-    .column(
+
+  line = new clui.Line(outputBuffer).column(`Consent`, 20, [clc.green]);
+  for (let i = 1; i <= numTreatments; i++) {
+    line.column(
       clui.Gauge(
-        stats.demographicsShown,
+        stats.consentInProgress[[i - 1]],
         inProgressMax,
-        20,
+        15,
         inProgressMax,
-        `${stats.demographicsShown} / ${inProgressMax}`
+        `${stats.consentInProgress[i - 1]} / ${inProgressMax}`
       ),
       30
-    )
-    .fill()
-    .store();
-  line = new clui.Line(outputBuffer)
-    .column("Introduction", 20, [clc.green])
-    .column(
+    );
+  }
+  line.fill().store();
+
+  line = new clui.Line(outputBuffer).column(`Demographic`, 20, [clc.green]);
+  for (let i = 1; i <= numTreatments; i++) {
+    line.column(
       clui.Gauge(
-        stats.introductionShown,
+        stats.demographicsInProgress[i - 1],
         inProgressMax,
-        20,
+        15,
         inProgressMax,
-        `${stats.introductionShown} / ${inProgressMax}`
+        `${stats.demographicsInProgress[i - 1]} / ${inProgressMax}`
       ),
       30
-    )
-    .fill()
-    .store();
-  line = new clui.Line(outputBuffer)
-    .column("Instruction", 20, [clc.green])
-    .column(
+    );
+  }
+  line.fill().store();
+
+  line = new clui.Line(outputBuffer).column(`Introduction`, 20, [clc.green]);
+  for (let i = 1; i <= numTreatments; i++) {
+    line.column(
       clui.Gauge(
-        stats.instructionsShown,
+        stats.introductionInProgress[i - 1],
         inProgressMax,
-        20,
+        15,
         inProgressMax,
-        `${stats.instructionsShown} / ${inProgressMax}`
+        `${stats.introductionInProgress[i - 1]} / ${inProgressMax}`
       ),
       30
-    )
-    .fill()
-    .store();
-  line = new clui.Line(outputBuffer)
-    .column("Survey", 20, [clc.green])
-    .column(
+    );
+  }
+  line.fill().store();
+
+  line = new clui.Line(outputBuffer).column(`Instruction `, 20, [clc.green]);
+  for (let i = 1; i <= numTreatments; i++) {
+    line.column(
       clui.Gauge(
-        stats.surveySho,
+        stats.instructionsInProgress[i - 1],
         inProgressMax,
-        20,
+        15,
         inProgressMax,
-        `${stats.firstSurveyQuestionShown} / ${inProgressMax}`
+        `${stats.instructionsInProgress[i - 1]} / ${inProgressMax}`
       ),
       30
-    )
-    .fill()
-    .store();
-  line = new clui.Line(outputBuffer)
-    .column("Experience Survey", 20, [clc.green])
-    .column(
+    );
+  }
+  line.fill().store();
+
+  line = new clui.Line(outputBuffer).column(`Survey`, 20, [clc.green]);
+  for (let i = 1; i <= numTreatments; i++) {
+    line.column(
       clui.Gauge(
-        stats.experienceComplete,
+        stats.choicesInProgress[i - 1],
         inProgressMax,
-        20,
+        15,
         inProgressMax,
-        `${stats.experienceShown} / ${inProgressMax}`
+        `${stats.choicesInProgress[i - 1]} / ${inProgressMax}`
       ),
       30
-    )
-    .fill()
-    .store();
-  line = new clui.Line(outputBuffer)
-    .column("Financial Survey", 20, [clc.green])
-    .column(
+    );
+  }
+  line.fill().store();
+
+  line = new clui.Line(outputBuffer).column(`Experience Survey`, 20, [
+    clc.green,
+  ]);
+
+  for (let i = 1; i <= numTreatments; i++) {
+    line.column(
       clui.Gauge(
-        stats.financialComplete,
+        stats.experienceComplete[i - 1],
         inProgressMax,
-        20,
+        15,
         inProgressMax,
-        `${stats.financialShown} / ${inProgressMax}`
+        `${stats.experienceInProgress[i - 1]} / ${inProgressMax}`
       ),
       30
-    )
-    .fill()
-    .store();
-  line = new clui.Line(outputBuffer)
-    .column("Purpose Survey", 20, [clc.green])
-    .column(
+    );
+  }
+  line.fill().store();
+
+  line = new clui.Line(outputBuffer).column(`Financial Survey`, 20, [
+    clc.green,
+  ]);
+  for (let i = 1; i <= numTreatments; i++) {
+    line.column(
       clui.Gauge(
-        stats.purposeShown,
+        stats.financialComplete[i - 1],
         inProgressMax,
-        20,
+        15,
         inProgressMax,
-        `${stats.purposeShown} / ${inProgressMax}`
+        `${stats.financialInProgress[i - 1]} / ${inProgressMax}`
       ),
       30
-    )
-    .fill()
-    .store();
-  line = new clui.Line(outputBuffer)
-    .column("Debrief Survey", 20, [clc.green])
-    .column(
+    );
+  }
+  line.fill().store();
+
+  line = new clui.Line(outputBuffer).column(`Purpose Survey`, 20, [clc.green]);
+  for (let i = 1; i <= numTreatments; i++) {
+    line.column(
       clui.Gauge(
-        stats.debriefShown,
+        stats.purposeInProgress[i - 1],
         inProgressMax,
-        20,
+        15,
         inProgressMax,
-        `${stats.debriefShown} / ${inProgressMax}`
+        `${stats.purposeInProgress[i - 1]} / ${inProgressMax}`
       ),
       30
-    )
-    .fill()
-    .store();
+    );
+  }
+  line.fill().store();
+
+  line = new clui.Line(outputBuffer).column(`Debrief Survey`, 20, [clc.green]);
+  for (let i = 1; i <= numTreatments; i++) {
+    line.column(
+      clui.Gauge(
+        stats.debriefInProgress[i - 1],
+        inProgressMax,
+        15,
+        inProgressMax,
+        `${stats.debriefInProgress[i - 1]} / ${inProgressMax}`
+      ),
+      30
+    );
+  }
+  line.fill().store();
+
+  firstColWidth = Math.floor((outputBuffer.width() - 8) / 2);
+
   var title = new clui.Line(outputBuffer)
-    .column("", 15, [clc.yellow])
-    .column("Feedback", 20, [clc.yellow])
+    .column("", firstColWidth, [clc.yellow])
+    .column("Feedback", outputBuffer.width() - firstColWidth, [clc.yellow])
     .fill()
     .store();
+
   stats.feedback
     .sort((a, b) => {
       const aDate = stateToDate(a.date);
       const bDate = stateToDate(b.date);
       return aDate < bDate ? 1 : aDate > bDate ? -1 : 0;
     })
-    .slice(0, 4)
+    .slice(0, outputBuffer.height() - 18)
     .forEach((e) =>
       new clui.Line(outputBuffer)
-        .column(`${e.date}: ${e.feedback}`, "console", [clc.white])
+        .column(`${e.treatmentId} ${e.date}: ${e.feedback}`, "console", [
+          clc.white,
+        ])
         .fill()
         .store()
     );
+
+  const threeColumnWidth = Math.floor(outputBuffer.width() / 3);
   new clui.Line(outputBuffer)
-    .column(`Ctrl + C to exit the monitor.  Enter to pause and resume.`, 80, [
-      clc.yellow,
-    ])
-    .fill()
-    .store();
-  new clui.Line(outputBuffer)
-    .column(`Monitor ${monitorRunning ? "Running" : "Paused"}`, 80, [
-      clc.black.bgWhite,
-    ])
+    .column(
+      `Monitor ${monitorRunning ? "Running" : "Paused"}`,
+      threeColumnWidth,
+      [clc.black.bgWhite]
+    )
+    .column(`Enter to pause and resume.`, threeColumnWidth, [clc.yellow])
+    .column(`Ctrl + C to exit the monitor.`, threeColumnWidth, [clc.yellow])
     .fill()
     .store();
 
   return outputBuffer;
-};
-export const createStat = () => {
-  return {
-    surveysComplete: 0,
-    surveysInProgress: 0,
-    countryUSA: 0,
-    countryOther: 0,
-    consentShown: 0,
-    consentComplete: 0,
-    demographicsShown: 0,
-    demographicsComplete: 0,
-    introductionShown: 0,
-    introductionComplete: 0,
-    instructionsShown: 0,
-    instructionsComplete: 0,
-    firstSurveyQuestionShown: 0,
-    surveyComplete: 0,
-    experienceShown: 0,
-    attentionCheckCompleted: 0,
-    attentionCheckStarted: 0,
-    experienceComplete: 0,
-    financialShown: 0,
-    financialComplete: 0,
-    purposeShown: 0,
-    purposeComplete: 0,
-    debriefShown: 0,
-    debriefComplete: 0,
-    feedback: [],
-  };
-};
-
-export const updateStats = (stats, CSVData) => {
-  if (CSVData.country_of_residence === "usa") {
-    stats.countryUSA++;
-  } else if (CSVData.country_of_residence) {
-    stats.countryOther++;
-  }
-  if (CSVData.consent_completed_timestamp) {
-    stats.consentComplete++;
-  } else if (CSVData.consent_shown_timestamp) {
-    stats.consentShown++;
-    if (!CSVData.purpose_survey_questions_completed_timestamp) {
-      surveysInProgress++;
-    }
-  }
-  if (CSVData.demographic_completed_timestamp) {
-    stats.demographicsComplete++;
-  } else if (CSVData.demographic_shown_timestamp) {
-    stats.demographicsShown++;
-  }
-  if (CSVData.introduction_completed_timestamp) {
-    stats.introductionComplete++;
-  } else if (CSVData.introduction_shown_timestamp) {
-    stats.introductionShown++;
-  }
-  if (CSVData.instructions_completed_timestamp) {
-    stats.instructionsComplete++;
-  } else if (CSVData.instructions_shown_timestamp) {
-    stats.instructionsShown++;
-  }
-  if (CSVData.attention_check_completed_timestamp) {
-    stats.attentionCheckCompleted++;
-  } else if (CSVData.attention_check_shown_timestamp) {
-    stats.attentionCheckStarted++;
-  }
-  if (CSVData.choice_timestamp_8) {
-    stats.surveyComplete++;
-  } else if (CSVData.shown_timestamp_1) {
-    stats.firstSurveyQuestionShown++;
-  }
-  if (CSVData.experience_survey_questions_completed_timestamp) {
-    stats.experienceComplete++;
-  } else if (CSVData.experience_survey_questions_shown_timestamp) {
-    stats.experienceShown++;
-  }
-  if (CSVData.financial_lit_survey_questions_completed_timestamp) {
-    stats.financialComplete++;
-  } else if (CSVData.financial_lit_survey_questions_shown_timestamp) {
-    stats.financialShown++;
-  }
-  if (CSVData.purpose_survey_questions_completed_timestamp) {
-    stats.purposeComplete++;
-    stats.surveysComplete++;
-  } else if (CSVData.purpose_survey_questions_shown_timestamp) {
-    stats.purposeShown++;
-  }
-  if (CSVData.debrief_completed_timestamp) {
-    stats.debriefComplete++;
-  } else if (CSVData.debrief_shown_timestamp) {
-    stats.debriefShown++;
-  }
-  if (CSVData.feedback) {
-    stats.feedback.push({
-      date: CSVData.debrief_completed_timestamp,
-      feedback: CSVData.feedback,
-    });
-  }
-  return stats;
 };

@@ -26,7 +26,8 @@ import {
 import { askS3BucketInfo } from "./inquier.js";
 import { init, listFiles, downloadFile } from "./S3.js";
 import { MergedData } from "./MergedData.js";
-import { drawStatus, updateStats, createStat } from "./monitorUtil.js";
+import { updateStats, createStat, clearStats } from "./stats.js";
+import { drawStatus } from "./monitorUtil.js";
 
 export const AMAZON_S3_BUCKET_KEY = "amazonS3Bucket";
 export const AMAZON_REGION__KEY = "amazonRegion";
@@ -201,7 +202,7 @@ const run = async () => {
             surveyData.addEntry(CSVData);
           }
         }
-        surveyData.callbackOnEntries((value, key) => {
+        surveyData.callForEntry((value, key) => {
           const filename = CSVDataFilenameFromKey(key);
           console.log(`...writing csv file ${filename}`);
           const underscoreObj = convertKeysToUnderscore(value);
@@ -266,24 +267,45 @@ const run = async () => {
       "the date to filter out files that are are equal to or later than",
       validateDate
     )
+    .option(
+      "-t, --numtreatments <number>",
+      "the number of treatments for breaking down inprogress results by treatment",
+      validateInt
+    )
     .action((totalParticipants, options) => {
+      const MonitorStateType = {
+        monitorPaused: "monitorPaused",
+        fetchingData: "fetchingData",
+        refreshingScreen: "refreshingScreen",
+      };
+      Object.freeze(MonitorStateType);
+
       try {
         console.log(
           `Monitoring experiment with ${totalParticipants} total participants that started  ${
             options.laterthan ? options.laterthan : "all"
-          }" ...`
+          }" for ${options.numtreatments} treatments...`
         );
-        var startMonitoring = false;
+        var monitorState = MonitorStateType.monitorPaused;
         console.log(chalk.red("Press Enter to start monitoring."));
         readline.emitKeypressEvents(process.stdin);
         process.stdin.setRawMode(true);
         let inProgressMax = Math.floor(totalParticipants / 10);
+        let pendingPauseMonitor = false;
         process.stdin.on("keypress", (str, key) => {
           if (key.ctrl && key.name === "c") {
             console.log("monitor ending.");
             process.exit(); // eslint-disable-line no-process-exit
           } else if (key.name === "return") {
-            startMonitoring = true;
+            switch (monitorState) {
+              case MonitorStateType.monitorPaused:
+                monitorState = MonitorStateType.fetchingData;
+                break;
+              case MonitorStateType.fetchingData:
+              case MonitorStateType.refreshingScreen:
+                pendingPauseMonitor = true;
+                break;
+            }
           } else if (key.name === "up") {
             inProgressMax = Math.min(
               inProgressMax + Math.floor(totalParticipants / 10),
@@ -296,62 +318,84 @@ const run = async () => {
             );
           }
         });
-        let stats = createStat();
-        let inRefresh = false;
-        let refreshScreen = false;
+        let stats = createStat(options.numtreatments);
+        let inFetchingData = false;
+        let inRefreshingScreen = false;
         let nIntervId = setInterval(() => {
-          if (startMonitoring) {
-            try {
-              if (inRefresh) return;
-              inRefresh = true;
-              listFiles().then((response) => {
-                const files = response.Contents.filter((file) => {
-                  if (
-                    isCSVExt(file.Key) &&
-                    (!options.laterthan ||
-                      (options.laterthan &&
-                        DateTime.fromJSDate(file.LastModified) >=
-                          options.laterthan))
-                  ) {
-                    return true;
+          try {
+            switch (monitorState) {
+              case MonitorStateType.monitorPaused:
+                break;
+              case MonitorStateType.fetchingData:
+                if (inFetchingData) break;
+                inFetchingData = true;
+                listFiles().then((response) => {
+                  const files = response.Contents.filter((file) => {
+                    if (
+                      isCSVExt(file.Key) &&
+                      (!options.laterthan ||
+                        (options.laterthan &&
+                          DateTime.fromJSDate(file.LastModified) >=
+                            options.laterthan))
+                    ) {
+                      return true;
+                    } else {
+                      return false;
+                    }
+                  });
+                  let filesDownloaded = 0;
+                  if (files.length === 0) {
+                    monitorState = MonitorStateType.refreshingScreen;
+                    inFetchingData = false;
                   } else {
-                    return false;
-                  }
-                });
-                let filesDownloaded = 0;
-                if (files.length === 0) {
-                  refreshScreen = true;
-                } else {
-                  files.forEach((file, index) => {
-                    downloadFile(
-                      file /*, (error) => {
+                    files.forEach((file, index) => {
+                      downloadFile(
+                        file /*, (error) => {
                     //console.log(chalk.red(error));
                   }*/
-                    ).then((data) => {
-                      filesDownloaded++;
-                      updateStats(stats, parseCSV(data)[0]);
-                      if (filesDownloaded === files.length) {
-                        refreshScreen = true;
-                      }
+                      ).then((data) => {
+                        filesDownloaded++;
+                        const CSVData = parseCSV(data)[0];
+                        if (CSVData.treatment_id > options.numtreatments) {
+                          console.log(
+                            `file ${file.Key} has treatment_id of ${CSVData.teratment_id} which is greater than ${options.numtreatments} exiting.`
+                          );
+                          process.exit(); // eslint-disable-line no-process-exit
+                        }
+                        stats = updateStats(CSVData);
+                        if (filesDownloaded === files.length) {
+                          monitorState = MonitorStateType.refreshingScreen;
+                          inFetchingData = false;
+                        }
+                      });
                     });
-                  });
+                  }
+                });
+                break;
+              case MonitorStateType.refreshingScreen:
+                if (inRefreshingScreen) break;
+                inRefreshingScreen = true;
+                clear();
+                if (pendingPauseMonitor) {
+                  monitorState = MonitorStateType.monitorPaused;
+                  pendingPauseMonitor = false;
                 }
-                if (refreshScreen) {
-                  clear();
-                  drawStatus(
-                    totalParticipants,
-                    stats,
-                    startMonitoring,
-                    inProgressMax
-                  ).output();
-                  stats = createStat();
-                  refreshScreen = false;
+                drawStatus(
+                  totalParticipants,
+                  stats,
+                  monitorState != MonitorStateType.monitorPaused,
+                  inProgressMax,
+                  options.numtreatments
+                ).output();
+                inRefreshingScreen = false;
+                stats = clearStats();
+                if (monitorState != MonitorStateType.monitorPaused) {
+                  monitorState = MonitorStateType.fetchingData;
                 }
-              });
-              inRefresh = false;
-            } catch (err) {
-              console.log(chalk.red(err));
+                break;
             }
+          } catch (err) {
+            console.log(chalk.red(err));
           }
         }, 1000);
       } catch (err) {
