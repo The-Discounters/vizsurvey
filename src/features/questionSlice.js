@@ -192,6 +192,7 @@ export const questionSlice = createSlice({
     },
     consentShown(state, action) {
       state.timestamps.consentShownTimestamp = action.payload;
+      writeStateAsCSV(state);
     },
     consentCompleted(state, action) {
       state.consentChecked = true;
