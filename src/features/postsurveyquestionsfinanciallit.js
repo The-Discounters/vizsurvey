@@ -47,7 +47,7 @@ export const POST_SURVEY_QUESTIONS = {
           textShort: "more-than",
         },
         {
-          textFull: "buy exactly the same today than a year ago",
+          textFull: "buy exactly the same today as a year ago",
           textShort: "exactly-same",
         },
         {
