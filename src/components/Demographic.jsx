@@ -311,7 +311,7 @@ export function Consent() {
                   { value: "transgender", text: "Transgender" },
                   { value: "non-binary", text: "Non-binary" },
                   { value: "intersex", text: "Intersex" },
-                  { value: "refuse-answer", text: "Prefer Not To Say" },
+                  { value: "refuse-answer", text: "Prefer Not To Answer" },
                   { value: "self-describe", text: "Prefer to Self-Describe" },
                 ].map(({ value, text }) => (
                   <option key={value} id={value} value={value}>
@@ -356,7 +356,7 @@ export function Consent() {
                   { value: "part-time", text: "Part Time" },
                   { value: "unemployed", text: "Unemployed" },
                   { value: "retried", text: "Retired" },
-                  { value: "prefer-not-to-say", text: "Prefer Not To Say" },
+                  { value: "prefer-not-to-say", text: "Prefer Not To Answer" },
                   { value: "self-describe", text: "Prefer to Self-Describe" },
                 ].map(({ value, text }) => (
                   <option key={value} id={value} value={value}>
