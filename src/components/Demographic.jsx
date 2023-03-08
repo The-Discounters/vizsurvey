@@ -106,9 +106,14 @@ export function Consent() {
     if (gender === "self-describe") {
       setDisableSelfDescribe(false);
     } else if (
-      ["female", "male", "transgender", "non-binary", "intersex"].includes(
-        gender
-      )
+      [
+        "female",
+        "male",
+        "transgender",
+        "non-binary",
+        "intersex",
+        "refuse-answer",
+      ].includes(gender)
     ) {
       setSelfDescribeGender("");
       setDisableSelfDescribe(true);
@@ -306,7 +311,8 @@ export function Consent() {
                   { value: "transgender", text: "Transgender" },
                   { value: "non-binary", text: "Non-binary" },
                   { value: "intersex", text: "Intersex" },
-                  { value: "self-describe", text: "Prefer to self-describe" },
+                  { value: "refuse-answer", text: "Prefer Not To Say" },
+                  { value: "self-describe", text: "Prefer to Self-Describe" },
                 ].map(({ value, text }) => (
                   <option key={value} id={value} value={value}>
                     {text}
@@ -349,8 +355,9 @@ export function Consent() {
                   { value: "full-time", text: "Full Time" },
                   { value: "part-time", text: "Part Time" },
                   { value: "unemployed", text: "Unemployed" },
+                  { value: "retried", text: "Retired" },
                   { value: "prefer-not-to-say", text: "Prefer Not To Say" },
-                  { value: "self-describe", text: "Prefer to self-describe" },
+                  { value: "self-describe", text: "Prefer to Self-Describe" },
                 ].map(({ value, text }) => (
                   <option key={value} id={value} value={value}>
                     {text}
