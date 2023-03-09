@@ -53,7 +53,8 @@ function MELForm() {
   useEffect(() => {
     const path = navigateFromStatus(status);
     if (
-      status === StatusType.Demographic &&
+      status !== StatusType.Survey &&
+      status !== StatusType.Attention &&
       process.env.REACT_APP_FULLSCREEN === "enabled"
     ) {
       document.exitFullscreen();

@@ -84,7 +84,7 @@ export function Consent() {
           <b>Procedures to be followed: </b>You will be presented with a series
           of choices about receiving money at different points in time.&nbsp;
           <b>You will choose</b> either the earlier or later amount. Then you
-          will be presented with additoinal questions about your experience
+          will be presented with additional questions about your experience
           taking the survey as well as questions about yourself. The study
           should take about 10 minutes to complete.&nbsp;
           <b>
