@@ -19,6 +19,7 @@ import { dateToState } from "../features/ConversionUtil.js";
 import { drawBarChart } from "./BarChartComponent.js";
 import { styles, theme, calcScreenValues } from "./ScreenHelper.js";
 import { navigateFromStatus } from "./Navigate.js";
+import { StatusType } from "../features/StatusType.js";
 
 function BarChart() {
   const dispatch = useDispatch();
@@ -49,6 +50,12 @@ function BarChart() {
 
   useEffect(() => {
     const path = navigateFromStatus(status);
+    if (
+      status === StatusType.Demographic &&
+      process.env.REACT_APP_FULLSCREEN === "enabled"
+    ) {
+      document.exitFullscreen();
+    }
     navigate(path);
   }, [status]);
 
