@@ -153,37 +153,9 @@ export const drawStatus = (
   }
   line.fill().store();
 
-  line = new clui.Line(outputBuffer).column(`Demographic`, 20, [clc.green]);
-  for (let i = 1; i <= numTreatments; i++) {
-    line.column(
-      clui.Gauge(
-        stats.demographicsInProgress[i - 1],
-        inProgressMax,
-        15,
-        inProgressMax,
-        `${stats.demographicsInProgress[i - 1]} / ${inProgressMax}`
-      ),
-      30
-    );
-  }
-  line.fill().store();
-
-  line = new clui.Line(outputBuffer).column(`Introduction`, 20, [clc.green]);
-  for (let i = 1; i <= numTreatments; i++) {
-    line.column(
-      clui.Gauge(
-        stats.introductionInProgress[i - 1],
-        inProgressMax,
-        15,
-        inProgressMax,
-        `${stats.introductionInProgress[i - 1]} / ${inProgressMax}`
-      ),
-      30
-    );
-  }
-  line.fill().store();
-
-  line = new clui.Line(outputBuffer).column(`Instruction `, 20, [clc.green]);
+  line = new clui.Line(outputBuffer).column(`General Instructions `, 20, [
+    clc.green,
+  ]);
   for (let i = 1; i <= numTreatments; i++) {
     line.column(
       clui.Gauge(
@@ -192,6 +164,23 @@ export const drawStatus = (
         15,
         inProgressMax,
         `${stats.instructionsInProgress[i - 1]} / ${inProgressMax}`
+      ),
+      30
+    );
+  }
+  line.fill().store();
+
+  line = new clui.Line(outputBuffer).column(`MCL Instructions`, 20, [
+    clc.green,
+  ]);
+  for (let i = 1; i <= numTreatments; i++) {
+    line.column(
+      clui.Gauge(
+        stats.introductionInProgress[i - 1],
+        inProgressMax,
+        15,
+        inProgressMax,
+        `${stats.introductionInProgress[i - 1]} / ${inProgressMax}`
       ),
       30
     );
@@ -257,6 +246,21 @@ export const drawStatus = (
         15,
         inProgressMax,
         `${stats.purposeInProgress[i - 1]} / ${inProgressMax}`
+      ),
+      30
+    );
+  }
+  line.fill().store();
+
+  line = new clui.Line(outputBuffer).column(`Demographic`, 20, [clc.green]);
+  for (let i = 1; i <= numTreatments; i++) {
+    line.column(
+      clui.Gauge(
+        stats.demographicsInProgress[i - 1],
+        inProgressMax,
+        15,
+        inProgressMax,
+        `${stats.demographicsInProgress[i - 1]} / ${inProgressMax}`
       ),
       30
     );
