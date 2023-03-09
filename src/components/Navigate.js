@@ -10,8 +10,8 @@ export const navigateFromStatus = (status) => {
       return "/consent";
     case StatusType.Demographic:
       return "/demographic";
-    case StatusType.Introduction:
-      return "/introduction";
+    case StatusType.MCLInstructions:
+      return "/mclinstructions";
     case StatusType.Instructions:
       return "/instruction";
     case StatusType.Survey:

@@ -107,7 +107,7 @@ export class QuestionEngine {
       state.highup,
       state.lowdown
     );
-    state.status = StatusType.Instructions;
+    state.status = this.nextStatus(state, false);
   }
 
   setLatestAnswerShown(state, date) {
@@ -302,10 +302,10 @@ export class QuestionEngine {
       case StatusType.Consent:
         return StatusType.Demographic;
       case StatusType.Demographic:
-        return StatusType.Introduction;
-      case StatusType.Introduction:
         return StatusType.Instructions;
       case StatusType.Instructions:
+        return StatusType.MCLInstructions;
+      case StatusType.MCLInstructions:
         return StatusType.Survey;
       case StatusType.Survey:
         if (this.isLastTreatment(state) && onLastTreatment) {
@@ -342,13 +342,13 @@ export class QuestionEngine {
         return StatusType.Fetching;
       case StatusType.Demographic:
         return StatusType.Consent;
-      case StatusType.Introduction:
-        return StatusType.Demographic;
       case StatusType.Instructions:
-        return StatusType.Introduction;
+        return StatusType.Demographic;
+      case StatusType.MCLInstructions:
+        return StatusType.Instructions;
       case StatusType.Survey:
         if (this.isFirstTreatment(state) && onFirstTreatment) {
-          return StatusType.Instructions;
+          return StatusType.MCLInstructions;
         } else {
           if (this.isMiddleTreatment(state)) {
             return StatusType.Attention;

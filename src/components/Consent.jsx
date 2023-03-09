@@ -83,16 +83,21 @@ export function Consent() {
         <Typography paragraph>
           <b>Procedures to be followed: </b>You will be presented with a series
           of choices about receiving money at different points in time.&nbsp;
-          <b>You will choose</b> either the earlier or later amount. The study
+          <b>You will choose</b> either the earlier or later amount. Then you
+          will be presented with additoinal questions about your experience
+          taking the survey as well as questions about yourself. The study
           should take about 10 minutes to complete.&nbsp;
           <b>
             This survey is not designed to render on a mobile device and should
-            be taken on a laptop or desktop computer.
+            be taken on a laptop or desktop computer with a reliable Internet
+            connection.
           </b>
         </Typography>
         <Typography paragraph>
           <b>Risks to study participants:</b> To the best of the researchers
-          knowledge risks to you are minimal or nonexistent.
+          knowledge risks to you are minimal or nonexistent. All data collected,
+          including demographic information, will be analyzed in aggregate form
+          only and will not be used to identify you.
         </Typography>
         <Typography paragraph>
           <b>Benefits to research participants and others: </b> You will learn
@@ -245,13 +250,6 @@ export function Consent() {
               </b>
             </Typography>
             <ConsentTextEn />
-            <Typography paragraph>
-              <b>By selecting the checkbox and clicking &ldquo;Next&ldquo;</b>,
-              you acknowledge that you have been informed about and consent to
-              be a participant in the study described above. Make sure that your
-              questions are answered to your satisfaction before signing. You
-              are entitled to retain a copy of this consent agreement.
-            </Typography>
           </Grid>
           <Grid item xs={12} style={{ margin: 0 }}>
             <FormGroup>
@@ -272,6 +270,17 @@ export function Consent() {
                   </Typography>
                 }
               />
+              <Typography paragraph>
+                <b>By selecting the checkbox and clicking &ldquo;Next&ldquo;</b>
+                , you acknowledge that you have been informed about and consent
+                to be a participant in the study described above. Make sure that
+                your questions are answered to your satisfaction before signing.
+                You are entitled to retain a copy of this consent agreement.
+              </Typography>
+              <Typography paragraph>
+                I also confirm that I am on a reliable internet connection for
+                completing the survey.
+              </Typography>
             </FormGroup>
             <hr
               style={{
