@@ -25,6 +25,7 @@ import { styles, theme, calcScreenValues } from "./ScreenHelper.js";
 import { AmountType } from "../features/AmountType.js";
 import { MELSelectionForm } from "./MELSelectionForm.jsx";
 import { drawBarChart } from "./BarChartComponent.js";
+import { StatusType } from "../features/StatusType.js";
 
 const MCLInstructions = () => {
   const dispatch = useDispatch();
@@ -77,6 +78,12 @@ const MCLInstructions = () => {
   useEffect(() => {
     setChoice("");
     const path = navigateFromStatus(status);
+    if (
+      status === StatusType.Survey &&
+      process.env.REACT_APP_FULLSCREEN === "enabled"
+    ) {
+      document.body.requestFullscreen();
+    }
     navigate(path);
   }, [status]);
 
