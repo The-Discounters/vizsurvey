@@ -3,7 +3,7 @@ export const StatusType = {
   Fetching: "fetching",
   Consent: "consent",
   Demographic: "demographic",
-  Introduction: "introduction",
+  MCLInstructions: "MCLintroduction",
   Instructions: "instruction",
   Survey: "survey",
   Attention: "attention",

@@ -15,11 +15,10 @@ import { ViewType } from "../features/ViewType.js";
 import { navigateFromStatus } from "./Navigate.js";
 import {
   introductionShown,
-  introductionCompleted,
+  MCLInstructionsCompleted,
   fetchCurrentTreatment,
   getInstructionTreatment,
   getStatus,
-  startSurvey,
 } from "../features/questionSlice.js";
 import { dateToState } from "../features/ConversionUtil.js";
 import { styles, theme, calcScreenValues } from "./ScreenHelper.js";
@@ -27,7 +26,7 @@ import { AmountType } from "../features/AmountType.js";
 import { MELSelectionForm } from "./MELSelectionForm.jsx";
 import { drawBarChart } from "./BarChartComponent.js";
 
-const Introduction = () => {
+const MCLInstructions = () => {
   const dispatch = useDispatch();
   const treatment = useSelector(fetchCurrentTreatment);
   const instructionTreatment = useSelector(getInstructionTreatment);
@@ -263,7 +262,7 @@ const Introduction = () => {
     <ThemeProvider theme={theme}>
       <Grid container style={styles.root} justifyContent="center">
         <Grid item xs={12}>
-          <Typography variant="h4">Instructions</Typography>
+          <Typography variant="h4">Money Choice Instructions</Typography>
           <hr
             style={{
               color: "#ea3433",
@@ -324,14 +323,15 @@ const Introduction = () => {
                   setError(true);
                   setHelperText("You must choose one of the options below.");
                 } else {
-                  dispatch(introductionCompleted(dateToState(DateTime.now())));
-                  dispatch(startSurvey());
+                  dispatch(
+                    MCLInstructionsCompleted(dateToState(DateTime.now()))
+                  );
                 }
               }}
               disabled={disableSubmit}
             >
               {" "}
-              Next{" "}
+              Start{" "}
             </Button>
           </Box>
         </Grid>
@@ -340,4 +340,4 @@ const Introduction = () => {
   );
 };
 
-export default Introduction;
+export default MCLInstructions;

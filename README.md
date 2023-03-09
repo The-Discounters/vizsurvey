@@ -94,9 +94,12 @@ You don’t have to ever use `eject`. The curated feature set is suitable for sm
 
 Below are the production urls for each treatment.
 
-https://release.d2ptxb5fbsc082.amplifyapp.com/start?participant_id=1&treatment_id=1&session_id=1
-https://release.d2ptxb5fbsc082.amplifyapp.com/start?participant_id=1&treatment_id=2&session_id=1
-https://release.d2ptxb5fbsc082.amplifyapp.com/start?participant_id=1&treatment_id=3&session_id=1
+https://release.d2ptxb5fbsc082.amplifyapp.com/start?participant_id=1&treatment_id=1&session_id=4&study_id=5
+https://release.d2ptxb5fbsc082.amplifyapp.com/start?participant_id=1&treatment_id=2&session_id=4&study_id=5
+https://release.d2ptxb5fbsc082.amplifyapp.com/start?participant_id=1&treatment_id=3&session_id=4&study_id=5
+
+For a random treatment don't pass the treatment_id in the url.
+https://release.d2ptxb5fbsc082.amplifyapp.com/start?participant_id=1&session_id=2&study_id=3
 
 ### Local URL
 

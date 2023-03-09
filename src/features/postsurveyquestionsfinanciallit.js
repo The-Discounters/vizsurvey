@@ -29,10 +29,6 @@ export const POST_SURVEY_QUESTIONS = {
           textFull: "do not know",
           textShort: "dont-know",
         },
-        {
-          textFull: "prefer not to answer",
-          textShort: "refuse-to-answer",
-        },
       ],
     },
     {
@@ -58,10 +54,6 @@ export const POST_SURVEY_QUESTIONS = {
           textFull: "do not know",
           textShort: "dont-know",
         },
-        {
-          textFull: "prefer not to anwer",
-          textShort: "refuse-to-answer",
-        },
       ],
     },
     {
@@ -82,10 +74,6 @@ export const POST_SURVEY_QUESTIONS = {
         {
           textFull: "do not know",
           textShort: "dont-know",
-        },
-        {
-          textFull: "prefer not to answer",
-          textShort: "refuse-to-answer",
         },
       ],
     },
