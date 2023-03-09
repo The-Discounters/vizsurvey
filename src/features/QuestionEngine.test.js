@@ -27,9 +27,6 @@ describe("QuestionEngine tests", () => {
       StatusType.Consent
     );
     expect((state.status = qe.nextStatus(state, false))).toBe(
-      StatusType.Demographic
-    );
-    expect((state.status = qe.nextStatus(state, false))).toBe(
       StatusType.Instructions
     );
     expect((state.status = qe.nextStatus(state, false))).toBe(
@@ -47,6 +44,9 @@ describe("QuestionEngine tests", () => {
       StatusType.Survey
     );
     expect((state.status = qe.nextStatus(state, true))).toBe(
+      StatusType.Demographic
+    );
+    expect((state.status = qe.nextStatus(state, false))).toBe(
       StatusType.ExperienceQuestionaire
     );
     expect((state.status = qe.nextStatus(state, true))).toBe(
@@ -84,6 +84,9 @@ describe("QuestionEngine tests", () => {
       StatusType.ExperienceQuestionaire
     );
     expect((state.status = qe.previousStatus(state, false))).toBe(
+      StatusType.Demographic
+    );
+    expect((state.status = qe.previousStatus(state, false))).toBe(
       StatusType.Survey
     );
     state.currentQuestionIdx = 1;
@@ -101,12 +104,14 @@ describe("QuestionEngine tests", () => {
       StatusType.Instructions
     );
     expect((state.status = qe.previousStatus(state, false))).toBe(
-      StatusType.Demographic
-    );
-    expect((state.status = qe.previousStatus(state, false))).toBe(
       StatusType.Consent
     );
-    expect((state.status = qe.previousStatus(state))).toBe(StatusType.Fetching);
+    expect((state.status = qe.previousStatus(state, false))).toBe(
+      StatusType.Fetching
+    );
+    expect((state.status = qe.previousStatus(state))).toBe(
+      StatusType.Unitialized
+    );
     expect(qe.previousStatus(state)).toBe(StatusType.Unitialized);
   });
 
@@ -140,7 +145,7 @@ describe("QuestionEngine tests", () => {
     };
     const qe = new QuestionEngine();
     qe.startSurvey(state);
-    expect(state.status).toBe(StatusType.Instructions);
+    expect(state.status).toBeUndefined();
     expect(state.currentQuestionIdx).toBe(0);
     expect(state.answers).not.toBeUndefined();
     expect(state.answers.length).toBe(1);
@@ -227,7 +232,7 @@ describe("QuestionEngine tests", () => {
     expect(state.status).toBe(StatusType.Survey);
     qe.incNextQuestion(state);
     expect(state.currentQuestionIdx).toBe(2);
-    expect(state.status).toBe(StatusType.ExperienceQuestionaire);
+    expect(state.status).toBe(StatusType.Demographic);
   });
 
   test("decPreviousQuestion for single treatment should update state to post survey.", () => {

@@ -300,8 +300,6 @@ export class QuestionEngine {
       case StatusType.Fetching:
         return StatusType.Consent;
       case StatusType.Consent:
-        return StatusType.Demographic;
-      case StatusType.Demographic:
         return StatusType.Instructions;
       case StatusType.Instructions:
         return StatusType.MCLInstructions;
@@ -309,7 +307,7 @@ export class QuestionEngine {
         return StatusType.Survey;
       case StatusType.Survey:
         if (this.isLastTreatment(state) && onLastTreatment) {
-          return StatusType.ExperienceQuestionaire;
+          return StatusType.Demographic;
         } else {
           if (this.isMiddleTreatment(state)) {
             return StatusType.Attention;
@@ -319,6 +317,8 @@ export class QuestionEngine {
         }
       case StatusType.Attention:
         return StatusType.Survey;
+      case StatusType.Demographic:
+        return StatusType.ExperienceQuestionaire;
       case StatusType.ExperienceQuestionaire:
         return StatusType.FinancialQuestionaire;
       case StatusType.FinancialQuestionaire:
@@ -340,10 +340,8 @@ export class QuestionEngine {
         return StatusType.Unitialized;
       case StatusType.Consent:
         return StatusType.Fetching;
-      case StatusType.Demographic:
-        return StatusType.Consent;
       case StatusType.Instructions:
-        return StatusType.Demographic;
+        return StatusType.Consent;
       case StatusType.MCLInstructions:
         return StatusType.Instructions;
       case StatusType.Survey:
@@ -358,8 +356,10 @@ export class QuestionEngine {
         }
       case StatusType.Attention:
         return StatusType.Survey;
-      case StatusType.ExperienceQuestionaire:
+      case StatusType.Demographic:
         return StatusType.Survey;
+      case StatusType.ExperienceQuestionaire:
+        return StatusType.Demographic;
       case StatusType.FinancialQuestionaire:
         return StatusType.ExperienceQuestionaire;
       case StatusType.PurposeQuestionaire:
