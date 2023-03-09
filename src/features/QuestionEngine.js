@@ -307,7 +307,7 @@ export class QuestionEngine {
         return StatusType.Survey;
       case StatusType.Survey:
         if (this.isLastTreatment(state) && onLastTreatment) {
-          return StatusType.Demographic;
+          return StatusType.ExperienceQuestionaire;
         } else {
           if (this.isMiddleTreatment(state)) {
             return StatusType.Attention;
@@ -317,13 +317,13 @@ export class QuestionEngine {
         }
       case StatusType.Attention:
         return StatusType.Survey;
-      case StatusType.Demographic:
-        return StatusType.ExperienceQuestionaire;
       case StatusType.ExperienceQuestionaire:
         return StatusType.FinancialQuestionaire;
       case StatusType.FinancialQuestionaire:
         return StatusType.PurposeQuestionaire;
       case StatusType.PurposeQuestionaire:
+        return StatusType.Demographic;
+      case StatusType.Demographic:
         return StatusType.Debrief;
       case StatusType.Debrief:
         return StatusType.Finished;
@@ -356,14 +356,14 @@ export class QuestionEngine {
         }
       case StatusType.Attention:
         return StatusType.Survey;
-      case StatusType.Demographic:
-        return StatusType.Survey;
       case StatusType.ExperienceQuestionaire:
-        return StatusType.Demographic;
+        return StatusType.Survey;
       case StatusType.FinancialQuestionaire:
         return StatusType.ExperienceQuestionaire;
       case StatusType.PurposeQuestionaire:
         return StatusType.FinancialQuestionaire;
+      case StatusType.Demographic:
+        return StatusType.PurposeQuestionaire;
       case StatusType.Debrief:
         return StatusType.Debrief; // once they have submitted answers, don't let them go back.
       case StatusType.Error:

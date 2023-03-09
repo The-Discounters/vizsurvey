@@ -44,16 +44,16 @@ describe("QuestionEngine tests", () => {
       StatusType.Survey
     );
     expect((state.status = qe.nextStatus(state, true))).toBe(
-      StatusType.Demographic
-    );
-    expect((state.status = qe.nextStatus(state, false))).toBe(
       StatusType.ExperienceQuestionaire
     );
-    expect((state.status = qe.nextStatus(state, true))).toBe(
+    expect((state.status = qe.nextStatus(state, false))).toBe(
       StatusType.FinancialQuestionaire
     );
     expect((state.status = qe.nextStatus(state, true))).toBe(
       StatusType.PurposeQuestionaire
+    );
+    expect((state.status = qe.nextStatus(state, true))).toBe(
+      StatusType.Demographic
     );
     expect((state.status = qe.nextStatus(state, false))).toBe(
       StatusType.Debrief
@@ -76,15 +76,15 @@ describe("QuestionEngine tests", () => {
     expect((state.status = qe.previousStatus(state, false))).toBe(
       StatusType.Debrief
     );
-    state.status = StatusType.PurposeQuestionaire;
+    state.status = StatusType.Demographic;
+    expect((state.status = qe.previousStatus(state, false))).toBe(
+      StatusType.PurposeQuestionaire
+    );
     expect((state.status = qe.previousStatus(state, false))).toBe(
       StatusType.FinancialQuestionaire
     );
     expect((state.status = qe.previousStatus(state, false))).toBe(
       StatusType.ExperienceQuestionaire
-    );
-    expect((state.status = qe.previousStatus(state, false))).toBe(
-      StatusType.Demographic
     );
     expect((state.status = qe.previousStatus(state, false))).toBe(
       StatusType.Survey
@@ -232,7 +232,7 @@ describe("QuestionEngine tests", () => {
     expect(state.status).toBe(StatusType.Survey);
     qe.incNextQuestion(state);
     expect(state.currentQuestionIdx).toBe(2);
-    expect(state.status).toBe(StatusType.Demographic);
+    expect(state.status).toBe(StatusType.ExperienceQuestionaire);
   });
 
   test("decPreviousQuestion for single treatment should update state to post survey.", () => {
