@@ -20,7 +20,7 @@ import { InteractionType } from "../features/InteractionType.js";
 import { drawCalendar } from "./CalendarHelper.js";
 import { stateToDate, dateToState } from "../features/ConversionUtil.js";
 
-export function Calendar() {
+export function drawCalendarYear() {
   const dispatch = useDispatch();
   const q = useSelector(getCurrentQuestion);
   const status = useSelector(getStatus);
@@ -233,4 +233,4 @@ export function Calendar() {
   return result;
 }
 
-export default Calendar;
+export default drawCalendarYear;

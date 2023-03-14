@@ -9,9 +9,9 @@ let studyId = 1;
 let fetching = true;
 let fetching1 = true;
 function postsurvey(expects) {
-  cy.get("label").contains("1,360").click();
-  cy.get("label").contains("1,350").click();
-  cy.get("label").contains("20%").click();
+  cy.get("label").contains("more than $102").click();
+  cy.get("#less-than").click();
+  cy.get("label").contains("false").click();
   cy.get("button").contains("Next").click();
   cy.tick(1000);
   cy.get("#posdiff-strongly-disagree").click();
@@ -116,23 +116,23 @@ function demographic() {
   cy.get("#country-select-helper").select("United States of America");
   cy.get("[name=familiarity-with-viz]").select("3");
   cy.get("#Age").type("26");
-  cy.get("#gender-select-helper").select("Male");
   cy.get("#Current-Profession").type("Software Developer");
+  cy.get("#gender-select-helper").select("Male");
+  cy.get("#employment-select-helper").select("Full Time");
   cy.tick(500);
   cy.get("button").contains("Next").click();
 }
 
-function answerMELForm(word = true, tickAmount = 1000) {
-  let waitAmount = 10;
+let steelblueRGB = "rgb(70, 130, 180)";
+let lightblueRGB = "rgb(173, 216, 230)";
+let waitAmount = 10;
+
+function checkMELFormBeforeClickOrHover(word, id = "#earlierAmount") {
   if (word) {
-    cy.get("#earlierAmount").should(
-      "have.css",
-      "backgroundColor",
-      "rgb(70, 130, 180)"
-    );
+    cy.get(id).should("have.css", "backgroundColor", steelblueRGB);
   } else {
     // bar
-    cy.get("#earlierAmount").should("have.attr", "fill", "steelblue");
+    cy.get(id).should("have.attr", "fill", "steelblue");
   }
   cy.wait(waitAmount);
   /*
@@ -143,24 +143,40 @@ function answerMELForm(word = true, tickAmount = 1000) {
   );
 */
   cy.wait(waitAmount);
+}
+
+function checkMELFormDuringClickOrHover(word, id = "#earlierAmount") {
   if (word) {
-    cy.get("#earlierAmount")
-      .realHover()
+    cy.get(id)
+      //.realHover()
       //.should("have.css", "backgroundColor", "rgb(173, 216, 230)")
       .click();
   } else {
     // bar
-    cy.get("#earlierAmount").click();
-    cy.get("#earlierAmount").should("have.attr", "fill", "lightblue");
+    cy.get(id).click();
+    cy.get(id).should("have.attr", "fill", "lightblue");
   }
   cy.wait(waitAmount);
   if (word) {
-    cy.get("#earlierAmount")
-      .realHover()
-      .should("have.css", "backgroundColor", "rgb(173, 216, 230)");
+    cy.get(id)
+      //.realHover()
+      .should("have.css", "backgroundColor", lightblueRGB);
   }
   //cy.get("#earlierAmount").should("have.css", "borderColor", "rgb(0, 0, 0)");
   cy.wait(waitAmount);
+}
+
+function clickMELFormNextButton(
+  word,
+  id = "#earlierAmount",
+  tickAmount = 1000
+) {
+  cy.get("button").contains("Next").realHover();
+  if (word) {
+    cy.get(id)
+      //.realHover()
+      .should("have.css", "backgroundColor", lightblueRGB);
+  }
   cy.get("button")
     .contains("Next")
     .realHover()
@@ -169,10 +185,26 @@ function answerMELForm(word = true, tickAmount = 1000) {
   cy.tick(tickAmount);
 }
 
-function introduction(treatmentId) {
+function answerMELForm(word = true, tickAmount = 1000) {
   cy.get("#buttonNext").should("be.disabled");
   cy.tick(500);
-  answerMELForm(treatmentId === 1 || treatmentId === 20);
+
+  cy.get("#earlierAmount").should("have.css", "backgroundColor", steelblueRGB);
+  checkMELFormBeforeClickOrHover(word);
+  checkMELFormDuringClickOrHover(word);
+
+  cy.get("#laterAmount").should("have.css", "backgroundColor", steelblueRGB);
+  checkMELFormBeforeClickOrHover(word, "#laterAmount");
+  checkMELFormDuringClickOrHover(word, "#laterAmount");
+  cy.get("#earlierAmount").should("have.css", "backgroundColor", steelblueRGB);
+  cy.get("#earlierAmount").realHover();
+  cy.get("#earlierAmount").should("have.css", "backgroundColor", steelblueRGB);
+
+  clickMELFormNextButton(word, "#laterAmount", tickAmount);
+}
+
+function introduction(treatmentId) {
+  answerMELForm(treatmentId === 1 || treatmentId === 20 || treatmentId === 5);
 }
 
 function instruction() {
@@ -196,6 +228,7 @@ function visitTreatment(treatmentId, width = 1200, height = 700) {
   instruction();
 }
 describe("vizsurvey", () => {
+  /*
   it("word dev", () => {
     visitTreatment(1);
     answerMELForm();
@@ -228,38 +261,6 @@ describe("vizsurvey", () => {
       "2,1,barchart,none,none,300,2,,700,5",
       "2,2,barchart,none,none,500,2,,800,7",
       "2,3,barchart,none,none,300,2,,1000,7",
-    ]);
-  });
-  it("word prod", () => {
-    visitTreatment(20);
-
-    answerMELForm();
-    answerMELForm(true, 500);
-
-    answerMELForm(true, 100);
-    answerMELForm(true, 100);
-
-    answerMELForm(true, 100);
-    answerMELForm(true, 100);
-
-    answerMELForm(true, 100);
-    answerMELForm(true, 100);
-
-    // TODO    cy.get("#attention-check-strongly-disagree").click();
-    // TODO   cy.get("button").contains("Next").click();
-
-    cy.tick(1000);
-
-    // TODO: fix timing
-    postsurvey([
-      "20,1,word,none,none,350,4,,430,13",
-      "20,2,word,none,none,490,2,,700,18",
-      "20,3,word,none,none,720,6,,1390,24",
-      "20,4,word,none,none,840,3,,1120,16",
-      "20,5,word,none,none,32,4,,39,13",
-      "20,6,word,none,none,45,2,,70,18",
-      "20,7,word,none,none,66,6,,110,24",
-      "20,8,word,none,none,77,3,,118,16",
     ]);
   });
   [
@@ -306,17 +307,223 @@ describe("vizsurvey", () => {
       }
     );
   });
-  /*
   it("calendar bar", () => {
     visitTreatment(4);
     cy.tick(4000);
     calendar("day", "4", "Bar");
+  });*/
+  it("word date", () => {
+    let width = 1280;
+    let height = 720;
+    let treatmentId = 7;
+    let participantId = 1;
+    cy.clock();
+    cy.viewport(width, height);
+    cy.visit(
+      baseURL +
+        `?treatment_id=${treatmentId}&session_id=1&participant_id=${participantId}`
+    );
+    cy.tick(500);
+    cy.get("#checkConsent").click();
+    cy.tick(500);
+    cy.get("button").contains("Next").click();
+    demographic();
+
+    function simpleEarlierAmount() {
+      cy.get("#buttonNext").should("be.disabled");
+      cy.tick(500);
+
+      cy.get("#earlierAmount").click({ force: true });
+      // cy.get("#laterAmount").should("have.css", "backgroundColor", steelblueRGB);
+      cy.get("button").contains("Next").should("not.be.disabled").click();
+    }
+    simpleEarlierAmount();
+    instruction();
+    for (let i = 0; i < 4; i++) {
+      simpleEarlierAmount();
+    }
+    cy.get("#attention-check-strongly-disagree").click();
+    cy.get("button").contains("Next").click();
+    for (let i = 0; i < 4; i++) {
+      simpleEarlierAmount();
+    }
   });
-  it("calendar word", () => {
-    visitTreatment(5);
-    cy.tick(4000);
-    calendar("day", "5", "Word");
+  it("calendar word single year", () => {
+    //visitTreatment(5, 1280, 720);
+    //cy.tick(4000);
+    //answerMELForm();
+    let width = 1280;
+    let height = 720;
+    let treatmentId = 5;
+    let participantId = 1;
+    cy.clock();
+    cy.viewport(width, height);
+    cy.visit(
+      baseURL +
+        `?treatment_id=${treatmentId}&session_id=1&participant_id=${participantId}`
+    );
+    cy.tick(500);
+    cy.get("#checkConsent").click();
+    cy.tick(500);
+    cy.get("button").contains("Next").click();
+    demographic();
+
+    function simpleEarlierAmount() {
+      cy.get("#buttonNext").should("be.disabled");
+      cy.tick(500);
+
+      cy.get("#earlierAmount").click({ force: true });
+      // cy.get("#laterAmount").should("have.css", "backgroundColor", steelblueRGB);
+      cy.get("button").contains("Next").should("not.be.disabled").click();
+    }
+    simpleEarlierAmount();
+    instruction();
+    for (let i = 0; i < 4; i++) {
+      simpleEarlierAmount();
+    }
+    cy.get("#attention-check-strongly-disagree").click();
+    cy.get("button").contains("Next").click();
+    //for (let i = 0; i < 4; i++) {
+    for (let i = 0; i < 3; i++) {
+      simpleEarlierAmount();
+    }
+    cy.wait(100000);
   });
+  it("calendar word single month", () => {
+    //visitTreatment(5, 1280, 720);
+    //cy.tick(4000);
+    //answerMELForm();
+    let width = 1280;
+    let height = 720;
+    let treatmentId = 4;
+    let participantId = 1;
+    cy.clock();
+    cy.viewport(width, height);
+    cy.visit(
+      baseURL +
+        `?treatment_id=${treatmentId}&session_id=1&participant_id=${participantId}`
+    );
+    cy.tick(500);
+    cy.get("#checkConsent").click();
+    cy.tick(500);
+    cy.get("button").contains("Next").click();
+    demographic();
+
+    function simpleEarlierAmount() {
+      cy.get("#buttonNext").should("be.disabled");
+      cy.tick(500);
+
+      cy.get("#earlierAmount").click();
+      // cy.get("#laterAmount").should("have.css", "backgroundColor", steelblueRGB);
+      cy.get("button").contains("Next").should("not.be.disabled").click();
+    }
+    simpleEarlierAmount();
+    instruction();
+    for (let i = 0; i < 4; i++) {
+      simpleEarlierAmount();
+    }
+    cy.get("#attention-check-strongly-disagree").click();
+    cy.get("button").contains("Next").click();
+    for (let i = 0; i < 4; i++) {
+      simpleEarlierAmount();
+    }
+    /*
+    postsurvey([
+      "5,1,calendarWord,none,none,500,2,,1000,5",
+      "5,2,calendarWord,none,none,50,2,,300,7",
+      "5,3,calendarWord,none,none,250,2,,1000,3",
+    ]);
+*/
+  });
+  it("calendar word dual year", () => {
+    //visitTreatment(5, 1280, 720);
+    //cy.tick(4000);
+    //answerMELForm();
+    let width = 1280;
+    let height = 720;
+    let treatmentId = 6;
+    let participantId = 1;
+    cy.clock();
+    cy.viewport(width, height);
+    cy.visit(
+      baseURL +
+        `?treatment_id=${treatmentId}&session_id=1&participant_id=${participantId}`
+    );
+    cy.tick(500);
+    cy.get("#checkConsent").click();
+    cy.tick(500);
+    cy.get("button").contains("Next").click();
+    demographic();
+
+    function simpleEarlierAmount() {
+      cy.get("#buttonNext").should("be.disabled");
+      cy.tick(500);
+
+      cy.get("#earlierAmount").click();
+      // cy.get("#laterAmount").should("have.css", "backgroundColor", steelblueRGB);
+      cy.get("button").contains("Next").should("not.be.disabled").click();
+    }
+    simpleEarlierAmount();
+    instruction();
+    for (let i = 0; i < 4; i++) {
+      simpleEarlierAmount();
+    }
+    cy.get("#attention-check-strongly-disagree").click();
+    cy.get("button").contains("Next").click();
+    for (let i = 0; i < 4; i++) {
+      simpleEarlierAmount();
+    }
+  });
+  it("word prod", () => {
+    visitTreatment(1);
+
+    answerMELForm();
+    answerMELForm(true, 500);
+
+    answerMELForm(true, 100);
+    answerMELForm(true, 100);
+
+    answerMELForm(true, 100);
+    answerMELForm(true, 100);
+
+    answerMELForm(true, 100);
+    answerMELForm(true, 100);
+
+    // TODO    cy.get("#attention-check-strongly-disagree").click();
+    // TODO   cy.get("button").contains("Next").click();
+
+    cy.tick(1000);
+
+    // TODO: fix timing
+    postsurvey([
+      "20,1,word,none,none,350,4,,430,13",
+      "20,2,word,none,none,490,2,,700,18",
+      "20,3,word,none,none,720,6,,1390,24",
+      "20,4,word,none,none,840,3,,1120,16",
+      "20,5,word,none,none,32,4,,39,13",
+      "20,6,word,none,none,45,2,,70,18",
+      "20,7,word,none,none,66,6,,110,24",
+      "20,8,word,none,none,77,3,,118,16",
+    ]);
+  });
+  it("bar prod", () => {
+    visitTreatment(2);
+    answerMELForm(false); // bar
+
+    cy.get("#attention-check-strongly-disagree").click();
+    cy.get("button").contains("Next").click();
+
+    answerMELForm(false); // bar
+    answerMELForm(false); // bar
+    cy.tick(1000);
+
+    postsurvey([
+      "2,1,barchart,none,none,300,2,,700,5",
+      "2,2,barchart,none,none,500,2,,800,7",
+      "2,3,barchart,none,none,300,2,,1000,7",
+    ]);
+  });
+  /*
   it("survey invalid", () => {
     cy.viewport(1200, 700);
     cy.visit(baseURL + "?treatment_id=100&session_id=1&participant_id=1");
@@ -344,9 +551,8 @@ describe("vizsurvey", () => {
 });
 
 function calendar(id, treatmentNum, treatmentName) {
-  cy.get("#later-" + id).click();
-  cy.get("#later-" + id).click();
-  cy.get("#later-" + id).click();
+  cy.get("#earlierAmount").click();
+  cy.get("#laterAmount").click();
   postsurvey([
     treatmentNum +
       ",1,calendar" +

@@ -117,6 +117,7 @@ function BarChart() {
         <Grid item xs={12} style={{ margin: 0 }}>
           <Box display="flex" justifyContent="center">
             <Button
+              id="buttonNext"
               variant="contained"
               color="secondary"
               disableRipple
