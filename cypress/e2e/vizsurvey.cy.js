@@ -8,6 +8,18 @@ let studyId = 1;
 
 let fetching = true;
 let fetching1 = true;
+function postsurveyaboutsurvey() {
+  cy.get("#experience_survey_enjoy-moderately").click();
+  cy.get("#experience_survey_clear-moderately").click();
+  cy.get("#experience_survey_understand-moderately").click();
+  cy.get("#experience_survey_present-moderately").click();
+  cy.get("#experience_survey_imagine-moderately").click();
+  cy.get("#experience_survey_easy-moderately").click();
+  cy.get("#experience_survey_format-moderately").click();
+  cy.get("#experience_survey_mental-moderately").click();
+  cy.get("button").contains("Next").click();
+}
+
 function postsurvey(expects) {
   cy.get("label").contains("more than $102").click();
   cy.get("#less-than").click();
@@ -209,7 +221,7 @@ function introduction(treatmentId) {
 
 function instruction() {
   cy.tick(1000);
-  cy.get("button").contains("Start").click();
+  cy.get("button").contains("Next").click();
 }
 
 function visitTreatment(treatmentId, width = 1200, height = 700) {
@@ -327,18 +339,17 @@ describe("vizsurvey", () => {
     cy.get("#checkConsent").click();
     cy.tick(500);
     cy.get("button").contains("Next").click();
-    demographic();
+    instruction();
 
-    function simpleEarlierAmount() {
+    function simpleEarlierAmount(buttonText = "Next") {
       cy.get("#buttonNext").should("be.disabled");
       cy.tick(500);
 
       cy.get("#earlierAmount").click({ force: true });
       // cy.get("#laterAmount").should("have.css", "backgroundColor", steelblueRGB);
-      cy.get("button").contains("Next").should("not.be.disabled").click();
+      cy.get("button").contains(buttonText).should("not.be.disabled").click();
     }
-    simpleEarlierAmount();
-    instruction();
+    simpleEarlierAmount("Start");
     for (let i = 0; i < 4; i++) {
       simpleEarlierAmount();
     }
@@ -347,6 +358,8 @@ describe("vizsurvey", () => {
     for (let i = 0; i < 4; i++) {
       simpleEarlierAmount();
     }
+    postsurveyaboutsurvey();
+    demographic();
   });
   it("calendar word single year", () => {
     //visitTreatment(5, 1280, 720);
