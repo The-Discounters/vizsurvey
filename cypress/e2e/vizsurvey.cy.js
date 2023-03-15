@@ -225,20 +225,43 @@ function instruction() {
   cy.get("button").contains("Next").click();
 }
 
-function visitTreatment(treatmentId, width = 1200, height = 700) {
-  cy.clock();
-  cy.viewport(width, height);
-  cy.visit(
-    baseURL +
-      `?treatment_id=${treatmentId}&session_id=1&participant_id=${participantId}`
-  );
-  cy.tick(500);
-  cy.get("#checkConsent").click();
-  cy.tick(500);
-  cy.get("button").contains("Next").click();
-  demographic();
-  introduction(treatmentId);
-  instruction();
+function visitTreatment(treatmentId, width = 1280, height = 720) {
+    let participantId = 1;
+    cy.clock();
+    cy.viewport(width, height);
+    cy.visit(
+      baseURL +
+        `?treatment_id=${treatmentId}&session_id=1&participant_id=${participantId}`
+    );
+    cy.tick(500);
+    cy.get("#checkConsent").click();
+    cy.tick(500);
+    cy.get("button").contains("Next").click();
+    instruction();
+
+    function simpleEarlierAmount(buttonText = "Next") {
+      cy.get("#buttonNext").should("be.disabled");
+      cy.tick(500);
+
+      cy.get("#earlierAmount").click({ force: true });
+      // cy.get("#laterAmount").should("have.css", "backgroundColor", steelblueRGB);
+      cy.get("button").contains(buttonText).should("not.be.disabled").click();
+    }
+    simpleEarlierAmount("Start");
+    for (let i = 0; i < 4; i++) {
+      simpleEarlierAmount();
+    }
+    cy.get("#attention-check-strongly-disagree").click();
+    cy.get("button").contains("Next").click();
+    for (let i = 0; i < 4; i++) {
+      simpleEarlierAmount();
+    }
+    postsurveyaboutsurvey();
+    postsurveyfinancial();
+    postsurveysenseofpurpose();
+    demographic();
+    cy.get("#Feedback").type("survey was good");
+    cy.get("button").contains("Submit Feedback & Exit").click();
 }
 describe("vizsurvey", () => {
   /*
@@ -326,86 +349,10 @@ describe("vizsurvey", () => {
     calendar("day", "4", "Bar");
   });*/
   it("word date", () => {
-    let width = 1280;
-    let height = 720;
-    let treatmentId = 7;
-    let participantId = 1;
-    cy.clock();
-    cy.viewport(width, height);
-    cy.visit(
-      baseURL +
-        `?treatment_id=${treatmentId}&session_id=1&participant_id=${participantId}`
-    );
-    cy.tick(500);
-    cy.get("#checkConsent").click();
-    cy.tick(500);
-    cy.get("button").contains("Next").click();
-    instruction();
-
-    function simpleEarlierAmount(buttonText = "Next") {
-      cy.get("#buttonNext").should("be.disabled");
-      cy.tick(500);
-
-      cy.get("#earlierAmount").click({ force: true });
-      // cy.get("#laterAmount").should("have.css", "backgroundColor", steelblueRGB);
-      cy.get("button").contains(buttonText).should("not.be.disabled").click();
-    }
-    simpleEarlierAmount("Start");
-    for (let i = 0; i < 4; i++) {
-      simpleEarlierAmount();
-    }
-    cy.get("#attention-check-strongly-disagree").click();
-    cy.get("button").contains("Next").click();
-    for (let i = 0; i < 4; i++) {
-      simpleEarlierAmount();
-    }
-    postsurveyaboutsurvey();
-    postsurveyfinancial();
-    postsurveysenseofpurpose();
-    demographic();
-    cy.get("#Feedback").type("survey was good");
-    cy.get("button").contains("Submit Feedback & Exit").click();
+    visitTreatment(7);
   });
   it("calendar word single year", () => {
-    //visitTreatment(5, 1280, 720);
-    //cy.tick(4000);
-    //answerMELForm();
-    let width = 1280;
-    let height = 720;
-    let treatmentId = 5;
-    let participantId = 1;
-    cy.clock();
-    cy.viewport(width, height);
-    cy.visit(
-      baseURL +
-        `?treatment_id=${treatmentId}&session_id=1&participant_id=${participantId}`
-    );
-    cy.tick(500);
-    cy.get("#checkConsent").click();
-    cy.tick(500);
-    cy.get("button").contains("Next").click();
-    demographic();
-
-    function simpleEarlierAmount() {
-      cy.get("#buttonNext").should("be.disabled");
-      cy.tick(500);
-
-      cy.get("#earlierAmount").click({ force: true });
-      // cy.get("#laterAmount").should("have.css", "backgroundColor", steelblueRGB);
-      cy.get("button").contains("Next").should("not.be.disabled").click();
-    }
-    simpleEarlierAmount();
-    instruction();
-    for (let i = 0; i < 4; i++) {
-      simpleEarlierAmount();
-    }
-    cy.get("#attention-check-strongly-disagree").click();
-    cy.get("button").contains("Next").click();
-    //for (let i = 0; i < 4; i++) {
-    for (let i = 0; i < 3; i++) {
-      simpleEarlierAmount();
-    }
-    cy.wait(100000);
+    visitTreatment(5);
   });
   it("calendar word single month", () => {
     //visitTreatment(5, 1280, 720);
