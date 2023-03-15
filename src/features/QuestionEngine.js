@@ -107,7 +107,7 @@ export class QuestionEngine {
       state.highup,
       state.lowdown
     );
-    state.status = StatusType.Instructions;
+    state.status = this.nextStatus(state, false);
   }
 
   setLatestAnswerShown(state, date) {
@@ -300,12 +300,10 @@ export class QuestionEngine {
       case StatusType.Fetching:
         return StatusType.Consent;
       case StatusType.Consent:
-        return StatusType.Demographic;
-      case StatusType.Demographic:
-        return StatusType.Introduction;
-      case StatusType.Introduction:
         return StatusType.Instructions;
       case StatusType.Instructions:
+        return StatusType.MCLInstructions;
+      case StatusType.MCLInstructions:
         return StatusType.Survey;
       case StatusType.Survey:
         if (this.isLastTreatment(state) && onLastTreatment) {
@@ -324,6 +322,8 @@ export class QuestionEngine {
       case StatusType.FinancialQuestionaire:
         return StatusType.PurposeQuestionaire;
       case StatusType.PurposeQuestionaire:
+        return StatusType.Demographic;
+      case StatusType.Demographic:
         return StatusType.Debrief;
       case StatusType.Debrief:
         return StatusType.Finished;
@@ -340,15 +340,13 @@ export class QuestionEngine {
         return StatusType.Unitialized;
       case StatusType.Consent:
         return StatusType.Fetching;
-      case StatusType.Demographic:
-        return StatusType.Consent;
-      case StatusType.Introduction:
-        return StatusType.Demographic;
       case StatusType.Instructions:
-        return StatusType.Introduction;
+        return StatusType.Consent;
+      case StatusType.MCLInstructions:
+        return StatusType.Instructions;
       case StatusType.Survey:
         if (this.isFirstTreatment(state) && onFirstTreatment) {
-          return StatusType.Instructions;
+          return StatusType.MCLInstructions;
         } else {
           if (this.isMiddleTreatment(state)) {
             return StatusType.Attention;
@@ -364,6 +362,8 @@ export class QuestionEngine {
         return StatusType.ExperienceQuestionaire;
       case StatusType.PurposeQuestionaire:
         return StatusType.FinancialQuestionaire;
+      case StatusType.Demographic:
+        return StatusType.PurposeQuestionaire;
       case StatusType.Debrief:
         return StatusType.Debrief; // once they have submitted answers, don't let them go back.
       case StatusType.Error:

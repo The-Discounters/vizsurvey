@@ -15,23 +15,19 @@ export const POST_SURVEY_QUESTIONS = {
       options: [
         {
           textFull: "more than $102",
-          textShort: ">$102",
+          textShort: "gt102",
         },
         {
           textFull: "exactly $102",
-          textShort: "=$102",
+          textShort: "eq102",
         },
         {
           textFull: "less than $102",
-          textShort: "<$102",
+          textShort: "lt102",
         },
         {
           textFull: "do not know",
           textShort: "dont-know",
-        },
-        {
-          textFull: "refuse to answer",
-          textShort: "refuse-to-answer",
         },
       ],
     },
@@ -43,24 +39,20 @@ export const POST_SURVEY_QUESTIONS = {
       },
       options: [
         {
-          textFull: "more than",
+          textFull: "buy more today than a year ago",
           textShort: "more-than",
         },
         {
-          textFull: "exactly the same",
+          textFull: "buy exactly the same today as a year ago",
           textShort: "exactly-same",
         },
         {
-          textFull: "less than",
+          textFull: "buy less today than a year ago",
           textShort: "less-than",
         },
         {
           textFull: "do not know",
           textShort: "dont-know",
-        },
-        {
-          textFull: "refuse to answer",
-          textShort: "refuse-to-answer",
         },
       ],
     },
@@ -82,10 +74,6 @@ export const POST_SURVEY_QUESTIONS = {
         {
           textFull: "do not know",
           textShort: "dont-know",
-        },
-        {
-          textFull: "refuse to answer",
-          textShort: "refuse-to-answer",
         },
       ],
     },

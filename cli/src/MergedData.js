@@ -10,7 +10,7 @@ export class MergedData {
 
   constructor() {}
 
-  callbackOnEntries(callback) {
+  callForEntry(callback) {
     this.#data.forEach((value, key) => {
       callback(value, key);
     });

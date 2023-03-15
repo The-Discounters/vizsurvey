@@ -37,7 +37,7 @@ const Instructions = () => {
     <ThemeProvider theme={theme}>
       <Grid container style={styles.root}>
         <Grid item xs={12}>
-          <Typography variant="h4">Instructions (Continued)</Typography>
+          <Typography variant="h4">General Instructions</Typography>
           <hr
             style={{
               color: "#ea3433",
@@ -48,16 +48,26 @@ const Instructions = () => {
         </Grid>
         <Grid item xs={12}>
           <Typography paragraph>
-            <b>Survey questions: </b>
-            After making your money choice selections, you will be presented
-            with three short surveys of questions to learn more about what you
-            thought of this survey and yourself. You will then be presented with
-            the last screen which has a more detailed explanation of the goals
-            behind this research along with a section to submit feedback and a{" "}
+            In the first set of questions, you will be asked to make money
+            choices as instructed in the next screen. You will need to answer
+            all these questions in order to remain in the study.
+          </Typography>
+          <Typography paragraph>
+            Then, you will be presented with three short sets of questions about
+            your experience answering the survey, as well as about you in
+            general.
+          </Typography>
+          <Typography paragraph>
+            Finally, you will then be presented with a more detailed explanation
+            of the goals behind this research along with an opportunity to
+            submit feedback and a{" "}
             <b>code you must enter into Prolific to get paid.</b>
           </Typography>
           <Typography paragraph>
-            <b>Click the Next button to start the survey!</b>
+            The entire survey will take about 10 minutes to complete.
+          </Typography>
+          <Typography paragraph>
+            <b>Click the Next button to start.</b>
           </Typography>{" "}
           <hr
             style={{
@@ -79,7 +89,7 @@ const Instructions = () => {
               }}
             >
               {" "}
-              Start{" "}
+              Next{" "}
             </Button>
           </Box>
         </Grid>

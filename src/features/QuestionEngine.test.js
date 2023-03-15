@@ -27,13 +27,10 @@ describe("QuestionEngine tests", () => {
       StatusType.Consent
     );
     expect((state.status = qe.nextStatus(state, false))).toBe(
-      StatusType.Demographic
-    );
-    expect((state.status = qe.nextStatus(state, false))).toBe(
-      StatusType.Introduction
-    );
-    expect((state.status = qe.nextStatus(state, false))).toBe(
       StatusType.Instructions
+    );
+    expect((state.status = qe.nextStatus(state, false))).toBe(
+      StatusType.MCLInstructions
     );
     expect((state.status = qe.nextStatus(state, false))).toBe(
       StatusType.Survey
@@ -49,11 +46,14 @@ describe("QuestionEngine tests", () => {
     expect((state.status = qe.nextStatus(state, true))).toBe(
       StatusType.ExperienceQuestionaire
     );
-    expect((state.status = qe.nextStatus(state, true))).toBe(
+    expect((state.status = qe.nextStatus(state, false))).toBe(
       StatusType.FinancialQuestionaire
     );
     expect((state.status = qe.nextStatus(state, true))).toBe(
       StatusType.PurposeQuestionaire
+    );
+    expect((state.status = qe.nextStatus(state, true))).toBe(
+      StatusType.Demographic
     );
     expect((state.status = qe.nextStatus(state, false))).toBe(
       StatusType.Debrief
@@ -76,7 +76,10 @@ describe("QuestionEngine tests", () => {
     expect((state.status = qe.previousStatus(state, false))).toBe(
       StatusType.Debrief
     );
-    state.status = StatusType.PurposeQuestionaire;
+    state.status = StatusType.Demographic;
+    expect((state.status = qe.previousStatus(state, false))).toBe(
+      StatusType.PurposeQuestionaire
+    );
     expect((state.status = qe.previousStatus(state, false))).toBe(
       StatusType.FinancialQuestionaire
     );
@@ -95,18 +98,20 @@ describe("QuestionEngine tests", () => {
       StatusType.Survey
     );
     expect((state.status = qe.previousStatus(state, true))).toBe(
+      StatusType.MCLInstructions
+    );
+    expect((state.status = qe.previousStatus(state, false))).toBe(
       StatusType.Instructions
-    );
-    expect((state.status = qe.previousStatus(state, false))).toBe(
-      StatusType.Introduction
-    );
-    expect((state.status = qe.previousStatus(state, false))).toBe(
-      StatusType.Demographic
     );
     expect((state.status = qe.previousStatus(state, false))).toBe(
       StatusType.Consent
     );
-    expect((state.status = qe.previousStatus(state))).toBe(StatusType.Fetching);
+    expect((state.status = qe.previousStatus(state, false))).toBe(
+      StatusType.Fetching
+    );
+    expect((state.status = qe.previousStatus(state))).toBe(
+      StatusType.Unitialized
+    );
     expect(qe.previousStatus(state)).toBe(StatusType.Unitialized);
   });
 
@@ -140,7 +145,7 @@ describe("QuestionEngine tests", () => {
     };
     const qe = new QuestionEngine();
     qe.startSurvey(state);
-    expect(state.status).toBe(StatusType.Instructions);
+    expect(state.status).toBeUndefined();
     expect(state.currentQuestionIdx).toBe(0);
     expect(state.answers).not.toBeUndefined();
     expect(state.answers.length).toBe(1);
@@ -243,7 +248,7 @@ describe("QuestionEngine tests", () => {
     expect(state.answers).not.toBeUndefined();
     expect(state.answers.length).toBe(1);
     expect(state.answers[0].choice).toBe(AmountType.none);
-    expect(state.status).toBe(StatusType.Instructions);
+    expect(state.status).toBe(StatusType.MCLInstructions);
   });
 
   test("decPreviousQuestion for two treatment when on the 2nd treatment should decrement question and stay in survey state.", () => {
@@ -288,7 +293,7 @@ describe("QuestionEngine tests", () => {
     expect(state.status).toBe(StatusType.Survey);
     qe.decPreviousQuestion(state);
     expect(state.currentQuestionIdx).toBe(0);
-    expect(state.status).toBe(StatusType.Instructions);
+    expect(state.status).toBe(StatusType.MCLInstructions);
   });
 
   test("isMiddleTreatment for one treatment should return false for single treatment configuration.", () => {

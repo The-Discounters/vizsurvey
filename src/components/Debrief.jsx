@@ -56,11 +56,7 @@ const Debrief = () => {
         </Grid>
         <Grid item xs={12}>
           <Typography paragraph>
-            <b>
-              Your answers have been submitted. You must enter the code{" "}
-              {process.env.REACT_APP_PROLIFIC_CODE} into Prolific to be paid{" "}
-              {process.env.REACT_APP_PAYMENT_AMOUT} USD.
-            </b>
+            <b>Your answers have been recorded.</b>
           </Typography>
           <Typography paragraph>
             When it comes to decisions between payoffs sooner or later in time,
@@ -128,12 +124,11 @@ const Debrief = () => {
               </Typography>
             );
           })}
-          <Typography paragraph>
+          <Typography paragraph variant="h6">
             <b>
               Please remember to enter the code{" "}
-              {process.env.REACT_APP_PROLIFIC_CODE} into Prolific before you
-              click submit feedback & exit so we can pay you{" "}
-              {process.env.REACT_APP_PAYMENT_AMOUT}.
+              {process.env.REACT_APP_PROLIFIC_CODE} into Prolific so that you
+              will be paid {process.env.REACT_APP_PAYMENT_AMOUT}.
             </b>
           </Typography>
         </Grid>

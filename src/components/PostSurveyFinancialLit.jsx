@@ -48,8 +48,6 @@ export function PostSurvey() {
   let surveys = POST_SURVEY_QUESTIONS;
   const status = useSelector(getStatus);
 
-  const [disableSubmit, setDisableSubmit] = React.useState(true);
-
   surveys.questions = surveys.questions.filter(({ question }) => {
     if (question.disabled === true) {
       return false;
@@ -75,20 +73,6 @@ export function PostSurvey() {
     const path = navigateFromStatus(status);
     navigate(path);
   }, [status]);
-
-  useEffect(() => {
-    checkEnableSubmit();
-  }, qList);
-
-  const checkEnableSubmit = () => {
-    let result = false;
-    qList.forEach((q) => {
-      if (q.length <= 0) {
-        result = true;
-      }
-    });
-    setDisableSubmit(result);
-  };
 
   return (
     <ThemeProvider theme={theme}>
@@ -133,6 +117,7 @@ export function PostSurvey() {
                           <FormControlLabel
                             key={`radio-${index1}`}
                             value={option.textShort}
+                            id={question.textShort + "-" + option.textShort}
                             checked={qList[index] === option.textShort}
                             style={{
                               width: "100%",
@@ -151,7 +136,6 @@ export function PostSurvey() {
                           />
                         ))
                       : [
-                          "prefer not to answer",
                           "strongly-disagree",
                           "disagree",
                           "neutral",
@@ -208,7 +192,6 @@ export function PostSurvey() {
                     );
                   }, 400);
                 }}
-                disabled={disableSubmit}
               >
                 {" "}
                 Next{" "}

@@ -192,8 +192,11 @@ export const questionSlice = createSlice({
     },
     consentShown(state, action) {
       state.timestamps.consentShownTimestamp = action.payload;
+      writeStateAsCSV(state);
     },
     consentCompleted(state, action) {
+      //TODO we should refactor all these timestamp set methods into QuestionEngine.
+      //One reason is we won't be calling nexStatus from the slice and in QuestionEngine (we call it in at lesat two methods there)
       state.consentChecked = true;
       state.timestamps.consentCompletedTimestamp = action.payload;
       state.timestamps.consentTimeSec = secondsBetween(
@@ -219,7 +222,7 @@ export const questionSlice = createSlice({
     introductionShown(state, action) {
       state.timestamps.introductionShownTimestamp = action.payload;
     },
-    introductionCompleted(state, action) {
+    MCLInstructionsCompleted(state, action) {
       state.timestamps.introductionCompletedTimestamp = action.payload;
       state.timestamps.introductionTimeSec = secondsBetween(
         state.timestamps.introductionShownTimestamp,
@@ -227,7 +230,7 @@ export const questionSlice = createSlice({
       );
       // TODO I could record the participants choice on the instructions
       writeStateAsCSV(state);
-      state.status = qe.nextStatus(state, false);
+      qe.startSurvey(state);
     },
     instructionsShown(state, action) {
       state.timestamps.instructionsShownTimestamp = action.payload;
@@ -243,10 +246,6 @@ export const questionSlice = createSlice({
     },
     setFeedback(state, action) {
       state.feedback = action.payload;
-    },
-    startSurvey(state) {
-      qe.startSurvey(state);
-      return state;
     },
     setQuestionShownTimestamp(state, action) {
       qe.setLatestAnswerShown(state, action.payload);
@@ -481,7 +480,6 @@ export const getConsentChecked = (state) => state.questions.consentChecked;
 export const {
   loadTreatment,
   loadAllTreatments,
-  startSurvey,
   setQuestionShownTimestamp,
   answer,
   previousQuestion,
@@ -514,7 +512,7 @@ export const {
   setFeedback,
   instructionsCompleted,
   introductionShown,
-  introductionCompleted,
+  MCLInstructionsCompleted,
   attentionCheckShown,
   experienceSurveyQuestionsShown,
   experienceSurveyQuestionsCompleted,
