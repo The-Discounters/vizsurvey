@@ -15,15 +15,15 @@ export const POST_SURVEY_QUESTIONS = {
       options: [
         {
           textFull: "more than $102",
-          textShort: ">$102",
+          textShort: "gt102",
         },
         {
           textFull: "exactly $102",
-          textShort: "=$102",
+          textShort: "eq102",
         },
         {
           textFull: "less than $102",
-          textShort: "<$102",
+          textShort: "lt102",
         },
         {
           textFull: "do not know",

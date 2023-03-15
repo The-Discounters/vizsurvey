@@ -17,23 +17,24 @@ function postsurveyaboutsurvey() {
   cy.get("#experience_survey_easy-moderately").click();
   cy.get("#experience_survey_format-moderately").click();
   cy.get("#experience_survey_mental-moderately").click();
+  cy.tick(1000);
   cy.get("button").contains("Next").click();
+  cy.tick(1000);
+}
+
+function postsurveyfinancial() {
+  cy.get("#financial_lit_survey_numeracy-gt102").click();
+  cy.get("button").contains("Next").click();
+  cy.tick(1000);
+}
+
+function postsurveysenseofpurpose() {
+  cy.get("#purpose_survey_difference-strongly-disagree").click();
+  cy.get("button").contains("Next").click();
+  cy.tick(1000);
 }
 
 function postsurvey(expects) {
-  cy.get("label").contains("more than $102").click();
-  cy.get("#less-than").click();
-  cy.get("label").contains("false").click();
-  cy.get("button").contains("Next").click();
-  cy.tick(1000);
-  cy.get("#posdiff-strongly-disagree").click();
-  cy.get("#carbetplac-strongly-disagree").click();
-  cy.get("#servsoc-strongly-disagree").click();
-  cy.get("#thinkach-strongly-disagree").click();
-  cy.get("#descrpurp-strongly-disagree").click();
-  cy.get("#effort-strongly-disagree").click();
-  cy.get("button").contains("Next").click();
-  cy.tick(1000);
   cy.wait(1000);
   cy.get("h4").contains("Submit Your Answers").should("exist");
   cy.get("button").contains("Submit Your Answers").click();
@@ -359,7 +360,11 @@ describe("vizsurvey", () => {
       simpleEarlierAmount();
     }
     postsurveyaboutsurvey();
+    postsurveyfinancial();
+    postsurveysenseofpurpose();
     demographic();
+    cy.get("#Feedback").type("survey was good");
+    cy.get("button").contains("Submit Feedback & Exit").click();
   });
   it("calendar word single year", () => {
     //visitTreatment(5, 1280, 720);
