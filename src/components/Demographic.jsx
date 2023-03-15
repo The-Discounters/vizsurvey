@@ -55,7 +55,6 @@ const useStyles = makeStyles((theme) => ({
 export function Consent() {
   const dispatch = useDispatch();
   const classes = useStyles();
-  const [disableSubmit, setDisableSubmit] = React.useState(true);
   const [disableSelfDescribe, setDisableSelfDescribe] = React.useState(true);
   const [disableSelfDescribeEmployment, setDisableSelfDescribeEmployment] =
     React.useState(true);
@@ -82,33 +81,17 @@ export function Consent() {
   }, [status]);
 
   useEffect(() => {
-    if (
-      countryOfResidence &&
-      countryOfResidence.length > 1 &&
-      vizFamiliarity &&
-      vizFamiliarity.length > 0 &&
-      age &&
-      age.length > 1 &&
-      gender &&
-      gender.length > 0 &&
-      (gender !== "self-describe" ||
-        (selfDescribeGender && selfDescribeGender.length > 0)) &&
-      profession &&
-      profession.length > 0 &&
-      employment.length > 1 &&
-      (employment !== "self-describe" ||
-        (selfDescribeEmployment && selfDescribeEmployment.length > 0))
-    ) {
-      setDisableSubmit(false);
-    } else {
-      setDisableSubmit(true);
-    }
     if (gender === "self-describe") {
       setDisableSelfDescribe(false);
     } else if (
-      ["female", "male", "transgender", "non-binary", "intersex"].includes(
-        gender
-      )
+      [
+        "female",
+        "male",
+        "transgender",
+        "non-binary",
+        "intersex",
+        "refuse-answer",
+      ].includes(gender)
     ) {
       setSelfDescribeGender("");
       setDisableSelfDescribe(true);
@@ -123,16 +106,7 @@ export function Consent() {
       setSelfDescribeEmployment("");
       setDisableSelfDescribeEmployment(true);
     }
-  }, [
-    countryOfResidence,
-    vizFamiliarity,
-    age,
-    gender,
-    selfDescribeGender,
-    profession,
-    employment,
-    selfDescribeEmployment,
-  ]);
+  }, [gender, selfDescribeGender, employment, selfDescribeEmployment]);
 
   const vizFamiliarityLevel = [
     {
@@ -158,7 +132,7 @@ export function Consent() {
         <Grid container style={styles.root} justifyContent="center">
           <Grid item xs={12}>
             <Typography variant="h5">
-              <b>Demographic Data</b>
+              <b>Demographic Questions</b>
               <br />
             </Typography>
             <hr
@@ -181,15 +155,15 @@ export function Consent() {
               id="consent-section"
             >
               <Typography>
-                Before you proceed, please tell us about yourself by answering
-                the questions below:{" "}
+                Please tell us about yourself by answering the questions below.
+                All data collected will be analyzed in aggregate form only and
+                will not be used to identify you.{" "}
               </Typography>
             </div>
           </Grid>
           <Grid item xs={3}>
             <FormControl
               className={classes.formControl}
-              required
               style={{ maxWidth: 250, marginRight: 20 }}
             >
               <InputLabel htmlFor="country-select-helper">
@@ -222,7 +196,6 @@ export function Consent() {
           <Grid item xs={3}>
             <FormControl
               className={classes.formControl}
-              required
               style={{ maxWidth: 250, marginRight: 20 }}
             >
               <InputLabel htmlFor="familiarity-with-viz">
@@ -251,7 +224,6 @@ export function Consent() {
           </Grid>
           <Grid item xs={3}>
             <TextField
-              required
               className={classes.formControl}
               label="Age"
               type="number"
@@ -271,7 +243,6 @@ export function Consent() {
           </Grid>
           <Grid item xs={3}>
             <TextField
-              required
               value={profession}
               onChange={(event) => {
                 dispatch(setProfession(event.target.value));
@@ -285,7 +256,6 @@ export function Consent() {
             <label style={{ marginRight: 20 }}> </label>
             <FormControl
               className={classes.formControl}
-              required
               style={{ maxWidth: 230, marginRight: 20 }}
             >
               <InputLabel htmlFor="gender-select-helper">Gender</InputLabel>
@@ -306,7 +276,7 @@ export function Consent() {
                   { value: "transgender", text: "Transgender" },
                   { value: "non-binary", text: "Non-binary" },
                   { value: "intersex", text: "Intersex" },
-                  { value: "self-describe", text: "Prefer to self-describe" },
+                  { value: "self-describe", text: "Prefer to Self-Describe" },
                 ].map(({ value, text }) => (
                   <option key={value} id={value} value={value}>
                     {text}
@@ -317,7 +287,6 @@ export function Consent() {
           </Grid>
           <Grid item xs={3}>
             <TextField
-              required
               value={selfDescribeGender}
               onChange={(event) => {
                 dispatch(setSelfDescribeGender(event.target.value));
@@ -330,7 +299,7 @@ export function Consent() {
             <label style={{ marginLeft: 25 }}> </label>
           </Grid>
           <Grid item xs={3}>
-            <FormControl className={classes.formControl} required>
+            <FormControl className={classes.formControl}>
               <InputLabel htmlFor="employment-select-helper">
                 Current Employment
               </InputLabel>
@@ -349,8 +318,8 @@ export function Consent() {
                   { value: "full-time", text: "Full Time" },
                   { value: "part-time", text: "Part Time" },
                   { value: "unemployed", text: "Unemployed" },
-                  { value: "prefer-not-to-say", text: "Prefer Not To Say" },
-                  { value: "self-describe", text: "Prefer to self-describe" },
+                  { value: "retried", text: "Retired" },
+                  { value: "self-describe", text: "Prefer to Self-Describe" },
                 ].map(({ value, text }) => (
                   <option key={value} id={value} value={value}>
                     {text}
@@ -361,7 +330,6 @@ export function Consent() {
           </Grid>
           <Grid item xs={3}>
             <TextField
-              required
               value={selfDescribeEmployment}
               onChange={(event) => {
                 dispatch(setSelfDescribeEmployment(event.target.value));
@@ -391,7 +359,6 @@ export function Consent() {
                 onClick={() => {
                   dispatch(demographicCompleted(dateToState(DateTime.now())));
                 }}
-                disabled={disableSubmit}
               >
                 {" "}
                 Next{" "}

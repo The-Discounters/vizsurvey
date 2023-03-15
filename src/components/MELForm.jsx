@@ -20,6 +20,7 @@ import {
 import { dateToState } from "../features/ConversionUtil.js";
 import { styles, theme } from "./ScreenHelper.js";
 import { navigateFromStatus } from "./Navigate.js";
+import { StatusType } from "../features/StatusType.js";
 
 function MELForm() {
   const dispatch = useDispatch();
@@ -51,6 +52,13 @@ function MELForm() {
 
   useEffect(() => {
     const path = navigateFromStatus(status);
+    if (
+      status !== StatusType.Survey &&
+      status !== StatusType.Attention &&
+      process.env.REACT_APP_FULLSCREEN === "enabled"
+    ) {
+      document.exitFullscreen();
+    }
     navigate(path);
   }, [status]);
 

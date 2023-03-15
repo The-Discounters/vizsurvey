@@ -11,7 +11,7 @@ export const participantUniqueKey = (dataObj) => {
 };
 
 export const stateUniqueKey = (dataObj) => {
-  return dataObj.studyId;
+  return `${dataObj.participantId}-${dataObj.sessionId}-${dataObj.studyId}`;
 };
 
 export const CSVDataFilename = (dataObj) => {
