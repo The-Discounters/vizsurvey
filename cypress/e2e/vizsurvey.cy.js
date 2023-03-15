@@ -226,42 +226,42 @@ function instruction() {
 }
 
 function visitTreatment(treatmentId, width = 1280, height = 720) {
-    let participantId = 1;
-    cy.clock();
-    cy.viewport(width, height);
-    cy.visit(
-      baseURL +
-        `?treatment_id=${treatmentId}&session_id=1&participant_id=${participantId}`
-    );
-    cy.tick(500);
-    cy.get("#checkConsent").click();
-    cy.tick(500);
-    cy.get("button").contains("Next").click();
-    instruction();
+  let participantId = 1;
+  cy.clock();
+  cy.viewport(width, height);
+  cy.visit(
+    baseURL +
+      `?treatment_id=${treatmentId}&session_id=1&participant_id=${participantId}`
+  );
+  cy.tick(500);
+  cy.get("#checkConsent").click();
+  cy.tick(500);
+  cy.get("button").contains("Next").click();
+  instruction();
 
-    function simpleEarlierAmount(buttonText = "Next") {
-      cy.get("#buttonNext").should("be.disabled");
-      cy.tick(500);
+  function simpleEarlierAmount(buttonText = "Next") {
+    cy.get("#buttonNext").should("be.disabled");
+    cy.tick(500);
 
-      cy.get("#earlierAmount").click({ force: true });
-      // cy.get("#laterAmount").should("have.css", "backgroundColor", steelblueRGB);
-      cy.get("button").contains(buttonText).should("not.be.disabled").click();
-    }
-    simpleEarlierAmount("Start");
-    for (let i = 0; i < 4; i++) {
-      simpleEarlierAmount();
-    }
-    cy.get("#attention-check-strongly-disagree").click();
-    cy.get("button").contains("Next").click();
-    for (let i = 0; i < 4; i++) {
-      simpleEarlierAmount();
-    }
-    postsurveyaboutsurvey();
-    postsurveyfinancial();
-    postsurveysenseofpurpose();
-    demographic();
-    cy.get("#Feedback").type("survey was good");
-    cy.get("button").contains("Submit Feedback & Exit").click();
+    cy.get("#earlierAmount").click({ force: true });
+    // cy.get("#laterAmount").should("have.css", "backgroundColor", steelblueRGB);
+    cy.get("button").contains(buttonText).should("not.be.disabled").click();
+  }
+  simpleEarlierAmount("Start");
+  for (let i = 0; i < 4; i++) {
+    simpleEarlierAmount();
+  }
+  cy.get("#attention-check-strongly-disagree").click();
+  cy.get("button").contains("Next").click();
+  for (let i = 0; i < 4; i++) {
+    simpleEarlierAmount();
+  }
+  postsurveyaboutsurvey();
+  postsurveyfinancial();
+  postsurveysenseofpurpose();
+  demographic();
+  cy.get("#Feedback").type("survey was good");
+  cy.get("button").contains("Submit Feedback & Exit").click();
 }
 describe("vizsurvey", () => {
   /*
@@ -348,6 +348,64 @@ describe("vizsurvey", () => {
     cy.tick(4000);
     calendar("day", "4", "Bar");
   });*/
+  it("random", () => {
+    let calendarWordChartCount = 0;
+    let radioButtonsCount = 0;
+    let otherCount = 0;
+    for (let j = 0; j < 100; j++) {
+      let width = 1280;
+      let height = 720;
+      let participantId = 1;
+      cy.clock();
+      cy.viewport(width, height);
+      cy.visit(baseURL + `?session_id=1&participant_id=${participantId}`);
+      cy.tick(500);
+      cy.get("#checkConsent").click();
+      cy.tick(500);
+      cy.get("button").contains("Next").click();
+      instruction();
+
+      function checkForParagraphText(regex, tCallback, fCallback) {
+        cy.get("body").then((body) => {
+          let res = body.find("p");
+          let resB = false;
+          //cy.log("reslen: " + res.length);
+          for (let i = 0; i < res.length; i++) {
+            let one = res[i];
+            //cy.log('innerhtml: ' + i + " " + one.innerHTML);
+            resB = resB || one.innerHTML.match(regex);
+          }
+          if (resB) {
+            tCallback();
+          } else {
+            fCallback();
+          }
+        });
+      }
+      checkForParagraphText(
+        /calendar word chart/,
+        () => {
+          calendarWordChartCount = calendarWordChartCount + 1;
+          //cy.log("increment");
+          cy.log("calworchar: " + calendarWordChartCount);
+        },
+        () => {
+          checkForParagraphText(
+            /radio buttons/,
+            () => {
+              radioButtonsCount++;
+              cy.log("radiobutton: " + radioButtonsCount);
+            },
+            () => {
+              otherCount++;
+              cy.log("other: " + otherCount);
+            }
+          );
+        }
+      );
+    }
+    cy.wait(10000);
+  });
   it("word date", () => {
     visitTreatment(7);
   });
