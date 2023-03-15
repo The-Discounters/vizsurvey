@@ -379,15 +379,19 @@ export const questionSlice = createSlice({
     },
     genRandomTreatment(state) {
       // figure out the min and max treatment id
-      const allTreatments = loadAllTreatmentsConfiguration();
-      const min = allTreatments.reduce((pv, cv) => {
+      //const allTreatments = loadAllTreatmentsConfiguration();
+      const allTreatments = [5, 7];
+      const min = 1;
+      const max = 2;
+      /*const min = allTreatments.reduce((pv, cv) => {
         return cv.treatmentId < pv ? cv.treatmentId : pv;
       }, allTreatments[0].treatmentId);
       const max = allTreatments.reduce(
         (pv, cv) => (cv.treatmentId > pv ? cv.treatmentId : pv),
         allTreatments[0].treatmentId
-      );
-      state.treatmentId = getRandomIntInclusive(min, max);
+      );*/
+      //state.treatmentId = getRandomIntInclusive(min, max);
+      state.treatmentId = allTreatments[getRandomIntInclusive(min, max) - 1];
     },
     nextStatus(state) {
       qe.nextStatus(state);
