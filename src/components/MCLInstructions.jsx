@@ -118,7 +118,7 @@ const MCLInstructions = () => {
       <React.Fragment>
         <Typography paragraph>
           You will be presented with a series of hypothetical choices of
-          receiving two different amounts of money at two different dates.{" "}
+          receiving two different amounts of money on two different dates.{" "}
           {/*TODO: YAHEL: CHANGE FOR CALENDAR TREATMENT "times"->"dates"*/}
           Both amounts are in United States Dollars (USD).{" "}
           {/*TODO: YAHEL: CHANGE FOR CALENDAR TREATMENT "and both times are the
