@@ -118,7 +118,7 @@ const MCLInstructions = () => {
       <React.Fragment>
         <Typography paragraph>
           You will be presented with a series of hypothetical choices of
-          receiving two different amounts of money at two different dates.{" "}
+          receiving two different amounts of money on two different dates.{" "}
           {/*TODO: YAHEL: CHANGE FOR CALENDAR TREATMENT "times"->"dates"*/}
           Both amounts are in United States Dollars (USD).{" "}
           {/*TODO: YAHEL: CHANGE FOR CALENDAR TREATMENT "and both times are the
@@ -161,11 +161,11 @@ const MCLInstructions = () => {
     switch (instructionTreatment.viewType) {
       case ViewType.word:
         return instructions(
-          "radio buttons",
+          "a radio button",
           "buttons",
           "Radio button example",
-          "button on the left",
-          "button on the right",
+          "button with the earlier day",
+          "button with the later day",
           "clicking the button"
         );
       case ViewType.barchart:
@@ -190,11 +190,11 @@ const MCLInstructions = () => {
       case ViewType.calendarWordYear:
       case ViewType.calendarWordYearDual:
         return instructions(
-          "calendar word chart",
-          "amounts",
+          "a calendar space",
+          "spaces",
           "Calendar word chart example",
-          "number near the earlier day",
-          "number near the later day",
+          "space on the earlier day",
+          "space on the later day",
           "clicking the day"
         );
       case ViewType.calendarIcon:

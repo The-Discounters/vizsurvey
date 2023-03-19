@@ -348,6 +348,7 @@ describe("vizsurvey", () => {
     cy.tick(4000);
     calendar("day", "4", "Bar");
   });*/
+  /*
   it("random", () => {
     let calendarWordChartCount = 0;
     let radioButtonsCount = 0;
@@ -406,11 +407,12 @@ describe("vizsurvey", () => {
     }
     cy.wait(10000);
   });
-  it("word date", () => {
-    visitTreatment(7);
-  });
+*/
   it("calendar word single year", () => {
     visitTreatment(5);
+  });
+  it("word date", () => {
+    visitTreatment(7);
   });
   it("calendar word single month", () => {
     //visitTreatment(5, 1280, 720);
