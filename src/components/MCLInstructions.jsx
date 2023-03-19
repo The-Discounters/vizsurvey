@@ -156,7 +156,7 @@ const MCLInstructions = () => {
     switch (instructionTreatment.viewType) {
       case ViewType.word:
         return instructions(
-          "radio buttons",
+          "a radio button",
           "buttons",
           "Radio button example",
           "button on the left",
