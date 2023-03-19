@@ -164,8 +164,8 @@ const MCLInstructions = () => {
           "a radio button",
           "buttons",
           "Radio button example",
-          "button on the left",
-          "button on the right",
+          "button with the earlier day",
+          "button with the later day",
           "clicking the button"
         );
       case ViewType.barchart:
@@ -190,11 +190,11 @@ const MCLInstructions = () => {
       case ViewType.calendarWordYear:
       case ViewType.calendarWordYearDual:
         return instructions(
-          "calendar word chart",
-          "amounts",
+          "calendar space",
+          "spaces",
           "Calendar word chart example",
-          "number near the earlier day",
-          "number near the later day",
+          "space on the earlier day",
+          "space on the later day",
           "clicking the day"
         );
       case ViewType.calendarIcon:
