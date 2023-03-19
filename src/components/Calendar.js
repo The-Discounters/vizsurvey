@@ -12,7 +12,7 @@ import {
   nextQuestion,
   answer,
 } from "../features/questionSlice.js";
-//<<<<<<< HEAD
+import { StatusType } from "../features/StatusType.js";
 import { useD3 } from "../hooks/useD3.js";
 import { AmountType } from "../features/AmountType.js";
 import { InteractionType } from "../features/InteractionType.js";
@@ -23,8 +23,6 @@ import { ViewType } from "../features/ViewType.js";
 import { dateToState } from "../features/ConversionUtil.js";
 import { Grid } from "@material-ui/core";
 import { styles } from "./ScreenHelper.js";
-//=======
-//>>>>>>> main-calendar
 import { Button, Box } from "@mui/material";
 import { navigateFromStatus } from "./Navigate.js";
 
@@ -59,6 +57,13 @@ export function Calendar() {
 
   useEffect(() => {
     const path = navigateFromStatus(status);
+    if (
+      status !== StatusType.Survey &&
+      status !== StatusType.Attention &&
+      process.env.REACT_APP_FULLSCREEN === "enabled"
+    ) {
+      document.exitFullscreen();
+    }
     navigate(path);
   }, [status]);
 
