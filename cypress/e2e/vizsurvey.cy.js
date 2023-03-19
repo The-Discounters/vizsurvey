@@ -348,7 +348,7 @@ describe("vizsurvey", () => {
     cy.tick(4000);
     calendar("day", "4", "Bar");
   });*/
-/*
+  /*
   it("random", () => {
     let calendarWordChartCount = 0;
     let radioButtonsCount = 0;

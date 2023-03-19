@@ -78,18 +78,18 @@ export const drawCalendarYear = ({
 
   table.selectAll("table > *").remove();
 
-  //const header = table.append("thead");
+  const header = table.append("thead");
   const body = table.append("tbody");
-  /*
+
   header
     .append("tr")
-    .append("td")
-    .attr("colspan", 7)
+    .append("th")
+    .attr("colspan", 4)
     .append("h2")
-    .text(monthNames[monthNum])
+    .text(date.getFullYear())
     .style("text-align", "center")
     .style("font-size", "40px");
-
+  /*
   header
     .append("tr")
     .selectAll("td")
