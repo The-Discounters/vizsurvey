@@ -190,7 +190,7 @@ const MCLInstructions = () => {
       case ViewType.calendarWordYear:
       case ViewType.calendarWordYearDual:
         return instructions(
-          "calendar space",
+          "a calendar space",
           "spaces",
           "Calendar word chart example",
           "space on the earlier day",
