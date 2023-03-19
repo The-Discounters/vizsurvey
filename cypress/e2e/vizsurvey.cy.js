@@ -408,11 +408,11 @@ describe("vizsurvey", () => {
     cy.wait(10000);
   });
 */
-  it("word date", () => {
-    visitTreatment(7);
-  });
   it("calendar word single year", () => {
     visitTreatment(5);
+  });
+  it("word date", () => {
+    visitTreatment(7);
   });
   it("calendar word single month", () => {
     //visitTreatment(5, 1280, 720);
