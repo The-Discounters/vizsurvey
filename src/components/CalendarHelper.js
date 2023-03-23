@@ -184,10 +184,12 @@ export const drawCalendar = ({
           let borderLeft = borderWidth;
           let borderRight = borderWidth;
           let borderTop = borderWidth;
-          let borderBottomColor = "rgb(200,200,200)";
-          let borderLeftColor = "rgb(200,200,200)";
-          let borderRightColor = "rgb(200,200,200)";
-          let borderTopColor = "rgb(200,200,200)";
+          let light = "230";
+          let lightRGB = "rgb(" + light + "," + light + "," + light + ")";
+          let borderBottomColor = lightRGB;
+          let borderLeftColor = lightRGB;
+          let borderRightColor = lightRGB;
+          let borderTopColor = lightRGB;
           let posTop = "0px";
           let posLeft = "0px";
           console.log(d);
