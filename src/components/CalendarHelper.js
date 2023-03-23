@@ -1,4 +1,5 @@
 import { select } from "d3";
+import { format } from "d3";
 import { AmountType } from "../features/AmountType.js";
 
 export const dayNames = ["S", "M", "T", "W", "T", "F", "S"];
@@ -269,7 +270,7 @@ export const drawCalendar = ({
             tdDiv = td.append("div");
             tdDiv
               .text(function (d) {
-                return isNaN(d) ? "$" + d.a : "";
+                return isNaN(d) ? `${format("$,.0f")(d.a)}` : "";
               })
               .style("position", "relative")
               .style("font-size", 20 + "px")
@@ -280,7 +281,7 @@ export const drawCalendar = ({
           } else {
             tdDiv
               .text(function (d) {
-                return isNaN(d) ? "$" + d.a : "";
+                return isNaN(d) ? `${format("$,.0f")(d.a)}` : "";
               })
               .style("position", "relative")
               //.style("position", "absolute")
