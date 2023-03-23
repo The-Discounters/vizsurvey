@@ -185,6 +185,7 @@ export const drawCalendarYear = ({
         const td = select(this);
         console.log(d);
         let table01 = td.append("table");
+        table01.style("width", "125px").style("height", "125px");
         drawCalendar({
           table: table01,
           onClickCallback: onClickCallback,
