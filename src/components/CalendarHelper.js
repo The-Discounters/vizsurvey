@@ -1,4 +1,5 @@
 import { select } from "d3";
+import { format } from "d3";
 import { AmountType } from "../features/AmountType.js";
 
 export const dayNames = ["S", "M", "T", "W", "T", "F", "S"];
@@ -29,9 +30,9 @@ export const drawCalendar = ({
     "November",
     "December",
   ];
-  let selection = { d: -1, a: -1 };
-  console.log("qDateEarlier: " + qDateEarlier);
-  console.log("qDateLater: " + qDateLater);
+  //let selection = { d: -1, a: -1 };
+  //console.log("qDateEarlier: " + qDateEarlier);
+  //console.log("qDateLater: " + qDateLater);
   const firstOfMonth = new Date(qDateEarlier);
   const lastOfMonth = new Date(qDateEarlier);
   firstOfMonth.setDate(1);
@@ -39,18 +40,18 @@ export const drawCalendar = ({
   if (monthNumber !== "same") {
     firstOfMonth.setMonth(monthNumber);
     lastOfMonth.setMonth(monthNumber + 1);
-    console.log("monthNames[monthNumber]: " + monthNames[monthNumber]);
+    //console.log("monthNames[monthNumber]: " + monthNames[monthNumber]);
   }
   firstOfMonth.setDate(1);
   lastOfMonth.setDate(0);
-  console.log("lastOfMonth: " + lastOfMonth);
+  //console.log("lastOfMonth: " + lastOfMonth);
   const date = new Date(qDateEarlier);
   const dateLater = new Date(qDateLater);
-  console.log("date: " + date);
-  console.log("date.getDate(): " + date.getDate());
-  console.log("date.getDay(): " + date.getDay());
-  console.log("firstOfMonth.getDay(): " + firstOfMonth.getDay());
-  console.log("monthNumber: " + monthNumber);
+  //console.log("date: " + date);
+  //console.log("date.getDate(): " + date.getDate());
+  //console.log("date.getDay(): " + date.getDay());
+  //console.log("firstOfMonth.getDay(): " + firstOfMonth.getDay());
+  //console.log("monthNumber: " + monthNumber);
   const month = [];
   let counter = -1 * firstOfMonth.getDay() + 1;
   let change = 1;
@@ -126,10 +127,10 @@ export const drawCalendar = ({
       .style("width", boxLength + "px")
       .style("height", boxLength + "px")
       .on("click", (d) => {
-        console.log("click: target: " + JSON.stringify(d.target.__data__));
+        //console.log("click: target: " + JSON.stringify(d.target.__data__));
         if (isNaN(d.target.__data__)) {
-          console.log("click: setselection");
-          console.log("click: target: selection: " + JSON.stringify(selection));
+          //console.log("click: setselection");
+          //console.log("click: target: selection: " + JSON.stringify(selection));
           if (
             d.target.__data__.k === "earlierAmount" &&
             choice !== AmountType.earlierAmount
@@ -145,26 +146,26 @@ export const drawCalendar = ({
               .selectAll("#earlierAmount")
               .style("background-color", "steelblue");
           }
-          console.log("click: selection: " + JSON.stringify(selection));
+          //console.log("click: selection: " + JSON.stringify(selection));
           select(this).style("background-color", "lightblue");
           if (d.target.__data__.k === "earlierAmount") {
-            console.log("click: target: onClickCallback: earlierAmount");
+            //console.log("click: target: onClickCallback: earlierAmount");
             onClickCallback(AmountType.earlierAmount);
           } else {
-            console.log("click: target: onClickCallback: laterAmount");
+            //console.log("click: target: onClickCallback: laterAmount");
             onClickCallback(AmountType.laterAmount);
           }
         }
       })
       .on("mouseover", function (d) {
-        console.log("mouseover: target: " + JSON.stringify(d.target.__data__));
+        //console.log("mouseover: target: " + JSON.stringify(d.target.__data__));
         if (isNaN(d.target.__data__)) {
           select(this).style("background-color", "lightblue");
         }
       })
       .on("mouseout", function (d) {
-        console.log("mouseout: target: " + JSON.stringify(d.target.__data__));
-        console.log("mouseout: selection: " + selection.d);
+        //console.log("mouseout: target: " + JSON.stringify(d.target.__data__));
+        //console.log("mouseout: selection: " + selection.d);
         if (
           isNaN(d.target.__data__) &&
           ((d.target.__data__.k === "earlierAmount" &&
@@ -183,13 +184,15 @@ export const drawCalendar = ({
           let borderLeft = borderWidth;
           let borderRight = borderWidth;
           let borderTop = borderWidth;
-          let borderBottomColor = "rgb(200,200,200)";
-          let borderLeftColor = "rgb(200,200,200)";
-          let borderRightColor = "rgb(200,200,200)";
-          let borderTopColor = "rgb(200,200,200)";
+          let light = "230";
+          let lightRGB = "rgb(" + light + "," + light + "," + light + ")";
+          let borderBottomColor = lightRGB;
+          let borderLeftColor = lightRGB;
+          let borderRightColor = lightRGB;
+          let borderTopColor = lightRGB;
           let posTop = "0px";
           let posLeft = "0px";
-          console.log(d);
+          //console.log(d);
           let dayNum = isNaN(d) ? d.d : d;
           if (!isNaN(d) && d < 1) {
             //borderWidth = "0px";
@@ -269,7 +272,7 @@ export const drawCalendar = ({
             tdDiv = td.append("div");
             tdDiv
               .text(function (d) {
-                return isNaN(d) ? "$" + d.a : "";
+                return isNaN(d) ? `${format("$,.0f")(d.a)}` : "";
               })
               .style("position", "relative")
               .style("font-size", 20 + "px")
@@ -280,7 +283,7 @@ export const drawCalendar = ({
           } else {
             tdDiv
               .text(function (d) {
-                return isNaN(d) ? "$" + d.a : "";
+                return isNaN(d) ? `${format("$,.0f")(d.a)}` : "";
               })
               .style("position", "relative")
               //.style("position", "absolute")
@@ -292,7 +295,7 @@ export const drawCalendar = ({
           else if (d.k) td.attr("id", "laterAmount");
         }
         const td = select(this);
-        console.log(d);
+        //console.log(d);
         drawDay(td, d);
       });
   });
