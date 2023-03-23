@@ -1,5 +1,5 @@
 import { select /*, format, scaleLinear, scaleBand, range, drag */ } from "d3";
-import { AmountType } from "../features/AmountType.js";
+//import { AmountType } from "../features/AmountType.js";
 import { drawCalendar } from "./CalendarHelper.js";
 
 export const drawCalendarYear = ({
@@ -11,7 +11,7 @@ export const drawCalendarYear = ({
   qAmountEarlier: qAmountEarlier,
   qAmountLater: qAmountLater,
 }) => {
-  let selection = { d: -1, a: -1 };
+  //let selection = { d: -1, a: -1 };
   /*
   console.log("qDateEarlier: " + qDateEarlier);
   console.log("qDateLater: " + qDateLater);
@@ -24,10 +24,10 @@ export const drawCalendarYear = ({
   */
   const date = new Date(qDateEarlier);
   const dateLater = new Date(qDateLater);
-  console.log("date: " + date);
-  console.log("date.getMonth(): " + date.getMonth());
-  console.log("dateLater: " + dateLater);
-  console.log("dateLater.getMonth(): " + dateLater.getMonth());
+  //console.log("date: " + date);
+  //console.log("date.getMonth(): " + date.getMonth());
+  //console.log("dateLater: " + dateLater);
+  //console.log("dateLater.getMonth(): " + dateLater.getMonth());
   const year = [];
   //const month = [];
   // let counter = -1 * firstOfMonth.getDay() + 1;
@@ -103,7 +103,7 @@ export const drawCalendarYear = ({
     .style("font-size", "20px");
   */
 
-  console.log("year: " + JSON.stringify(year));
+  //console.log("year: " + JSON.stringify(year));
   //let boxLength = "100px";
   //let boxLength01 = "10px";
   year.forEach(function (row) {
@@ -116,11 +116,12 @@ export const drawCalendarYear = ({
       .attr("class", function (d) {
         return d > 0 ? "" : "empty";
       })
-      .on("click", (d) => {
-        console.log("click: target: " + JSON.stringify(d.target.__data__));
+      .on("click", (/*d*/) => {
+        /*
+        //console.log("click: target: " + JSON.stringify(d.target.__data__));
         if (isNaN(d.target.__data__)) {
-          console.log("click: setselection");
-          console.log("click: target: selection: " + JSON.stringify(selection));
+          //console.log("click: setselection");
+          //console.log("click: target: selection: " + JSON.stringify(selection));
           if (
             d.target.__data__.k === "earlierAmount" &&
             choice !== AmountType.earlierAmount
@@ -136,7 +137,7 @@ export const drawCalendarYear = ({
               .selectAll("#earlierAmount")
               .style("background-color", "steelblue");
           }
-          console.log("click: selection: " + JSON.stringify(selection));
+          //console.log("click: selection: " + JSON.stringify(selection));
           select(this)
             .selectAll("#laterAmount")
             .style("background-color", "lightblue");
@@ -144,16 +145,17 @@ export const drawCalendarYear = ({
             .selectAll("#earlierAmount")
             .style("background-color", "lightblue");
           if (d.target.__data__.k === "earlierAmount") {
-            console.log("click: target: onClickCallback: earlierAmount");
+            //console.log("click: target: onClickCallback: earlierAmount");
             onClickCallback(AmountType.earlierAmount);
           } else {
-            console.log("click: target: onClickCallback: laterAmount");
+            //console.log("click: target: onClickCallback: laterAmount");
             onClickCallback(AmountType.laterAmount);
           }
         }
+      */
       })
-      .on("mouseover", function (d) {
-        console.log("mouseover: target: " + JSON.stringify(d.target.__data__));
+      .on("mouseover", function (/*d*/) {
+        /* console.log("mouseover: target: " + JSON.stringify(d.target.__data__));
         if (isNaN(d.target.__data__)) {
           select(this)
             .selectAll("#laterAmount")
@@ -161,11 +163,11 @@ export const drawCalendarYear = ({
           select(this)
             .selectAll("#earlierAmount")
             .style("background-color", "lightblue");
-        }
+        }*/
       })
-      .on("mouseout", function (d) {
-        console.log("mouseout: target: " + JSON.stringify(d.target.__data__));
-        console.log("mouseout: selection: " + selection.d);
+      .on("mouseout", function (/*d*/) {
+        /* //console.log("mouseout: target: " + JSON.stringify(d.target.__data__));
+        //console.log("mouseout: selection: " + selection.d);
         if (
           isNaN(d.target.__data__) &&
           ((d.target.__data__.k === "earlierAmount" &&
@@ -179,11 +181,11 @@ export const drawCalendarYear = ({
           select(this)
             .selectAll("#earlierAmount")
             .style("background-color", "steelblue");
-        }
+        }*/
       })
       .each(function (d) {
         const td = select(this);
-        console.log(d);
+        //console.log(d);
         let table01 = td.append("table");
         table01.style("width", "125px").style("height", "125px");
         drawCalendar({
