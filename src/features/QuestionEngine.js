@@ -307,16 +307,19 @@ export class QuestionEngine {
         return StatusType.Survey;
       case StatusType.Survey:
         if (this.isLastTreatment(state) && onLastTreatment) {
-          return StatusType.ExperienceQuestionaire;
-        } else {
+          return StatusType.Attention;
+          //return StatusType.ExperienceQuestionaire;
+        } /*else {
           if (this.isMiddleTreatment(state)) {
             return StatusType.Attention;
           } else {
             return StatusType.Survey;
           }
-        }
-      case StatusType.Attention:
+        }*/
         return StatusType.Survey;
+      case StatusType.Attention:
+        return StatusType.ExperienceQuestionaire;
+      //return StatusType.Survey;
       case StatusType.ExperienceQuestionaire:
         return StatusType.FinancialQuestionaire;
       case StatusType.FinancialQuestionaire:
