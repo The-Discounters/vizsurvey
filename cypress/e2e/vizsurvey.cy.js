@@ -248,14 +248,11 @@ function visitTreatment(treatmentId, width = 1280, height = 720) {
     cy.get("button").contains(buttonText).should("not.be.disabled").click();
   }
   simpleEarlierAmount("Start");
-  for (let i = 0; i < 4; i++) {
+  for (let i = 0; i < 8; i++) {
     simpleEarlierAmount();
   }
   cy.get("#attention-check-strongly-disagree").click();
   cy.get("button").contains("Next").click();
-  for (let i = 0; i < 4; i++) {
-    simpleEarlierAmount();
-  }
   postsurveyaboutsurvey();
   postsurveyfinancial();
   postsurveysenseofpurpose();
