@@ -54,7 +54,6 @@ function MELForm() {
     const path = navigateFromStatus(status);
     if (
       status !== StatusType.Survey &&
-      status !== StatusType.Attention &&
       process.env.REACT_APP_FULLSCREEN === "enabled"
     ) {
       document.exitFullscreen();
