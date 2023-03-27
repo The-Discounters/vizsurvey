@@ -19,9 +19,9 @@ export const createStat = (numTreatments) => {
     instructionsComplete: new Array(numberTreatments).fill(0),
     choicesInProgress: new Array(numberTreatments).fill(0),
     choicesComplete: new Array(numberTreatments).fill(0),
-    experienceInProgress: new Array(numberTreatments).fill(0),
     attentionCheckCompleted: new Array(numberTreatments).fill(0),
     attentionCheckInProgress: new Array(numberTreatments).fill(0),
+    experienceInProgress: new Array(numberTreatments).fill(0),
     experienceComplete: new Array(numberTreatments).fill(0),
     financialInProgress: new Array(numberTreatments).fill(0),
     financialComplete: new Array(numberTreatments).fill(0),
@@ -29,94 +29,94 @@ export const createStat = (numTreatments) => {
     purposeComplete: new Array(numberTreatments).fill(0),
     debriefInProgress: new Array(numberTreatments).fill(0),
     debriefComplete: new Array(numberTreatments).fill(0),
-    feedback: new Array(numberTreatments),
+    feedback: new Array(),
   };
-  stats.feedback = new Array();
 };
 
 export const updateStats = (CSVData) => {
+  const index = +CSVData.treatment_id - 1;
   if (CSVData.country_of_residence === "usa") {
     stats.countryUSA++;
   } else if (CSVData.country_of_residence) {
     stats.countryOther++;
   }
   if (CSVData.consent_completed_timestamp) {
-    stats.consentComplete[CSVData.treatment_id - 1]++;
+    stats.consentComplete[index]++;
   } else if (CSVData.consent_shown_timestamp) {
-    stats.consentInProgress[CSVData.treatment_id - 1]++;
+    stats.consentInProgress[index]++;
   }
-  if (!CSVData.purpose_survey_questions_completed_timestamp) {
-    stats.surveysInProgress[CSVData.treatment_id - 1]++;
+  if (!CSVData.demographic_completed_timestamp) {
+    stats.surveysInProgress[index]++;
   }
   if (CSVData.demographic_completed_timestamp) {
-    stats.demographicsComplete[CSVData.treatment_id - 1]++;
+    stats.demographicsComplete[index]++;
   } else if (CSVData.demographic_shown_timestamp) {
-    stats.demographicsInProgress[CSVData.treatment_id - 1]++;
+    stats.demographicsInProgress[index]++;
   }
   if (CSVData.introduction_completed_timestamp) {
-    stats.introductionComplete[CSVData.treatment_id - 1]++;
+    stats.introductionComplete[index]++;
   } else if (CSVData.introduction_shown_timestamp) {
-    stats.introductionInProgress[CSVData.treatment_id - 1]++;
+    stats.introductionInProgress[index]++;
   }
   if (CSVData.instructions_completed_timestamp) {
-    stats.instructionsComplete[CSVData.treatment_id - 1]++;
+    stats.instructionsComplete[index]++;
   } else if (CSVData.instructions_shown_timestamp) {
-    stats.instructionsInProgress[CSVData.treatment_id - 1]++;
+    stats.instructionsInProgress[index]++;
   }
   if (CSVData.attention_check_completed_timestamp) {
-    stats.attentionCheckCompleted[CSVData.treatment_id - 1]++;
+    stats.attentionCheckCompleted[index]++;
   } else if (CSVData.attention_check_shown_timestamp) {
-    stats.attentionCheckInProgress[CSVData.treatment_id - 1]++;
+    stats.attentionCheckInProgress[index]++;
   }
   if (CSVData.choice_timestamp_8) {
-    stats.choicesComplete[CSVData.treatment_id - 1]++;
+    stats.choicesComplete[index]++;
   } else if (CSVData.shown_timestamp_1) {
-    stats.choicesInProgress[CSVData.treatment_id - 1]++;
+    stats.choicesInProgress[index]++;
   }
   if (CSVData.choice_1 === "laterAmount") {
-    stats.laterChoice[CSVData.treatment_id - 1]++;
+    stats.laterChoice[index]++;
   }
   if (CSVData.choice_2 === "laterAmount") {
-    stats.laterChoice[CSVData.treatment_id - 1]++;
+    stats.laterChoice[index]++;
   }
   if (CSVData.choice_3 === "laterAmount") {
-    stats.laterChoice[CSVData.treatment_id - 1]++;
+    stats.laterChoice[index]++;
   }
   if (CSVData.choice_4 === "laterAmount") {
-    stats.laterChoice[CSVData.treatment_id - 1]++;
+    stats.laterChoice[index]++;
   }
   if (CSVData.choice_5 === "laterAmount") {
-    stats.laterChoice[CSVData.treatment_id - 1]++;
+    stats.laterChoice[index]++;
   }
   if (CSVData.choice_6 === "laterAmount") {
-    stats.laterChoice[CSVData.treatment_id - 1]++;
+    stats.laterChoice[index]++;
   }
   if (CSVData.choice_7 === "laterAmount") {
-    stats.laterChoice[CSVData.treatment_id - 1]++;
+    stats.laterChoice[index]++;
   }
   if (CSVData.choice_8 === "laterAmount") {
-    stats.laterChoice[CSVData.treatment_id - 1]++;
+    stats.laterChoice[index]++;
   }
   if (CSVData.experience_survey_questions_completed_timestamp) {
-    stats.experienceComplete[CSVData.treatment_id - 1]++;
+    stats.experienceComplete[index]++;
   } else if (CSVData.experience_survey_questions_shown_timestamp) {
-    stats.experienceInProgress[CSVData.treatment_id - 1]++;
+    stats.experienceInProgress[index]++;
   }
   if (CSVData.financial_lit_survey_questions_completed_timestamp) {
-    stats.financialComplete[CSVData.treatment_id - 1]++;
+    stats.financialComplete[index]++;
   } else if (CSVData.financial_lit_survey_questions_shown_timestamp) {
-    stats.financialInProgress[CSVData.treatment_id - 1]++;
+    stats.financialInProgress[index]++;
   }
   if (CSVData.purpose_survey_questions_completed_timestamp) {
-    stats.purposeComplete[CSVData.treatment_id - 1]++;
-    stats.surveysComplete[CSVData.treatment_id - 1]++;
+    stats.purposeComplete[index]++;
+    stats.surveysComplete[index]++;
   } else if (CSVData.purpose_survey_questions_shown_timestamp) {
-    stats.purposeInProgress[CSVData.treatment_id - 1]++;
+    stats.purposeInProgress[index]++;
   }
   if (CSVData.debrief_completed_timestamp) {
-    stats.debriefComplete[CSVData.treatment_id - 1]++;
+    stats.debriefComplete[index]++;
   } else if (CSVData.debrief_shown_timestamp) {
-    stats.debriefInProgress[CSVData.treatment_id - 1]++;
+    stats.debriefInProgress[index]++;
   }
   if (CSVData.feedback) {
     stats.feedback.push({
