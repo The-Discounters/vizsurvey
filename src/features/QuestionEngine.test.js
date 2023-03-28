@@ -9,7 +9,7 @@ import { Answer } from "./Answer.js";
 import { dateToState } from "./ConversionUtil.js";
 
 describe("QuestionEngine tests", () => {
-  test("nextStatus testing state transitions.", () => {
+  test("nextStatus testing state transitions with a single treatment.", () => {
     const state = {
       treatments: [
         TestDataFactory.createQuestionNoTitrate(),
@@ -20,45 +20,45 @@ describe("QuestionEngine tests", () => {
       status: StatusType.Unitialized,
     };
     const qe = new QuestionEngine();
-    expect((state.status = qe.nextStatus(state, false))).toBe(
+    expect((state.status = qe.nextStatus(state, false, true))).toBe(
       StatusType.Fetching
     );
-    expect((state.status = qe.nextStatus(state, false))).toBe(
+    expect((state.status = qe.nextStatus(state, false, true))).toBe(
       StatusType.Consent
     );
-    expect((state.status = qe.nextStatus(state, false))).toBe(
+    expect((state.status = qe.nextStatus(state, false, true))).toBe(
       StatusType.Instructions
     );
-    expect((state.status = qe.nextStatus(state, false))).toBe(
+    expect((state.status = qe.nextStatus(state, false, true))).toBe(
       StatusType.MCLInstructions
     );
-    expect((state.status = qe.nextStatus(state, false))).toBe(
+    expect((state.status = qe.nextStatus(state, false, true))).toBe(
       StatusType.Survey
     );
     state.currentQuestionIdx = 1;
-    expect((state.status = qe.nextStatus(state, false))).toBe(
+    expect((state.status = qe.nextStatus(state, false, true))).toBe(
       StatusType.Attention
     );
     state.currentQuestionIdx = 2;
-    expect((state.status = qe.nextStatus(state, false))).toBe(
+    expect((state.status = qe.nextStatus(state, false, true))).toBe(
       StatusType.Survey
     );
-    expect((state.status = qe.nextStatus(state, true))).toBe(
+    expect((state.status = qe.nextStatus(state, true, true))).toBe(
       StatusType.ExperienceQuestionaire
     );
-    expect((state.status = qe.nextStatus(state, false))).toBe(
+    expect((state.status = qe.nextStatus(state, false, true))).toBe(
       StatusType.FinancialQuestionaire
     );
-    expect((state.status = qe.nextStatus(state, true))).toBe(
+    expect((state.status = qe.nextStatus(state, true, true))).toBe(
       StatusType.PurposeQuestionaire
     );
-    expect((state.status = qe.nextStatus(state, true))).toBe(
+    expect((state.status = qe.nextStatus(state, true, true))).toBe(
       StatusType.Demographic
     );
-    expect((state.status = qe.nextStatus(state, false))).toBe(
+    expect((state.status = qe.nextStatus(state, false, true))).toBe(
       StatusType.Debrief
     );
-    expect(qe.nextStatus(state, false)).toBe(StatusType.Finished);
+    expect(qe.nextStatus(state, false, true)).toBe(StatusType.Finished);
   });
 
   test("previousStatus testing state transitions.", () => {
@@ -120,6 +120,8 @@ describe("QuestionEngine tests", () => {
       treatments: [TestDataFactory.createQuestionLaterTitrate()],
       answers: [],
       currentQuestionIdx: 0,
+      treatmentId: 1,
+      treatmentIds: [1],
     };
     const qe = new QuestionEngine();
     qe.startSurvey(state);
@@ -142,6 +144,8 @@ describe("QuestionEngine tests", () => {
       ],
       answers: [],
       currentQuestionIdx: 0,
+      treatmentId: 1,
+      treatmentIds: [1],
     };
     const qe = new QuestionEngine();
     qe.startSurvey(state);
@@ -193,7 +197,7 @@ describe("QuestionEngine tests", () => {
     expect(state.status).toBe(StatusType.Survey);
   });
 
-  test("incNextQuestion for two treatment should increment question index and stay in survey state.", () => {
+  test("incNextQuestion for two questions single treatment should increment question index and stay in survey state.", () => {
     const state = {
       treatments: [
         TestDataFactory.createQuestionNoTitrate(),
@@ -202,6 +206,8 @@ describe("QuestionEngine tests", () => {
       answers: [TestDataFactory.createAnswer(1, 1)],
       currentQuestionIdx: 0,
       status: StatusType.Survey,
+      treatmentId: 1,
+      treatmentIds: [1],
     };
     const qe = new QuestionEngine();
     qe.incNextQuestion(state);
@@ -212,7 +218,44 @@ describe("QuestionEngine tests", () => {
     expect(state.status).toBe(StatusType.Survey);
   });
 
-  test("incNextQuestion for three treatment should increment question index and enter attention state then back to survey state.", () => {
+  test("incNextQuestion for two questions two treatment should increment question index and stay in survey state then go to second treatment questions.", () => {
+    const state = {
+      treatments: [
+        TestDataFactory.createQuestionNoTitrate(),
+        TestDataFactory.create2ndQuestionNoTitrate,
+      ],
+      answers: [TestDataFactory.createAnswer(1, 1)],
+      currentQuestionIdx: 0,
+      status: StatusType.Survey,
+      treatmentId: 1,
+      treatmentIds: [1, 2],
+    };
+    const qe = new QuestionEngine();
+    qe.incNextQuestion(state);
+    expect(state.currentQuestionIdx).toBe(1);
+    expect(state.answers).not.toBeUndefined();
+    expect(state.answers.length).toBe(2);
+    expect(state.answers[1].choice).toBe(AmountType.none);
+    expect(state.status).toBe(StatusType.Survey);
+    qe.incNextQuestion(state);
+    expect(state.treatmentId).toBe(2);
+    expect(state.currentQuestionIdx).toBe(0);
+    expect(state.answers).not.toBeUndefined();
+    expect(state.answers.length).toBe(3);
+    expect(state.status).toBe(StatusType.MCLInstructions);
+    qe.incNextQuestion(state);
+    expect(state.treatmentId).toBe(2);
+    expect(state.currentQuestionIdx).toBe(0);
+    expect(state.answers).not.toBeUndefined();
+    expect(state.answers.length).toBe(3);
+    qe.incNextQuestion(state);
+    expect(state.treatmentId).toBe(2);
+    expect(state.currentQuestionIdx).toBe(1);
+    expect(state.answers).not.toBeUndefined();
+    expect(state.answers.length).toBe(4);
+  });
+
+  test("incNextQuestion for three questions single treatment should increment question index and enter attention state then back to survey state.", () => {
     const state = {
       treatments: [
         TestDataFactory.createQuestionNoTitrate(),
@@ -222,6 +265,8 @@ describe("QuestionEngine tests", () => {
       answers: [TestDataFactory.createAnswer(1, 1)],
       currentQuestionIdx: 0,
       status: StatusType.Survey,
+      treatmentId: 1,
+      treatmentIds: [1],
     };
     const qe = new QuestionEngine();
     qe.incNextQuestion(state);
@@ -302,7 +347,7 @@ describe("QuestionEngine tests", () => {
       currentQuestionIdx: 0,
     };
     const qe = new QuestionEngine();
-    expect(qe.isMiddleTreatment(state)).toBe(false);
+    expect(qe.isMiddleTreatmentQuestion(state)).toBe(false);
   });
 
   test("isMiddleTreatment for two treatment should return false.", () => {
@@ -314,7 +359,7 @@ describe("QuestionEngine tests", () => {
       currentQuestionIdx: 1,
     };
     const qe = new QuestionEngine();
-    expect(qe.isMiddleTreatment(state)).toBe(false);
+    expect(qe.isMiddleTreatmentQuestion(state)).toBe(false);
   });
 
   test("isMiddleTreatment for three treatments should return true.", () => {
@@ -327,7 +372,7 @@ describe("QuestionEngine tests", () => {
       currentQuestionIdx: 1,
     };
     const qe = new QuestionEngine();
-    expect(qe.isMiddleTreatment(state)).toBe(true);
+    expect(qe.isMiddleTreatmentQuestion(state)).toBe(true);
   });
 
   // TODO Titration functionality is broken.  I have not coded previous button to work with it.

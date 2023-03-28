@@ -28,10 +28,9 @@ import {
   fetchAllTreatments,
   getStatus,
   clearState,
-  genRandomTreatment,
+  setTreatmentId,
   setSessionId,
   setParticipantId,
-  setTreatmentId,
   setStudyId,
   setUserAgent,
   loadTreatment,
@@ -116,11 +115,7 @@ const GenTreatmentId = () => {
 
   useEffect(() => {
     var treatmentId = searchParams.get("treatment_id");
-    if (!treatmentId) {
-      dispatch(genRandomTreatment());
-    } else {
-      dispatch(setTreatmentId(treatmentId));
-    }
+    dispatch(setTreatmentId(treatmentId));
     dispatch(setSessionId(searchParams.get("session_id")));
     dispatch(setParticipantId(searchParams.get("participant_id")));
     dispatch(setStudyId(searchParams.get("study_id")));
@@ -460,7 +455,7 @@ const DevHome = () => {
               </Link>
             </p>
             <p>
-              <b>Production treatments are listed below.</b>
+              <b>Production between subjects treatments are listed below.</b>
             </p>
             <p>
               <Link
@@ -496,6 +491,17 @@ const DevHome = () => {
                     (d) => d.treatmentId === 22 && d.position === 1
                   )[0].comment
                 }
+              </Link>
+            </p>
+            <p>
+              <b>Production within subjects treatments are listed below.</b>
+            </p>
+            <p>
+              <Link
+                id="23"
+                to="/start?participant_id=1&treatment_id=assigned&study_id=2&session_id=3"
+              >
+                Assigned by the server
               </Link>
             </p>
           </div>

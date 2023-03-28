@@ -114,6 +114,14 @@ function BarChart() {
             )}
           ></svg>
         </Grid>
+        <Grid item xs={12}>
+          <hr
+            style={{
+              backgroundColor: "#aaaaaa",
+              height: 4,
+            }}
+          />
+        </Grid>
         <Grid item xs={12} style={{ margin: 0 }}>
           <Box display="flex" justifyContent="center">
             <Button

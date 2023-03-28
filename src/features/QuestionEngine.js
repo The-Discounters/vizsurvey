@@ -3,12 +3,23 @@ import { AmountType } from "./AmountType.js";
 import { InteractionType } from "./InteractionType.js";
 import { Answer } from "./Answer.js";
 import { secondsBetween } from "./ConversionUtil.js";
+import { loadTreatmentConfiguration } from "./TreatmentUtil.js";
 
 export const TIMESTAMP_FORMAT = "MM/dd/yyyy H:mm:ss:SSS ZZZZ";
 
 // TODO Need to capture errors in processing by settings state.status = StatusType.Error
 export class QuestionEngine {
   constructor() {}
+
+  loadTreatment(state) {
+    const { questions, instructions } = loadTreatmentConfiguration(
+      state.treatmentId
+    );
+    state.treatments = questions;
+    state.instructionTreatment = instructions[0];
+    state.status = this.nextStatus(state, false, this.isOnLastTreatment(state));
+    return state;
+  }
 
   currentTreatment(state) {
     return state.treatments[state.currentQuestionIdx];
@@ -107,13 +118,13 @@ export class QuestionEngine {
       state.highup,
       state.lowdown
     );
-    state.status = this.nextStatus(state, false);
+    state.status = this.nextStatus(state, false, this.isOnLastTreatment(state));
   }
 
   setLatestAnswerShown(state, date) {
     const latestAnswer = this.latestAnswer(state);
     latestAnswer.shownTimestamp = date;
-    if (this.isFirstTreatment(state)) {
+    if (this.isFirstTreatmentQuestion(state)) {
       state.screenAttributes.screenAvailHeight = window.availHeight;
       state.screenAttributes.screenAvailWidth = window.availWidth;
       state.screenAttributes.windowInnerHeight = window.innerHeight;
@@ -126,28 +137,40 @@ export class QuestionEngine {
   }
 
   // TODO we should renames these xxxQuestion not treatment.
-  isFirstTreatment(state) {
+  isFirstTreatmentQuestion(state) {
     return state.currentQuestionIdx === 0;
   }
 
-  isLastTreatment(state) {
+  isLastTreatmentQuestion(state) {
     return state.currentQuestionIdx === state.treatments.length - 1;
   }
 
-  isMiddleTreatment(state) {
+  isMiddleTreatmentQuestion(state) {
     if (state.treatments.length < 3) {
       return false;
     }
     return state.currentQuestionIdx === Math.floor(state.treatments.length / 2);
   }
 
+  isOnLastTreatment(state) {
+    return (
+      state.treatmentIds[state.treatmentIds.length - 1] === state.treatmentId
+    );
+  }
+
+  nextTreatmentId(state) {
+    const currentTreatmentIndex = state.treatmentIds.indexOf(state.treatmentId);
+    return state.treatmentIds[currentTreatmentIndex + 1];
+  }
+
   incNextQuestion(state) {
-    const onLastTreatment = this.isLastTreatment(state);
+    const onLastTreatmentQuestion = this.isLastTreatmentQuestion(state);
+    const onLastTreatment = this.isOnLastTreatment(state);
     if (
       state.status === StatusType.Survey ||
       state.status === StatusType.Attention
     ) {
-      if (!onLastTreatment) {
+      if (!onLastTreatmentQuestion) {
         state.currentQuestionIdx += 1;
         if (this.latestAnswer(state) === null) {
           const treatment = this.currentTreatment(state);
@@ -161,13 +184,23 @@ export class QuestionEngine {
             treatment.amountLater
           );
         }
+      } else {
+        if (!onLastTreatment) {
+          state.treatmentId = this.nextTreatmentId(state);
+          this.loadTreatment(state);
+          this.startSurvey(state);
+        }
       }
     }
-    state.status = this.nextStatus(state, onLastTreatment);
+    state.status = this.nextStatus(
+      state,
+      onLastTreatmentQuestion,
+      onLastTreatment
+    );
   }
 
   decPreviousQuestion(state) {
-    const onFirstTreatment = this.isFirstTreatment(state);
+    const onFirstTreatment = this.isFirstTreatmentQuestion(state);
     if (state.status === StatusType.Attention) {
       state.status = this.previousStatus(state, onFirstTreatment);
     } else if (state.status === StatusType.Survey && !onFirstTreatment) {
@@ -293,7 +326,15 @@ export class QuestionEngine {
     }
   }
 
-  nextStatus(state, onLastTreatment) {
+  nextState(state) {
+    return this.nextStatus(
+      state,
+      this.isLastTreatmentQuestion(state),
+      this.isOnLastTreatment(state)
+    );
+  }
+
+  nextStatus(state, onLastTreatmentQuestion, onLastTreatment) {
     switch (state.status) {
       case StatusType.Unitialized:
         return StatusType.Fetching;
@@ -306,11 +347,17 @@ export class QuestionEngine {
       case StatusType.MCLInstructions:
         return StatusType.Survey;
       case StatusType.Survey:
-        if (this.isLastTreatment(state) && onLastTreatment) {
+        if (
+          this.isLastTreatmentQuestion(state) &&
+          onLastTreatmentQuestion &&
+          onLastTreatment
+        ) {
           return StatusType.ExperienceQuestionaire;
         } else {
-          if (this.isMiddleTreatment(state)) {
+          if (this.isMiddleTreatmentQuestion(state)) {
             return StatusType.Attention;
+          } else if (onLastTreatmentQuestion && !onLastTreatment) {
+            return StatusType.MCLInstructions;
           } else {
             return StatusType.Survey;
           }
@@ -345,10 +392,10 @@ export class QuestionEngine {
       case StatusType.MCLInstructions:
         return StatusType.Instructions;
       case StatusType.Survey:
-        if (this.isFirstTreatment(state) && onFirstTreatment) {
+        if (this.isFirstTreatmentQuestion(state) && onFirstTreatment) {
           return StatusType.MCLInstructions;
         } else {
-          if (this.isMiddleTreatment(state)) {
+          if (this.isMiddleTreatmentQuestion(state)) {
             return StatusType.Attention;
           } else {
             return StatusType.Survey;

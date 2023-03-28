@@ -1,9 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { SystemZone } from "luxon";
-import {
-  loadAllTreatmentsConfiguration,
-  loadTreatmentConfiguration,
-} from "./TreatmentUtil.js";
+import { loadAllTreatmentsConfiguration } from "./TreatmentUtil.js";
 import { QuestionEngine } from "./QuestionEngine.js";
 import { StatusType } from "./StatusType.js";
 import { secondsBetween } from "./ConversionUtil.js";
@@ -16,6 +13,7 @@ export const questionSlice = createSlice({
   name: "questions", // I believe the global state is partitioned by the name value thus the terminology "slice"
   initialState: {
     allTreatments: null,
+    treatmentIds: [],
     treatmentId: null,
     participantId: null,
     sessionId: null,
@@ -101,10 +99,6 @@ export const questionSlice = createSlice({
       state.participantId = action.payload;
       return state;
     },
-    setTreatmentId(state, action) {
-      state.treatmentId = action.payload;
-      return state;
-    },
     setSessionId(state, action) {
       state.sessionId = action.payload;
       return state;
@@ -172,22 +166,17 @@ export const questionSlice = createSlice({
         state.timestamps.attentionCheckCompletedTimestamp
       );
       writeStateAsCSV(state);
-      state.status = qe.nextStatus(state, false);
+      state.status = qe.nextState(state);
     },
     loadTreatment(state) {
       state.status = StatusType.Fetching;
-      const { questions, instructions } = loadTreatmentConfiguration(
-        state.treatmentId
-      );
-      state.treatments = questions;
-      state.instructionTreatment = instructions[0];
-      state.status = qe.nextStatus(state, false);
+      qe.loadTreatment(state);
       return state;
     },
     loadAllTreatments(state) {
       state.status = StatusType.Fetching;
       state.allTreatments = loadAllTreatmentsConfiguration();
-      state.status = qe.nextStatus(state, false);
+      state.status = qe.nextState(state);
       return state;
     },
     consentShown(state, action) {
@@ -205,7 +194,7 @@ export const questionSlice = createSlice({
       );
       state.timezone = SystemZone.instance.name;
       writeStateAsCSV(state);
-      state.status = qe.nextStatus(state, false);
+      state.status = qe.nextState(state);
     },
     demographicShown(state, action) {
       state.timestamps.demographicShownTimestamp = action.payload;
@@ -217,7 +206,7 @@ export const questionSlice = createSlice({
         state.timestamps.demographicCompletedTimestamp
       );
       writeStateAsCSV(state);
-      state.status = qe.nextStatus(state, false);
+      state.status = qe.nextState(state);
     },
     introductionShown(state, action) {
       state.timestamps.introductionShownTimestamp = action.payload;
@@ -242,7 +231,7 @@ export const questionSlice = createSlice({
         state.timestamps.instructionsCompletedTimestamp
       );
       writeStateAsCSV(state);
-      state.status = qe.nextStatus(state, false);
+      state.status = qe.nextState(state);
     },
     setFeedback(state, action) {
       state.feedback = action.payload;
@@ -276,7 +265,7 @@ export const questionSlice = createSlice({
         state.timestamps.experienceSurveyQuestionsCompletedTimestamp
       );
       writeStateAsCSV(state);
-      state.status = qe.nextStatus(state, false);
+      state.status = qe.nextState(state);
     },
     financialLitSurveyQuestionsShown(state, action) {
       state.timestamps.financialLitSurveyQuestionsShownTimestamp =
@@ -290,7 +279,7 @@ export const questionSlice = createSlice({
         state.timestamps.financialLitSurveyQuestionsCompletedTimestamp
       );
       writeStateAsCSV(state);
-      state.status = qe.nextStatus(state, false);
+      state.status = qe.nextState(state);
     },
     purposeSurveyQuestionsShown(state, action) {
       state.timestamps.purposeSurveyQuestionsShownTimestamp = action.payload;
@@ -303,7 +292,7 @@ export const questionSlice = createSlice({
         state.timestamps.purposeSurveyQuestionsCompletedTimestamp
       );
       writeStateAsCSV(state);
-      state.status = qe.nextStatus(state, false);
+      state.status = qe.nextState(state);
     },
     debriefShownTimestamp(state, action) {
       state.timestamps.debriefShownTimestamp = action.payload;
@@ -315,11 +304,12 @@ export const questionSlice = createSlice({
         state.timestamps.debriefCompletedTimestamp
       );
       writeStateAsCSV(state);
-      state.status = qe.nextStatus(state, false);
+      state.status = qe.nextState(state);
     },
     clearState(state) {
       state.allTreatments = null;
       state.treatmentId = null;
+      state.treatmentIds = [];
       state.participantId = null;
       state.sessionId = null;
       state.studyId = null;
@@ -377,30 +367,40 @@ export const questionSlice = createSlice({
       state.error = null;
       state.userAgent = null;
     },
-    genRandomTreatment(state) {
-      // figure out the min and max treatment id
-      const allTreatments = loadAllTreatmentsConfiguration();
-      const min = allTreatments.reduce((pv, cv) => {
-        return cv.treatmentId < pv ? cv.treatmentId : pv;
-      }, allTreatments[0].treatmentId);
-      const max = allTreatments.reduce(
-        (pv, cv) => (cv.treatmentId > pv ? cv.treatmentId : pv),
-        allTreatments[0].treatmentId
-      );
-      state.treatmentId = getRandomIntInclusive(min, max);
+    setTreatmentId(state, action) {
+      if (isNaN(action.payload)) {
+        const allTreatments = loadAllTreatmentsConfiguration();
+        if (action.payload === "assigned") {
+          // TODO this needs to fetch the treatment id order from the server
+          state.treatmentId = 20;
+          state.treatmentIds = [20, 21, 22];
+        } else {
+          const min = allTreatments.reduce((pv, cv) => {
+            return cv.treatmentId < pv ? cv.treatmentId : pv;
+          }, allTreatments[0].treatmentId);
+          const max = allTreatments.reduce(
+            (pv, cv) => (cv.treatmentId > pv ? cv.treatmentId : pv),
+            allTreatments[0].treatmentId
+          );
+          if (action.payload === "all") {
+            state.treatmentId = action.payload;
+          } else {
+            state.treatmentId = getRandomIntInclusive(min, max);
+          }
+        }
+      } else {
+        state.treatmentId = +action.payload;
+        state.treatmentIds = [+action.payload];
+      }
     },
     nextStatus(state) {
-      qe.nextStatus(state);
+      qe.nextState(state);
     },
     previousStatus(state) {
       qe.previousStatus(state);
     },
   },
 });
-
-export const isFirstTreatment = (state) => qe.isFirstTreatment(state.questions);
-
-export const isLastTreatment = (state) => qe.isLastTreatment(state.questions);
 
 export const selectAllQuestions = (state) => qe.allQuestions(state.questions);
 
@@ -523,7 +523,6 @@ export const {
   debriefShownTimestamp,
   debriefCompleted,
   clearState,
-  genRandomTreatment,
   nextStatus,
   setUserAgent,
 } = questionSlice.actions;
