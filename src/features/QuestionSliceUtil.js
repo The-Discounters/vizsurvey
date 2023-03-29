@@ -32,18 +32,96 @@ export const getRandomIntInclusive = (min, max) => {
   return Math.floor(Math.random() * (max - min + 1) + min); //The maximum is inclusive and the minimum is inclusive
 };
 
+/**
+ * Converts array timestamp properties like
+ * instructionsShownTimestamp: [{treatmentId: 1, value: <value1>},{treatmentId: 2, value: <value2>}]
+ * to
+ * {instructionsShownTimestamp_1: <value1>, instructionsShownTimestamp_2: >value2>}
+ * TODO does this need to be exported?  How do I unit test without exporting.
+ * @param {*} timestamps
+ */
+export const flattenTreatmentValueAry = (propertyName, timestamps) => {
+  return timestamps.reduce((acc, cv) => {
+    const key = `${propertyName}_${cv.treatmentId}`;
+    acc[key] = cv.value;
+    return acc;
+  }, {});
+};
+
+export const flattenTimestampObj = (timestamps) => {
+  let result = {
+    consentShownTimestamp: timestamps.consentShownTimestamp,
+    consentCompletedTimestamp: timestamps.consentCompletedTimestamp,
+    consentTimeSec: timestamps.consentTimeSec,
+    demographicShownTimestamp: timestamps.demographicShownTimestamp,
+    demographicCompletedTimestamp: timestamps.demographicCompletedTimestamp,
+    demographicTimeSec: timestamps.demographicTimeSec,
+    introductionShownTimestamp: timestamps.introductionShownTimestamp,
+    introductionCompletedTimestamp: timestamps.introductionCompletedTimestamp,
+    introductionTimeSec: timestamps.introductionTimeSec,
+    experienceSurveyQuestionsShownTimestamp:
+      timestamps.experienceSurveyQuestionsShownTimestamp,
+    experienceSurveyQuestionsCompletedTimestamp:
+      timestamps.experienceSurveyQuestionsCompletedTimestamp,
+    experienceSurveyTimeSec: timestamps.experienceSurveyTimeSec,
+    financialLitSurveyQuestionsShownTimestamp:
+      timestamps.financialLitSurveyQuestionsShownTimestamp,
+    financialLitSurveyQuestionsCompletedTimestamp:
+      timestamps.financialLitSurveyQuestionsCompletedTimestamp,
+    financialLitSurveyTimeSec: timestamps.financialLitSurveyTimeSec,
+    purposeSurveyQuestionsShownTimestamp:
+      timestamps.purposeSurveyQuestionsShownTimestamp,
+    purposeSurveyQuestionsCompletedTimestamp:
+      timestamps.purposeSurveyQuestionsCompletedTimestamp,
+    purposeSurveyTimeSec: timestamps.purposeSurveyTimeSec,
+    debriefShownTimestamp: timestamps.debriefShownTimestamp,
+    debriefCompletedTimestamp: timestamps.debriefCompletedTimestamp,
+    debriefTimeSec: timestamps.debriefTimeSec,
+  };
+  result = {
+    ...result,
+    ...flattenTreatmentValueAry(
+      "instructionsShownTimestamp",
+      timestamps.instructionsShownTimestamp
+    ),
+    ...flattenTreatmentValueAry(
+      "instructionsCompletedTimestamp",
+      timestamps.instructionsCompletedTimestamp
+    ),
+    ...flattenTreatmentValueAry(
+      "instructionsTimeSec",
+      timestamps.instructionsTimeSec
+    ),
+    ...flattenTreatmentValueAry(
+      "attentionCheckShownTimestamp",
+      timestamps.attentionCheckShownTimestamp
+    ),
+    ...flattenTreatmentValueAry(
+      "attentionCheckCompletedTimestamp",
+      timestamps.attentionCheckCompletedTimestamp
+    ),
+    ...flattenTreatmentValueAry(
+      "attentionCheckTimeSec",
+      timestamps.attentionCheckTimeSec
+    ),
+  };
+  return result;
+};
+
 export const flattenState = (state) => {
   // turn answer rows into columns with position number as suffix
   const answersAsObj = convertAnswersAryToObj(state.answers);
+  const treatmentIds = state.treatmentIds.toString().replaceAll(",", "-");
+  const timetamps = flattenTimestampObj(state.timestamps);
 
   const flattenedState = {
     ...{
       participantId: state.participantId,
       sessionId: state.sessionId,
       studyId: state.studyId,
-      treatmentId: state.treatmentId,
+      treatmentId: treatmentIds,
     },
-    ...state.timestamps,
+    ...timetamps,
     consentChecked: state.consentChecked,
     // demographic
     countryOfResidence: state.countryOfResidence,

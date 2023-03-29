@@ -17,6 +17,7 @@
     "cypress-real-events": "^1.7.1",
     "d3": "^7.4.4",
     "env-cmd": "^10.1.0",
+    "firebase": "^9.18.0",
     "formik": "^2.2.9",
     "immer": "^8.0.1",
     "lodash": "^4.17.21",

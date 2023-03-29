@@ -11,6 +11,12 @@ export const convertKeysToUnderscore = (obj) => {
   });
 };
 
+export const setAllPropertiesEmpty = (obj) => {
+  return _.mapValues(obj, function () {
+    return "";
+  });
+};
+
 export const convertAnswersAryToObj = (answersAry) => {
   const result = answersAry.reduce((acc, current) => {
     // eslint-disable-next-line no-undef
@@ -36,10 +42,4 @@ export const convertAnswersAryToObj = (answersAry) => {
     };
   }, {});
   return result;
-};
-
-export const setAllPropertiesEmpty = (obj) => {
-  return _.mapValues(obj, function () {
-    return "";
-  });
 };

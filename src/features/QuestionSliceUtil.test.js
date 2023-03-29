@@ -1,5 +1,10 @@
 import { stateToDate } from "./ConversionUtil";
-//import { getRandomIntInclusive } from "./QuestionSliceUtil";
+import {
+  getRandomIntInclusive,
+  flattenTreatmentValueAry,
+  setAllPropertiesEmpty,
+  flattenState,
+} from "./QuestionSliceUtil";
 
 describe("questionSlice tests", () => {
   test("Check how to use Luxon diff to calcualte elapsed time in seconds.", () => {
@@ -39,25 +44,38 @@ describe("questionSlice tests", () => {
     });
   });
 
-  test("flattenState test.", () => {
-    const input = {
-      participantId: null,
-      sessionId: null,
-      studyId: null,
-      treatmentId: null,
-      experienceSurvey: { experienceAnswer: "experience answer" },
-      financialLitSurvey: { financialLitAnswer: "financial answer" },
-      purposeSurvey: { purposeAnswer: "purpose answer" },
+  test("Test getRandomIntInclusive.", () => {
+    let value = getRandomIntInclusive(0, 0);
+    expect(value).toBe(0);
+    expect(Number.isInteger(value)).toBe(true);
+    value = getRandomIntInclusive(0, 1);
+    expect(value).toBeGreaterThanOrEqual(0);
+    expect(value).toBeLessThanOrEqual(1);
+    value = getRandomIntInclusive(3, 3);
+    expect(value).toBeGreaterThanOrEqual(3);
+    expect(value).toBeLessThanOrEqual(3);
+  });
+
+  test("Test flattenState", () => {
+    const state = {
+      treatmentIds: [1, 2],
+      treatmentId: 1,
+      participantId: 2,
+      sessionId: 3,
+      studyId: 4,
+      experienceSurvey: {},
+      financialLitSurvey: {},
+      purposeSurvey: {},
       screenAttributes: {
         // screen properties
         screenAvailHeight: null,
         screenAvailWidth: null,
-        screenColorDepth: null,
-        screenWidth: null,
-        screenHeight: null,
-        screenOrientationAngle: null,
-        screenOrientationType: null,
-        screenPixelDepth: null,
+        screenColorDepth: screen.colorDepth,
+        screenWidth: screen.width,
+        screenHeight: screen.height,
+        screenOrientationAngle: "100",
+        screenOrientationType: "type",
+        screenPixelDepth: screen.pixelDepth,
         // window properties
         windowDevicePixelRatio: window.devicePixelRatio,
         windowInnerHeight: null,
@@ -67,12 +85,14 @@ describe("questionSlice tests", () => {
         windowScreenLeft: null,
         windowScreenTop: null,
       },
-      countryOfResidence: null,
-      vizFamiliarity: null,
-      age: null,
-      gender: null,
-      selfDescribeGender: null,
-      profession: null,
+      countryOfResidence: "",
+      vizFamiliarity: "",
+      age: "",
+      gender: "",
+      selfDescribeGender: "",
+      profession: "",
+      employment: "",
+      selfDescribeEmployment: "",
       consentChecked: null,
       timezone: null,
       timestamps: {
@@ -85,12 +105,12 @@ describe("questionSlice tests", () => {
         introductionShownTimestamp: null,
         introductionCompletedTimestamp: null,
         introductionTimeSec: null,
-        instructionsShownTimestamp: null,
-        instructionsCompletedTimestamp: null,
-        instructionsTimeSec: null,
-        attentionCheckShownTimestamp: null,
-        attentionCheckCompletedTimestamp: null,
-        attentionCheckTimeSec: null,
+        instructionsShownTimestamp: [],
+        instructionsCompletedTimestamp: [],
+        instructionsTimeSec: [],
+        attentionCheckShownTimestamp: [],
+        attentionCheckCompletedTimestamp: [],
+        attentionCheckTimeSec: [],
         experienceSurveyQuestionsShownTimestamp: null,
         experienceSurveyQuestionsCompletedTimestamp: null,
         experienceSurveyTimeSec: null,
@@ -104,28 +124,34 @@ describe("questionSlice tests", () => {
         debriefCompletedTimestamp: null,
         debriefTimeSec: null,
       },
-      attentionCheck: null,
-      feedback: null,
+      attentionCheck: [],
+      feedback: "",
+      treatments: [],
+      instructionTreatment: null,
       answers: [],
-      highup: null,
-      lowdown: null,
-      status: null,
+      currentQuestionIdx: 0,
+      highup: undefined,
+      lowdown: undefined,
+      status: "status",
       error: null,
       userAgent: null,
     };
+    const result = setAllPropertiesEmpty(flattenState(state));
+    expect(JSON.stringify(result)).toBe("");
   });
 
-  // test("Test getRandomIntInclusive.", () => {
-  //   let value = getRandomIntInclusive(0, 0);
-  //   expect(value).toBe(0);
-  //   expect(Number.isInteger(value)).toBe(true);
-  //   value = getRandomIntInclusive(0, 1);
-  //   expect(value).toBeGreaterThanOrEqual(0);
-  //   expect(value).toBeLessThanOrEqual(1);
-  //   value = getRandomIntInclusive(3, 3);
-  //   expect(value).toBeGreaterThanOrEqual(3);
-  //   expect(value).toBeLessThanOrEqual(3);
-  // });
+  test("Test flattenTimestamp", () => {
+    const treatmentValueAry = [
+      { treatmentId: 1, value: "timestamp1" },
+      { treatmentId: 2, value: "timestamp2" },
+    ];
+    const result = flattenTreatmentValueAry("timestamps", treatmentValueAry);
+    expect(result).toStrictEqual({
+      timestamps_1: "timestamp1",
+      timestamps_2: "timestamp2",
+    });
+  });
+
   // I used this test to gather some data on what the random generation of treatment id distribution looked like.
   // test("Test getRandomIntInclusive distribution.", () => {
   //   //const treatmentIds = new Array();

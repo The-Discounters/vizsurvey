@@ -12,7 +12,7 @@
   "introductionShownTimestamp": "",
   "introductionCompletedTimestamp": "",
   "introductionTimeSec": "",
-  "instructionsShownTimestamp": "",
+  "instructionsShownTimestamp": [],
   "instructionsCompletedTimestamp": "",
   "instructionsTimeSec": "",
   "attentionCheckShownTimestamp": "",

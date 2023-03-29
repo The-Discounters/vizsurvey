@@ -5,6 +5,7 @@ import { QuestionEngine } from "./QuestionEngine.js";
 import { StatusType } from "./StatusType.js";
 import { secondsBetween } from "./ConversionUtil.js";
 import { getRandomIntInclusive, writeStateAsCSV } from "./QuestionSliceUtil.js";
+import { getId } from "./firebase.js";
 
 const qe = new QuestionEngine();
 
@@ -60,12 +61,12 @@ export const questionSlice = createSlice({
       introductionShownTimestamp: null,
       introductionCompletedTimestamp: null,
       introductionTimeSec: null,
-      instructionsShownTimestamp: null,
-      instructionsCompletedTimestamp: null,
-      instructionsTimeSec: null,
-      attentionCheckShownTimestamp: null,
-      attentionCheckCompletedTimestamp: null,
-      attentionCheckTimeSec: null,
+      instructionsShownTimestamp: [],
+      instructionsCompletedTimestamp: [],
+      instructionsTimeSec: [],
+      attentionCheckShownTimestamp: [],
+      attentionCheckCompletedTimestamp: [],
+      attentionCheckTimeSec: [],
       experienceSurveyQuestionsShownTimestamp: null,
       experienceSurveyQuestionsCompletedTimestamp: null,
       experienceSurveyTimeSec: null,
@@ -79,7 +80,7 @@ export const questionSlice = createSlice({
       debriefCompletedTimestamp: null,
       debriefTimeSec: null,
     },
-    attentionCheck: null,
+    attentionCheck: [],
     feedback: "",
     treatments: [],
     instructionTreatment: null,
@@ -158,13 +159,21 @@ export const questionSlice = createSlice({
       state.purposeSurvey[action.payload.key] = action.payload.value;
     },
     setAttentionCheck(state, action) {
-      state.attentionCheck = action.payload.value;
-      state.timestamps.attentionCheckCompletedTimestamp =
-        action.payload.timestamp;
-      state.timestamps.attentionCheckTimeSec = secondsBetween(
-        state.timestamps.attentionCheckShownTimestamp,
-        state.timestamps.attentionCheckCompletedTimestamp
-      );
+      state.attentionCheck.push({
+        treatmentId: state.treatmentId,
+        value: action.payload.value,
+      });
+      state.timestamps.attentionCheckCompletedTimestamp.push({
+        treatmentId: state.treatmentId,
+        value: action.payload.timestamp,
+      });
+      const shownTimestamp = state.timestamps.attentionCheckShownTimestamp.find(
+        (cv) => cv.treatmentId === state.treatmentId
+      ).timestamp;
+      state.timestamps.attentionCheckTimeSec.push({
+        treatmentId: state.treatmentId,
+        value: secondsBetween(shownTimestamp, action.payload.timestamp),
+      });
       writeStateAsCSV(state);
       state.status = qe.nextState(state);
     },
@@ -222,14 +231,23 @@ export const questionSlice = createSlice({
       qe.startSurvey(state);
     },
     instructionsShown(state, action) {
-      state.timestamps.instructionsShownTimestamp = action.payload;
+      state.timestamps.instructionsShownTimestamp.push({
+        treatmentId: state.treatmentId,
+        value: action.payload,
+      });
     },
     instructionsCompleted(state, action) {
-      state.timestamps.instructionsCompletedTimestamp = action.payload;
-      state.timestamps.instructionsTimeSec = secondsBetween(
-        state.timestamps.instructionsShownTimestamp,
-        state.timestamps.instructionsCompletedTimestamp
-      );
+      state.timestamps.instructionsCompletedTimestamp.push({
+        treatmentId: state.treatmentId,
+        value: action.payload,
+      });
+      const shownTimestamp = state.timestamps.instructionsShownTimestamp.find(
+        (cv) => cv.treatmentId === state.treatmentId
+      ).timestamp;
+      state.timestamps.instructionsTimeSec.push({
+        treatmentId: state.treatmentId,
+        value: secondsBetween(shownTimestamp, action.payload),
+      });
       writeStateAsCSV(state);
       state.status = qe.nextState(state);
     },
@@ -241,7 +259,10 @@ export const questionSlice = createSlice({
       return state;
     },
     attentionCheckShown(state, action) {
-      state.timestamps.attentionCheckShownTimestamp = action.payload;
+      state.timestamps.attentionCheckShownTimestamp.push({
+        treatmentId: state.treatmentId,
+        value: action.payload,
+      });
     },
     // we define our actions on the slice of global store data here.
     answer(state, action) {
@@ -335,12 +356,12 @@ export const questionSlice = createSlice({
         introductionShownTimestamp: null,
         introductionCompletedTimestamp: null,
         introductionTimeSec: null,
-        instructionsShownTimestamp: null,
-        instructionsCompletedTimestamp: null,
-        instructionsTimeSec: null,
-        attentionCheckShownTimestamp: null,
-        attentionCheckCompletedTimestamp: null,
-        attentionCheckTimeSec: null,
+        instructionsShownTimestamp: [],
+        instructionsCompletedTimestamp: [],
+        instructionsTimeSec: [],
+        attentionCheckShownTimestamp: [],
+        attentionCheckCompletedTimestamp: [],
+        attentionCheckTimeSec: [],
         experienceSurveyQuestionsShownTimestamp: null,
         experienceSurveyQuestionsCompletedTimestamp: null,
         experienceSurveyTimeSec: null,
@@ -354,7 +375,7 @@ export const questionSlice = createSlice({
         debriefCompletedTimestamp: null,
         debriefTimeSec: null,
       };
-      state.attentionCheck = null;
+      state.attentionCheck = [];
       state.consentChecked = false;
       state.feedback = "";
       state.treatments = [];
@@ -372,6 +393,7 @@ export const questionSlice = createSlice({
         const allTreatments = loadAllTreatmentsConfiguration();
         if (action.payload === "assigned") {
           // TODO this needs to fetch the treatment id order from the server
+          getId();
           state.treatmentId = 20;
           state.treatmentIds = [20, 21, 22];
         } else {
