@@ -28,13 +28,7 @@ import {
   fetchAllTreatments,
   getStatus,
   clearState,
-  setTreatmentId,
-  setSessionId,
-  setParticipantId,
-  setStudyId,
-  setUserAgent,
-  loadTreatment,
-  nextStatus,
+  initializeSurvey,
 } from "./features/questionSlice.js";
 import { StatusType } from "./features/StatusType.js";
 import { Consent } from "./components/Consent.jsx";
@@ -114,15 +108,15 @@ const GenTreatmentId = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    var treatmentId = searchParams.get("treatment_id");
-    dispatch(setTreatmentId(treatmentId));
-    dispatch(setSessionId(searchParams.get("session_id")));
-    dispatch(setParticipantId(searchParams.get("participant_id")));
-    dispatch(setStudyId(searchParams.get("study_id")));
-    dispatch(setUserAgent(navigator.userAgent));
-    dispatch(nextStatus());
-    dispatch(loadTreatment());
-    dispatch(nextStatus());
+    dispatch(
+      initializeSurvey({
+        treatmentId: searchParams.get("treatment_id"),
+        sessionId: searchParams.get("session_id"),
+        participantId: searchParams.get("participant_id"),
+        studyId: searchParams.get("study_id"),
+        userAgent: navigator.userAgent,
+      })
+    );
   }, []);
 
   useEffect(() => {

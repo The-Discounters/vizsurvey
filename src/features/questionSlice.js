@@ -1,4 +1,4 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { SystemZone } from "luxon";
 import { loadAllTreatmentsConfiguration } from "./TreatmentUtil.js";
 import { QuestionEngine } from "./QuestionEngine.js";
@@ -6,8 +6,45 @@ import { StatusType } from "./StatusType.js";
 import { secondsBetween } from "./ConversionUtil.js";
 import { getRandomIntInclusive, writeStateAsCSV } from "./QuestionSliceUtil.js";
 import { getId } from "./firebase.js";
+import { LATIN_SQUARE } from "./TreatmentUtil.js";
 
 const qe = new QuestionEngine();
+
+export const initializeSurvey = createAsyncThunk(
+  "survey/initialize",
+  async (parameters, thunkAPI) => {
+    const result = { ...parameters };
+    try {
+      if (isNaN(parameters.treatmentId)) {
+        const allTreatments = loadAllTreatmentsConfiguration();
+        if (parameters.treatmentId === "assigned") {
+          const response = await getId();
+          result.serverSequenceId = response;
+          const latinSquareIndex =
+            result.serverSequenceId % LATIN_SQUARE.length;
+          result.treatmentIds = LATIN_SQUARE[latinSquareIndex];
+          result.treatmentId = result.treatmentIds[0];
+        } else {
+          const min = allTreatments.reduce((pv, cv) => {
+            return cv.treatmentId < pv ? cv.treatmentId : pv;
+          }, allTreatments[0].treatmentId);
+          const max = allTreatments.reduce(
+            (pv, cv) => (cv.treatmentId > pv ? cv.treatmentId : pv),
+            allTreatments[0].treatmentId
+          );
+          result.treatmentId = getRandomIntInclusive(min, max);
+        }
+      } else {
+        result.treatmentId = +parameters.treatmentId.treatmentId;
+        result.treatmentIds = [thunkAPI.getState().questions.treatmentId];
+      }
+      return result;
+    } catch (err) {
+      const { rejectWithValue } = thunkAPI;
+      return rejectWithValue(err.toString());
+    }
+  }
+);
 
 // Define the initial state of the store for this slicer.
 export const questionSlice = createSlice({
@@ -17,6 +54,7 @@ export const questionSlice = createSlice({
     treatmentIds: [],
     treatmentId: null,
     participantId: null,
+    serverSequenceId: null,
     sessionId: null,
     studyId: null,
     experienceSurvey: {},
@@ -93,23 +131,6 @@ export const questionSlice = createSlice({
     userAgent: null,
   }, // the initial state of our global data (under name slice)
   reducers: {
-    setUserAgent(state, action) {
-      state.userAgent = action.payload;
-    },
-    setParticipantId(state, action) {
-      state.participantId = action.payload;
-      return state;
-    },
-    setSessionId(state, action) {
-      state.sessionId = action.payload;
-      return state;
-    },
-    setStudyId(state, action) {
-      state.studyId = action.payload;
-      state.experienceSurvey.studyId = action.payload;
-      state.financialLitSurvey.studyId = action.payload;
-      state.purposeSurvey.studyId = action.payload;
-    },
     setCountryOfResidence(state, action) {
       state.countryOfResidence = action.payload;
     },
@@ -185,7 +206,6 @@ export const questionSlice = createSlice({
     loadAllTreatments(state) {
       state.status = StatusType.Fetching;
       state.allTreatments = loadAllTreatmentsConfiguration();
-      state.status = qe.nextState(state);
       return state;
     },
     consentShown(state, action) {
@@ -332,6 +352,7 @@ export const questionSlice = createSlice({
       state.treatmentId = null;
       state.treatmentIds = [];
       state.participantId = null;
+      state.serverSequenceId = null;
       state.sessionId = null;
       state.studyId = null;
       state.experienceSurvey = {};
@@ -388,39 +409,33 @@ export const questionSlice = createSlice({
       state.error = null;
       state.userAgent = null;
     },
-    setTreatmentId(state, action) {
-      if (isNaN(action.payload)) {
-        const allTreatments = loadAllTreatmentsConfiguration();
-        if (action.payload === "assigned") {
-          // TODO this needs to fetch the treatment id order from the server
-          getId();
-          state.treatmentId = 20;
-          state.treatmentIds = [20, 21, 22];
-        } else {
-          const min = allTreatments.reduce((pv, cv) => {
-            return cv.treatmentId < pv ? cv.treatmentId : pv;
-          }, allTreatments[0].treatmentId);
-          const max = allTreatments.reduce(
-            (pv, cv) => (cv.treatmentId > pv ? cv.treatmentId : pv),
-            allTreatments[0].treatmentId
-          );
-          if (action.payload === "all") {
-            state.treatmentId = action.payload;
-          } else {
-            state.treatmentId = getRandomIntInclusive(min, max);
-          }
-        }
-      } else {
-        state.treatmentId = +action.payload;
-        state.treatmentIds = [+action.payload];
-      }
-    },
     nextStatus(state) {
       qe.nextState(state);
     },
     previousStatus(state) {
       qe.previousStatus(state);
     },
+  },
+
+  extraReducers: (builder) => {
+    builder
+      .addCase(initializeSurvey.pending, (state) => {
+        state.status = StatusType.Fetching;
+      })
+      .addCase(initializeSurvey.fulfilled, (state, action) => {
+        state.participantId = action.payload.participantId;
+        state.sessionId = action.payload.sessionId;
+        state.studyId = action.payload.studyId;
+        state.userAgent = action.payload.userAgent;
+        state.serverSequenceId = action.payload.serverSequenceId;
+        state.treatmentId = action.payload.treatmentId;
+        state.treatmentIds = action.payload.treatmentIds;
+        qe.loadTreatment(state);
+      })
+      .addCase(initializeSurvey.rejected, (state, action) => {
+        state.error = action.error;
+        state.status = StatusType.Error;
+      });
   },
 });
 
@@ -488,12 +503,6 @@ export const getCurrentChoice = (state) =>
 
 export const getStatus = (state) => state.questions.status;
 
-export const fetchTreatmentId = (state) => state.questions.treatmentId;
-
-export const fetchParticipantId = (state) => state.questions.participantId;
-
-export const fetchSessionId = (state) => state.questions.sessionId;
-
 export const getStudyId = (state) => state.questions.studyId;
 
 export const getConsentChecked = (state) => state.questions.consentChecked;
@@ -506,10 +515,6 @@ export const {
   answer,
   previousQuestion,
   nextQuestion,
-  setParticipantId,
-  setTreatmentId,
-  setSessionId,
-  setStudyId,
   consentShown,
   consentCompleted,
   demographicShown,

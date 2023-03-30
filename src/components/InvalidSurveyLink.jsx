@@ -31,8 +31,8 @@ const InvalidSurveyLink = () => {
             There has been an error in the application. You may have been
             provided an invalid survey link. Please click&nbsp;
             <a
-              href={`mailto:pncordone@wpi.edu?subject=!!!Invlaid survey link!!!t&body=${encodeURIComponent(
-                "TODO put in invalid survey email text."
+              href={`mailto:pncordone@wpi.edu?subject=[Vizsurvey Error]&body=${encodeURIComponent(
+                "We appologize.  There was an error with the survey application.  If you click send on this email, it will inform us of the error which we appreciate; however, it will not be an aynonomous email since it will be sent from your email client."
               )}`}
             >
               here

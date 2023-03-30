@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { writeFile } from "./FileIOAdapter.js";
 import {
   convertKeysToUnderscore,
@@ -146,12 +147,12 @@ export const flattenState = (state) => {
 };
 
 export const writeStateAsCSV = (state) => {
-  const flattenedState = flattenState(state);
-  const allKeysState = JSON.stringify(setAllPropertiesEmpty(flattenedState));
-  writeFile(stateFormatFilename(state), allKeysState);
-  // change capital letter in camel case to _ with lower case letter to make the column headers easier to read when importing to excel
-  const underscoreKeys = convertKeysToUnderscore(flattenedState);
-  const filename = CSVDataFilename(state);
-  const CSVData = convertToCSV(underscoreKeys);
-  writeFile(filename, CSVData);
+  // const flattenedState = flattenState(state);
+  // const allKeysState = JSON.stringify(setAllPropertiesEmpty(flattenedState));
+  // writeFile(stateFormatFilename(state), allKeysState);
+  // // change capital letter in camel case to _ with lower case letter to make the column headers easier to read when importing to excel
+  // const underscoreKeys = convertKeysToUnderscore(flattenedState);
+  // const filename = CSVDataFilename(state);
+  // const CSVData = convertToCSV(underscoreKeys);
+  // writeFile(filename, CSVData);
 };

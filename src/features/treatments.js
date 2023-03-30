@@ -117,3 +117,22 @@ export const TREATMENTS_PROD_CSV = `treatment_id,position,view_type,interaction,
 3,8,barchart,none,none,77,3,,118,16,,120,33,1200,300,,,,,,,no,,Barchart MEL question experiment 3 of date/delay paper full screen.
 3,instructions,barchart,none,none,300,2,,700,7,,1000,15,1200,300,,,,,,,no,introduction-barchart-no-ticks-right,Barchart MEL question experiment 3 of date/delay paper full screen.
 `;
+
+// define your latin square.  I used https://cs.uwaterloo.ca/~dmasson/tools/latin_square/
+export const LATIN_SQUARE_PROD = [
+  [1, 2, 3],
+  [1, 3, 2],
+  [3, 1, 2],
+  [3, 2, 1],
+  [2, 3, 1],
+  [2, 1, 3],
+];
+
+export const LATIN_SQUARE_DEV = [
+  [20, 21, 22],
+  [20, 22, 21],
+  [22, 20, 21],
+  [22, 21, 20],
+  [21, 22, 20],
+  [21, 20, 22],
+];

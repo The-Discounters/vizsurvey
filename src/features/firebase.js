@@ -15,17 +15,16 @@ const app = initializeApp(firebaseConfig);
 // Initialize Realtime Database and get a reference to the service
 const database = getDatabase(app);
 
-export const getId = () => {
-  const dbRef = ref(database);
-  get(child(dbRef, "/"))
-    .then((snapshot) => {
-      if (snapshot.exists()) {
-        console.log("exists: " + JSON.stringify(snapshot.val()));
-      } else {
-        console.log("No data available");
-      }
-    })
-    .catch((error) => {
-      console.error(error);
-    });
+export const getId = async () => {
+  try {
+    const dbRef = ref(database);
+    const snapshot = await get(child(dbRef, "/"));
+    if (snapshot.exists()) {
+      return snapshot.val().participant_sequence;
+    } else {
+      return null;
+    }
+  } catch (error) {
+    console.error(error);
+  }
 };

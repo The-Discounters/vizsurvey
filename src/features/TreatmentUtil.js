@@ -4,13 +4,25 @@ import { ViewType } from "./ViewType.js";
 import { InteractionType } from "./InteractionType.js";
 import { AmountType } from "./AmountType.js";
 import { stringToDate, dateToState } from "./ConversionUtil.js";
-import { TREATMENTS_DEV_CSV, TREATMENTS_PROD_CSV } from "./treatments.js";
+import {
+  TREATMENTS_DEV_CSV,
+  TREATMENTS_PROD_CSV,
+  LATIN_SQUARE_DEV,
+  LATIN_SQUARE_PROD,
+} from "./treatments.js";
 
 var TREATMENTS_CSV;
 if (process.env.REACT_APP_ENV !== "production") {
   TREATMENTS_CSV = TREATMENTS_DEV_CSV;
 } else {
   TREATMENTS_CSV = TREATMENTS_PROD_CSV;
+}
+
+export var LATIN_SQUARE;
+if (process.env.REACT_APP_ENV !== "production") {
+  LATIN_SQUARE = LATIN_SQUARE_DEV;
+} else {
+  LATIN_SQUARE = LATIN_SQUARE_PROD;
 }
 
 export const INSTRUCTIONS_TREATMENT_POSITION = "instructions";
