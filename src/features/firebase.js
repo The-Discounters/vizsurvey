@@ -1,5 +1,12 @@
 import { initializeApp } from "firebase/app";
-import { getDatabase, ref, child, get } from "firebase/database";
+import {
+  getDatabase,
+  ref,
+  child,
+  get,
+  increment,
+  update,
+} from "firebase/database";
 
 // TODO: Replace the following with your app's Firebase project configuration
 // See: https://firebase.google.com/docs/web/learn-more#config-object
@@ -26,5 +33,18 @@ export const getId = async () => {
     }
   } catch (error) {
     console.error(error);
+  }
+};
+
+export const getServerSequenceId = async () => {
+  const dbRef = ref(database);
+  const updates = {};
+  updates[`/participant_sequence`] = increment(1);
+  update(dbRef, updates);
+  const snapshot = await get(child(dbRef, "/"));
+  if (snapshot.exists()) {
+    return snapshot.val().participant_sequence;
+  } else {
+    return null;
   }
 };
