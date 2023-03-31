@@ -3,7 +3,7 @@ import { getId, getServerSequenceId } from "./firebase.js";
 describe("Firebase test", () => {
   const generatedSequences = [];
 
-  // convert an array to a set and convert back
+  //convert an array to a set and convert back
   function getUniqueArray(arr) {
     return [...new Set(arr)];
   }
@@ -24,10 +24,7 @@ describe("Firebase test", () => {
 
   test("Validate getServerSequenceId produces sequential ids when called serially.", async () => {
     const sequence1 = await getServerSequenceId();
-    console.log("sequence1: " + sequence1);
     const sequence2 = await getServerSequenceId();
-    console.log("sequence2: " + sequence2);
-
     expect(sequence2).toBe(sequence1 + 1);
   });
 

@@ -5,7 +5,7 @@ import { QuestionEngine } from "./QuestionEngine.js";
 import { StatusType } from "./StatusType.js";
 import { secondsBetween } from "./ConversionUtil.js";
 import { getRandomIntInclusive, writeStateAsCSV } from "./QuestionSliceUtil.js";
-import { getId } from "./firebase.js";
+import { getServerSequenceId } from "./firebase.js";
 import { LATIN_SQUARE } from "./TreatmentUtil.js";
 
 const qe = new QuestionEngine();
@@ -18,7 +18,7 @@ export const initializeSurvey = createAsyncThunk(
       if (isNaN(parameters.treatmentId)) {
         const allTreatments = loadAllTreatmentsConfiguration();
         if (parameters.treatmentId === "assigned") {
-          const response = await getId();
+          const response = await getServerSequenceId();
           result.serverSequenceId = response;
           const latinSquareIndex =
             result.serverSequenceId % LATIN_SQUARE.length;
