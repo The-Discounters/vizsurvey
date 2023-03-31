@@ -14,7 +14,7 @@ import "../App.css";
 import { ViewType } from "../features/ViewType.js";
 import { navigateFromStatus } from "./Navigate.js";
 import {
-  introductionShown,
+  MCLInstructionsShown,
   MCLInstructionsCompleted,
   fetchCurrentTreatment,
   getInstructionTreatment,
@@ -51,7 +51,7 @@ const MCLInstructions = () => {
     );
 
   useEffect(() => {
-    dispatch(introductionShown(dateToState(DateTime.now())));
+    dispatch(MCLInstructionsShown(dateToState(DateTime.now())));
     setChoice("");
     if (!treatment) navigate("/invalidlink");
   }, []);

@@ -96,12 +96,12 @@ export const questionSlice = createSlice({
       demographicShownTimestamp: null,
       demographicCompletedTimestamp: null,
       demographicTimeSec: null,
-      introductionShownTimestamp: null,
-      introductionCompletedTimestamp: null,
-      introductionTimeSec: null,
-      instructionsShownTimestamp: [],
-      instructionsCompletedTimestamp: [],
-      instructionsTimeSec: [],
+      introductionShownTimestamp: [],
+      introductionCompletedTimestamp: [],
+      introductionTimeSec: [],
+      instructionsShownTimestamp: null,
+      instructionsCompletedTimestamp: null,
+      instructionsTimeSec: null,
       attentionCheckShownTimestamp: [],
       attentionCheckCompletedTimestamp: [],
       attentionCheckTimeSec: [],
@@ -237,39 +237,38 @@ export const questionSlice = createSlice({
       writeStateAsCSV(state);
       state.status = qe.nextState(state);
     },
-    introductionShown(state, action) {
-      state.timestamps.introductionShownTimestamp = action.payload;
+    MCLInstructionsShown(state, action) {
+      state.timestamps.introductionShownTimestamp.push({
+        treatmentId: state.treatmentId,
+        value: action.payload,
+      });
     },
     MCLInstructionsCompleted(state, action) {
-      state.timestamps.introductionCompletedTimestamp = action.payload;
-      state.timestamps.introductionTimeSec = secondsBetween(
-        state.timestamps.introductionShownTimestamp,
-        state.timestamps.introductionCompletedTimestamp
-      );
-      // TODO I could record the participants choice on the instructions
-      writeStateAsCSV(state);
-      qe.startSurvey(state);
-    },
-    instructionsShown(state, action) {
-      state.timestamps.instructionsShownTimestamp.push({
+      state.timestamps.introductionCompletedTimestamp.push({
         treatmentId: state.treatmentId,
         value: action.payload,
       });
-    },
-    instructionsCompleted(state, action) {
-      state.timestamps.instructionsCompletedTimestamp.push({
-        treatmentId: state.treatmentId,
-        value: action.payload,
-      });
-      const shownTimestamp = state.timestamps.instructionsShownTimestamp.find(
+      const shownTimestamp = state.timestamps.introductionShownTimestamp.find(
         (cv) => cv.treatmentId === state.treatmentId
       ).timestamp;
-      state.timestamps.instructionsTimeSec.push({
+      state.timestamps.introductionTimeSec.push({
         treatmentId: state.treatmentId,
         value: secondsBetween(shownTimestamp, action.payload),
       });
       writeStateAsCSV(state);
       state.status = qe.nextState(state);
+    },
+    instructionsShown(state, action) {
+      state.timestamps.instructionsShownTimestamp = action.payload;
+    },
+    instructionsCompleted(state, action) {
+      state.timestamps.instructionsCompletedTimestamp = action.payload;
+      state.timestamps.instructionsTimeSec = secondsBetween(
+        state.timestamps.instructionsShownTimestamp,
+        state.timestamps.instructionsCompletedTimestamp
+      );
+      writeStateAsCSV(state);
+      qe.startSurvey(state);
     },
     setFeedback(state, action) {
       state.feedback = action.payload;
@@ -538,7 +537,7 @@ export const {
   instructionsShown,
   setFeedback,
   instructionsCompleted,
-  introductionShown,
+  MCLInstructionsShown,
   MCLInstructionsCompleted,
   attentionCheckShown,
   experienceSurveyQuestionsShown,

@@ -33,7 +33,7 @@ export const convertAnswersAryToObj = (answersAry) => {
       ) {
         return key;
       } else {
-        return `${key}_${object.position}`;
+        return `${key}_${object.treatmentId}_${object.position}`;
       }
     });
     return {

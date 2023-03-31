@@ -23,6 +23,10 @@ export const CSVDataFilenameFromKey = (uniqueKey) => {
   return `data-${uniqueKey}.csv`;
 };
 
+export const stateFilename = (dataObj) => {
+  return `state-${stateUniqueKey(dataObj)}.json`;
+};
+
 export const stateFormatFilename = (dataObj) => {
   return `state-format-${stateUniqueKey(dataObj)}.json`;
 };
@@ -57,9 +61,9 @@ export const flattenTimestampObj = (timestamps) => {
     demographicShownTimestamp: timestamps.demographicShownTimestamp,
     demographicCompletedTimestamp: timestamps.demographicCompletedTimestamp,
     demographicTimeSec: timestamps.demographicTimeSec,
-    introductionShownTimestamp: timestamps.introductionShownTimestamp,
-    introductionCompletedTimestamp: timestamps.introductionCompletedTimestamp,
-    introductionTimeSec: timestamps.introductionTimeSec,
+    instructionsShownTimestamp: timestamps.instructionsShownTimestamp,
+    instructionsCompletedTimestamp: timestamps.instructionsCompletedTimestamp,
+    instructionsTimeSec: timestamps.instructionsTimeSec,
     experienceSurveyQuestionsShownTimestamp:
       timestamps.experienceSurveyQuestionsShownTimestamp,
     experienceSurveyQuestionsCompletedTimestamp:
@@ -82,16 +86,16 @@ export const flattenTimestampObj = (timestamps) => {
   result = {
     ...result,
     ...flattenTreatmentValueAry(
-      "instructionsShownTimestamp",
-      timestamps.instructionsShownTimestamp
+      "introductionShownTimestamp",
+      timestamps.introductionShownTimestamp
     ),
     ...flattenTreatmentValueAry(
-      "instructionsCompletedTimestamp",
-      timestamps.instructionsCompletedTimestamp
+      "introductionCompletedTimestamp",
+      timestamps.introductionCompletedTimestamp
     ),
     ...flattenTreatmentValueAry(
-      "instructionsTimeSec",
-      timestamps.instructionsTimeSec
+      "introductionTimeSec",
+      timestamps.introductionTimeSec
     ),
     ...flattenTreatmentValueAry(
       "attentionCheckShownTimestamp",
@@ -147,12 +151,14 @@ export const flattenState = (state) => {
 };
 
 export const writeStateAsCSV = (state) => {
-  // const flattenedState = flattenState(state);
-  // const allKeysState = JSON.stringify(setAllPropertiesEmpty(flattenedState));
-  // writeFile(stateFormatFilename(state), allKeysState);
-  // // change capital letter in camel case to _ with lower case letter to make the column headers easier to read when importing to excel
-  // const underscoreKeys = convertKeysToUnderscore(flattenedState);
-  // const filename = CSVDataFilename(state);
-  // const CSVData = convertToCSV(underscoreKeys);
-  // writeFile(filename, CSVData);
+  // TODO remove this before going to production maybe
+  writeFile(stateFilename(state), JSON.stringify(state));
+  const flattenedState = flattenState(state);
+  const allKeysState = JSON.stringify(setAllPropertiesEmpty(flattenedState));
+  writeFile(stateFormatFilename(state), allKeysState);
+  // change capital letter in camel case to _ with lower case letter to make the column headers easier to read when importing to excel
+  const underscoreKeys = convertKeysToUnderscore(flattenedState);
+  const filename = CSVDataFilename(state);
+  const CSVData = convertToCSV(underscoreKeys);
+  writeFile(filename, CSVData);
 };

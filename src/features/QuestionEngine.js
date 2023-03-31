@@ -101,6 +101,7 @@ export class QuestionEngine {
 
   startSurvey(state) {
     state.currentQuestionIdx = 0;
+    state.allTreatments = null;
     const treatment = this.currentTreatment(state);
     state.highup =
       treatment.variableAmount === AmountType.laterAmount
