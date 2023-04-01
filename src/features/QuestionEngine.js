@@ -1,6 +1,5 @@
 import { StatusType } from "./StatusType.js";
 import { AmountType } from "./AmountType.js";
-import { InteractionType } from "./InteractionType.js";
 import { Answer } from "./Answer.js";
 import { secondsBetween } from "./ConversionUtil.js";
 
@@ -10,28 +9,49 @@ export const TIMESTAMP_FORMAT = "MM/dd/yyyy H:mm:ss:SSS ZZZZ";
 export class QuestionEngine {
   constructor() {}
 
+  isFirstQuestion(state) {
+    return state.currentAnswerIdx == 0;
+  }
+
+  isLastQuestion(state) {
+    return state.currentAnswerIdx == state.answers.length - 1;
+  }
+
+  isLastTreatmentQuestion(state) {
+    if (
+      state.answers.length == 1 ||
+      state.currentAnswerIdx == state.answers.length - 1
+    ) {
+      return true;
+    }
+    return (
+      this.currentAnswer(state).treatmentId !=
+      this.nextAnswer(state).treatmentId
+    );
+  }
+
   currentAnswer(state) {
     return state.answers[state.currentAnswerIdx];
   }
 
+  nextAnswer(state) {
+    if (state.currentAnswerIdx == state.answers.length - 1) {
+      return null;
+    } else {
+      return state.answers[state.currentAnswerIdx + 1];
+    }
+  }
+
   currentTreatment(state) {
-    return state.treatments[state.currentAnswerIdx];
+    return state.treatments[this.currentTreatmentIndex(state)];
   }
 
   currentInstructions(state) {
-    return state.instructionTreatment[
-      this.currentTreatmentIndex(state.questions)
-    ];
-  }
-
-  currentTreatmentAndCurrentAnswer(state) {
-    const treatment = this.currentTreatment(state);
-    const answer = this.currentAnswer(state);
-    return { treatment, answer };
+    return state.instructionTreatment[this.currentTreatmentIndex(state)];
   }
 
   currentTreatmentIndex(state) {
-    return state.treatmentIds.indexOf(this.currentTreatment().treatmentId);
+    return state.treatmentIds.indexOf(this.currentAnswer(state).treatmentId);
   }
 
   createNextAnswer(
@@ -39,7 +59,6 @@ export class QuestionEngine {
     sessionId,
     studyId,
     treatment,
-    answers,
     amountEarlier,
     amountLater,
     highup,
@@ -75,35 +94,30 @@ export class QuestionEngine {
       highup: highup,
       lowdown: lowdown,
     });
-    answers.push(answer);
+    return answer;
   }
 
-  startSurvey(state) {
-    state.allTreatments = null;
-    const treatment = this.currentTreatment(state);
-    state.highup =
-      treatment.variableAmount === AmountType.laterAmount
-        ? treatment.amountEarlier
-        : treatment.amountLater;
-    state.lowdown = undefined;
-    this.createNextAnswer(
-      state.participantId,
-      state.sessionId,
-      state.studyId,
-      treatment,
-      state.answers,
-      treatment.amountEarlier,
-      treatment.amountLater,
-      state.highup,
-      state.lowdown
-    );
-    state.status = this.nextState(state);
+  createAnswersForTreatments(state) {
+    state.treatments.forEach((treatment) => {
+      state.answers.push(
+        this.createNextAnswer(
+          state.participantId,
+          state.sessionId,
+          state.studyId,
+          treatment,
+          treatment.amountEarlier,
+          treatment.amountLater,
+          state.highup,
+          state.lowdown
+        )
+      );
+    });
   }
 
   setCurrentAnswerShown(state, date) {
     const ca = this.currentAnswer(state);
     ca.shownTimestamp = date;
-    if (this.isFirstTreatmentQuestion(state)) {
+    if (this.isFirstQuestion(state)) {
       state.screenAttributes.screenAvailHeight = window.availHeight;
       state.screenAttributes.screenAvailWidth = window.availWidth;
       state.screenAttributes.windowInnerHeight = window.innerHeight;
@@ -115,46 +129,21 @@ export class QuestionEngine {
     }
   }
 
-  isFirstTreatmentQuestion(state) {
-    return state.currentTreatmentQuestionIdx === 0;
-  }
-
-  isLastTreatmentQuestion(state) {
-    return state.currentTreatmentQuestionIdx === state.treatments.length - 1;
-  }
-
   incNextQuestion(state) {
     const onLastTreatmentQuestion = this.isLastTreatmentQuestion(state);
-    const onLastTreatment = this.isOnLastTreatment(state);
-    if (state.status === StatusType.Survey) {
-      if (!onLastTreatmentQuestion) {
-        const treatment = this.currentTreatment(state);
-        state.currentAnswerIdx++;
-        this.createNextAnswer(
-          state.participantId,
-          state.sessionId,
-          state.studyId,
-          treatment,
-          state.answers,
-          treatment.amountEarlier,
-          treatment.amountLater
-        );
-      } else {
-        if (!onLastTreatment) {
-          state.currentAnswerIdx++;
-          this.startSurvey(state);
-        }
-      }
+    const onLastQuestion = this.isLastQuestion(state);
+    if (!onLastQuestion) {
+      state.currentAnswerIdx++;
     }
     state.status = this.nextStatus(
       state,
       onLastTreatmentQuestion,
-      onLastTreatment
+      onLastQuestion
     );
   }
 
   answerCurrentQuestion(state, payload) {
-    const { treatment, answer } = this.currentTreatmentAndCurrentAnswer(state);
+    const answer = this.currentAnswer(state);
     answer.choice = payload.choice;
     answer.choiceTimestamp = payload.choiceTimestamp;
     answer.choiceTimeSec = secondsBetween(
@@ -162,9 +151,6 @@ export class QuestionEngine {
       answer.choiceTimestamp
     );
     answer.dragAmount = payload.dragAmount;
-    if (treatment.interaction === InteractionType.titration) {
-      throw new Error("Tirtration experiments not supported");
-    }
   }
 
   nextState(state) {
@@ -175,7 +161,7 @@ export class QuestionEngine {
     );
   }
 
-  nextStatus(state, onLastTreatmentQuestion, onLastTreatment) {
+  nextStatus(state, onLastTreatmentQuestion, onLastQuestion) {
     switch (state.status) {
       case StatusType.Unitialized:
         return StatusType.Fetching;
@@ -194,7 +180,7 @@ export class QuestionEngine {
           return StatusType.Survey;
         }
       case StatusType.Attention:
-        if (onLastTreatmentQuestion && onLastTreatment) {
+        if (onLastQuestion) {
           return StatusType.ExperienceQuestionaire;
         } else {
           return StatusType.MCLInstructions;

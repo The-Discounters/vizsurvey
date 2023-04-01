@@ -52,7 +52,6 @@ export const questionSlice = createSlice({
   initialState: {
     allTreatments: null,
     treatmentIds: [],
-    treatmentId: null,
     participantId: null,
     serverSequenceId: null,
     sessionId: null,
@@ -181,18 +180,18 @@ export const questionSlice = createSlice({
     },
     setAttentionCheck(state, action) {
       state.attentionCheck.push({
-        treatmentId: qe.currentTreatment(state).treatmentId,
+        treatmentId: qe.currentQuestion(state).treatmentId,
         value: action.payload.value,
       });
       state.timestamps.attentionCheckCompletedTimestamp.push({
-        treatmentId: qe.currentTreatment(state).treatmentId,
+        treatmentId: qe.currentQuestion(state).treatmentId,
         value: action.payload.timestamp,
       });
       const shownTimestamp = state.timestamps.attentionCheckShownTimestamp.find(
-        (cv) => cv.treatmentId === qe.currentTreatment(state).treatmentId
+        (cv) => cv.treatmentId === qe.currentQuestion(state).treatmentId
       ).timestamp;
       state.timestamps.attentionCheckTimeSec.push({
-        treatmentId: qe.currentTreatment(state).treatmentId,
+        treatmentId: qe.currentQuestion(state).treatmentId,
         value: secondsBetween(shownTimestamp, action.payload.timestamp),
       });
       writeStateAsCSV(state);
@@ -234,20 +233,20 @@ export const questionSlice = createSlice({
     },
     MCLInstructionsShown(state, action) {
       state.timestamps.introductionShownTimestamp.push({
-        treatmentId: qe.currentTreatment(state).treatmentId,
+        treatmentId: qe.currentQuestion(state).treatmentId,
         value: action.payload,
       });
     },
     MCLInstructionsCompleted(state, action) {
       state.timestamps.introductionCompletedTimestamp.push({
-        treatmentId: qe.currentTreatment(state).treatmentId,
+        treatmentId: qe.currentQuestion(state).treatmentId,
         value: action.payload,
       });
       const shownTimestamp = state.timestamps.introductionShownTimestamp.find(
-        (cv) => cv.treatmentId === qe.currentTreatment(state).treatmentId
+        (cv) => cv.treatmentId === qe.currentQuestion(state).treatmentId
       ).timestamp;
       state.timestamps.introductionTimeSec.push({
-        treatmentId: qe.currentTreatment(state).treatmentId,
+        treatmentId: qe.currentQuestion(state).treatmentId,
         value: secondsBetween(shownTimestamp, action.payload),
       });
       writeStateAsCSV(state);
@@ -263,7 +262,7 @@ export const questionSlice = createSlice({
         state.timestamps.instructionsCompletedTimestamp
       );
       writeStateAsCSV(state);
-      qe.startSurvey(state);
+      qe.nextState(state);
     },
     setFeedback(state, action) {
       state.feedback = action.payload;
@@ -421,8 +420,8 @@ export const questionSlice = createSlice({
         );
         state.treatments = questions;
         state.instructionTreatment = instructions;
-
-        // create all the answer array entries up front
+        // create an answer for each treatment question up front
+        qe.createAnswersForTreatments(state);
 
         state.status = qe.nextState(state);
       })

@@ -16,9 +16,29 @@ describe("QuestionEngine tests", () => {
         TestDataFactory.create2ndQuestionNoTitrate(),
         TestDataFactory.create2ndQuestionNoTitrate(),
       ],
+      answers: [],
       currentAnswerIdx: 0,
       status: StatusType.Unitialized,
-      treatmentId: 1,
+      treatmentIds: [1],
+    };
+    state.treatments[2].position = 3;
+    const qe = new QuestionEngine();
+    qe.createAnswersForTreatments(state);
+    expect(state.answers.length).toBe(3);
+    expect(state.answers[0].position).toBe(1);
+    expect(state.answers[1].position).toBe(2);
+    expect(state.answers[2].position).toBe(3);
+  });
+
+  test("nextStatus testing state transitions with a single treatment.", () => {
+    const state = {
+      treatments: [
+        TestDataFactory.createQuestionNoTitrate(),
+        TestDataFactory.create2ndQuestionNoTitrate(),
+        TestDataFactory.create2ndQuestionNoTitrate(),
+      ],
+      currentAnswerIdx: 0,
+      status: StatusType.Unitialized,
       treatmentIds: [1],
     };
     state.treatments[2].position = 3;
@@ -65,47 +85,6 @@ describe("QuestionEngine tests", () => {
       StatusType.Debrief
     );
     expect(qe.nextStatus(state, true, true)).toBe(StatusType.Finished);
-  });
-
-  test("startSurvey should create a single answer entry for titration question.", () => {
-    const state = {
-      treatments: [TestDataFactory.createQuestionLaterTitrate()],
-      answers: [],
-      currentAnswerIdx: 0,
-      treatmentId: 1,
-      treatmentIds: [1],
-    };
-    const qe = new QuestionEngine();
-    qe.startSurvey(state);
-    expect(state.currentAnswerIdx).toBe(0);
-    expect(state.answers).not.toBeUndefined();
-    expect(state.answers.length).toBe(1);
-    expect(state.answers[0].amountEarlier).toBe(500);
-    expect(state.answers[0].timeEarlier).toBe(1);
-    expect(state.answers[0].amountLater).toBe(1000);
-    expect(state.answers[0].timeLater).toBe(3);
-    expect(state.highup).toBe(500);
-    expect(state.lowdown).toBeUndefined();
-  });
-
-  test("startSurvey should create a single answer entry for non titraiton question.", () => {
-    const state = {
-      treatments: [
-        TestDataFactory.createQuestionNoTitrate(),
-        TestDataFactory.create2ndQuestionNoTitrate(),
-      ],
-      answers: [],
-      currentAnswerIdx: 0,
-      treatmentId: 1,
-      treatmentIds: [1],
-    };
-    const qe = new QuestionEngine();
-    qe.startSurvey(state);
-    expect(state.status).toBeUndefined();
-    expect(state.currentAnswerIdx).toBe(0);
-    expect(state.answers).not.toBeUndefined();
-    expect(state.answers.length).toBe(1);
-    expect(state.answers[0].amountEarlier).toBe(400);
   });
 
   test("answerCurrentQuestion for non titration single treatment question and answer should update the current answer choice and not create more answer entries.", () => {
@@ -155,10 +134,12 @@ describe("QuestionEngine tests", () => {
         TestDataFactory.createQuestionNoTitrate(),
         TestDataFactory.create2ndQuestionNoTitrate(),
       ],
-      answers: [TestDataFactory.createAnswer(1, 1)],
+      answers: [
+        TestDataFactory.createAnswer(1, 1),
+        TestDataFactory.createAnswer(1, 2),
+      ],
       currentAnswerIdx: 0,
       status: StatusType.Survey,
-      treatmentId: 1,
       treatmentIds: [1],
     };
     const qe = new QuestionEngine();
@@ -176,39 +157,43 @@ describe("QuestionEngine tests", () => {
         TestDataFactory.createQuestionNoTitrate(),
         TestDataFactory.create2ndQuestionNoTitrate(),
       ],
-      answers: [TestDataFactory.createAnswer(1, 1)],
+      answers: [
+        TestDataFactory.createAnswer(1, 1),
+        TestDataFactory.createAnswer(1, 2),
+        TestDataFactory.createAnswer(2, 1),
+        TestDataFactory.createAnswer(2, 2),
+      ],
       currentAnswerIdx: 0,
       status: StatusType.Survey,
       treatmentIds: [1, 2],
     };
+    state.treatments[1].treatmentId = 2;
     const qe = new QuestionEngine();
     qe.incNextQuestion(state);
+    expect(qe.currentTreatment(state).treatmentId).toBe(1);
     expect(state.currentAnswerIdx).toBe(1);
     expect(state.answers).not.toBeUndefined();
-    expect(state.answers.length).toBe(2);
     expect(state.answers[1].choice).toBe(AmountType.none);
     expect(state.status).toBe(StatusType.Survey);
     qe.incNextQuestion(state);
     expect(state.currentAnswerIdx).toBe(2);
-    expect(qe.currentTreatment().treatmentId).toBe(2);
+    expect(qe.currentTreatment(state).treatmentId).toBe(2);
     expect(state.answers).not.toBeUndefined();
-    expect(state.answers.length).toBe(3);
     expect(state.status).toBe(StatusType.Attention);
     expect((state.status = qe.nextStatus(state, true, false))).toBe(
       StatusType.MCLInstructions
     );
     qe.incNextQuestion(state);
-    expect(qe.currentTreatment().treatmentId).toBe(2);
+    expect(qe.currentTreatment(state).treatmentId).toBe(2);
     expect(state.currentAnswerIdx).toBe(3);
     expect(state.answers).not.toBeUndefined();
-    expect(state.answers.length).toBe(3);
     qe.incNextQuestion(state);
-    expect(qe.currentTreatment().treatmentId).toBe(2);
+    expect(qe.currentTreatment(state).treatmentId).toBe(2);
     expect(state.currentAnswerIdx).toBe(3);
     expect(state.answers).not.toBeUndefined();
-    expect(state.answers.length).toBe(4);
+    expect(state.status).toBe(StatusType.Attention);
     expect((state.status = qe.nextStatus(state, true, true))).toBe(
-      StatusType.Attention
+      StatusType.ExperienceQuestionaire
     );
   });
 
@@ -219,10 +204,13 @@ describe("QuestionEngine tests", () => {
         TestDataFactory.create2ndQuestionNoTitrate(),
         TestDataFactory.create2ndQuestionNoTitrate(),
       ],
-      answers: [TestDataFactory.createAnswer(1, 1)],
+      answers: [
+        TestDataFactory.createAnswer(1, 1),
+        TestDataFactory.createAnswer(1, 2),
+        TestDataFactory.createAnswer(1, 3),
+      ],
       currentAnswerIdx: 0,
       status: StatusType.Survey,
-      treatmentId: 1,
       treatmentIds: [1],
     };
     state.treatments[2].position = 3;
