@@ -2,7 +2,7 @@
   "participantId": "",
   "sessionId": "",
   "studyId": "",
-  "treatmentId": "",
+  "treatmentIds": "",
   "consentShownTimestamp": "",
   "consentCompletedTimestamp": "",
   "consentTimeSec": "",

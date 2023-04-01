@@ -3,7 +3,6 @@ import { AmountType } from "./AmountType.js";
 import { InteractionType } from "./InteractionType.js";
 import { Answer } from "./Answer.js";
 import { secondsBetween } from "./ConversionUtil.js";
-import { loadTreatmentConfiguration } from "./TreatmentUtil.js";
 
 export const TIMESTAMP_FORMAT = "MM/dd/yyyy H:mm:ss:SSS ZZZZ";
 
@@ -11,27 +10,28 @@ export const TIMESTAMP_FORMAT = "MM/dd/yyyy H:mm:ss:SSS ZZZZ";
 export class QuestionEngine {
   constructor() {}
 
-  loadTreatment(state) {
-    const { questions, instructions } = loadTreatmentConfiguration(
-      state.treatmentId
-    );
-    state.treatments = questions;
-    state.instructionTreatment = instructions[0];
-    state.currentTreatmentQuestionIdx = 0;
-  }
-
   currentAnswer(state) {
     return state.answers[state.currentAnswerIdx];
   }
 
   currentTreatment(state) {
-    return state.treatments[state.currentTreatmentQuestionIdx];
+    return state.treatments[state.currentAnswerIdx];
+  }
+
+  currentInstructions(state) {
+    return state.instructionTreatment[
+      this.currentTreatmentIndex(state.questions)
+    ];
   }
 
   currentTreatmentAndCurrentAnswer(state) {
     const treatment = this.currentTreatment(state);
     const answer = this.currentAnswer(state);
     return { treatment, answer };
+  }
+
+  currentTreatmentIndex(state) {
+    return state.treatmentIds.indexOf(this.currentTreatment().treatmentId);
   }
 
   createNextAnswer(
@@ -76,10 +76,6 @@ export class QuestionEngine {
       lowdown: lowdown,
     });
     answers.push(answer);
-  }
-
-  allQuestions(state) {
-    return state.answers;
   }
 
   startSurvey(state) {
@@ -127,20 +123,6 @@ export class QuestionEngine {
     return state.currentTreatmentQuestionIdx === state.treatments.length - 1;
   }
 
-  isOnLastTreatment(state) {
-    return state.currentTreatmentIdx === state.treatments.length - 1;
-  }
-
-  isOnFirstTreatment(state) {
-    return state.currentTreatmentIdx === 0;
-  }
-
-  incNextTreatment(state) {
-    state.currentTreatmentIdx++;
-    state.treatmentId = state.treatmentIds[state.currentTreatmentIdx];
-    state.currentTreatmentQuestionIdx = 0;
-  }
-
   incNextQuestion(state) {
     const onLastTreatmentQuestion = this.isLastTreatmentQuestion(state);
     const onLastTreatment = this.isOnLastTreatment(state);
@@ -148,7 +130,6 @@ export class QuestionEngine {
       if (!onLastTreatmentQuestion) {
         const treatment = this.currentTreatment(state);
         state.currentAnswerIdx++;
-        state.currentTreatmentQuestionIdx++;
         this.createNextAnswer(
           state.participantId,
           state.sessionId,
@@ -161,8 +142,6 @@ export class QuestionEngine {
       } else {
         if (!onLastTreatment) {
           state.currentAnswerIdx++;
-          this.incNextTreatment(state);
-          this.loadTreatment(state);
           this.startSurvey(state);
         }
       }

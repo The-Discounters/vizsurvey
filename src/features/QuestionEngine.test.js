@@ -17,8 +17,6 @@ describe("QuestionEngine tests", () => {
         TestDataFactory.create2ndQuestionNoTitrate(),
       ],
       currentAnswerIdx: 0,
-      currentTreatmentIdx: 0,
-      currentTreatmentQuestionIdx: 0,
       status: StatusType.Unitialized,
       treatmentId: 1,
       treatmentIds: [1],
@@ -74,8 +72,6 @@ describe("QuestionEngine tests", () => {
       treatments: [TestDataFactory.createQuestionLaterTitrate()],
       answers: [],
       currentAnswerIdx: 0,
-      currentTreatmentIdx: 0,
-      currentTreatmentQuestionIdx: 0,
       treatmentId: 1,
       treatmentIds: [1],
     };
@@ -100,8 +96,6 @@ describe("QuestionEngine tests", () => {
       ],
       answers: [],
       currentAnswerIdx: 0,
-      currentTreatmentIdx: 0,
-      currentTreatmentQuestionIdx: 0,
       treatmentId: 1,
       treatmentIds: [1],
     };
@@ -119,8 +113,6 @@ describe("QuestionEngine tests", () => {
       treatments: [TestDataFactory.createQuestionNoTitrate()],
       answers: [TestDataFactory.createAnswer(1, 1)],
       currentAnswerIdx: 0,
-      currentTreatmentIdx: 0,
-      currentTreatmentQuestionIdx: 0,
       status: StatusType.Survey,
     };
     const qe = new QuestionEngine();
@@ -143,8 +135,6 @@ describe("QuestionEngine tests", () => {
       ],
       answers: [TestDataFactory.createAnswer(1, 1)],
       currentAnswerIdx: 0,
-      currentTreatmentIdx: 0,
-      currentTreatmentQuestionIdx: 0,
       status: StatusType.Survey,
     };
     const qe = new QuestionEngine();
@@ -167,8 +157,6 @@ describe("QuestionEngine tests", () => {
       ],
       answers: [TestDataFactory.createAnswer(1, 1)],
       currentAnswerIdx: 0,
-      currentTreatmentIdx: 0,
-      currentTreatmentQuestionIdx: 0,
       status: StatusType.Survey,
       treatmentId: 1,
       treatmentIds: [1],
@@ -190,26 +178,19 @@ describe("QuestionEngine tests", () => {
       ],
       answers: [TestDataFactory.createAnswer(1, 1)],
       currentAnswerIdx: 0,
-      currentTreatmentIdx: 0,
-      currentTreatmentQuestionIdx: 0,
       status: StatusType.Survey,
-      treatmentId: 1,
       treatmentIds: [1, 2],
     };
     const qe = new QuestionEngine();
     qe.incNextQuestion(state);
     expect(state.currentAnswerIdx).toBe(1);
-    expect(state.currentTreatmentIdx).toBe(0);
-    expect(state.currentTreatmentQuestionIdx).toBe(1);
     expect(state.answers).not.toBeUndefined();
     expect(state.answers.length).toBe(2);
     expect(state.answers[1].choice).toBe(AmountType.none);
     expect(state.status).toBe(StatusType.Survey);
     qe.incNextQuestion(state);
     expect(state.currentAnswerIdx).toBe(2);
-    expect(state.currentTreatmentIdx).toBe(1);
-    expect(state.currentTreatmentQuestionIdx).toBe(0);
-    expect(state.treatmentId).toBe(2);
+    expect(qe.currentTreatment().treatmentId).toBe(2);
     expect(state.answers).not.toBeUndefined();
     expect(state.answers.length).toBe(3);
     expect(state.status).toBe(StatusType.Attention);
@@ -217,14 +198,12 @@ describe("QuestionEngine tests", () => {
       StatusType.MCLInstructions
     );
     qe.incNextQuestion(state);
-    expect(state.treatmentId).toBe(2);
-    expect(state.currentTreatmentIdx).toBe(1);
-
+    expect(qe.currentTreatment().treatmentId).toBe(2);
     expect(state.currentAnswerIdx).toBe(3);
     expect(state.answers).not.toBeUndefined();
     expect(state.answers.length).toBe(3);
     qe.incNextQuestion(state);
-    expect(state.treatmentId).toBe(2);
+    expect(qe.currentTreatment().treatmentId).toBe(2);
     expect(state.currentAnswerIdx).toBe(3);
     expect(state.answers).not.toBeUndefined();
     expect(state.answers.length).toBe(4);
@@ -242,8 +221,6 @@ describe("QuestionEngine tests", () => {
       ],
       answers: [TestDataFactory.createAnswer(1, 1)],
       currentAnswerIdx: 0,
-      currentTreatmentIdx: 0,
-      currentTreatmentQuestionIdx: 0,
       status: StatusType.Survey,
       treatmentId: 1,
       treatmentIds: [1],

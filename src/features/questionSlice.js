@@ -1,6 +1,9 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { SystemZone } from "luxon";
-import { loadAllTreatmentsConfiguration } from "./TreatmentUtil.js";
+import {
+  loadAllTreatmentsConfiguration,
+  loadTreatmentConfiguration,
+} from "./TreatmentUtil.js";
 import { QuestionEngine } from "./QuestionEngine.js";
 import { StatusType } from "./StatusType.js";
 import { secondsBetween } from "./ConversionUtil.js";
@@ -18,12 +21,10 @@ export const initializeSurvey = createAsyncThunk(
       if (isNaN(parameters.treatmentId)) {
         const allTreatments = loadAllTreatmentsConfiguration();
         if (parameters.treatmentId === "assigned") {
-          const response = await getServerSequenceId();
-          result.serverSequenceId = response;
+          result.serverSequenceId = await getServerSequenceId();
           const latinSquareIndex =
             result.serverSequenceId % LATIN_SQUARE.length;
           result.treatmentIds = LATIN_SQUARE[latinSquareIndex];
-          result.treatmentId = result.treatmentIds[0];
         } else {
           const min = allTreatments.reduce((pv, cv) => {
             return cv.treatmentId < pv ? cv.treatmentId : pv;
@@ -32,11 +33,10 @@ export const initializeSurvey = createAsyncThunk(
             (pv, cv) => (cv.treatmentId > pv ? cv.treatmentId : pv),
             allTreatments[0].treatmentId
           );
-          result.treatmentId = getRandomIntInclusive(min, max);
+          result.treatmentIds = [getRandomIntInclusive(min, max)];
         }
       } else {
-        result.treatmentId = +parameters.treatmentId.treatmentId;
-        result.treatmentIds = [thunkAPI.getState().questions.treatmentId];
+        result.treatmentIds = [+parameters.treatmentId];
       }
       return result;
     } catch (err) {
@@ -121,11 +121,9 @@ export const questionSlice = createSlice({
     attentionCheck: [],
     feedback: "",
     treatments: [],
-    instructionTreatment: null,
+    instructionTreatment: [],
     answers: [],
     currentAnswerIdx: 0,
-    currentTreatmentIdx: 0,
-    currentTreatmentQuestionIdx: 0,
     highup: undefined,
     lowdown: undefined,
     status: StatusType.Unitialized,
@@ -183,18 +181,18 @@ export const questionSlice = createSlice({
     },
     setAttentionCheck(state, action) {
       state.attentionCheck.push({
-        treatmentId: state.treatmentId,
+        treatmentId: qe.currentTreatment(state).treatmentId,
         value: action.payload.value,
       });
       state.timestamps.attentionCheckCompletedTimestamp.push({
-        treatmentId: state.treatmentId,
+        treatmentId: qe.currentTreatment(state).treatmentId,
         value: action.payload.timestamp,
       });
       const shownTimestamp = state.timestamps.attentionCheckShownTimestamp.find(
-        (cv) => cv.treatmentId === state.treatmentId
+        (cv) => cv.treatmentId === qe.currentTreatment(state).treatmentId
       ).timestamp;
       state.timestamps.attentionCheckTimeSec.push({
-        treatmentId: state.treatmentId,
+        treatmentId: qe.currentTreatment(state).treatmentId,
         value: secondsBetween(shownTimestamp, action.payload.timestamp),
       });
       writeStateAsCSV(state);
@@ -236,20 +234,20 @@ export const questionSlice = createSlice({
     },
     MCLInstructionsShown(state, action) {
       state.timestamps.introductionShownTimestamp.push({
-        treatmentId: state.treatmentId,
+        treatmentId: qe.currentTreatment(state).treatmentId,
         value: action.payload,
       });
     },
     MCLInstructionsCompleted(state, action) {
       state.timestamps.introductionCompletedTimestamp.push({
-        treatmentId: state.treatmentId,
+        treatmentId: qe.currentTreatment(state).treatmentId,
         value: action.payload,
       });
       const shownTimestamp = state.timestamps.introductionShownTimestamp.find(
-        (cv) => cv.treatmentId === state.treatmentId
+        (cv) => cv.treatmentId === qe.currentTreatment(state).treatmentId
       ).timestamp;
       state.timestamps.introductionTimeSec.push({
-        treatmentId: state.treatmentId,
+        treatmentId: qe.currentTreatment(state).treatmentId,
         value: secondsBetween(shownTimestamp, action.payload),
       });
       writeStateAsCSV(state);
@@ -276,7 +274,7 @@ export const questionSlice = createSlice({
     },
     attentionCheckShown(state, action) {
       state.timestamps.attentionCheckShownTimestamp.push({
-        treatmentId: state.treatmentId,
+        treatmentId: qe.currentTreatment(state).treatmentId,
         value: action.payload,
       });
     },
@@ -342,7 +340,6 @@ export const questionSlice = createSlice({
     },
     clearState(state) {
       state.allTreatments = null;
-      state.treatmentId = null;
       state.treatmentIds = [];
       state.participantId = null;
       state.serverSequenceId = null;
@@ -396,7 +393,6 @@ export const questionSlice = createSlice({
       state.instructionTreatment = null;
       state.answers = [];
       state.currentAnswerIdx = 0;
-      state.currentTreatmentIdx = 0;
       state.highup = undefined;
       state.lowdown = undefined;
       state.status = StatusType.Unitialized;
@@ -419,11 +415,15 @@ export const questionSlice = createSlice({
         state.studyId = action.payload.studyId;
         state.userAgent = action.payload.userAgent;
         state.serverSequenceId = action.payload.serverSequenceId;
-        state.treatmentId = action.payload.treatmentId;
         state.treatmentIds = action.payload.treatmentIds;
-        state.currentTreatmentIdx = 0;
-        state.currentTreatmentQuestionIdx = 0;
-        qe.loadTreatment(state);
+        const { questions, instructions } = loadTreatmentConfiguration(
+          state.treatmentIds
+        );
+        state.treatments = questions;
+        state.instructionTreatment = instructions;
+
+        // create all the answer array entries up front
+
         state.status = qe.nextState(state);
       })
       .addCase(initializeSurvey.rejected, (state, action) => {
@@ -432,8 +432,6 @@ export const questionSlice = createSlice({
       });
   },
 });
-
-export const selectAllQuestions = (state) => qe.allQuestions(state.questions);
 
 export const getParticipant = (state) => state.questions.participantId;
 
@@ -482,14 +480,11 @@ export const getAttentionCheck = (state) => state.questions.attentionCheck;
 export const getCurrentQuestionIndex = (state) =>
   state.questions.currentAnswerIdx;
 
-export const getCurrentTreatmentIndex = (state) =>
-  state.questions.currentTreatmentIdx;
-
 export const fetchCurrentTreatment = (state) =>
   qe.currentTreatment(state.questions);
 
 export const getInstructionTreatment = (state) =>
-  state.questions.instructionTreatment;
+  qe.currentInstructions(state.questions);
 
 export const fetchAllTreatments = (state) => state.questions.allTreatments;
 
