@@ -129,7 +129,7 @@ describe("questionSlice tests", () => {
       treatments: [],
       instructionTreatment: null,
       answers: [],
-      currentQuestionIdx: 0,
+      currentAnswerIdx: 0,
       highup: undefined,
       lowdown: undefined,
       status: "status",

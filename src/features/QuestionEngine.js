@@ -17,38 +17,21 @@ export class QuestionEngine {
     );
     state.treatments = questions;
     state.instructionTreatment = instructions[0];
-    state.status = this.nextStatus(state, false, this.isOnLastTreatment(state));
-    return state;
+    state.currentTreatmentQuestionIdx = 0;
+  }
+
+  currentAnswer(state) {
+    return state.answers[state.currentAnswerIdx];
   }
 
   currentTreatment(state) {
-    return state.treatments[state.currentQuestionIdx];
+    return state.treatments[state.currentTreatmentQuestionIdx];
   }
 
-  currentTreatmentAndLatestAnswer(state) {
+  currentTreatmentAndCurrentAnswer(state) {
     const treatment = this.currentTreatment(state);
-    const latestAnswer = this.latestAnswer(state);
-    return { treatment, latestAnswer };
-  }
-
-  // TODO maybe change the name of this to be isLtestAnswerForTreatment since it was changed to get the latest answer for the current treatment
-  // I think it is currently overcomplicatd but still will work correctly so we have coded it for a future with more than one answer.
-  latestAnswer(state) {
-    // TODO this is not coded for titration type surveys.  I need to change the filter criteria to find the answer for the titration key values (probably highup, lowdown or something like that)
-    // return state.answers.length === 0
-    //   ? null
-    //   : state.answers[state.answers.length - 1];
-    const treatment = this.currentTreatment(state);
-    if (state.answers.length === 0) {
-      return null;
-    }
-    const result = state.answers.filter((v) => {
-      const value =
-        v.treatmentId === treatment.treatmentId &&
-        v.position === treatment.position;
-      return value;
-    });
-    return result.length === 0 ? null : result[result.length - 1];
+    const answer = this.currentAnswer(state);
+    return { treatment, answer };
   }
 
   createNextAnswer(
@@ -100,7 +83,6 @@ export class QuestionEngine {
   }
 
   startSurvey(state) {
-    state.currentQuestionIdx = 0;
     state.allTreatments = null;
     const treatment = this.currentTreatment(state);
     state.highup =
@@ -119,12 +101,12 @@ export class QuestionEngine {
       state.highup,
       state.lowdown
     );
-    state.status = this.nextStatus(state, false, this.isOnLastTreatment(state));
+    state.status = this.nextState(state);
   }
 
-  setLatestAnswerShown(state, date) {
-    const latestAnswer = this.latestAnswer(state);
-    latestAnswer.shownTimestamp = date;
+  setCurrentAnswerShown(state, date) {
+    const ca = this.currentAnswer(state);
+    ca.shownTimestamp = date;
     if (this.isFirstTreatmentQuestion(state)) {
       state.screenAttributes.screenAvailHeight = window.availHeight;
       state.screenAttributes.screenAvailWidth = window.availWidth;
@@ -137,57 +119,49 @@ export class QuestionEngine {
     }
   }
 
-  // TODO we should renames these xxxQuestion not treatment.
   isFirstTreatmentQuestion(state) {
-    return state.currentQuestionIdx === 0;
+    return state.currentTreatmentQuestionIdx === 0;
   }
 
   isLastTreatmentQuestion(state) {
-    return state.currentQuestionIdx === state.treatments.length - 1;
-  }
-
-  isMiddleTreatmentQuestion(state) {
-    if (state.treatments.length < 3) {
-      return false;
-    }
-    return state.currentQuestionIdx === Math.floor(state.treatments.length / 2);
+    return state.currentTreatmentQuestionIdx === state.treatments.length - 1;
   }
 
   isOnLastTreatment(state) {
-    return (
-      state.treatmentIds[state.treatmentIds.length - 1] === state.treatmentId
-    );
+    return state.currentTreatmentIdx === state.treatments.length - 1;
   }
 
-  nextTreatmentId(state) {
-    const currentTreatmentIndex = state.treatmentIds.indexOf(state.treatmentId);
-    return state.treatmentIds[currentTreatmentIndex + 1];
+  isOnFirstTreatment(state) {
+    return state.currentTreatmentIdx === 0;
+  }
+
+  incNextTreatment(state) {
+    state.currentTreatmentIdx++;
+    state.treatmentId = state.treatmentIds[state.currentTreatmentIdx];
+    state.currentTreatmentQuestionIdx = 0;
   }
 
   incNextQuestion(state) {
     const onLastTreatmentQuestion = this.isLastTreatmentQuestion(state);
     const onLastTreatment = this.isOnLastTreatment(state);
-    if (
-      state.status === StatusType.Survey ||
-      state.status === StatusType.Attention
-    ) {
+    if (state.status === StatusType.Survey) {
       if (!onLastTreatmentQuestion) {
-        state.currentQuestionIdx += 1;
-        if (this.latestAnswer(state) === null) {
-          const treatment = this.currentTreatment(state);
-          this.createNextAnswer(
-            state.participantId,
-            state.sessionId,
-            state.studyId,
-            treatment,
-            state.answers,
-            treatment.amountEarlier,
-            treatment.amountLater
-          );
-        }
+        const treatment = this.currentTreatment(state);
+        state.currentAnswerIdx++;
+        state.currentTreatmentQuestionIdx++;
+        this.createNextAnswer(
+          state.participantId,
+          state.sessionId,
+          state.studyId,
+          treatment,
+          state.answers,
+          treatment.amountEarlier,
+          treatment.amountLater
+        );
       } else {
         if (!onLastTreatment) {
-          state.treatmentId = this.nextTreatmentId(state);
+          state.currentAnswerIdx++;
+          this.incNextTreatment(state);
           this.loadTreatment(state);
           this.startSurvey(state);
         }
@@ -200,130 +174,17 @@ export class QuestionEngine {
     );
   }
 
-  decPreviousQuestion(state) {
-    const onFirstTreatment = this.isFirstTreatmentQuestion(state);
-    if (state.status === StatusType.Attention) {
-      state.status = this.previousStatus(state, onFirstTreatment);
-    } else if (state.status === StatusType.Survey && !onFirstTreatment) {
-      state.currentQuestionIdx -= 1;
-    } else {
-      state.status = this.previousStatus(state, onFirstTreatment);
-    }
-  }
-
-  updateHighupOrLowdown(state) {
-    const { treatment, latestAnswer } =
-      this.currentTreatmentAndLatestAnswer(state);
-    switch (latestAnswer.choice) {
-      case AmountType.earlierAmount:
-        var possibleHighup =
-          treatment.variableAmount === AmountType.laterAmount
-            ? latestAnswer.amountLater
-            : latestAnswer.amountEarlier;
-        if (!state.highup || possibleHighup > state.highup)
-          state.highup = possibleHighup;
-        break;
-      case AmountType.laterAmount:
-        var possibleLowdown =
-          treatment.variableAmount === AmountType.laterAmount
-            ? latestAnswer.amountLater
-            : latestAnswer.amountEarlier;
-        if (!state.lowdown || possibleLowdown < state.lowdown)
-          state.lowdown = possibleLowdown;
-        break;
-      default:
-        console.assert(
-          true,
-          "Invalid value for current answer in setAnswerCurrentQuestion"
-        );
-        break;
-    }
-  }
-
-  calcTitrationAmount(titratingAmount, highup, override) {
-    return (override ? override : titratingAmount - highup) / 2;
-  }
-
-  calcNewAmount(state, titrationAmount) {
-    const { treatment, latestAnswer } =
-      this.currentTreatmentAndLatestAnswer(state);
-    var adjustmentAmount;
-    switch (treatment.variableAmount) {
-      case AmountType.laterAmount:
-        console.assert(
-          latestAnswer.choice && latestAnswer.choice !== AmountType.none
-        );
-        adjustmentAmount =
-          latestAnswer.choice === AmountType.earlierAmount
-            ? titrationAmount
-            : -1 * titrationAmount;
-        return (
-          parseInt((latestAnswer.amountLater + adjustmentAmount) / 10) * 10
-        );
-      case AmountType.earlierAmount:
-        adjustmentAmount =
-          latestAnswer.choice === AmountType.earlierAmount
-            ? -1 * titrationAmount
-            : titrationAmount;
-        return (
-          parseInt((latestAnswer.amountEarlier + adjustmentAmount) / 10) * 10
-        );
-      default:
-        console.assert(
-          true,
-          "Invalid value for question titration type in calcEarlierAndLaterAmounts"
-        );
-        break;
-    }
-  }
-
   answerCurrentQuestion(state, payload) {
-    const { treatment, latestAnswer } =
-      this.currentTreatmentAndLatestAnswer(state);
-    latestAnswer.choice = payload.choice;
-    latestAnswer.choiceTimestamp = payload.choiceTimestamp;
-    latestAnswer.choiceTimeSec = secondsBetween(
-      latestAnswer.shownTimestamp,
-      latestAnswer.choiceTimestamp
+    const { treatment, answer } = this.currentTreatmentAndCurrentAnswer(state);
+    answer.choice = payload.choice;
+    answer.choiceTimestamp = payload.choiceTimestamp;
+    answer.choiceTimeSec = secondsBetween(
+      answer.shownTimestamp,
+      answer.choiceTimestamp
     );
-    latestAnswer.dragAmount = payload.dragAmount;
+    answer.dragAmount = payload.dragAmount;
     if (treatment.interaction === InteractionType.titration) {
       throw new Error("Tirtration experiments not supported");
-      // TODO I did not incorporate previous logic into titration experiments since we aren't piloting with those.  This code needs to be modified to incorporate previous action.
-      //   const titrationAmount = this.calcTitrationAmount(
-      //     treatment.variableAmount === AmountType.laterAmount
-      //       ? latestAnswer.amountLater
-      //       : latestAnswer.amountEarlier,
-      //     state.highup,
-      //     latestAnswer.length === 1 ? state.highup : null
-      //   );
-      //   this.updateHighupOrLowdown(state);
-      //   // TODO we need a termination condition for runaway titration
-      //   if (state.lowdown - state.highup <= 10) {
-      //     this.incNextQuestion(state);
-      //   } else {
-      //     const newAmount = this.calcNewAmount(state, titrationAmount);
-      //     if (treatment.variableAmount === AmountType.laterAmount) {
-      //       this.createNextAnswer(
-      //         treatment,
-      //         state.answers,
-      //         treatment.amountEarlier,
-      //         newAmount
-      //       );
-      //     } else if (treatment.variableAmount === AmountType.earlierAmount) {
-      //       this.createNextAnswer(
-      //         treatment,
-      //         state.answers,
-      //         newAmount,
-      //         treatment.amountLater
-      //       );
-      //     } else {
-      //       console.assert(
-      //         true,
-      //         "Titration not set to amountEarlier or amountLater before calling answerCurrentQuestion"
-      //       );
-      //     }
-      //   }
     }
   }
 
@@ -348,23 +209,17 @@ export class QuestionEngine {
       case StatusType.MCLInstructions:
         return StatusType.Survey;
       case StatusType.Survey:
-        if (
-          this.isLastTreatmentQuestion(state) &&
-          onLastTreatmentQuestion &&
-          onLastTreatment
-        ) {
-          return StatusType.ExperienceQuestionaire;
+        if (onLastTreatmentQuestion) {
+          return StatusType.Attention;
         } else {
-          if (this.isMiddleTreatmentQuestion(state)) {
-            return StatusType.Attention;
-          } else if (onLastTreatmentQuestion && !onLastTreatment) {
-            return StatusType.MCLInstructions;
-          } else {
-            return StatusType.Survey;
-          }
+          return StatusType.Survey;
         }
       case StatusType.Attention:
-        return StatusType.Survey;
+        if (onLastTreatmentQuestion && onLastTreatment) {
+          return StatusType.ExperienceQuestionaire;
+        } else {
+          return StatusType.MCLInstructions;
+        }
       case StatusType.ExperienceQuestionaire:
         return StatusType.FinancialQuestionaire;
       case StatusType.FinancialQuestionaire:
@@ -375,45 +230,6 @@ export class QuestionEngine {
         return StatusType.Debrief;
       case StatusType.Debrief:
         return StatusType.Finished;
-      case StatusType.Error:
-        return StatusType.Error;
-    }
-  }
-
-  previousStatus(state, onFirstTreatment) {
-    switch (state.status) {
-      case StatusType.Unitialized:
-        return StatusType.Unitialized;
-      case StatusType.Fetching:
-        return StatusType.Unitialized;
-      case StatusType.Consent:
-        return StatusType.Fetching;
-      case StatusType.Instructions:
-        return StatusType.Consent;
-      case StatusType.MCLInstructions:
-        return StatusType.Instructions;
-      case StatusType.Survey:
-        if (this.isFirstTreatmentQuestion(state) && onFirstTreatment) {
-          return StatusType.MCLInstructions;
-        } else {
-          if (this.isMiddleTreatmentQuestion(state)) {
-            return StatusType.Attention;
-          } else {
-            return StatusType.Survey;
-          }
-        }
-      case StatusType.Attention:
-        return StatusType.Survey;
-      case StatusType.ExperienceQuestionaire:
-        return StatusType.Survey;
-      case StatusType.FinancialQuestionaire:
-        return StatusType.ExperienceQuestionaire;
-      case StatusType.PurposeQuestionaire:
-        return StatusType.FinancialQuestionaire;
-      case StatusType.Demographic:
-        return StatusType.PurposeQuestionaire;
-      case StatusType.Debrief:
-        return StatusType.Debrief; // once they have submitted answers, don't let them go back.
       case StatusType.Error:
         return StatusType.Error;
     }

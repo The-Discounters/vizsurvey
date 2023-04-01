@@ -123,7 +123,9 @@ export const questionSlice = createSlice({
     treatments: [],
     instructionTreatment: null,
     answers: [],
-    currentQuestionIdx: 0,
+    currentAnswerIdx: 0,
+    currentTreatmentIdx: 0,
+    currentTreatmentQuestionIdx: 0,
     highup: undefined,
     lowdown: undefined,
     status: StatusType.Unitialized,
@@ -198,11 +200,6 @@ export const questionSlice = createSlice({
       writeStateAsCSV(state);
       state.status = qe.nextState(state);
     },
-    loadTreatment(state) {
-      state.status = StatusType.Fetching;
-      qe.loadTreatment(state);
-      return state;
-    },
     loadAllTreatments(state) {
       state.status = StatusType.Fetching;
       state.allTreatments = loadAllTreatmentsConfiguration();
@@ -274,7 +271,7 @@ export const questionSlice = createSlice({
       state.feedback = action.payload;
     },
     setQuestionShownTimestamp(state, action) {
-      qe.setLatestAnswerShown(state, action.payload);
+      qe.setCurrentAnswerShown(state, action.payload);
       return state;
     },
     attentionCheckShown(state, action) {
@@ -287,9 +284,6 @@ export const questionSlice = createSlice({
     answer(state, action) {
       qe.answerCurrentQuestion(state, action.payload);
       writeStateAsCSV(state);
-    },
-    previousQuestion(state) {
-      qe.decPreviousQuestion(state);
     },
     nextQuestion(state) {
       qe.incNextQuestion(state);
@@ -401,7 +395,8 @@ export const questionSlice = createSlice({
       state.treatments = [];
       state.instructionTreatment = null;
       state.answers = [];
-      state.currentQuestionIdx = 0;
+      state.currentAnswerIdx = 0;
+      state.currentTreatmentIdx = 0;
       state.highup = undefined;
       state.lowdown = undefined;
       state.status = StatusType.Unitialized;
@@ -410,9 +405,6 @@ export const questionSlice = createSlice({
     },
     nextStatus(state) {
       qe.nextState(state);
-    },
-    previousStatus(state) {
-      qe.previousStatus(state);
     },
   },
 
@@ -429,7 +421,10 @@ export const questionSlice = createSlice({
         state.serverSequenceId = action.payload.serverSequenceId;
         state.treatmentId = action.payload.treatmentId;
         state.treatmentIds = action.payload.treatmentIds;
+        state.currentTreatmentIdx = 0;
+        state.currentTreatmentQuestionIdx = 0;
         qe.loadTreatment(state);
+        state.status = qe.nextState(state);
       })
       .addCase(initializeSurvey.rejected, (state, action) => {
         state.error = action.error;
@@ -485,7 +480,10 @@ export const getPurposeSurvey = (state) => state.questions.getPurposeSurvey;
 export const getAttentionCheck = (state) => state.questions.attentionCheck;
 
 export const getCurrentQuestionIndex = (state) =>
-  state.questions.currentQuestionIdx;
+  state.questions.currentAnswerIdx;
+
+export const getCurrentTreatmentIndex = (state) =>
+  state.questions.currentTreatmentIdx;
 
 export const fetchCurrentTreatment = (state) =>
   qe.currentTreatment(state.questions);
@@ -495,10 +493,10 @@ export const getInstructionTreatment = (state) =>
 
 export const fetchAllTreatments = (state) => state.questions.allTreatments;
 
-export const getCurrentQuestion = (state) => qe.latestAnswer(state.questions);
+export const getCurrentQuestion = (state) => qe.currentAnswer(state.questions);
 
 export const getCurrentChoice = (state) =>
-  qe.latestAnswer(state.questions).choice;
+  qe.currentAnswer(state.questions).choice;
 
 export const getStatus = (state) => state.questions.status;
 
@@ -508,7 +506,6 @@ export const getConsentChecked = (state) => state.questions.consentChecked;
 
 // Action creators are generated for each case reducer function
 export const {
-  loadTreatment,
   loadAllTreatments,
   setQuestionShownTimestamp,
   answer,
