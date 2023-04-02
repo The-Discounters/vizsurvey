@@ -24,24 +24,25 @@ describe("ObjectUtil test.", () => {
       {
         participantId: 1,
         sessionId: 2,
-        treatmentId: 3,
+        treatmentId: 1,
         position: 1,
         data: "data1",
       },
       {
         participantId: 1,
         sessionId: 2,
-        treatmentId: 3,
-        position: 2,
+        treatmentId: 2,
+        position: 1,
         data: "data2",
       },
     ];
     const result = obj.convertAnswersAryToObj(input);
     expect(result.participantId).toBe(1);
     expect(result.sessionId).toBe(2);
-    expect(result.treatmentId).toBe(3);
-    expect(result.data_1).toBe("data1");
-    expect(result.data_2).toBe("data2");
+    expect(result.treatmentId_1_1).toBe(1);
+    expect(result.treatmentId_2_1).toBe(2);
+    expect(result.data_1_1).toBe("data1");
+    expect(result.data_2_1).toBe("data2");
   });
 
   test("setAllPropertiesEmpty test.", async () => {

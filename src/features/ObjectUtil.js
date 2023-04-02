@@ -26,8 +26,6 @@ export const convertAnswersAryToObj = (answersAry) => {
         key === "participantId" ||
         key === "session_id" ||
         key === "sessionId" ||
-        key === "treatment_id" ||
-        key === "treatmentId" ||
         key === "study_id" ||
         key === "studyId"
       ) {
