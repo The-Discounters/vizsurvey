@@ -12,16 +12,15 @@ describe("QuestionEngine tests", () => {
   test("nextStatus testing state transitions with a single treatment.", () => {
     const state = {
       treatments: [
-        TestDataFactory.createQuestionNoTitrate(),
-        TestDataFactory.create2ndQuestionNoTitrate(),
-        TestDataFactory.create2ndQuestionNoTitrate(),
+        TestDataFactory.createQuestionNoTitrate(1, 1),
+        TestDataFactory.create2ndQuestionNoTitrate(1, 2),
+        TestDataFactory.create2ndQuestionNoTitrate(1, 3),
       ],
       answers: [],
       currentAnswerIdx: 0,
       status: StatusType.Unitialized,
       treatmentIds: [1],
     };
-    state.treatments[2].position = 3;
     const qe = new QuestionEngine();
     qe.createAnswersForTreatments(state);
     expect(state.answers.length).toBe(3);
@@ -33,15 +32,14 @@ describe("QuestionEngine tests", () => {
   test("nextStatus testing state transitions with a single treatment.", () => {
     const state = {
       treatments: [
-        TestDataFactory.createQuestionNoTitrate(),
-        TestDataFactory.create2ndQuestionNoTitrate(),
-        TestDataFactory.create2ndQuestionNoTitrate(),
+        TestDataFactory.createQuestionNoTitrate(1, 1),
+        TestDataFactory.create2ndQuestionNoTitrate(1, 2),
+        TestDataFactory.create2ndQuestionNoTitrate(1, 3),
       ],
       currentAnswerIdx: 0,
       status: StatusType.Unitialized,
       treatmentIds: [1],
     };
-    state.treatments[2].position = 3;
     const qe = new QuestionEngine();
     expect((state.status = qe.nextStatus(state, false, true))).toBe(
       StatusType.Fetching
@@ -89,7 +87,7 @@ describe("QuestionEngine tests", () => {
 
   test("answerCurrentQuestion for non titration single treatment question and answer should update the current answer choice and not create more answer entries.", () => {
     const state = {
-      treatments: [TestDataFactory.createQuestionNoTitrate()],
+      treatments: [TestDataFactory.createQuestionNoTitrate(1, 1)],
       answers: [TestDataFactory.createAnswer(1, 1)],
       currentAnswerIdx: 0,
       status: StatusType.Survey,
@@ -109,8 +107,8 @@ describe("QuestionEngine tests", () => {
   test("answerCurrentQuestion for non titration multiple treatment questions single answer should update the current answer choice and not create more answer entries.", () => {
     const state = {
       treatments: [
-        TestDataFactory.createQuestionNoTitrate(),
-        TestDataFactory.create2ndQuestionNoTitrate(),
+        TestDataFactory.createQuestionNoTitrate(1, 1),
+        TestDataFactory.create2ndQuestionNoTitrate(1, 2),
       ],
       answers: [TestDataFactory.createAnswer(1, 1)],
       currentAnswerIdx: 0,
@@ -131,8 +129,8 @@ describe("QuestionEngine tests", () => {
   test("incNextQuestion for two questions single treatment should increment question index and stay in survey state.", () => {
     const state = {
       treatments: [
-        TestDataFactory.createQuestionNoTitrate(),
-        TestDataFactory.create2ndQuestionNoTitrate(),
+        TestDataFactory.createQuestionNoTitrate(1, 1),
+        TestDataFactory.create2ndQuestionNoTitrate(1, 2),
       ],
       answers: [
         TestDataFactory.createAnswer(1, 1),
@@ -154,8 +152,10 @@ describe("QuestionEngine tests", () => {
   test("incNextQuestion for two questions two treatment should increment treatment index to show second treatment questions.", () => {
     const state = {
       treatments: [
-        TestDataFactory.createQuestionNoTitrate(),
-        TestDataFactory.create2ndQuestionNoTitrate(),
+        TestDataFactory.createQuestionNoTitrate(1, 1),
+        TestDataFactory.create2ndQuestionNoTitrate(1, 2),
+        TestDataFactory.createQuestionNoTitrate(2, 1),
+        TestDataFactory.create2ndQuestionNoTitrate(2, 2),
       ],
       answers: [
         TestDataFactory.createAnswer(1, 1),
@@ -200,9 +200,9 @@ describe("QuestionEngine tests", () => {
   test("incNextQuestion for three questions single treatment should increment question index and enter attention state then experiene survey.", () => {
     const state = {
       treatments: [
-        TestDataFactory.createQuestionNoTitrate(),
-        TestDataFactory.create2ndQuestionNoTitrate(),
-        TestDataFactory.create2ndQuestionNoTitrate(),
+        TestDataFactory.createQuestionNoTitrate(1, 1),
+        TestDataFactory.create2ndQuestionNoTitrate(1, 2),
+        TestDataFactory.create2ndQuestionNoTitrate(1, 3),
       ],
       answers: [
         TestDataFactory.createAnswer(1, 1),
@@ -213,7 +213,6 @@ describe("QuestionEngine tests", () => {
       status: StatusType.Survey,
       treatmentIds: [1],
     };
-    state.treatments[2].position = 3;
     const qe = new QuestionEngine();
     qe.incNextQuestion(state);
     expect(state.currentAnswerIdx).toBe(1);
@@ -284,10 +283,10 @@ export class TestDataFactory {
     });
   }
 
-  static createQuestionNoTitrate() {
+  static createQuestionNoTitrate(treatmentId, positionId) {
     return Question({
-      treatmentId: 1,
-      position: 1,
+      treatmentId: treatmentId,
+      position: positionId,
       viewType: ViewType.barchart,
       interaction: InteractionType.none,
       variableAmount: AmountType.laterAmount,
@@ -311,10 +310,10 @@ export class TestDataFactory {
     });
   }
 
-  static create2ndQuestionNoTitrate() {
+  static create2ndQuestionNoTitrate(treatmentId, positionId) {
     return Question({
-      treatmentId: 1,
-      position: 2,
+      treatmentId: treatmentId,
+      position: positionId,
       viewType: ViewType.barchart,
       interaction: InteractionType.none,
       variableAmount: AmountType.laterAmount,

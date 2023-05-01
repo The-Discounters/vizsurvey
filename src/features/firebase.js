@@ -11,7 +11,8 @@ import {
 const firebaseConfig = {
   // ...
   // The value of `databaseURL` depends on the location of the database
-  databaseURL: "https://vizsurvey-default-rtdb.firebaseio.com/",
+  databaseURL: process.env.REACT_APP_FIREBASE_DATABASE_URL,
+  projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
 };
 
 // Initialize Firebase

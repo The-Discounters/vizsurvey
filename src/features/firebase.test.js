@@ -1,4 +1,6 @@
 import { getId, getServerSequenceId } from "./firebase.js";
+// eslint-disable-next-line no-unused-vars
+import * as dotenv from "dotenv";
 
 describe("Firebase test", () => {
   const generatedSequences = [];

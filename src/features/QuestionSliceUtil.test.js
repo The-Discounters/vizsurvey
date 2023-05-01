@@ -127,8 +127,8 @@ describe("questionSlice tests", () => {
       attentionCheck: ["agree", "agree"],
       feedback: "",
       treatments: [
-        TestDataFactory.createQuestionNoTitrate(),
-        TestDataFactory.create2ndQuestionNoTitrate(),
+        TestDataFactory.createQuestionNoTitrate(1, 1),
+        TestDataFactory.create2ndQuestionNoTitrate(1, 2),
       ],
       answers: [
         TestDataFactory.createAnswer(1, 1),

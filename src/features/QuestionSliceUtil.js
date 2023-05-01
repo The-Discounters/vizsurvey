@@ -118,6 +118,10 @@ export const flattenState = (state) => {
   const answersAsObj = convertAnswersAryToObj(state.answers);
   const treatmentIds = state.treatmentIds.toString().replaceAll(",", "-");
   const timetamps = flattenTimestampObj(state.timestamps);
+  const attentionChecks = flattenTreatmentValueAry(
+    "attentionCheck",
+    state.attentionCheck
+  );
 
   const flattenedState = {
     ...{
@@ -141,7 +145,7 @@ export const flattenState = (state) => {
     userAgent: state.userAgent,
     ...state.screenAttributes,
     ...answersAsObj,
-    attentionCheck: state.attentionCheck,
+    attentionCheck: attentionChecks,
     ...state.experienceSurvey,
     ...state.financialLitSurvey,
     ...state.purposeSurvey,

@@ -43,11 +43,14 @@ export class QuestionEngine {
   }
 
   currentTreatment(state) {
-    return state.treatments[this.currentTreatmentIndex(state)];
+    const treatment = state.treatments[this.currentTreatmentIndex(state)];
+    return treatment;
   }
 
   currentInstructions(state) {
-    return state.instructionTreatment[this.currentTreatmentIndex(state)];
+    const instructions =
+      state.instructionTreatment[this.currentTreatmentIndex(state)];
+    return instructions;
   }
 
   currentTreatmentIndex(state) {
@@ -130,16 +133,16 @@ export class QuestionEngine {
   }
 
   incNextQuestion(state) {
-    const onLastTreatmentQuestion = this.isLastTreatmentQuestion(state);
-    const onLastQuestion = this.isLastQuestion(state);
-    if (!onLastQuestion) {
+    const isLastQuestion = this.isLastQuestion(state);
+    const nextStatus = this.nextStatus(
+      state,
+      this.isLastTreatmentQuestion(state),
+      isLastQuestion
+    );
+    if (!isLastQuestion) {
       state.currentAnswerIdx++;
     }
-    state.status = this.nextStatus(
-      state,
-      onLastTreatmentQuestion,
-      onLastQuestion
-    );
+    state.status = nextStatus;
   }
 
   answerCurrentQuestion(state, payload) {
@@ -157,7 +160,7 @@ export class QuestionEngine {
     return this.nextStatus(
       state,
       this.isLastTreatmentQuestion(state),
-      this.isOnLastTreatment(state)
+      this.isLastQuestion(state)
     );
   }
 

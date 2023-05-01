@@ -22,6 +22,7 @@ import {
 import { dateToState } from "../features/ConversionUtil.js";
 import { styles, theme } from "./ScreenHelper.js";
 import { navigateFromStatus } from "./Navigate.js";
+import { StatusType } from "../features/StatusType.js";
 
 export function AttentionCheck() {
   const dispatch = useDispatch();
@@ -36,6 +37,14 @@ export function AttentionCheck() {
   }, []);
 
   useEffect(() => {
+    if (
+      status !== StatusType.Survey &&
+      status !== StatusType.Attention &&
+      process.env.REACT_APP_FULLSCREEN === "enabled"
+    ) {
+      document.exitFullscreen();
+    }
+
     const path = navigateFromStatus(status);
     navigate(path);
   }, [status]);
