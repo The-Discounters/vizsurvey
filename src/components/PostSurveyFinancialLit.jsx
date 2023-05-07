@@ -117,6 +117,7 @@ export function PostSurvey() {
                           <FormControlLabel
                             key={`radio-${index1}`}
                             value={option.textShort}
+                            id={question.textShort + "-" + option.textShort}
                             checked={qList[index] === option.textShort}
                             style={{
                               width: "100%",

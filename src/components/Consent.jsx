@@ -49,13 +49,18 @@ export function Consent() {
     return (
       <React.Fragment>
         <Typography paragraph>
-          <b>Investigator: </b>Peter Cordone, Yahel Nachum, Ravit Heskiau, Lane
+          {/*<b>Investigator: </b>Peter Cordone, Yahel Nachum, Ravit Heskiau, Lane*/}
+          <b>Investigator: </b>Yahel Nachum, Peter Cordone, Ravit Heskiau, Lane
           Harrison, Daniel Reichman
         </Typography>
         <Typography paragraph>
-          <b>Contact Information: </b>Peter Cordone
+          {/*<b>Contact Information: </b>Peter Cordone{" "}
           <a href={`mailto:pncordone@wpi.edu?subject=%5bSurvey%20Consent%5d`}>
             pncordone@wpi.edu
+          </a>*/}
+          <b>Contact Information: </b>Yahel Nachum{" "}
+          <a href={`mailto:ynachum@wpi.edu?subject=%5bSurvey%20Consent%5d`}>
+            ynachum@wpi.edu
           </a>
         </Typography>
         <Typography paragraph>
@@ -147,10 +152,15 @@ export function Consent() {
           </b>
         </Typography>
         {[
-          {
+          /*{
             name: "Peter Cordone",
-            phone: "617-678-5190",
+            phone: "(617)678-5190",
             email: "pncordone@wpi.edu",
+          },*/
+          {
+            name: "Yahel Nachum",
+            phone: "(508)283-0929",
+            email: "ynachum@wpi.edu",
           },
           {
             name: "IRB Manager Ruth McKeogh",

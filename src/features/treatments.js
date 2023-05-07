@@ -143,6 +143,42 @@ export const TREATMENTS_PROD_CSV = `treatment_id,position,view_type,interaction,
 3,random,barchart,none,none,66,6,,110,24,,110,49,1200,300,,,,,,,no,,Barchart MEL question experiment 3 of date/delay paper full screen.
 3,random,barchart,none,none,77,3,,118,16,,120,33,1200,300,,,,,,,no,,Barchart MEL question experiment 3 of date/delay paper full screen.
 3,instructions,barchart,none,none,300,2,,700,7,,1000,15,1200,300,,,,,,,no,introduction-barchart-no-ticks-right,Barchart MEL question experiment 3 of date/delay paper full screen.
+4,1,calendarWord,none,none,350,,1/4/2023,430,,1/13/2023,430,,,,,,,,,,,,Worded MEL question experiment 1 date/delay paper TODO fix dates here so that it represent weeks to match up with MEL Word version.
+4,2,calendarWord,none,none,490,,1/2/2023,700,,1/18/2023,700,,,,,,,,,,,,Worded MEL question experiment 1 date/delay paper.
+4,3,calendarWord,none,none,720,,1/6/2023,1390,,1/24/2023,1390,,,,,,,,,,,,Worded MEL question experiment 1 date/delay paper.
+4,4,calendarWord,none,none,840,,1/3/2023,1120,,1/16/2023,1120,,,,,,,,,,,,Worded MEL question experiment 1 date/delay paper.
+4,5,calendarWord,none,none,32,,1/4/2023,39,13,1/13/2023,40,,,,,,,,,,,,Worded MEL question experiment 3 of date/delay paper.
+4,6,calendarWord,none,none,45,,1/2/2023,70,,1/18/2023,70,,,,,,,,,,,,Worded MEL question experiment 3 of date/delay paper.
+4,7,calendarWord,none,none,66,,1/6/2023,110,,1/24/2023,110,,,,,,,,,,,,Worded MEL question experiment 3 of date/delay paper.
+4,8,calendarWord,none,none,77,,1/3/2023,118,,1/16/2023,120,,,,,,,,,,,,Worded MEL question experiment 3 of date/delay paper.
+4,instructions,calendarWord,none,none,300,,1/2/2023,700,,1/7/2023,1000,,750,650,,,,,,,,introduction-calendarWord,TODO use width and height during regular drawCalendar calls Worded MEL question experiment 3 of date/delay paper.
+5,1,calendarWordYear,none,none,350,,4/10/2023,430,,9/8/2023,430,,,,,,,,,,,,Worded MEL question experiment 1 date/delay paper TODO fix dates here so that it represent weeks to match up with MEL Word version.
+5,2,calendarWordYear,none,none,490,,7/24/2023,700,,12/6/2023,700,,,,,,,,,,,,Worded MEL question experiment 1 date/delay paper.
+5,3,calendarWordYear,none,none,720,,5/21/2023,1390,,7/29/2023,1390,,,,,,,,,,,,Worded MEL question experiment 1 date/delay paper.
+5,4,calendarWordYear,none,none,840,,6/15/2023,1120,,9/26/2023,1120,,,,,,,,,,,,Worded MEL question experiment 1 date/delay paper.
+5,5,calendarWordYear,none,none,32,,8/6/2023,39,13,11/14/2023,40,,,,,,,,,,,,Worded MEL question experiment 3 of date/delay paper.
+5,6,calendarWordYear,none,none,45,,5/29/2023,70,,9/17/2023,70,,,,,,,,,,,,Worded MEL question experiment 3 of date/delay paper.
+5,7,calendarWordYear,none,none,66,,9/12/2023,110,,11/8/2023,110,,,,,,,,,,,,Worded MEL question experiment 3 of date/delay paper.
+5,8,calendarWordYear,none,none,77,,7/30/2023,118,,10/15/2023,120,,,,,,,,,,,,Worded MEL question experiment 3 of date/delay paper.
+5,instructions,calendarWordYear,none,none,300,,5/7/2023,700,,10/2/2023,1000,,600,510,,,,,,,,introduction-calendarWordYear,TODO use width and height during regular drawCalendar calls Worded MEL question experiment 3 of date/delay paper.
+6,1,calendarWordYearDual,none,none,350,,1/4/2023,430,,2/13/2023,430,,,,,,,,,,,,Worded MEL question experiment 1 date/delay paper TODO fix dates here so that it represent weeks to match up with MEL Word version.
+6,2,calendarWordYearDual,none,none,490,,1/2/2023,700,,3/18/2023,700,,,,,,,,,,,,Worded MEL question experiment 1 date/delay paper.
+6,3,calendarWordYearDual,none,none,720,,1/6/2023,1390,,4/24/2023,1390,,,,,,,,,,,,Worded MEL question experiment 1 date/delay paper.
+6,4,calendarWordYearDual,none,none,840,,1/3/2023,1120,,5/16/2023,1120,,,,,,,,,,,,Worded MEL question experiment 1 date/delay paper.
+6,5,calendarWordYearDual,none,none,32,,1/4/2023,39,13,6/13/2023,40,,,,,,,,,,,,Worded MEL question experiment 3 of date/delay paper.
+6,6,calendarWordYearDual,none,none,45,,1/2/2023,70,,7/18/2023,70,,,,,,,,,,,,Worded MEL question experiment 3 of date/delay paper.
+6,7,calendarWordYearDual,none,none,66,,1/6/2023,110,,8/24/2023,110,,,,,,,,,,,,Worded MEL question experiment 3 of date/delay paper.
+6,8,calendarWordYearDual,none,none,77,,1/3/2023,118,,9/16/2023,120,,,,,,,,,,,,Worded MEL question experiment 3 of date/delay paper.
+6,instructions,calendarWordYearDual,none,none,300,,10/2/2023,700,,1/7/2023,1000,,750,650,,,,,,,,introduction-calendarWord,TODO use width and height during regular drawCalendar calls Worded MEL question experiment 3 of date/delay paper.
+7,1,word,none,none,350,,4/10/2023,430,,9/8/2023,430,,,,,,,,,,,,Worded MEL question experiment 1 date/delay paper TODO fix dates here so that it represent weeks to match up with MEL Word version.
+7,2,word,none,none,490,,7/24/2023,700,,12/6/2023,700,,,,,,,,,,,,Worded MEL question experiment 1 date/delay paper.
+7,3,word,none,none,720,,5/21/2023,1390,,7/29/2023,1390,,,,,,,,,,,,Worded MEL question experiment 1 date/delay paper.
+7,4,word,none,none,840,,6/15/2023,1120,,9/26/2023,1120,,,,,,,,,,,,Worded MEL question experiment 1 date/delay paper.
+7,5,word,none,none,32,,8/6/2023,39,13,11/14/2023,40,,,,,,,,,,,,Worded MEL question experiment 3 of date/delay paper.
+7,6,word,none,none,45,,5/29/2023,70,,9/17/2023,70,,,,,,,,,,,,Worded MEL question experiment 3 of date/delay paper.
+7,7,word,none,none,66,,9/12/2023,110,,11/8/2023,110,,,,,,,,,,,,Worded MEL question experiment 3 of date/delay paper.
+7,8,word,none,none,77,,7/30/2023,118,,10/15/2023,120,,,,,,,,,,,,Worded MEL question experiment 3 of date/delay paper.
+7,instructions,word,none,none,300,,5/7/2023,700,,10/2/2023,1000,,1135,120,,,,,,,,introduction-wordDate,TODO use width and height during regular drawCalendar calls Worded MEL question experiment 3 of date/delay paper.
 `;
 
 // define your latin square.  I used https://cs.uwaterloo.ca/~dmasson/tools/latin_square/
