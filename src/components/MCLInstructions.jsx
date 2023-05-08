@@ -118,24 +118,22 @@ const MCLInstructions = () => {
       <React.Fragment>
         <Typography paragraph>
           You will be presented with a series of hypothetical choices of
-          receiving two different amounts of money on two different dates.{" "}
-          {/*TODO: YAHEL: CHANGE FOR CALENDAR TREATMENT "times"->"dates"*/}
-          Both amounts are in United States Dollars (USD).{" "}
-          {/*TODO: YAHEL: CHANGE FOR CALENDAR TREATMENT "and both times are the
-          delay in months from now"*/}
+          receiving two different amounts of money at two different times. Both
+          amounts are in United States Dollars (USD) and both times are the
+          delay in months from now.{" "}
           <b>
-            All amounts and dates {/*delay times*/} in the questions are
-            hypothetical. We do ask that you imagine to the best of your ability
-            that you are in this situation and need to make a choice between the
-            two payments. These are very realistic choices that can present
-            themselves to anyone, so for each question, please think which
-            option you would choose if you were truly in this situation.
+            All amounts and delay times in the questions are hypothetical. We do
+            ask that you imagine to the best of your ability that you are in
+            this situation and need to make a choice between the two payments.
+            These are very realistic choices that can present themselves to
+            anyone, so for each question, please think which option you would
+            choose if you were truly in this situation.
           </b>
         </Typography>
         <Typography paragraph>
-          The amount and date{/*delay time*/} for each option will be
-          represented as {description}. You will make your choice by clicking on
-          one of the {clickDesc}.
+          The amount and delay time for each option will be represented as{" "}
+          {description}. You will make your choice by clicking on one of the{" "}
+          {clickDesc}.
         </Typography>
         <Typography paragraph>
           <img
@@ -148,9 +146,8 @@ const MCLInstructions = () => {
         <Typography paragraph>
           <b>Try it out below: </b>
           In the example below, the {tryLeftDesc} represents the choice of
-          receiving $300 on May 7th, 2023{/*two months from now*/} and the{" "}
-          {tryRightDesc} represents receiving $700 on October 2nd, 2023
-          {/*seven months from now*/}. Select one of the options by {tryAction}{" "}
+          receiving $300 two months from now and the {tryRightDesc} receiving
+          $700 seven months from now. Select one of the options by {tryAction}{" "}
           for your choice.
         </Typography>
       </React.Fragment>
@@ -164,8 +161,8 @@ const MCLInstructions = () => {
           "a radio button",
           "buttons",
           "Radio button example",
-          "button with the earlier day",
-          "button with the later day",
+          "button on the left",
+          "button on the right",
           "clicking the button"
         );
       case ViewType.barchart:

@@ -13,71 +13,8 @@ import { AmountType } from "../features/AmountType.js";
 import { formControl } from "./ScreenHelper.js";
 
 export function MELSelectionForm(props) {
-  const monthNames = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
-  ];
-  const daySuffix = [
-    "SHOULD NOT BE SEEN",
-    "st", // 1st
-    "nd",
-    "rd",
-    "th", // 4th
-    "th",
-    "th",
-    "th",
-    "th",
-    "th",
-    "th", // 10th
-    "th",
-    "th",
-    "th",
-    "th",
-    "th",
-    "th",
-    "th",
-    "th",
-    "th",
-    "th",
-    "th",
-    "st", // 21st
-    "nd",
-    "rd",
-    "th", // 24th
-    "th",
-    "th",
-    "th",
-    "th",
-    "th",
-    "th", // 30th
-    "st", // 31st
-  ];
-  const todayText = function (sooner_time) {
-    const date = new Date(sooner_time);
-    //return sooner_time === 0 ? "today" : `in ${sooner_time} months`;
-    const monthNumber = date.getMonth();
-    const dayNumber = date.getDate();
-    const yearNumber = date.getFullYear();
-    return (
-      "on " +
-      monthNames[monthNumber] +
-      " " +
-      dayNumber +
-      daySuffix[dayNumber] +
-      ", " +
-      yearNumber
-    );
-  };
+  const todayText = (sooner_time) =>
+    sooner_time === 0 ? "today" : `in ${sooner_time} months`;
 
   function questionText(amountEarlier, timeEarlier, amountLater, timeLater) {
     return `Make a choice to receive ${question1stPartText(
@@ -91,8 +28,7 @@ export function MELSelectionForm(props) {
   }
 
   function question2ndPartText(amountLater, timeLater) {
-    return `${format("$,.0f")(amountLater)} ${todayText(timeLater)}`;
-    //return `${format("$,.0f")(amountLater)} in ${timeLater} months`;
+    return `${format("$,.0f")(amountLater)} in ${timeLater} months`;
   }
 
   let useStyles;
@@ -101,7 +37,7 @@ export function MELSelectionForm(props) {
     let part = ["btn0", "btn1"].reduce((result, key) => {
       result[key] = {
         backgroundColor: "steelblue",
-        //"border-radius": "20px",
+        "border-radius": "20px",
         "border-width": "5px",
         borderColor: "#ffffff",
         color: "black",
@@ -116,7 +52,7 @@ export function MELSelectionForm(props) {
     let part1 = ["btn0Clicked", "btn1Clicked"].reduce((result, key) => {
       result[key] = {
         backgroundColor: "lightblue",
-        //"border-radius": "20px",
+        "border-radius": "20px",
         "border-width": "5px",
         borderColor: "#000000",
         color: "black",
@@ -135,7 +71,7 @@ export function MELSelectionForm(props) {
       btn1Clicked: part1.btn1Clicked,
       qArea: {
         "border-width": "5px",
-        //"border-radius": "20px",
+        "border-radius": "20px",
         padding: "10px",
         borderColor: "#000000",
       },
@@ -161,9 +97,9 @@ export function MELSelectionForm(props) {
           <p className={classes.qTitle}>
             {questionText(
               props.amountEarlier,
-              props.dateEarlier,
+              props.timeEarlier,
               props.amountLater,
-              props.dateLater
+              props.timeLater
             )}
           </p>
           <FormHelperText>{props.helperText}</FormHelperText>
@@ -192,14 +128,14 @@ export function MELSelectionForm(props) {
                   key: AmountType.earlierAmount,
                   label: question1stPartText(
                     props.amountEarlier,
-                    props.dateEarlier
+                    props.timeEarlier
                   ),
                 },
                 {
                   key: AmountType.laterAmount,
                   label: question2ndPartText(
                     props.amountLater,
-                    props.dateLater
+                    props.timeLater
                   ),
                 },
               ].map(({ key, label }, index) => (

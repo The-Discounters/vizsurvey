@@ -164,7 +164,7 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/t
 
 I used the sceenshot tool that comes with OSX to screen capture the rario button group as I selected the buttons. I converted the .mov file to an animated gif with Drop to GIF.
 
-TODO: Yahel forgot to follow these instructions. Instead went ahead with another tool.
+Yahel's instructions with a separate tool
 https://gist.github.com/SheldonWangRJT/8d3f44a35c8d1386a396b9b49b43c385
 
 Solution
