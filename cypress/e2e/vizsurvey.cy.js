@@ -261,6 +261,12 @@ function visitTreatment(treatmentId, width = 1280, height = 720) {
   cy.get("button").contains("Submit Feedback & Exit").click();
 }
 describe("vizsurvey", () => {
+  it("word prod", () => {
+    visitTreatment(1);
+  });
+  it("bar prod", () => {
+    visitTreatment(2);
+  });
   /*
   it("word dev", () => {
     visitTreatment(1);
@@ -411,6 +417,7 @@ describe("vizsurvey", () => {
   it("word date", () => {
     visitTreatment(7);
   });
+/*
   it("calendar word single month", () => {
     //visitTreatment(5, 1280, 720);
     //cy.tick(4000);
@@ -449,13 +456,11 @@ describe("vizsurvey", () => {
     for (let i = 0; i < 4; i++) {
       simpleEarlierAmount();
     }
-    /*
     postsurvey([
       "5,1,calendarWord,none,none,500,2,,1000,5",
       "5,2,calendarWord,none,none,50,2,,300,7",
       "5,3,calendarWord,none,none,250,2,,1000,3",
     ]);
-*/
   });
   it("calendar word dual year", () => {
     //visitTreatment(5, 1280, 720);
@@ -496,55 +501,7 @@ describe("vizsurvey", () => {
       simpleEarlierAmount();
     }
   });
-  it("word prod", () => {
-    visitTreatment(1);
-
-    answerMELForm();
-    answerMELForm(true, 500);
-
-    answerMELForm(true, 100);
-    answerMELForm(true, 100);
-
-    answerMELForm(true, 100);
-    answerMELForm(true, 100);
-
-    answerMELForm(true, 100);
-    answerMELForm(true, 100);
-
-    // TODO    cy.get("#attention-check-strongly-disagree").click();
-    // TODO   cy.get("button").contains("Next").click();
-
-    cy.tick(1000);
-
-    // TODO: fix timing
-    postsurvey([
-      "20,1,word,none,none,350,4,,430,13",
-      "20,2,word,none,none,490,2,,700,18",
-      "20,3,word,none,none,720,6,,1390,24",
-      "20,4,word,none,none,840,3,,1120,16",
-      "20,5,word,none,none,32,4,,39,13",
-      "20,6,word,none,none,45,2,,70,18",
-      "20,7,word,none,none,66,6,,110,24",
-      "20,8,word,none,none,77,3,,118,16",
-    ]);
-  });
-  it("bar prod", () => {
-    visitTreatment(2);
-    answerMELForm(false); // bar
-
-    cy.get("#attention-check-strongly-disagree").click();
-    cy.get("button").contains("Next").click();
-
-    answerMELForm(false); // bar
-    answerMELForm(false); // bar
-    cy.tick(1000);
-
-    postsurvey([
-      "2,1,barchart,none,none,300,2,,700,5",
-      "2,2,barchart,none,none,500,2,,800,7",
-      "2,3,barchart,none,none,300,2,,1000,7",
-    ]);
-  });
+*/
   /*
   it("survey invalid", () => {
     cy.viewport(1200, 700);
