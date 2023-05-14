@@ -49,22 +49,28 @@ export function Consent() {
     return (
       <React.Fragment>
         <Typography paragraph>
-          <b>Investigator: </b>Peter Cordone, Yahel Nachum, Ravit Heskiau, Lane
-          Harrison, Daniel Reichman
+          <b>Investigator: </b>
+          {process.env.REACT_APP_RESARCHER_NAMES}
         </Typography>
         <Typography paragraph>
-          <b>Contact Information: </b>Peter Cordone{" "}
-          <a href={`mailto:pncordone@wpi.edu?subject=%5bSurvey%20Consent%5d`}>
-            pncordone@wpi.edu
+          <b>Contact Information: </b> {process.env.REACT_APP_CONTACT_NAME}{" "}
+          <a
+            href={`mailto:${process.env.REACT_APP_CONTACT_EMAIL}?subject=%5b${process.env.REACT_APP_RESEARCH_TITLE}%20Survey%20Consent%5d`}
+          >
+            {process.env.REACT_APP_CONTACT_EMAIL}
           </a>
         </Typography>
         <Typography paragraph>
-          <b>Title of Research Study: </b>Choices About Money
+          <b>Title of Research Study: </b>
+          {process.env.REACT_APP_RESEARCH_TITLE}
         </Typography>
         <Typography paragraph>
           <b>Sponsor: </b>
-          <a href={`mailto:dreichman@wpi.edu?subject=%5bSurvey%20Consent%5d`}>
-            Prof. Daniel Reichman (dreichman@wpi.edu)
+          <a
+            href={`mailto:${process.env.REACT_APP_SPONSOR_EMAIL}?subject=%5b${process.env.REACT_APP_RESEARCH_TITLE}%20Survey%20Consent%5d`}
+          >
+            {process.env.REACT_APP_SPONSOR_NAME} (
+            {process.env.REACT_APP_SPONSOR_EMAIL})
           </a>
         </Typography>
         <Typography paragraph>
@@ -148,19 +154,19 @@ export function Consent() {
         </Typography>
         {[
           {
-            name: "Peter Cordone",
-            phone: "(617)678-5190",
-            email: "pncordone@wpi.edu",
+            name: `${process.env.REACT_APP_CONTACT_NAME}`,
+            phone: `${process.env.REACT_APP_CONTACT_PHONE}`,
+            email: `${process.env.REACT_APP_CONTACT_EMAIL}`,
           },
           {
-            name: "IRB Manager Ruth McKeogh",
-            phone: "508 831-6699",
-            email: "irb@wpi.edu",
+            name: `${process.env.REACT_APP_IRB_NAME}`,
+            phone: `${process.env.REACT_APP_IRB_PHONE}`,
+            email: `${process.env.REACT_APP_IRB_EMAIL}`,
           },
           {
-            name: "Human Protection Administrator Gabriel Johnson",
-            phone: "508-831-4989",
-            email: "gjohnson@wpi.edu",
+            name: `${process.env.REACT_APP_HPA_NAME}`,
+            phone: `${process.env.REACT_APP_HPA_PHONE}`,
+            email: `${process.env.REACT_APP_HPA_EMAIL}`,
           },
         ].map(({ name, phone, email }, index) => {
           return (
@@ -171,7 +177,9 @@ export function Consent() {
                 Tel: {phone}
                 <br />
                 Email:
-                <a href={`mailto:${email}?subject=%5bSurvey%20Consent%5d`}>
+                <a
+                  href={`mailto:${email}?subject=%5b${process.env.REACT_APP_RESEARCH_TITLE}%20Survey%20Consent%5d`}
+                >
                   {email}
                 </a>
                 <br />

@@ -31,9 +31,31 @@ REACT_APP_REGION=<region>
 REACT_APP_accessKeyId=<access id>
 REACT_APP_secretAccessKey=<secret access key>
 REACT_APP_AWS_ENABLED=<true for enabled blank otherwise>
-REACT_APP_FULLSCREEN=enabled=
-REACT_APP_PAYMENT_AMOUT=\$3
-REACT_APP_PROLIFIC_CODE=
+REACT_APP_FIREBASE_API_KEY=<firebase API key>
+REACT_APP_FIREBASE_AUTH_DOMAIN=<firebase domain>
+REACT_APP_FIREBASE_DATABASE_URL=<firebase database URL>
+REACT_APP_FIREBASE_PROJECT_ID=<firebase project ID>
+REACT_APP_FIREBASE_STORAGE_BUCKET=<firebase storage bucket>
+REACT_APP_FIREBASE_MESSAGING_SENDER_ID=<firebase messaging sender id>
+REACT_APP_FIREBASE_APP_ID=<firebase app id>
+REACT_APP_FIREBASE_MEASUREMENT_ID=<firebase measurement id>
+REACT_APP_FULLSCREEN=enabled=<enabled or empty>
+REACT_APP_PAYMENT_AMOUT=<payment amount including currency symbol and I needed a slash before symbol i.e. \$3>
+REACT_APP_PROLIFIC_CODE=<prolific code>
+REACT_APP_RESEARCH_TITLE=Choices About Money
+REACT_APP_RESARCHER_NAMES=<researcher names that show up on consent form>
+REACT_APP_CONTACT_NAME=<consent contact name>
+REACT_APP_CONTACT_EMAIL=<consent contact email>
+REACT_APP_CONTACT_PHONE=<consent contact phone>
+REACT_APP_SPONSOR_NAME=<consent sponsor name>
+REACT_APP_SPONSOR_EMAIL=<consent sponsor email>
+REACT_APP_SPONSOR_PHONE=<consent sponsor phone>
+REACT_APP_IRB_NAME=<Internal revue board contact name>
+REACT_APP_IRB_EMAIL=<Internal revue board contact email>
+REACT_APP_IRB_PHONE=<Internal revue board contact phone>
+REACT_APP_HPA_NAME=<Human protection admin contact name>
+REACT_APP_HPA_EMAIL=<Human protection admin contact email>
+REACT_APP_HPA_PHONE=<Human protection admin contact phone>
 
 From https://stackoverflow.com/questions/42458434/how-to-set-build-env-variables-when-running-create-react-app-build-script
 npm start will set REACT_APP_NODE_ENV to development, and so it will automatically use the .env.development file, and npm run build sets REACT_APP_NODE_ENV to production, and so it will automatically use .env.production. Values set in these will override the values in your .env.
@@ -169,11 +191,13 @@ https://gist.github.com/SheldonWangRJT/8d3f44a35c8d1386a396b9b49b43c385
 
 Solution
 download HomeBrew
+
 ```
 $brew install ffmpeg
 $brew install gifsicle
 $ffmpeg -i in.mov -pix_fmt rgb8 -r 10 output.gif && gifsicle -O3 output.gif -o output.gif
 ```
+
 `&& gifsicle` ended up not being installed, but it seems to only optimize the gif which I did not need
 
 ### links I found useful while developing

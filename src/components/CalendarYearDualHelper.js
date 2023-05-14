@@ -1,6 +1,73 @@
 import { select /*, format, scaleLinear, scaleBand, range, drag */ } from "d3";
 import { AmountType } from "../features/AmountType.js";
 
+export const monthNames = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
+
+export const daySuffix = [
+  "SHOULD NOT BE SEEN",
+  "st", // 1st
+  "nd",
+  "rd",
+  "th", // 4th
+  "th",
+  "th",
+  "th",
+  "th",
+  "th",
+  "th", // 10th
+  "th",
+  "th",
+  "th",
+  "th",
+  "th",
+  "th",
+  "th",
+  "th",
+  "th",
+  "th",
+  "th",
+  "st", // 21st
+  "nd",
+  "rd",
+  "th", // 24th
+  "th",
+  "th",
+  "th",
+  "th",
+  "th",
+  "th", // 30th
+  "st", // 31st
+];
+
+export const todayText = function (sooner_time) {
+  const date = new Date(sooner_time);
+  const monthNumber = date.getMonth();
+  const dayNumber = date.getDate();
+  const yearNumber = date.getFullYear();
+  return (
+    "on " +
+    monthNames[monthNumber] +
+    " " +
+    dayNumber +
+    daySuffix[dayNumber] +
+    ", " +
+    yearNumber
+  );
+};
+
 export const drawCalendarYearDual = ({
   table: table,
   onClickCallback: onClickCallback,
@@ -11,16 +78,6 @@ export const drawCalendarYearDual = ({
   qAmountLater: qAmountLater,
 }) => {
   let selection = { d: -1, a: -1 };
-  /*
-  console.log("qDateEarlier: " + qDateEarlier);
-  console.log("qDateLater: " + qDateLater);
-  const firstOfMonth = new Date(qDateEarlier);
-  firstOfMonth.setDate(1);
-  const lastOfMonth = new Date(qDateEarlier);
-  lastOfMonth.setMonth(lastOfMonth.getMonth() + 1);
-  lastOfMonth.setDate(0);
-  console.log("lastOfMonth: " + lastOfMonth);
-  */
   const date = new Date(qDateEarlier);
   const dateLater = new Date(qDateLater);
   console.log("date: " + date);
@@ -28,23 +85,15 @@ export const drawCalendarYearDual = ({
   console.log("dateLater: " + dateLater);
   console.log("dateLater.getMonth(): " + dateLater.getMonth());
   const year = [];
-  //const month = [];
-  // let counter = -1 * firstOfMonth.getDay() + 1;
   let counter = 0;
   let change = 1;
-  // for (let i = 0; i < 6 /* max num of weeks */; i++) {
   for (let i = 0; i < 4 /* 4 rows of months */; i++) {
-    // if (counter > lastOfMonth.getDate() || counter < -5) continue;
     let row = [];
-    //let week = [];
-    // for (let j = 0; j < 7 /* length of week */; j++) {
     for (let j = 0; j < 6 /* 6 months in a row */; j++) {
       if (counter >= 12) {
-        //change = -1;
         counter = 0;
       }
       let month = counter;
-      // let day = counter;
       if (month === date.getMonth()) {
         month = { d: month, a: qAmountEarlier, k: "earlierAmount" };
       } else if (month === dateLater.getMonth()) {
@@ -54,53 +103,12 @@ export const drawCalendarYearDual = ({
       counter += change;
     }
     year.push(row);
-    // month.push(week);
   }
-  const monthNames = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
-  ];
-  //const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-  //const monthNum = date.getMonth();
 
   table.selectAll("table > *").remove();
 
-  //const header = table.append("thead");
   const body = table.append("tbody");
-  /*
-  header
-    .append("tr")
-    .append("td")
-    .attr("colspan", 7)
-    .append("h2")
-    .text(monthNames[monthNum])
-    .style("text-align", "center")
-    .style("font-size", "40px");
 
-  header
-    .append("tr")
-    .selectAll("td")
-    .data(dayNames)
-    .enter()
-    .append("td")
-    .text(function (d) {
-      return d;
-    })
-    .style("text-align", "center")
-    .style("font-size", "20px");
-  */
-
-  console.log("year: " + JSON.stringify(year));
   let boxLength = "100px";
   year.forEach(function (row) {
     body
@@ -188,9 +196,6 @@ export const drawCalendarYearDual = ({
             .style("text-align", "center")
             .style("margin", "0px 5px 0px 5px")
             .style("width", boxLength)
-            //.style("height", "10px")
-            //.style("top", "-33px")
-            //.style("position", "relative")
             .on("click", () => {})
             .on("mouseover", function () {})
             .on("mouseout", function () {});
@@ -206,8 +211,6 @@ export const drawCalendarYearDual = ({
             .style("width", boxLength)
             .style("height", boxLength)
             .style("text-align", "center")
-            //.style("top", "-5px")
-            //.style("position", "relative")
             .style("font-size", "25px");
           if (d.k === "earlierAmount") selectionDiv.attr("id", "earlierAmount");
           else selectionDiv.attr("id", "laterAmount");
