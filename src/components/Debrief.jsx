@@ -9,8 +9,10 @@ import {
   ThemeProvider,
 } from "@material-ui/core";
 import TextField from "@mui/material/TextField";
+import { ViewType } from "../features/ViewType.js";
 import {
   getStatus,
+  getInstructionTreatment,
   setFeedback,
   debriefShownTimestamp,
   debriefCompleted,
@@ -22,6 +24,7 @@ import { StatusType } from "../features/StatusType.js";
 const Debrief = () => {
   const dispatch = useDispatch();
   const status = useSelector(getStatus);
+  const instructionTreatment = useSelector(getInstructionTreatment);
   const [comment, setComment] = React.useState("");
 
   useEffect(() => {
@@ -39,6 +42,32 @@ const Debrief = () => {
 
   const handleFieldChange = (event, setter) => {
     setter(event.target.value);
+  };
+
+  const debriefText = () => {
+    switch (instructionTreatment.viewType) {
+      case ViewType.word:
+      case ViewType.barchart:
+        return `This experiment seeks to examine how visualization can be designed to
+          influence people in making long term decisions differently.  For this
+          purpose, participants in this experiment are randomly assigned to be presented 
+          with word choices or different versions of graphical displays, such as a bar graph. 
+          In particular, we examine how space can be used in the time (horizontal) axis to increase 
+          the likelihood of choosing the longer-term option.`;
+      case ViewType.calendarIcon:
+      case ViewType.calendarBar:
+      case ViewType.calendarWord:
+      case ViewType.calendarWordYear:
+      case ViewType.calendarWordYearDual:
+        return `This experiment seeks to examine how visualization can be designed to
+          influence people in making long term decisions differently.  For this
+          purpose, participants in this experiment are randomly assigned to be presented 
+          with word choices or different versions of graphical displays, such as a calendar. 
+          In particular, we examine how this familiar single-year calendar layout can be used to 
+          increase the likelihood .`;
+      default:
+        return "*** SHOULD NOT SEE THIS TEXT ***";
+    }
   };
 
   return (
@@ -72,15 +101,7 @@ const Debrief = () => {
             represented. Visualization offers a powerful tool that influences
             all three of these factors.
           </Typography>
-          <Typography paragraph>
-            This experiment seeks to examine how visualization can be designed
-            to influence people in making long term decisions differently. For
-            this purpose, participants in this experiment are randomly assigned
-            to be presented with word choices or different versions of graphical
-            displays, such as a bar graph. In particular, we examine how space
-            can be used in the time (horizontal) axis to increase the likelihood
-            of choosing the longer-term option.
-          </Typography>
+          <Typography paragraph>{debriefText()}</Typography>
           <Typography paragraph>
             For more information about this research or about the rights of
             research participants, or if you would like to get in touch with us
@@ -88,19 +109,19 @@ const Debrief = () => {
           </Typography>
           {[
             {
-              name: "Peter Cordone",
-              phone: "(617)678-5190",
-              email: "pncordone@wpi.edu",
+              name: `${process.env.REACT_APP_CONTACT_NAME}`,
+              phone: `${process.env.REACT_APP_CONTACT_PHONE}`,
+              email: `${process.env.REACT_APP_CONTACT_EMAIL}`,
             },
             {
-              name: "IRB Manager Ruth McKeogh",
-              phone: "(508)831-6699",
-              email: "irb@wpi.edu",
+              name: `${process.env.REACT_APP_IRB_NAME}`,
+              phone: `${process.env.REACT_APP_IRB_PHONE}`,
+              email: `${process.env.REACT_APP_IRB_EMAIL}`,
             },
             {
-              name: "Human Protection Administrator Gabriel Johnson",
-              phone: "(508)831-4989",
-              email: "gjohnson@wpi.edu",
+              name: `${process.env.REACT_APP_HPA_NAME}`,
+              phone: `${process.env.REACT_APP_HPA_PHONE}`,
+              email: `${process.env.REACT_APP_HPA_EMAIL}`,
             },
           ].map(({ name, phone, email }, index) => {
             return (
