@@ -195,11 +195,7 @@ const DevHome = () => {
                   dispatch(clearState());
                 }}
               >
-                {
-                  allTreatments.filter(
-                    (d) => d.treatmentId === 1 && d.position === 1
-                  )[0].comment
-                }
+                {allTreatments.filter((d) => d.treatmentId === 1)[0].comment}
               </Link>
             </p>
             <p>
@@ -210,11 +206,7 @@ const DevHome = () => {
                   dispatch(clearState());
                 }}
               >
-                {
-                  allTreatments.filter(
-                    (d) => d.treatmentId === 2 && d.position === 1
-                  )[0].comment
-                }
+                {allTreatments.filter((d) => d.treatmentId === 2)[0].comment}
               </Link>
             </p>
             <p>
@@ -225,11 +217,7 @@ const DevHome = () => {
                   dispatch(clearState());
                 }}
               >
-                {
-                  allTreatments.filter(
-                    (d) => d.treatmentId === 3 && d.position === 1
-                  )[0].comment
-                }
+                {allTreatments.filter((d) => d.treatmentId === 3)[0].comment}
               </Link>
             </p>
             <p>
@@ -240,11 +228,7 @@ const DevHome = () => {
                   dispatch(clearState());
                 }}
               >
-                {
-                  allTreatments.filter(
-                    (d) => d.treatmentId === 4 && d.position === 1
-                  )[0].comment
-                }
+                {allTreatments.filter((d) => d.treatmentId === 4)[0].comment}
               </Link>
             </p>
             <p>
@@ -255,11 +239,7 @@ const DevHome = () => {
                   dispatch(clearState());
                 }}
               >
-                {
-                  allTreatments.filter(
-                    (d) => d.treatmentId === 5 && d.position === 1
-                  )[0].comment
-                }
+                {allTreatments.filter((d) => d.treatmentId === 5)[0].comment}
               </Link>
             </p>
             <p>
@@ -270,11 +250,7 @@ const DevHome = () => {
                   dispatch(clearState());
                 }}
               >
-                {
-                  allTreatments.filter(
-                    (d) => d.treatmentId === 6 && d.position === 1
-                  )[0].comment
-                }
+                {allTreatments.filter((d) => d.treatmentId === 6)[0].comment}
               </Link>
             </p>
             <p>
@@ -285,11 +261,7 @@ const DevHome = () => {
                   dispatch(clearState());
                 }}
               >
-                {
-                  allTreatments.filter(
-                    (d) => d.treatmentId === 7 && d.position === 1
-                  )[0].comment
-                }
+                {allTreatments.filter((d) => d.treatmentId === 7)[0].comment}
               </Link>
             </p>
             <p>
@@ -300,11 +272,7 @@ const DevHome = () => {
                   dispatch(clearState());
                 }}
               >
-                {
-                  allTreatments.filter(
-                    (d) => d.treatmentId === 8 && d.position === 1
-                  )[0].comment
-                }
+                {allTreatments.filter((d) => d.treatmentId === 8)[0].comment}
               </Link>
             </p>
             <p>
@@ -315,11 +283,7 @@ const DevHome = () => {
                   dispatch(clearState());
                 }}
               >
-                {
-                  allTreatments.filter(
-                    (d) => d.treatmentId === 9 && d.position === 1
-                  )[0].comment
-                }
+                {allTreatments.filter((d) => d.treatmentId === 9)[0].comment}
               </Link>
             </p>
             <p>
@@ -330,11 +294,7 @@ const DevHome = () => {
                   dispatch(clearState());
                 }}
               >
-                {
-                  allTreatments.filter(
-                    (d) => d.treatmentId === 10 && d.position === 1
-                  )[0].comment
-                }
+                {allTreatments.filter((d) => d.treatmentId === 10)[0].comment}
               </Link>
             </p>
             <p>
@@ -345,11 +305,7 @@ const DevHome = () => {
                   dispatch(clearState());
                 }}
               >
-                {
-                  allTreatments.filter(
-                    (d) => d.treatmentId === 11 && d.position === 1
-                  )[0].comment
-                }
+                {allTreatments.filter((d) => d.treatmentId === 11)[0].comment}
               </Link>
             </p>
             <p>
@@ -357,11 +313,7 @@ const DevHome = () => {
                 id="12"
                 to="/start?participant_id=1&treatment_id=12&study_id=2&session_id=3"
               >
-                {
-                  allTreatments.filter(
-                    (d) => d.treatmentId === 12 && d.position === 1
-                  )[0].comment
-                }
+                {allTreatments.filter((d) => d.treatmentId === 12)[0].comment}
               </Link>
             </p>
             <p>
@@ -369,11 +321,7 @@ const DevHome = () => {
                 id="13"
                 to="/start?participant_id=1&treatment_id=13&study_id=2&session_id=3"
               >
-                {
-                  allTreatments.filter(
-                    (d) => d.treatmentId === 13 && d.position === 1
-                  )[0].comment
-                }
+                {allTreatments.filter((d) => d.treatmentId === 13)[0].comment}
               </Link>
             </p>
             <p>
@@ -381,11 +329,7 @@ const DevHome = () => {
                 id="14"
                 to="/start?participant_id=1&treatment_id=14&study_id=2&session_id=3"
               >
-                {
-                  allTreatments.filter(
-                    (d) => d.treatmentId === 14 && d.position === 1
-                  )[0].comment
-                }
+                {allTreatments.filter((d) => d.treatmentId === 14)[0].comment}
               </Link>
             </p>
             <p>
@@ -393,11 +337,7 @@ const DevHome = () => {
                 id="15"
                 to="/start?participant_id=1&treatment_id=15&study_id=2&session_id=3"
               >
-                {
-                  allTreatments.filter(
-                    (d) => d.treatmentId === 15 && d.position === 1
-                  )[0].comment
-                }
+                {allTreatments.filter((d) => d.treatmentId === 15)[0].comment}
               </Link>
             </p>
             <p>
@@ -405,11 +345,7 @@ const DevHome = () => {
                 id="16"
                 to="/start?participant_id=1&treatment_id=16&study_id=2&session_id=3"
               >
-                {
-                  allTreatments.filter(
-                    (d) => d.treatmentId === 16 && d.position === 1
-                  )[0].comment
-                }
+                {allTreatments.filter((d) => d.treatmentId === 16)[0].comment}
               </Link>
             </p>
             <p>
@@ -417,11 +353,7 @@ const DevHome = () => {
                 id="17"
                 to="/start?participant_id=1&treatment_id=17&study_id=2&session_id=3"
               >
-                {
-                  allTreatments.filter(
-                    (d) => d.treatmentId === 17 && d.position === 1
-                  )[0].comment
-                }
+                {allTreatments.filter((d) => d.treatmentId === 17)[0].comment}
               </Link>
             </p>
             <p>
@@ -429,11 +361,7 @@ const DevHome = () => {
                 id="18"
                 to="/start?participant_id=1&treatment_id=18&study_id=2&session_id=3"
               >
-                {
-                  allTreatments.filter(
-                    (d) => d.treatmentId === 18 && d.position === 1
-                  )[0].comment
-                }
+                {allTreatments.filter((d) => d.treatmentId === 18)[0].comment}
               </Link>
             </p>
             <p>
@@ -441,11 +369,7 @@ const DevHome = () => {
                 id="19"
                 to="/start?participant_id=1&treatment_id=19&study_id=2&session_id=3"
               >
-                {
-                  allTreatments.filter(
-                    (d) => d.treatmentId === 19 && d.position === 1
-                  )[0].comment
-                }
+                {allTreatments.filter((d) => d.treatmentId === 19)[0].comment}
               </Link>
             </p>
             <p>
@@ -456,11 +380,7 @@ const DevHome = () => {
                 id="20"
                 to="/start?participant_id=1&treatment_id=20&study_id=2&session_id=3"
               >
-                {
-                  allTreatments.filter(
-                    (d) => d.treatmentId === 20 && d.position === 1
-                  )[0].comment
-                }
+                {allTreatments.filter((d) => d.treatmentId === 20)[0].comment}
               </Link>
             </p>
             <p>
@@ -468,11 +388,7 @@ const DevHome = () => {
                 id="21"
                 to="/start?participant_id=1&treatment_id=21&study_id=2&session_id=3"
               >
-                {
-                  allTreatments.filter(
-                    (d) => d.treatmentId === 21 && d.position === 1
-                  )[0].comment
-                }
+                {allTreatments.filter((d) => d.treatmentId === 21)[0].comment}
               </Link>
             </p>
             <p>
@@ -480,22 +396,69 @@ const DevHome = () => {
                 id="22"
                 to="/start?participant_id=1&treatment_id=22&study_id=2&session_id=3"
               >
-                {
-                  allTreatments.filter(
-                    (d) => d.treatmentId === 22 && d.position === 1
-                  )[0].comment
-                }
+                {allTreatments.filter((d) => d.treatmentId === 22)[0].comment}
               </Link>
             </p>
             <p>
-              <b>Production within subjects treatments are listed below.</b>
+              <b>Production assigned randomly by the server.</b>
             </p>
             <p>
               <Link
                 id="23"
-                to="/start?participant_id=1&treatment_id=assigned&study_id=2&session_id=3"
+                to="/start?participant_id=1&treatment_id=23&study_id=2&session_id=3"
               >
-                Assigned by the server
+                {allTreatments.filter((d) => d.treatmentId === 23)[0].comment}
+              </Link>
+            </p>
+            <p>
+              <Link
+                id="24"
+                to="/start?participant_id=1&treatment_id=24&study_id=2&session_id=3"
+              >
+                {allTreatments.filter((d) => d.treatmentId === 24)[0].comment}
+              </Link>
+            </p>
+            <p>
+              <Link
+                id="25"
+                to="/start?participant_id=1&treatment_id=25&study_id=2&session_id=3"
+              >
+                {allTreatments.filter((d) => d.treatmentId === 25)[0].comment}
+              </Link>
+            </p>
+            <p>
+              <b>Production calendar treatments.</b>
+            </p>
+            <p>
+              <Link
+                id="26"
+                to="/start?participant_id=1&treatment_id=26&study_id=2&session_id=3"
+              >
+                {allTreatments.filter((d) => d.treatmentId === 26)[0].comment}
+              </Link>
+            </p>
+            <p>
+              <Link
+                id="27"
+                to="/start?participant_id=1&treatment_id=27&study_id=2&session_id=3"
+              >
+                {allTreatments.filter((d) => d.treatmentId === 27)[0].comment}
+              </Link>
+            </p>
+            <p>
+              <Link
+                id="28"
+                to="/start?participant_id=1&treatment_id=28&study_id=2&session_id=3"
+              >
+                {allTreatments.filter((d) => d.treatmentId === 28)[0].comment}
+              </Link>
+            </p>
+            <p>
+              <Link
+                id="29"
+                to="/start?participant_id=1&treatment_id=29&study_id=2&session_id=3"
+              >
+                {allTreatments.filter((d) => d.treatmentId === 29)[0].comment}
               </Link>
             </p>
           </div>

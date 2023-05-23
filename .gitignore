@@ -18,7 +18,7 @@ test/public
 .env
 .env.local
 .env.development
-.env.test.local
+.env.test
 .env.production
 discounters.development.json
 discounters.production.json
