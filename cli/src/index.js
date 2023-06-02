@@ -4,13 +4,17 @@ import express from "express";
 import chalk from "chalk";
 import clear from "clear";
 import figlet from "figlet";
-import Configstore from "configstore";
 import { Command, InvalidArgumentError } from "commander";
 import fs from "fs";
 import { DateTime } from "luxon";
 import readline from "readline";
 import isValid from "is-valid-path";
-import { parseCSV, parseJSON, convertToCSV } from "./parserUtil.js";
+import { loadConfig, getS3BucketName } from "./configuration.js";
+import {
+  parseCSV,
+  parseJSON,
+  convertToCSV,
+} from "../../src/features/parserUtil.js";
 import { convertKeysToUnderscore } from "./ObjectUtil.js";
 import { CSVDataFilenameFromKey } from "./QuestionSliceUtil.js";
 import {
@@ -23,16 +27,16 @@ import {
   directoryOrFileExists,
   getDirectory,
 } from "./files.js";
-import { askS3BucketInfo } from "./inquier.js";
 import { init, listFiles, downloadFile } from "./S3.js";
 import { MergedData } from "./MergedData.js";
 import { updateStats, createStat, clearStats } from "./stats.js";
 import { drawStatus } from "./monitorUtil.js";
-
-export const AMAZON_S3_BUCKET_KEY = "amazonS3Bucket";
-export const AMAZON_REGION__KEY = "amazonRegion";
-export const AMAZON_ACCESS_KEY_ID = "amazonAccessKeyId";
-export const AMAZON_SECRET_ACCESS_KEY = "amazonSecretAccessKey";
+import {
+  initAdminFirestoreDB,
+  initBatch,
+  setBatchItem,
+  commitBatch,
+} from "./firestoreAdmin.js";
 
 dotenv.config();
 
@@ -105,13 +109,7 @@ const run = async () => {
     }
   };
 
-  const conf = new Configstore("discounters");
-  if (!conf.has(AMAZON_S3_BUCKET_KEY)) {
-    const settings = await askS3BucketInfo();
-    conf.set(settings);
-  }
-
-  init(conf);
+  loadConfig();
 
   const program = new Command();
   program
@@ -284,9 +282,7 @@ const run = async () => {
       try {
         console.log(
           chalk.red(
-            `Monitoring S3 bucket ${conf.get(
-              AMAZON_S3_BUCKET_KEY
-            )} with ${totalParticipants} total participants that started  ${
+            `Monitoring S3 bucket ${getS3BucketName()} with ${totalParticipants} total participants that started  ${
               options.laterthan ? options.laterthan : "all"
             }" for ${options.numtreatments} treatments...`
           )
@@ -405,6 +401,46 @@ const run = async () => {
         }, 1000);
       } catch (err) {
         console.log(chalk.red(err));
+        return;
+      }
+    });
+
+  const parseCSVFileToJSONSync = async (file) => {
+    return await parseCSVFile(file);
+  };
+
+  const commitBatchSync = async () => {
+    await commitBatch();
+  };
+
+  program
+    .command("import")
+    .description(
+      "Imports data from csv or json format into the firestore database."
+    )
+    .option("-s, --src <path>", "Source file path")
+    .option("-c, --collection <path>", "Collection path in database")
+    .option("-i, --id [id]", "Optional field to use for document ID")
+    .action((args, options) => {
+      try {
+        const colPath = args.collection;
+        const file = args.src;
+        initAdminFirestoreDB();
+        initBatch(colPath);
+        let data;
+        if (file.includes(".json")) {
+          data = fs.readJSONSync(file);
+        }
+        if (file.includes(".csv")) {
+          data = parseCSVFileToJSONSync(file);
+        }
+        for (const item of data) {
+          setBatchItem(args.id, item);
+        }
+        commitBatchSync();
+        console.log("Firestore updated. Migration was a success!");
+      } catch (err) {
+        console.log(chalk.red("Migration failed!"), error);
         return;
       }
     });

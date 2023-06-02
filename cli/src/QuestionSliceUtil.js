@@ -6,7 +6,7 @@ import {
   convertAnswersAryToObj,
   setAllPropertiesEmpty,
 } from "./ObjectUtil.js";
-import { convertToCSV } from "./parserUtil.js";
+import { convertToCSV } from "../../src/features/parserUtil.js";
 
 export const participantUniqueKey = (dataObj) => {
   return `${dataObj.participantId}`;

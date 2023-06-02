@@ -1,4 +1,3 @@
-import { jest } from "@jest/globals";
 import { MergedData } from "./MergedData.js";
 import { createStat, updateStats, clearStats } from "./stats.js";
 import { drawStatus } from "./monitorUtil";

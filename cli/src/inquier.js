@@ -2,10 +2,10 @@ import inquirer from "inquirer";
 
 import {
   AMAZON_S3_BUCKET_KEY,
-  AMAZON_REGION__KEY,
+  AMAZON_REGION_KEY,
   AMAZON_ACCESS_KEY_ID,
   AMAZON_SECRET_ACCESS_KEY,
-} from "./index.js";
+} from "./configuration.js";
 
 export function askS3BucketInfo() {
   const questions = [
@@ -22,7 +22,7 @@ export function askS3BucketInfo() {
       },
     },
     {
-      name: AMAZON_REGION__KEY,
+      name: AMAZON_REGION_KEY,
       type: "input",
       message: "Enter the Amazon region the bucket is in.",
       validate: function (value) {

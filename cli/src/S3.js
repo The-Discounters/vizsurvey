@@ -2,27 +2,26 @@
 import AWS from "aws-sdk";
 
 import {
-  AMAZON_ACCESS_KEY_ID,
-  AMAZON_SECRET_ACCESS_KEY,
-  AMAZON_REGION__KEY,
-  AMAZON_S3_BUCKET_KEY,
-} from "./index.js";
+  getS3BucketName,
+  getS3Region,
+  getAmazonAccessKey,
+  getSecretAccessKey,
+} from "./configuration.js";
 
 var myBucket = null;
 var bucketName;
-var myBucket;
 export const init = (conf) => {
   AWS.config.update({
-    accessKeyId: conf.get(AMAZON_ACCESS_KEY_ID),
-    secretAccessKey: conf.get(AMAZON_SECRET_ACCESS_KEY),
+    accessKeyId: getAmazonAccessKey(),
+    secretAccessKey: getSecretAccessKey(),
   });
 
   myBucket = new AWS.S3({
-    params: { Bucket: conf.get(AMAZON_S3_BUCKET_KEY) },
-    region: conf.get(AMAZON_REGION__KEY),
+    params: { Bucket: getS3BucketName() },
+    region: getS3Region(),
   });
 
-  bucketName = conf.get(AMAZON_S3_BUCKET_KEY);
+  bucketName = getS3BucketName();
 };
 
 export const downloadFile = async (file) => {

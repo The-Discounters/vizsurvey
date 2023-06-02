@@ -22,6 +22,7 @@ test/public
 .env.production
 discounters.development.json
 discounters.production.json
+admin-credentials-dev.json
 
 npm-debug.log*
 yarn-debug.log*
@@ -63,3 +64,8 @@ amplifytools.xcconfig
 
 #test data folders
 /cli/S3-downloaded
+
+#firestore debug files
+firebase-debug.log
+firestore-debug.log
+ui-debug.log

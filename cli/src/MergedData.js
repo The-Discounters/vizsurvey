@@ -1,4 +1,3 @@
-import chalk from "chalk";
 import { participantUniqueKey } from "./QuestionSliceUtil.js";
 import { convertAnswersAryToObj } from "./ObjectUtil.js";
 import { secondsBetween } from "./ConversionUtil.js";
@@ -55,9 +54,7 @@ export class MergedData {
           entry[0].participantId === "63853f2e1e9627b509ddeda0" ||
           entry[0].participantId === "63bf6a1798241e6c697023f2"
         ) {
-          console.log(
-            chalk.red(`found bad partcipant id ${entry[0].partcipantId}`)
-          );
+          console.log(`found bad partcipant id ${entry[0].partcipantId}`);
           process.exit(-1);
         }
         console.log("...merging single row entry");
@@ -179,7 +176,7 @@ export class MergedData {
             e.participantId === "63853f2e1e9627b509ddeda0" ||
             e.participantId === "63bf6a1798241e6c697023f2"
           ) {
-            console.log(chalk.red(`found bad partcipant id ${e.partcipantId}`));
+            console.log(`found bad partcipant id ${e.partcipantId}`);
             process.exit(-1);
           }
           lastChoiceTimestamp = e.choiceTimestamp;

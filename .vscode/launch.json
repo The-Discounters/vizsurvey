@@ -141,6 +141,20 @@
             "cwd": "${workspaceRoot}/cli",
             "console": "integratedTerminal",
             "internalConsoleOptions": "neverOpen"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Jest: CLI current file",
+            //"env": { "NODE_ENV": "test" },
+            "program": "${workspaceFolder}/cli/node_modules/.bin/jest",
+            "args": ["${fileBasenameNoExtension}"],
+            "cwd": "${workspaceRoot}/cli",
+            "console": "integratedTerminal",
+            "disableOptimisticBPs": true,
+            "windows": {
+                "program": "${workspaceFolder}/cli/node_modules/jest/bin/jest"
+            }
         }
     ]
 }
