@@ -43,3 +43,7 @@ export const writeFile = (filename, stringData) => {
 export function getDirectory(file) {
   return path.basename(file);
 }
+
+export function getFilename(filename) {
+  return path.parse(filename).base;
+}

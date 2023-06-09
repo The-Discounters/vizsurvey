@@ -1,6 +1,3 @@
-// TODO TOTAL HACK.  I HAD TO COPY THIS FILE FROM VIZSURVEY SOURCE BEACUSE WHEN I ADD type: "module" TO PACKAGE.JSON
-// I GET PROBLEMS WITH REACT 17.  CLI NEEDS TO BE MOVED TO ITS OWN PROJECT AND THEN SHARED CODE IMPORTED.
-import _ from "lodash";
 import { DateTime } from "luxon";
 
 export function dateToState(date) {

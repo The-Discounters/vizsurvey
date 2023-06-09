@@ -1,6 +1,5 @@
 #!/usr/bin/env node
 import * as dotenv from "dotenv";
-import express from "express";
 import chalk from "chalk";
 import clear from "clear";
 import figlet from "figlet";
@@ -9,26 +8,16 @@ import fs from "fs";
 import { DateTime } from "luxon";
 import readline from "readline";
 import isValid from "is-valid-path";
-import { loadConfig, getS3BucketName } from "./configuration.js";
+import { parseCSV, convertToCSV } from "./parserUtil.js";
 import {
-  parseCSV,
-  parseJSON,
-  convertToCSV,
-} from "../../src/features/parserUtil.js";
-import { convertKeysToUnderscore } from "./ObjectUtil.js";
-import { CSVDataFilenameFromKey } from "./QuestionSliceUtil.js";
-import {
-  writeFile,
+  getFilename,
   loadFile,
-  fullPath,
+  writeFile,
   appendSepToPath,
   isCSVExt,
   isJSONExt,
   directoryOrFileExists,
-  getDirectory,
 } from "./files.js";
-import { init, listFiles, downloadFile } from "./S3.js";
-import { MergedData } from "./MergedData.js";
 import { updateStats, createStat, clearStats } from "./stats.js";
 import { drawStatus } from "./monitorUtil.js";
 import {
@@ -37,6 +26,13 @@ import {
   setBatchItem,
   commitBatch,
 } from "./firestoreAdmin.js";
+import {
+  typeExperimentObj,
+  typeQuestionObj,
+  typeTreatmentObj,
+  typeTreatmentQuestionObj,
+  typeVisObj,
+} from "./importUtil.js";
 
 dotenv.config();
 
@@ -61,16 +57,6 @@ if (
     )
   );
 }
-
-const mergeCSVData = (CSVData, mergedData) => {
-  if (CSVData) {
-    console.log(`...merging data ${CSVData.length} rows`);
-    mergedData.push(CSVData[0]);
-    console.log(`...data merged`);
-  } else {
-    console.log(`...no data to merge`);
-  }
-};
 
 const validateInt = (value, dummyPrevious) => {
   const parsedValue = parseInt(value, 10);
@@ -108,8 +94,6 @@ const run = async () => {
       console.log(`...no data for merged file ${filename}...`);
     }
   };
-
-  loadConfig();
 
   const program = new Command();
   program
@@ -171,87 +155,6 @@ const run = async () => {
     });
 
   program
-    .command("split")
-    .description(
-      "Splits out the CSV files that are in the JSON file if a single file is passed or all JSON files in the directory if a directory is passed.  The CSV files will be writen to the same folder as the JSON file."
-    )
-    .argument(
-      "<filename or directory>",
-      "filename or directory to split",
-      validatePath
-    )
-    .action((dirOrFilename, options) => {
-      const surveyData = new MergedData();
-      try {
-        console.log(`splitting "${dirOrFilename}`);
-        const files = fs.lstatSync(dirOrFilename).isDirectory()
-          ? fs.readdirSync(dirOrFilename).filter((file) => {
-              return isJSONExt(file);
-            })
-          : dirOrFilename;
-        for (const file of files) {
-          const absolutePath = fullPath(dirOrFilename, file);
-          const JSONStr = loadFile(absolutePath);
-          console.log(`parsing file ${absolutePath}`);
-          const JSONData = parseJSON(JSONStr);
-          for (const property in JSONData) {
-            // store the data as a merged object by participantId-studyId-sessionId
-            const CSVData = parseCSV(JSONData[property].data);
-            console.log(`...merging data for property ${property}`);
-            surveyData.addEntry(CSVData);
-          }
-        }
-        surveyData.callForEntry((value, key) => {
-          const filename = CSVDataFilenameFromKey(key);
-          console.log(`...writing csv file ${filename}`);
-          const underscoreObj = convertKeysToUnderscore(value);
-          writeFile(
-            fullPath(getDirectory(dirOrFilename), filename),
-            convertToCSV([underscoreObj])
-          );
-        });
-      } catch (err) {
-        console.log(chalk.red(err));
-        return;
-      }
-    });
-
-  program
-    .command("merge")
-    .description(
-      "Creates a merge file from CSV files in the directory passed as an argument.  The CSV files will be writen to the same folder as the CSV files."
-    )
-    .argument("<directory>", "directory containg csv files to merge")
-    .action((source, options) => {
-      // TODO implement -c option
-      console.log(`Scanning directory ${source} for merging...`);
-      try {
-        const mergedData = new Array();
-        console.log(`merging ${source}`);
-        const files = options.filename
-          ? options.filename
-          : fs.readdirSync(source).filter((file) => {
-              return isCSVExt(file);
-            });
-        for (const file of files) {
-          console.log(`considering merging file ${file}`);
-          if (file === "data-merged.csv") {
-            console.log(chalk.yellow(`...skipping file ${file}`));
-          } else {
-            mergeCSVData(
-              parseCSV(loadFile(fullPath(source, file))),
-              mergedData
-            );
-          }
-        }
-        createMergeFile(fullPath(source, "data-merged.csv"), mergedData);
-      } catch (err) {
-        console.log(chalk.red(err));
-        return;
-      }
-    });
-
-  program
     .command("monitor")
     .description(
       "Monitors the status of an experiment running by downloading the S3 files and reporting summary statistics in real time to the screen."
@@ -282,7 +185,7 @@ const run = async () => {
       try {
         console.log(
           chalk.red(
-            `Monitoring S3 bucket ${getS3BucketName()} with ${totalParticipants} total participants that started  ${
+            `Monitoring with ${totalParticipants} total participants that started  ${
               options.laterthan ? options.laterthan : "all"
             }" for ${options.numtreatments} treatments...`
           )
@@ -405,8 +308,36 @@ const run = async () => {
       }
     });
 
-  const parseCSVFileToJSONSync = async (file) => {
-    return await parseCSVFile(file);
+  const parseFileToObj = (file) => {
+    let data;
+    if (isJSONExt(file)) {
+      data = fs.readJSONSync(file);
+    }
+    if (isCSVExt(file)) {
+      const fileData = loadFile(file);
+      data = parseCSV(fileData);
+    }
+    return data;
+  };
+
+  const typeFieldsFunction = (file) => {
+    switch (getFilename(file)) {
+      case "fire_exp_prod.csv":
+        return typeExperimentObj;
+        break;
+      case "fire_ques_prod.csv":
+        return typeQuestionObj;
+        break;
+      case "fire_treat_prod.csv":
+        return typeTreatmentObj;
+        break;
+      case "fire_treat_quest_prod.csv":
+        return typeTreatmentQuestionObj;
+        break;
+      case "fire_vis_prod.csv":
+        return typeVisObj;
+        break;
+    }
   };
 
   const commitBatchSync = async () => {
@@ -427,20 +358,16 @@ const run = async () => {
         const file = args.src;
         initAdminFirestoreDB();
         initBatch(colPath);
-        let data;
-        if (file.includes(".json")) {
-          data = fs.readJSONSync(file);
-        }
-        if (file.includes(".csv")) {
-          data = parseCSVFileToJSONSync(file);
-        }
+        const data = parseFileToObj(file);
+        const typeFieldsFn = typeFieldsFunction(file);
         for (const item of data) {
-          setBatchItem(args.id, item);
+          const typedItem = typeFieldsFn(item);
+          setBatchItem(args.id, typedItem);
         }
         commitBatchSync();
         console.log("Firestore updated. Migration was a success!");
       } catch (err) {
-        console.log(chalk.red("Migration failed!"), error);
+        console.log(chalk.red("Migration failed!"), err);
         return;
       }
     });

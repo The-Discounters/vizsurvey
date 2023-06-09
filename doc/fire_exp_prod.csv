@@ -1,0 +1,6 @@
+id,status,type,start_date,end_date,num_participants,prolific_code,description
+1,completed,betweenSubject,12/27/2022,,1,C1KQNGZK,Between subject pilot 1 experiment.
+2,completed,betweenSubject,01/14/2023,,3,C1KQNGZK,Between subject pilot 2 experiment to validate changes.
+3,completed,betweenSubject,01/16/2023,,26,C1KQNGZK,Between subject remaing people from the initial 30.
+4,completed,betweenSubject,03/09/2023,03/10/2023,100,C1KQNGZK,Between subject.  We ran 70 people on 3/9/23 starting around 7PM then ran the remaining 30 people in the morning of 3/10/23
+5,unpublished,betweenSubject,,,160,C1KQNGZK,Between subject after running power analysis to determine larger sample size for reaching statistical significance on space-zoom effect.

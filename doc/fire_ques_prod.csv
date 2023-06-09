@@ -1,0 +1,29 @@
+id,amount_earlier,time_earlier,date_earlier,amount_later,time_later,date_later,max_amount,max_time,comment
+1,350,4,,430,13,,430,14,Experiment 1 date/delay paper.
+2,490,2,,700,18,,700,19,Experiment 1 date/delay paper.
+3,720,6,,1390,24,,1390,25,Experiment 1 date/delay paper.
+4,840,3,,1120,16,,1120,17,Experiment 1 date/delay paper.
+5,32,4,,39,13,,40,14,Experiment 3 of date/delay paper.
+6,45,2,,70,18,,70,19,Experiment 3 of date/delay paper.
+7,66,6,,110,24,,110,25,Experiment 3 of date/delay paper.
+8,77,3,,118,16,,120,17,Experiment 3 of date/delay paper.
+9,300,2,,700,7,,1000,8,Instruction question
+10,350,4,,430,13,,430,27,Experiment 1 date/delay paper.
+11,490,2,,700,18,,700,37,Experiment 1 date/delay paper.
+12,720,6,,1390,24,,1390,49,Experiment 1 date/delay paper.
+13,840,3,,1120,16,,1120,33,Experiment 1 date/delay paper.
+14,32,4,,39,13,,40,27,Experiment 3 of date/delay paper.
+15,45,2,,70,18,,70,37,Experiment 3 of date/delay paper.
+16,66,6,,110,24,,110,49,Experiment 3 of date/delay paper.
+17,77,3,,118,16,,120,33,Experiment 3 of date/delay paper.
+18,300,2,,700,7,,1000,15,Instruction question
+19,490,,1/2/2023,700,,1/18/2023,,,Experiment 1 date/delay paper.
+20,720,,1/6/2023,1390,,1/24/2023,,,Experiment 1 date/delay paper.
+21,840,,1/3/2023,1120,,1/16/2023,,,Experiment 1 date/delay paper.
+22,32,,1/4/2023,39,,1/13/2023,,,Experiment 3 of date/delay paper.
+2023,45,,1/2/2023,70,,1/18/2023,,,Experiment 3 of date/delay paper.
+24,66,,1/6/2023,110,,1/24/2023,,,Experiment 3 of date/delay paper.
+25,77,,1/3/2023,118,,1/16/2023,,,Experiment 3 of date/delay paper.
+26,300,,1/2/2023,700,,1/7/2023,,,Instruction question
+27,300,,5/7/2023,700,,10/2/2023,,,Instruction question
+28,300,,10/2/2023,700,,1/7/2023,,,Instruction question

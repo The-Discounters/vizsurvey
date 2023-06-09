@@ -1,5 +1,5 @@
 import { csvParse } from "d3";
-import { csv } from "to-csv";
+import csv from "to-csv";
 
 // TODO combine this file with the content of the IOAdapater class once I change that to be functions and not a class.
 

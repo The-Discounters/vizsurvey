@@ -143,6 +143,61 @@
             "internalConsoleOptions": "neverOpen"
         },
         {
+            "name": "Debug CLI import firebase experiments",
+            "type": "node",
+            "request": "launch",
+            "runtimeExecutable": "/Users/pete/.nvm/versions/node/v19.3.0/bin/node",
+            "program": "${workspaceFolder}/cli/src/index.js",
+            "args": ["import", "-s", "../doc/fire_exp_prod.csv", "-c", "experiments"],
+            "cwd": "${workspaceRoot}/cli",
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen"
+        },
+        {
+            "name": "Debug CLI import firebase questions",
+            "type": "node",
+            "request": "launch",
+            "runtimeExecutable": "/Users/pete/.nvm/versions/node/v19.3.0/bin/node",
+            "program": "${workspaceFolder}/cli/src/index.js",
+            "args": ["import", "-s", "../doc/fire_ques_prod.csv", "-c", "questions"],
+            "cwd": "${workspaceRoot}/cli",
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen"
+        },
+        {
+            "name": "Debug CLI import firebase treatments",
+            "type": "node",
+            "request": "launch",
+            "runtimeExecutable": "/Users/pete/.nvm/versions/node/v19.3.0/bin/node",
+            "program": "${workspaceFolder}/cli/src/index.js",
+            "args": ["import", "-s", "../doc/fire_treat_prod.csv", "-c", "treatments"],
+            "cwd": "${workspaceRoot}/cli",
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen"
+        },
+        {
+            "name": "Debug CLI import firebase treatment questions",
+            "type": "node",
+            "request": "launch",
+            "runtimeExecutable": "/Users/pete/.nvm/versions/node/v19.3.0/bin/node",
+            "program": "${workspaceFolder}/cli/src/index.js",
+            "args": ["import", "-s", "../doc/fire_treat_quest_prod.csv", "-c", "treatmentQuestions"],
+            "cwd": "${workspaceRoot}/cli",
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen"
+        },
+        {
+            "name": "Debug CLI import firebase visualizations",
+            "type": "node",
+            "request": "launch",
+            "runtimeExecutable": "/Users/pete/.nvm/versions/node/v19.3.0/bin/node",
+            "program": "${workspaceFolder}/cli/src/index.js",
+            "args": ["import", "-s", "../doc/fire_vis_prod.csv", "-c", "visualizations"],
+            "cwd": "${workspaceRoot}/cli",
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen"
+        },
+        {
             "type": "node",
             "request": "launch",
             "name": "Jest: CLI current file",
