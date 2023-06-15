@@ -6,18 +6,20 @@ import {
   typeTreatmentObj,
   typeTreatmentQuestionObj,
   typeVisObj,
+  parseLinkText,
 } from "./importUtil.js";
 import { ProlificSumbissionStatusType } from "../../src/prolific/ProlificSumbissionStatusType.js";
 import { ExperimentType } from "../../src/features/experimentType.js";
 import { InteractionType } from "../../src/features/InteractionType.js";
 import { AmountType } from "../../src/features/AmountType.js";
 import { ViewType } from "../../src/features/ViewType.js";
+import { ProlificStudyStatusType } from "./ProlificStatusTypes.js";
 
 describe("importUtil test ", () => {
   it("Test typeExperimentObj valid fields.", async () => {
     const input = {
       id: "1",
-      status: "reserved",
+      status: "unpublished",
       type: "betweenSubject",
       start_date: "1/1/2023",
       end_date: "1/2/2023",
@@ -26,7 +28,7 @@ describe("importUtil test ", () => {
     const result = typeExperimentObj(input);
     expect(result).toEqual({
       id: 1,
-      status: ProlificSumbissionStatusType.reserved,
+      status: ProlificStudyStatusType.unpublished,
       type: ExperimentType.betweenSubject,
       start_date: admin.firestore.Timestamp.fromDate(
         DateTime.fromFormat("1/1/2023", "M/d/yyyy").toJSDate()
@@ -132,5 +134,15 @@ describe("importUtil test ", () => {
       height_in: 7,
       show_minor_ticks: true,
     });
+  });
+
+  it("Test typeVisObj.", async () => {
+    const result = parseLinkText(
+      "docRefForeign.foreignKey=>docRefPrimary.primaryKey"
+    );
+    expect(result.leftPath).toBe("docRefForeign");
+    expect(result.leftField).toBe("foreignKey");
+    expect(result.rightPath).toBe("docRefPrimary");
+    expect(result.rightField).toBe("primaryKey");
   });
 });

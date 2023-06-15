@@ -372,6 +372,33 @@ const run = async () => {
       }
     });
 
+  program
+    .command("link")
+    .description("Creates reference fields between firestore documents.")
+    .option(
+      "-f, --fields <collection path>.<field name>=><collection path>.<field name>",
+      "Collection and field paths to link."
+    )
+    .action((args, options) => {
+      try {
+        const fields = args.fields;
+        const links = parseLinksText(fields);
+        initAdminFirestoreDB();
+        initBatch(colPath);
+        for (const link of links) {
+        }
+        commitBatchSync();
+        console.log("Firestore updated. Linking was a success!");
+      } catch (err) {
+        console.log(chalk.red("Linking failed!"), err);
+        return;
+      }
+    });
+
+  //Fire treat ques vis prod
+  // Fire treat prod
+  // fire seven square prod
+
   program.parse();
 };
 

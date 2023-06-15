@@ -24,7 +24,7 @@
             "internalConsoleOptions": "neverOpen"
        },
        {
-            "name": "Jest Debug opened file",
+            "name": "Jest Debug opened file webapp",
             "type": "node",
             "request": "launch",
             "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/react-scripts",
@@ -203,7 +203,7 @@
             "name": "Jest: CLI current file",
             //"env": { "NODE_ENV": "test" },
             "program": "${workspaceFolder}/cli/node_modules/.bin/jest",
-            "args": ["${fileBasenameNoExtension}"],
+            "args": ["${fileBasenameNoExtension}", "--detectOpenHandles"],
             "cwd": "${workspaceRoot}/cli",
             "console": "integratedTerminal",
             "disableOptimisticBPs": true,

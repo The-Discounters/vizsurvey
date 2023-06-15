@@ -1,8 +1,5 @@
 import admin from "firebase-admin";
-import {
-  ProlificSumbissionStatusType,
-  ProlificStudyStatusType,
-} from "./ProlificStatusTypes.js";
+import { ProlificStudyStatusType } from "./ProlificStatusTypes.js";
 import { ExperimentType } from "./experimentType.js";
 import { InteractionType } from "./InteractionType.js";
 import { ViewType } from "./ViewType.js";
@@ -99,4 +96,17 @@ export const typeVisObj = (obj) => {
       : false
     : false;
   return obj;
+};
+
+export const parseLinkText = (text) => {
+  //  <collection path>.<field name>=><collection path>.<field name>
+  const terms = text.split("=>");
+  const leftTerm = terms[0].split(".");
+  const rightTerm = terms[1].split(".");
+  return {
+    leftPath: leftTerm[0],
+    leftField: leftTerm[1],
+    rightPath: rightTerm[0],
+    rightField: rightTerm[1],
+  };
 };

@@ -5,7 +5,7 @@
   "main": "index.js",
   "type": "module",
   "bin": {
-    "disc": "./src/index.js"
+    "dsc": "./src/index.js"
   },
   "scripts": {
     "start": "nodemon --exec babel-node src/index.js",

@@ -1,24 +1,20 @@
 # What is VizSurvey
 
-We created VizSurvey out of a need to have a tool with survey questions with an accompanying visualization that could be data driven for my masters thesis reasearch. I had originally investigated using survey monkey and other tools; however, they lack the ability to embed visualizations or could't find any with a REST API that would allow me to make the visualizations driven off the survey questions, so I wrote VizHub.
+We created VizSurvey out of a need to have a tool with survey questions with an accompanying visualization that could be data driven for our masters thesis reasearch. We originally investigated using survey monkey and other online survey tools; however, they lacked the ability to embed visualizations and we could't find any with a REST API that would allow the visualizations to be driven off the survey questions, so we wrote VizSurvey.
 
-The application is written in react using redux. Treatments are configured in CSV format in one of the code files. The application retloads the treatments for the survey questionaire data, and renders the questions in a click through format making the data avialable to the react component that wraps the D3 visualization.
+The application is written in react using redux and uses firestore to retrieve treatment definitions, store survey results, and assign survey treatments across participants. The application loads the treatments for the survey questionaire data, and renders the questions in a click through format making the data avialable to the react component that wraps the D3 visualization.
 
 We hope you find it useful.
 
 # Architecture
 
-Architecture is straight forward as a React SPA with redux using react router. The next and previous buttons on each page update a status redux field and routing is driven in the react component off of the value of that field. A sing redux slice currently contains all the application logic.
+Architecture is straight forward as a React SPA with redux using react router. The next and previous buttons on each page update a status redux field and routing is driven in the react component off of the value of that field. A sing redux slice currently contains all the application logic. We integrated the application with Prolific and treatment configurations and survey results are read from and written to firestore.
 
 # Reference
 
 We looked at code from https://supp-exp-en.netlify.app/ for examples of how to style and implement the application.
 
 # Setup
-
-# Getting Started with Create React App
-
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ### Create .env file
 
@@ -61,6 +57,28 @@ From https://stackoverflow.com/questions/42458434/how-to-set-build-env-variables
 npm start will set REACT_APP_NODE_ENV to development, and so it will automatically use the .env.development file, and npm run build sets REACT_APP_NODE_ENV to production, and so it will automatically use .env.production. Values set in these will override the values in your .env.
 
 ### Installing Dependencies
+
+In the root folder of the project run
+
+```console
+npm install
+```
+
+There is also a command line utility tool for importing treatment definitions to firestore, downloading data from firestore, and monitoring experiments. The code is located in the cli subfolder. Switch to the cli subfolder and run the command below to install dependencies
+
+```console
+npm install
+```
+
+You can also run the command below to install the CLI globally so you can run it at a command prompt
+
+```console
+npm install -g
+```
+
+# Getting Started with Create React App
+
+This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
 
