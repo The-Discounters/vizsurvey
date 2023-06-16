@@ -25,15 +25,13 @@ export const setBatchItem = (idfield, item) => {
   batch.set(docRef, item);
 };
 
-export const deleteDocuments = async (path, callback) => {
+export const deleteDocuments = async (path) => {
   const docRef = db.collection(path);
-  await docRef.get().then((snapshot) => {
-    console.log("then code block start");
-    snapshot.forEach((data) => {
-      data.ref.delete();
-    });
-    callback();
-  });
+  const snapshot = await docRef.get();
+  for (let i = 0; i < snapshot.size; i++) {
+    const data = snapshot.docs[i];
+    data.ref.delete();
+  }
 };
 
 export const commitBatch = async () => {
