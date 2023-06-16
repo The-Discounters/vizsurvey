@@ -41,17 +41,26 @@ export const commitBatch = async () => {
 };
 
 export const linkDocs = async (leftPath, leftField, rightPath, rightField) => {
-  const leftRef = await db.collection(leftPath);
-  const rightRef = await db.collection(rightPath);
+  const leftRef = db.collection(leftPath);
+  const rightRef = db.collection(rightPath);
 
   let leftSnapshot = await leftRef.get();
-  await leftSnapshot.forEach(async (leftDoc) => {
-    const q = await rightRef.where(rightField, "==", leftDoc.data().id);
+  for (let i = 0; i < leftSnapshot.size; i++) {
+    const leftDoc = leftSnapshot.docs[i];
+    const q = rightRef.where(rightField, "==", leftDoc.data()[leftField]);
     let rightSnapshot = await q.get();
-    await rightSnapshot.forEach(async (rightDoc) => {
+    for (let j = 0; j < rightSnapshot.size; j++) {
+      const rightDoc = rightSnapshot.docs[j];
       console.log(
-        `...linking ${leftPath}/${leftDoc.id} => ${rightPath}/${rightDoc.id}}`
+        `...linking ${leftPath}/${leftDoc.id} to ${rightPath}/${
+          rightDoc.id
+        } on ${leftField}=${leftDoc.data()[leftField]}=>${rightField}=${
+          rightDoc.data()[rightField]
+        }}`
       );
-    });
-  });
+      const updateObj = {};
+      updateObj[leftField] = rightDoc.ref;
+      leftDoc.ref.set(updateObj);
+    }
+  }
 };

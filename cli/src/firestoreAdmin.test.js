@@ -30,21 +30,16 @@ describe("firestoreAdmin test ", () => {
   });
 
   it("Integration test for querying firestore.", async () => {
-    initBatch("firestoreLinkTestPrimary");
+    initBatch("linkTestPrimary");
     setBatchItem(null, { id: 1, foreign: 1 });
     setBatchItem(null, { id: 2, foreign: 2 });
     setBatchItem(null, { id: 3, foreign: 3 });
     await commitBatch();
-    initBatch("firestoreLinkTestForeign");
+    initBatch("linkTestForeign");
     setBatchItem(null, { id: 1, value: "value 1" });
     setBatchItem(null, { id: 2, value: "value 2" });
     setBatchItem(null, { id: 3, value: "value 3" });
     await commitBatch();
-    await linkDocs(
-      "firestoreLinkTestPrimary",
-      "foreign",
-      "firestoreLinkTestForeign",
-      "id"
-    );
+    await linkDocs("linkTestPrimary", "foreign", "linkTestForeign", "id");
   });
 });
