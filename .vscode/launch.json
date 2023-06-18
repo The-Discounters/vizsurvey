@@ -44,6 +44,19 @@
             "internalConsoleOptions": "neverOpen"
         },
         {
+            "type": "node",
+            "request": "launch",
+            "name": "Jest: CLI current file",
+            "program": "${workspaceFolder}/cli/node_modules/.bin/jest",
+            "args": ["${fileBasenameNoExtension}", "--detectOpenHandles"],
+            "cwd": "${workspaceRoot}/cli",
+            "console": "integratedTerminal",
+            "disableOptimisticBPs": true,
+            "windows": {
+                "program": "${workspaceFolder}/cli/node_modules/jest/bin/jest"
+            }
+        },        
+        {
             "name": "Debug CLI download production 03/09/23",
             "type": "node",
             "request": "launch",
@@ -176,17 +189,6 @@
             "internalConsoleOptions": "neverOpen"
         },
         {
-            "name": "Debug CLI import firebase treatment questions vizualization",
-            "type": "node",
-            "request": "launch",
-            "runtimeExecutable": "/Users/pete/.nvm/versions/node/v19.3.0/bin/node",
-            "program": "${workspaceFolder}/cli/src/index.js",
-            "args": ["import", "-s", "../doc/fire_treat_ques_vis_prod.csv", "-c", "experimentTreatmentQuestionVis"],
-            "cwd": "${workspaceRoot}/cli",
-            "console": "integratedTerminal",
-            "internalConsoleOptions": "neverOpen"
-        },
-        {
             "name": "Debug CLI import firebase visualizations",
             "type": "node",
             "request": "launch",
@@ -198,18 +200,26 @@
             "internalConsoleOptions": "neverOpen"
         },
         {
+            "name": "Debug CLI import firebase treatment questions vizualization",
             "type": "node",
             "request": "launch",
-            "name": "Jest: CLI current file",
-            //"env": { "NODE_ENV": "test" },
-            "program": "${workspaceFolder}/cli/node_modules/.bin/jest",
-            "args": ["${fileBasenameNoExtension}", "--detectOpenHandles"],
+            "runtimeExecutable": "/Users/pete/.nvm/versions/node/v19.3.0/bin/node",
+            "program": "${workspaceFolder}/cli/src/index.js",
+            "args": ["import", "-s", "../doc/fire_treat_ques_vis_prod.csv", "-c", "experimentTreatmentQuestionVis"],
             "cwd": "${workspaceRoot}/cli",
             "console": "integratedTerminal",
-            "disableOptimisticBPs": true,
-            "windows": {
-                "program": "${workspaceFolder}/cli/node_modules/jest/bin/jest"
-            }
-        }
+            "internalConsoleOptions": "neverOpen"
+        },
+        {
+            "name": "Debug CLI link treatments",
+            "type": "node",
+            "request": "launch",
+            "runtimeExecutable": "/Users/pete/.nvm/versions/node/v19.3.0/bin/node",
+            "program": "${workspaceFolder}/cli/src/index.js",
+            "args": ["-q", "link", "-f", "treatments.instruction_question_id=>questions.id"],
+            "cwd": "${workspaceRoot}/cli",
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen"
+        },
     ]
 }

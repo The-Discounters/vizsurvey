@@ -92,7 +92,7 @@ describe("importUtil test ", () => {
       treatment_id: "1",
       question_id: "1",
       sequence_id: "1",
-      viz_id: "1",
+      vis_id: "1",
     };
     const result = typeTreatmentQuestionObj(input);
     expect(result).toEqual({
@@ -100,7 +100,7 @@ describe("importUtil test ", () => {
       treatment_id: 1,
       question_id: 1,
       sequence_id: 1,
-      viz_id: 1,
+      vis_id: 1,
     });
   });
 

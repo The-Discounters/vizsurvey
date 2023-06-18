@@ -52,7 +52,7 @@ export const typeQuestionObj = (obj) => {
 export const typeTreatmentObj = (obj) => {
   obj.id = +obj.id;
   if (!InteractionType[obj.interaction]) {
-    throw "Invalid status column value.";
+    throw "Invalid interaction type column value.";
   }
   obj.interaction = InteractionType[obj.interaction];
   if (!AmountType[obj.variable_amount]) {
@@ -68,7 +68,7 @@ export const typeTreatmentQuestionObj = (obj) => {
   obj.treatment_id = +obj.treatment_id;
   obj.question_id = +obj.question_id;
   obj.sequence_id = +obj.sequence_id;
-  obj.viz_id = +obj.viz_id;
+  obj.vis_id = +obj.vis_id;
   return obj;
 };
 

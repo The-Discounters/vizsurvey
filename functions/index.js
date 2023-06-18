@@ -7,50 +7,28 @@
  * See a full list of supported triggers at https://firebase.google.com/docs/functions
  */
 
-import { onRequest } from "firebase-functions/v2/https";
+// The Cloud Functions for Firebase SDK to create Cloud Functions and triggers.
 import { info } from "firebase-functions/logger";
+import { onRequest } from "firebase-functions/v2/https";
+import { onDocumentCreated } from "firebase-functions/v2/firestore";
 
-export const helloWorld = onRequest((request, response) => {
-  info("Hello logs!", { structuredData: true });
-  response.send("Hello from Firebase!");
-});
+// The Firebase Admin SDK to access Firestore.
+const { initializeApp } = require("firebase-admin/app");
+const { getFirestore } = require("firebase-admin/firestore");
 
-/**
- * Question - collection
- *  - amount_earlier
- *  - time_earlier
- *  - date_earlier
- *  - amount_later
- *  - time_later
- *  - date_later
- *  - max_amount
- *  - max_time
- *  - comment
- * Visualization - collection
- *  - horizontal_pixels
- *  - vertical_pixels
- *  - left_margin_width_in
- *  - bottom_margin_height_in
- *  - graph_width_in
- *  - graph_height_in
- *  - width_in
- *  - height_in
- *  - show_minor_ticks
- *  - instruction_gif_prefix
- * Treatment - collection
- *  - Questions
- *   - Question
- *   - Visualization
- * Survey
- *  participants
- *   - prolific id
- *   - survey state
- *   - question attributes
- *   - visualization attributes
- *   - answer
- */
-export const getTreatment = onRequest((request, response) => {
-  info(`getTreatment(${request})`, { structuredData: true });
-  // check if the user has already taken the survey
+export const fetchExpConfig = onRequest(async (request, response) => {
+  info(`fetchExpConfig(${request})`, { structuredData: true });
+  const prolific_pid = req.query.prolific_pid;
+  const study_id = req.query.study_id;
+  const session_id = req.query.session_id;
+
+  const q = rightRef.where(rightField, "==", leftDoc.data()[leftField]);
+
+  const writeResult = await getFirestore()
+    .collection("experiments")
+    .add({ original: original });
+  // Send back a message that we've successfully written the message
+  res.json({ result: `Message with ID: ${writeResult.id} added.` });
+
   response.send("Hello from Firebase!");
 });

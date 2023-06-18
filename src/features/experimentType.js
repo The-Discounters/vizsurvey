@@ -1,6 +1,6 @@
 export const ExperimentType = {
   betweenSubject: "betweenSubject",
-  witninSubject: "withinSubject",
+  withinSubject: "withinSubject",
 };
 
 Object.freeze(ExperimentType);

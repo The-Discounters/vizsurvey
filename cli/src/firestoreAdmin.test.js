@@ -4,7 +4,7 @@ import {
   setBatchItem,
   commitBatch,
   linkDocs,
-  deleteDocuments,
+  deleteDocs,
 } from "./firestoreAdmin.js";
 
 beforeAll(() => {
@@ -18,17 +18,17 @@ describe("firestoreAdmin test ", () => {
     initBatch("integrationTests");
     setBatchItem(null, { item1: "value1" });
     await commitBatch();
-    await deleteDocuments("integrationTests");
+    await deleteDocs("integrationTests");
   });
 
-  it("Integration test for deleting document.", async () => {
+  it("Integration test for deleteDocs.", async () => {
     initBatch("deleteTest");
     setBatchItem(null, { item1: "value1" });
     await commitBatch();
-    await deleteDocuments("deleteTest");
+    await deleteDocs("deleteTest");
   });
 
-  it("Integration test for querying firestore.", async () => {
+  it("Integration test for linkDocs.", async () => {
     initBatch("linkTestPrimary");
     setBatchItem(null, { id: 1, foreign: 1 });
     setBatchItem(null, { id: 2, foreign: 2 });
@@ -40,7 +40,7 @@ describe("firestoreAdmin test ", () => {
     setBatchItem(null, { id: 3, value: "value 3" });
     await commitBatch();
     await linkDocs("linkTestPrimary", "foreign", "linkTestForeign", "id");
-    await deleteDocuments("linkTestPrimary");
-    await deleteDocuments("linkTestForeign");
+    await deleteDocs("linkTestPrimary");
+    await deleteDocs("linkTestForeign");
   });
 });

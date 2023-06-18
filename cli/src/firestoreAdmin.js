@@ -25,7 +25,7 @@ export const setBatchItem = (idfield, item) => {
   batch.set(docRef, item);
 };
 
-export const deleteDocuments = async (path) => {
+export const deleteDocs = async (path) => {
   const docRef = db.collection(path);
   const snapshot = await docRef.get();
   for (let i = 0; i < snapshot.size; i++) {
@@ -58,7 +58,8 @@ export const linkDocs = async (leftPath, leftField, rightPath, rightField) => {
       );
       const updateObj = {};
       updateObj[leftField] = rightDoc.ref;
-      leftDoc.ref.set(updateObj);
+      const res = await leftDoc.ref.update(updateObj);
+      console.log(`...update result ${JSON.stringify(res)}`);
     }
   }
 };
