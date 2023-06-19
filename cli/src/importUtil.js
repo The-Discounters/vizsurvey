@@ -25,6 +25,12 @@ export const typeExperimentObj = (obj) => {
     ? admin.firestore.Timestamp.fromDate(stringToDate(obj.end_date).toJSDate())
     : null;
   obj.num_participants = +obj.num_participants;
+  obj.num_participants_started = obj.num_participants_started
+    ? +obj.num_participants_started
+    : null;
+  obj.num_participants_completed = obj.num_participants_completed
+    ? +obj.num_participants_completed
+    : null;
   return obj;
 };
 

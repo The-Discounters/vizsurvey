@@ -1,7 +1,0 @@
-id,status,type,seven_squares,start_date,end_date,num_participants,prolific_code,prolific_study_id,description
-1,completed,betweenSubject,sequence,12/27/2022,,1,C1KQNGZK,,Between subject pilot 1 experiment.
-2,completed,betweenSubject,sequence,1/14/2023,,3,C1KQNGZK,,Between subject pilot 2 experiment to validate changes.
-3,completed,betweenSubject,sequence,1/16/2023,,26,C1KQNGZK,,Between subject remaing people from the initial 30.
-4,completed,betweenSubject,sequence,3/9/2023,3/10/2023,100,C1KQNGZK,,Between subject.  We ran 70 people on 3/9/23 starting around 7PM then ran the remaining 30 people in the morning of 3/10/23
-5,unpublished,betweenSubject,sequence,,,150,C1KQNGZK,,Between subject after running power analysis to determine larger sample size for reaching statistical significance on space-zoom effect.
-6,unpublished,withinSubject,"[[1, 2, 3], [1, 3, 2],[3, 1, 2],[3, 2, 1],[2, 3, 1],[2, 1, 3]]",,,450,C1KQNGZK,,Within subject based on power analysis to reach statistical significance.

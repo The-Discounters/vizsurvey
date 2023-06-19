@@ -23,7 +23,9 @@ describe("importUtil test ", () => {
       type: "betweenSubject",
       start_date: "1/1/2023",
       end_date: "1/2/2023",
-      num_participants: 1,
+      num_participants: "1",
+      num_participants_completed: "0",
+      num_participants_started: "0",
     };
     const result = typeExperimentObj(input);
     expect(result).toEqual({
@@ -37,6 +39,8 @@ describe("importUtil test ", () => {
         DateTime.fromFormat("1/2/2023", "M/d/yyyy").toJSDate()
       ),
       num_participants: 1,
+      num_participants_completed: 0,
+      num_participants_started: 0,
     });
   });
 

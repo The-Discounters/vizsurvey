@@ -26,6 +26,7 @@ import {
   setBatchItem,
   commitBatch,
   linkDocs,
+  deleteDocs,
 } from "./firestoreAdmin.js";
 import {
   typeExperimentObj,
@@ -363,7 +364,7 @@ program
         setBatchItem(args.id, typedItem);
       }
       commitBatchSync();
-      console.log("Firestore updated. Migration was a success!");
+      console.log("Firestore import successfull!");
     } catch (err) {
       console.log(chalk.red("Migration failed!"), err);
       throw err;
@@ -388,12 +389,39 @@ program
         links.rightPath,
         links.rightField
       );
-      console.log("Firestore updated. Linking was a success!");
+      console.log("Firestore linking was successfull!");
     } catch (err) {
       console.log(chalk.red(`Linking failed for ${fields}!`), err);
       throw err;
     }
   });
+
+const deletePath = async (path) => {
+  await deleteDocs(path);
+};
+
+program
+  .command("delete")
+  .description(
+    "Deletes a collection path and all documents under it.  WARNING DELETES CAN'T BE UNDONE!"
+  )
+  .option(
+    "-c, --collection <path>",
+    "Collection path in database",
+    validateImportCollextionType
+  )
+  .action((args) => {
+    const colPath = args.collection;
+    try {
+      initAdminFirestoreDB();
+      deletePath(colPath);
+      console.log("Firestore delete collection was successfull!");
+    } catch (err) {
+      console.log(chalk.red(`Delete failed for ${colPath}!`), err);
+      throw err;
+    }
+  });
+
 try {
   program.parse();
 } catch (err) {

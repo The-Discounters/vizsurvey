@@ -8,7 +8,7 @@
  */
 
 // The Cloud Functions for Firebase SDK to create Cloud Functions and triggers.
-import { info } from "firebase-functions/logger";
+import { logger } from "firebase-functions";
 import { onRequest } from "firebase-functions/v2/https";
 import { onDocumentCreated } from "firebase-functions/v2/firestore";
 
@@ -16,19 +16,42 @@ import { onDocumentCreated } from "firebase-functions/v2/firestore";
 const { initializeApp } = require("firebase-admin/app");
 const { getFirestore } = require("firebase-admin/firestore");
 
+import { ProlificStudyStatusType } from "../cli/src/ProlificStatusTypes.js";
+
 export const fetchExpConfig = onRequest(async (request, response) => {
   info(`fetchExpConfig(${request})`, { structuredData: true });
-  const prolific_pid = req.query.prolific_pid;
-  const study_id = req.query.study_id;
-  const session_id = req.query.session_id;
+  try {
+    const prolific_pid = req.query.prolific_pid;
+    const study_id = req.query.study_id;
+    const session_id = req.query.session_id;
 
-  const q = rightRef.where(rightField, "==", leftDoc.data()[leftField]);
+    const expColRef = db.collection("experiments");
+    const q = expColRef.where("prolific_study_id", "==", study_id);
+    let expSnapshot = await q.get();
+    if (expSnapshot.size != 1) {
+      logger.error(
+        `fetchExpConfig expects to find one experiment with study_id ${study_id} and found ${expSnapshot.size}`,
+        request,
+        expSnapshot.docs
+      );
+      throw "Error retrieving experiment configuration";
+    }
+    const expDoc = expSnapshot.docs[0];
+    if (expDoc.status != ProlificStudyStatusType.active) {
+      logger.error(
+        `fetchExpConfig retrieved experiment with status ${expDoc.status} for study_id ${study_id}`,
+        request,
+        expDoc
+      );
+      throw "Error retrieving experiment configuration";
+    }
 
-  const writeResult = await getFirestore()
-    .collection("experiments")
-    .add({ original: original });
-  // Send back a message that we've successfully written the message
-  res.json({ result: `Message with ID: ${writeResult.id} added.` });
-
-  response.send("Hello from Firebase!");
+    const writeResult = await getFirestore()
+      .collection("experiments")
+      .add({ original: original });
+    // Send back a message that we've successfully written the message
+    response.json({ result: `Message with ID: ${writeResult.id} added.` });
+  } catch (err) {
+    response.json({ error: err });
+  }
 });
