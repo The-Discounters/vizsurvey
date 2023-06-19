@@ -38,6 +38,12 @@ export const commitBatch = async () => {
   await batch.commit();
 };
 
+// TODO I need to implement linking a two dimensional array type field that could result from seven squares
+// assignment, for example [[1, 2, 3], [1, 3, 2], [3, 1, 2], [3, 2, 1], [2, 3, 1], [2, 1, 3]].  I can do this
+// in theory with a map of arrays where the map entries could be the rows with keys equal to the row numbers
+// (1, 2, 3, ...).  Then I can sort the kwys by natural order and convert the map of arrays into a two dimensional
+// array in the function code to access the next row of treatment sequence assignment.  I would need this for the
+// within subject study and we aren't running that yet so I didn't do it.
 export const linkDocs = async (leftPath, leftField, rightPath, rightField) => {
   const leftRef = db.collection(leftPath);
   const rightRef = db.collection(rightPath);
