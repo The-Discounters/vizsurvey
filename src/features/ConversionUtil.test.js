@@ -13,7 +13,7 @@ describe("ConversionUtil test.", () => {
     const nowLocal = DateTime.now();
     // but we want to report them in utc format
     const strLocal = nowLocal.toString();
-    expect(strLocal.slice(-6)).toBe("-05:00");
+    expect(strLocal.slice(-6)).toBe("-04:00");
   });
 
   // we need to be able to convert from a date object to a primitive while

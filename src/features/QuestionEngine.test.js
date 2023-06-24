@@ -37,7 +37,7 @@ describe("QuestionEngine tests", () => {
     );
     state.currentQuestionIdx = 1;
     expect((state.status = qe.nextStatus(state, false))).toBe(
-      StatusType.Attention
+      StatusType.Survey
     );
     state.currentQuestionIdx = 2;
     expect((state.status = qe.nextStatus(state, false))).toBe(
@@ -91,7 +91,7 @@ describe("QuestionEngine tests", () => {
     );
     state.currentQuestionIdx = 1;
     expect((state.status = qe.previousStatus(state, false))).toBe(
-      StatusType.Attention
+      StatusType.Survey
     );
     state.currentQuestionIdx = 0;
     expect((state.status = qe.previousStatus(state, false))).toBe(
@@ -212,7 +212,7 @@ describe("QuestionEngine tests", () => {
     expect(state.status).toBe(StatusType.Survey);
   });
 
-  test("incNextQuestion for three treatment should increment question index and enter attention state then back to survey state.", () => {
+  test("incNextQuestion for three treatment should increment question index and not enter attention state.", () => {
     const state = {
       treatments: [
         TestDataFactory.createQuestionNoTitrate(),
@@ -226,7 +226,7 @@ describe("QuestionEngine tests", () => {
     const qe = new QuestionEngine();
     qe.incNextQuestion(state);
     expect(state.currentQuestionIdx).toBe(1);
-    expect(state.status).toBe(StatusType.Attention);
+    expect(state.status).toBe(StatusType.Survey);
     qe.incNextQuestion(state);
     expect(state.currentQuestionIdx).toBe(2);
     expect(state.status).toBe(StatusType.Survey);
@@ -294,40 +294,6 @@ describe("QuestionEngine tests", () => {
     qe.decPreviousQuestion(state);
     expect(state.currentQuestionIdx).toBe(0);
     expect(state.status).toBe(StatusType.MCLInstructions);
-  });
-
-  test("isMiddleTreatment for one treatment should return false for single treatment configuration.", () => {
-    const state = {
-      treatments: [TestDataFactory.createQuestionNoTitrate()],
-      currentQuestionIdx: 0,
-    };
-    const qe = new QuestionEngine();
-    expect(qe.isMiddleTreatment(state)).toBe(false);
-  });
-
-  test("isMiddleTreatment for two treatment should return false.", () => {
-    const state = {
-      treatments: [
-        TestDataFactory.createQuestionNoTitrate(),
-        TestDataFactory.create2ndQuestionNoTitrate,
-      ],
-      currentQuestionIdx: 1,
-    };
-    const qe = new QuestionEngine();
-    expect(qe.isMiddleTreatment(state)).toBe(false);
-  });
-
-  test("isMiddleTreatment for three treatments should return true.", () => {
-    const state = {
-      treatments: [
-        TestDataFactory.createQuestionNoTitrate(),
-        TestDataFactory.create2ndQuestionNoTitrate,
-        (TestDataFactory.create2ndQuestionNoTitrate.position = 3),
-      ],
-      currentQuestionIdx: 1,
-    };
-    const qe = new QuestionEngine();
-    expect(qe.isMiddleTreatment(state)).toBe(true);
   });
 
   // TODO Titration functionality is broken.  I have not coded previous button to work with it.

@@ -134,13 +134,6 @@ export class QuestionEngine {
     return state.currentQuestionIdx === state.treatments.length - 1;
   }
 
-  isMiddleTreatment(state) {
-    if (state.treatments.length < 3) {
-      return false;
-    }
-    return state.currentQuestionIdx === Math.floor(state.treatments.length / 2);
-  }
-
   incNextQuestion(state) {
     const onLastTreatment = this.isLastTreatment(state);
     if (
@@ -309,11 +302,7 @@ export class QuestionEngine {
         if (this.isLastTreatment(state) && onLastTreatment) {
           return StatusType.ExperienceQuestionaire;
         } else {
-          if (this.isMiddleTreatment(state)) {
-            return StatusType.Attention;
-          } else {
-            return StatusType.Survey;
-          }
+          return StatusType.Survey;
         }
       case StatusType.Attention:
         return StatusType.Survey;
@@ -348,11 +337,7 @@ export class QuestionEngine {
         if (this.isFirstTreatment(state) && onFirstTreatment) {
           return StatusType.MCLInstructions;
         } else {
-          if (this.isMiddleTreatment(state)) {
-            return StatusType.Attention;
-          } else {
-            return StatusType.Survey;
-          }
+          return StatusType.Survey;
         }
       case StatusType.Attention:
         return StatusType.Survey;
