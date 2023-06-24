@@ -1,8 +1,0 @@
-id,view_type,horizontal_pixels,vertical_pixels,left_margin_width_in,bottom_margin_height_in,graph_width_in,graph_height_in,width_in,height_in,show_minor_ticks,instruction_gif_prefix,comment
-1,word,,,,,,,,,,introduction-word,Worded visualization with delays.
-2,barchart,600,300,,,,,,,no,introduction-barchart-no-ticks-none-right,Barchart half screen and no minor ticks.
-3,barchart,1200,300,,,,,,,no,introduction-barchart-no-ticks-right,Barchart full screen and minor ticks.
-4,calendarWord,750,650,,,,,,,,introduction-calendarWord,Single month calendar.
-5,calendarWordYear,600,510,,,,,,,,introduction-calendarWordYear,Single year calendar visualization.
-6,calendarWordYearDual,750,650,,,,,,,,introduction-calendarWord,Not implemented.
-7,word,1135,120,,,,,,,,introduction-wordDate,Worded visualization with dates.

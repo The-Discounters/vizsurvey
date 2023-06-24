@@ -4,20 +4,16 @@ dsc -q link -f treatments.instruction_question_id=>questions.id
 if (!($?)) {
     Throw "link failed! See above for error."
 }
-Write-Output "...Creating links for treatmentQuestionVisualizations."
-dsc -q link -f treatmentQuestionVisualizations.exp_id=>experiments.id
+Write-Output "...Creating links for treatmentQuestions."
+dsc -q link -f treatmentQuestions.exp_id=>experiments.id
 if (!($?)) {
     Throw "link failed! See above for error."
 }
-dsc -q link -f treatmentQuestionVisualizations.treatment_id=>treatments.id
+dsc -q link -f treatmentQuestions.treatment_id=>treatments.id
 if (!($?)) {
     Throw "link failed! See above for error."
 }
-dsc -q link -f treatmentQuestionVisualizations.question_id=>questions.id
-if (!($?)) {
-    Throw "link failed! See above for error."
-}
-dsc -q link -f treatmentQuestionVisualizations.vis_id=>visualizations.id
+dsc -q link -f treatmentQuestions.question_id=>questions.id
 if (!($?)) {
     Throw "link failed! See above for error."
 }

@@ -60,30 +60,16 @@ export const typeTreatmentObj = (obj) => {
   if (!InteractionType[obj.interaction]) {
     throw "Invalid interaction type column value.";
   }
-  obj.interaction = InteractionType[obj.interaction];
-  if (!AmountType[obj.variable_amount]) {
-    throw "Invalid variable_amount column value.";
-  }
-  obj.variable_amount = AmountType[obj.variable_amount];
-  obj.instruction_question_id = +obj.instruction_question_id;
-  return obj;
-};
-
-export const typeTreatmentQuestionObj = (obj) => {
-  obj.exp_id = +obj.exp_id;
-  obj.treatment_id = +obj.treatment_id;
-  obj.question_id = +obj.question_id;
-  obj.sequence_id = +obj.sequence_id;
-  obj.vis_id = +obj.vis_id;
-  return obj;
-};
-
-export const typeVisObj = (obj) => {
-  obj.id = +obj.id;
   if (!ViewType[obj.view_type]) {
     throw "Invalid view_type column value.";
   }
-  obj.view_type = ViewType[obj.view_type];
+  if (!InteractionType[obj.interaction]) {
+    throw "Invalid interaction column value.";
+  }
+  if (!AmountType[obj.variable_amount]) {
+    throw "Invalid variable_amount column value.";
+  }
+  obj.instruction_question_id = +obj.instruction_question_id;
   obj.horizontal_pixels = obj.horizontal_pixels ? +obj.horizontal_pixels : null;
   obj.vertical_pixels = obj.vertical_pixels ? +obj.vertical_pixels : null;
   obj.left_margin_width_in = obj.left_margin_width_in
@@ -101,6 +87,14 @@ export const typeVisObj = (obj) => {
       ? true
       : false
     : false;
+  return obj;
+};
+
+export const typeTreatmentQuestionObj = (obj) => {
+  obj.exp_id = +obj.exp_id;
+  obj.treatment_id = +obj.treatment_id;
+  obj.question_id = +obj.question_id;
+  obj.sequence_id = +obj.sequence_id;
   return obj;
 };
 

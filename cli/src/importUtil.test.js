@@ -5,7 +5,6 @@ import {
   typeQuestionObj,
   typeTreatmentObj,
   typeTreatmentQuestionObj,
-  typeVisObj,
   parseLinkText,
 } from "./importUtil.js";
 import { ProlificSumbissionStatusType } from "../../src/prolific/ProlificSumbissionStatusType.js";
@@ -80,37 +79,6 @@ describe("importUtil test ", () => {
       interaction: "none",
       variable_amount: "earlierAmount",
       instruction_question_id: "1",
-    };
-    const result = typeTreatmentObj(input);
-    expect(result).toEqual({
-      id: 1,
-      interaction: InteractionType.none,
-      variable_amount: AmountType.earlierAmount,
-      instruction_question_id: 1,
-    });
-  });
-
-  it("Test typeTreatmentQuestionObj.", async () => {
-    const input = {
-      exp_id: "1",
-      treatment_id: "1",
-      question_id: "1",
-      sequence_id: "1",
-      vis_id: "1",
-    };
-    const result = typeTreatmentQuestionObj(input);
-    expect(result).toEqual({
-      exp_id: 1,
-      treatment_id: 1,
-      question_id: 1,
-      sequence_id: 1,
-      vis_id: 1,
-    });
-  });
-
-  it("Test typeVisObj.", async () => {
-    const input = {
-      id: "1",
       view_type: "word",
       horizontal_pixels: "100",
       vertical_pixels: "200",
@@ -123,9 +91,12 @@ describe("importUtil test ", () => {
       height_in: "7",
       show_minor_ticks: "yes",
     };
-    const result = typeVisObj(input);
+    const result = typeTreatmentObj(input);
     expect(result).toEqual({
       id: 1,
+      interaction: InteractionType.none,
+      variable_amount: AmountType.earlierAmount,
+      instruction_question_id: 1,
       view_type: ViewType.word,
       horizontal_pixels: 100,
       vertical_pixels: 200,
@@ -140,7 +111,23 @@ describe("importUtil test ", () => {
     });
   });
 
-  it("Test typeVisObj.", async () => {
+  it("Test typeTreatmentQuestionObj.", async () => {
+    const input = {
+      exp_id: "1",
+      treatment_id: "1",
+      question_id: "1",
+      sequence_id: "1",
+    };
+    const result = typeTreatmentQuestionObj(input);
+    expect(result).toEqual({
+      exp_id: 1,
+      treatment_id: 1,
+      question_id: 1,
+      sequence_id: 1,
+    });
+  });
+
+  it("Test parseLinkText.", async () => {
     const result = parseLinkText(
       "docRefForeign.foreignKey=>docRefPrimary.primaryKey"
     );

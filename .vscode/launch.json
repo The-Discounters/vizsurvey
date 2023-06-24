@@ -189,17 +189,6 @@
             "internalConsoleOptions": "neverOpen"
         },
         {
-            "name": "Debug CLI import firebase visualizations",
-            "type": "node",
-            "request": "launch",
-            "runtimeExecutable": "/Users/pete/.nvm/versions/node/v19.3.0/bin/node",
-            "program": "${workspaceFolder}/cli/src/index.js",
-            "args": ["import", "-s", "../scripts/fire_vis_prod.csv", "-c", "visualizations"],
-            "cwd": "${workspaceRoot}/cli",
-            "console": "integratedTerminal",
-            "internalConsoleOptions": "neverOpen"
-        },
-        {
             "name": "Debug CLI import firebase treatment questions vizualization",
             "type": "node",
             "request": "launch",

@@ -21,11 +21,6 @@ dsc -q delete -c treatments
 if (!($?)) {
     Throw "dsc failed! See above for error."
 }
-Write-Output "...Deleting treatment-question-visualizations"
-dsc -q delete -c treatmentQuestionVisualizations
-if (!($?)) {
-    Throw "dsc failed! See above for error."
-}
 Write-Output "Delete of configurations ran succesfully!"
 
 

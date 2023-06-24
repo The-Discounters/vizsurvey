@@ -33,7 +33,6 @@ import {
   typeQuestionObj,
   typeTreatmentObj,
   typeTreatmentQuestionObj,
-  typeVisObj,
   parseLinkText,
 } from "./importUtil.js";
 
@@ -310,7 +309,7 @@ const ImportCollextionTypes = {
   questions: "questions",
   visualizations: "visualizations",
   treatments: "treatments",
-  treatmentQuestionVisualizations: "treatmentQuestionVisualizations",
+  treatmentQuestions: "treatmentQuestions",
 };
 Object.freeze(ImportCollextionTypes);
 
@@ -332,9 +331,7 @@ const typeFieldsFunction = (collectionType) => {
       return typeQuestionObj;
     case ImportCollextionTypes.treatments:
       return typeTreatmentObj;
-    case ImportCollextionTypes.visualizations:
-      return typeVisObj;
-    case ImportCollextionTypes.treatmentQuestionVisualizations:
+    case ImportCollextionTypes.treatmentQuestions:
       return typeTreatmentQuestionObj;
   }
 };
