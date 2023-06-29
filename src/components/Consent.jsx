@@ -86,7 +86,8 @@ export function Consent() {
           <b>You will choose</b> either the earlier or later amount. Then you
           will be presented with additional questions about your experience
           taking the survey as well as questions about yourself. The study
-          should take about 10 minutes to complete.&nbsp;
+          should take about {process.env.REACT_APP_TIME_IN_MIN_TO_COMPLETE}{" "}
+          minutes to complete.&nbsp;
           <b>
             This survey is not designed to render on a mobile device and should
             be taken on a laptop or desktop computer with a reliable Internet

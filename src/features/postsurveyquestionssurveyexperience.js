@@ -1,7 +1,6 @@
 export const POST_SURVEY_QUESTIONS = {
   promptShort: "surveyExperience",
-  prompt:
-    "We would like to know what you thought of this survey. Please indicate your agreement or disagreement with the following statements.",
+  prompt: "We would like to know what you thought of this survey.",
   questionsType: "multiple choice auto",
   questions: [
     {

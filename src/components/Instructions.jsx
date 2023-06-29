@@ -58,13 +58,13 @@ const Instructions = () => {
             general.
           </Typography>
           <Typography paragraph>
-            Finally, you will then be presented with a more detailed explanation
-            of the goals behind this research along with an opportunity to
-            submit feedback and a{" "}
-            <b>code you must enter into Prolific to get paid.</b>
+            Finally, you will be presented with a more detailed explanation of
+            the goals behind this research along with an opportunity to submit
+            feedback and a <b>code you must enter into Prolific to get paid.</b>
           </Typography>
           <Typography paragraph>
-            The entire survey will take about 10 minutes to complete.
+            The entire survey will take about{" "}
+            {process.env.REACT_APP_TIME_IN_MIN_TO_COMPLETE} minutes to complete.
           </Typography>
           <Typography paragraph>
             <b>Click the Next button to start.</b>
