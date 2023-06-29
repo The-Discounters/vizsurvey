@@ -18,15 +18,18 @@ test/public
 .env
 .env.local
 .env.development
-.env.test
+.env.test.local
 .env.production
+.env.test
 discounters.development.json
 discounters.production.json
-admin-credentials-dev.json
+cli/admin-credentials-dev.json
 
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
+#logs
+#npm-debug.log*
+#yarn-debug.log*
+#yarn-error.log*
+**/*.log
 
 /dist
 
@@ -64,8 +67,3 @@ amplifytools.xcconfig
 
 #test data folders
 /cli/S3-downloaded
-
-#firestore debug files
-firebase-debug.log
-firestore-debug.log
-ui-debug.log
