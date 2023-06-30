@@ -1,6 +1,7 @@
 export const POST_SURVEY_QUESTIONS = {
   promptShort: "surveyExperience",
-  prompt: "We would like to know what you thought of this survey.",
+  prompt:
+    "Please answer the following questions about your experience completing the money choice questions.",
   questionsType: "multiple choice auto",
   questions: [
     {
