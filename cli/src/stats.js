@@ -32,6 +32,7 @@ export const createStat = (numTreatments) => {
     feedback: new Array(numberTreatments),
   };
   stats.feedback = new Array();
+  return stats;
 };
 
 export const updateStats = (CSVData) => {

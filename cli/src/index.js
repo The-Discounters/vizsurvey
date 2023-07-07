@@ -1,6 +1,5 @@
 #!/usr/bin/env node
 import * as dotenv from "dotenv";
-import express from "express";
 import chalk from "chalk";
 import clear from "clear";
 import figlet from "figlet";
@@ -265,7 +264,7 @@ const run = async () => {
     )
     .option(
       "-l, --laterthan <date>",
-      "the date to filter out files that are are equal to or later than",
+      "the date in format MM/dd/yyyy to filter out files that are are equal to or later than",
       validateDate
     )
     .option(
