@@ -47,15 +47,18 @@ export function PostSurvey(props) {
   const classes = useStyles();
   const status = useSelector(getStatus);
   const answers = useSelector(getPurposeSurveyAnswers);
+  const [dispatchPageShown, setDispatchPageShown] = React.useState(true);
 
   useEffect(() => {
     const path = navigateFromStatus(status);
+    setDispatchPageShown(true);
     navigate(path);
   }, [status]);
 
-  useEffect(() => {
+  if (dispatchPageShown) {
     dispatch(purposeSurveyQuestionsShown(dateToState(DateTime.now())));
-  }, []);
+    setDispatchPageShown(false);
+  }
 
   const shownQuestions = props.content.questions.filter(({ question }) => {
     if (question.disabled === true) {
