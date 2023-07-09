@@ -135,9 +135,11 @@ export function PostSurvey() {
                           />
                         ))
                       : [
-                          "not-at-all-or-very-slightly",
+                          "not-at-all",
+                          "very-slightly",
                           "a-little",
                           "moderately",
+                          "to-some-extent",
                           "quite-a-bit",
                           "extremely",
                         ].map((option, index1) => (
