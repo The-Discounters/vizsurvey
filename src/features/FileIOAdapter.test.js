@@ -86,6 +86,7 @@ describe("FileIOAdapter tests", () => {
       choiceTimestamp: DateTime.fromFormat("1/4/2001", "M/d/yyyy", {
         zone: "utc",
       }).toISO(),
+      choiceTimeSec: 1,
       highup: 20,
       lowdown: 21,
     });
@@ -126,6 +127,7 @@ describe("FileIOAdapter tests", () => {
       choiceTimestamp: DateTime.utc(2001, 1, 2, 4, 1, 1, 1, {
         zone: "utc",
       }).toISO(),
+      choiceTimeSec: 1,
       highup: 41,
       lowdown: 42,
     });

@@ -15,16 +15,16 @@ import {
   ThemeProvider,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
+import { StatusType } from "../features/StatusType.js";
 import {
   getStatus,
   purposeSurveyQuestionsShown,
   purposeSurveyQuestionsCompleted,
   initPurposeSurveyQuestion,
   setPurposeSurveyQuestion,
-  getPurposeSurveyQuestion,
+  getPurposeSurveyAnswers,
 } from "../features/questionSlice.js";
 import { dateToState } from "../features/ConversionUtil.js";
-import { POST_SURVEY_QUESTIONS } from "../features/postsurveyquestionssenseofpurpose.js";
 import { styles, theme } from "./ScreenHelper.js";
 import { navigateFromStatus } from "./Navigate.js";
 
@@ -41,14 +41,23 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export function PostSurvey() {
+export function PostSurvey(props) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const classes = useStyles();
-  let surveys = POST_SURVEY_QUESTIONS;
   const status = useSelector(getStatus);
+  const answers = useSelector(getPurposeSurveyAnswers);
 
-  surveys.questions = surveys.questions.filter(({ question }) => {
+  useEffect(() => {
+    const path = navigateFromStatus(status);
+    navigate(path);
+  }, [status]);
+
+  useEffect(() => {
+    dispatch(purposeSurveyQuestionsShown(dateToState(DateTime.now())));
+  }, []);
+
+  const shownQuestions = props.content.questions.filter(({ question }) => {
     if (question.disabled === true) {
       return false;
     } else {
@@ -57,27 +66,22 @@ export function PostSurvey() {
   });
 
   let qList = [];
-  surveys.questions.forEach((q) => {
+  shownQuestions.forEach((q) => {
     dispatch(initPurposeSurveyQuestion(q.question.textShort));
-    const value = useSelector(getPurposeSurveyQuestion(q.question.textShort));
+    const value = answers[q.question.textShort];
     qList.push(value);
   });
 
-  useEffect(() => {
-    dispatch(purposeSurveyQuestionsShown(dateToState(DateTime.now())));
-  }, []);
-
-  useEffect(() => {
-    const path = navigateFromStatus(status);
-    navigate(path);
-  }, [status]);
+  const pageNumber = status === StatusType.PurposeAwareQuestionaire ? 3 : 4;
 
   return (
     <ThemeProvider theme={theme}>
       <div>
         <Grid container style={styles.root}>
           <Grid item xs={12}>
-            <Typography variant="h4">Additional Questions 3 of 3</Typography>
+            <Typography variant="h4">
+              Additional Questions {pageNumber} of 4
+            </Typography>
             <hr
               style={{
                 color: "#ea3433",
@@ -87,9 +91,9 @@ export function PostSurvey() {
             />
           </Grid>
           <Grid item xs={12}>
-            <Typography paragraph>{surveys.prompt}</Typography>
+            <Typography paragraph>{props.content.prompt}</Typography>
           </Grid>
-          {surveys.questions.map(({ question, options }, index) => (
+          {shownQuestions.map(({ question, options }, index) => (
             <div key={`div-${index}`}>
               <Grid item xs={12} key={`grid-${index}`}>
                 <FormControl
@@ -109,7 +113,7 @@ export function PostSurvey() {
                     }
                     name={question.textShort + "-radio-buttons-group"}
                   >
-                    {surveys.questionsType === "multiple choice"
+                    {props.content.questionsType === "multiple choice"
                       ? options.map((option, index1) => (
                           <FormControlLabel
                             key={`radio-${index1}`}
@@ -123,8 +127,7 @@ export function PostSurvey() {
                             onChange={(event) => {
                               dispatch(
                                 setPurposeSurveyQuestion({
-                                  key: surveys.questions[index].question
-                                    .textShort,
+                                  key: shownQuestions[index].question.textShort,
                                   value: event.target.value,
                                 })
                               );
@@ -134,7 +137,9 @@ export function PostSurvey() {
                       : [
                           "strongly-disagree",
                           "disagree",
-                          "neutral",
+                          "somewhat-disagree",
+                          "either-agree-or-disagree",
+                          "somewhat-agree",
                           "agree",
                           "strongly-agree",
                         ].map((option, index1) => (
@@ -151,8 +156,7 @@ export function PostSurvey() {
                             onChange={(event) => {
                               dispatch(
                                 setPurposeSurveyQuestion({
-                                  key: surveys.questions[index].question
-                                    .textShort,
+                                  key: shownQuestions[index].question.textShort,
                                   value: event.target.value,
                                 })
                               );

@@ -191,8 +191,10 @@ export class QuestionEngine {
       case StatusType.ExperienceQuestionaire:
         return StatusType.FinancialQuestionaire;
       case StatusType.FinancialQuestionaire:
-        return StatusType.PurposeQuestionaire;
-      case StatusType.PurposeQuestionaire:
+        return StatusType.PurposeAwareQuestionaire;
+      case StatusType.PurposeAwareQuestionaire:
+        return StatusType.PurposeWorthQuestionaire;
+      case StatusType.PurposeWorthQuestionaire:
         return StatusType.Demographic;
       case StatusType.Demographic:
         return StatusType.Debrief;

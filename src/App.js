@@ -20,7 +20,6 @@ import Survey from "./components/Survey.jsx";
 import PostSurveyExperience from "./components/PostSurveyExperience.jsx";
 import PostSurveyFinancialLit from "./components/PostSurveyFinancialLit.jsx";
 import PostSurveySenseOfPurpose from "./components/PostSurveySenseOfPurpose.jsx";
-import AttentionCheck from "./components/AttentionCheck.jsx";
 import Debrief from "./components/Debrief.jsx";
 import InvalidSurveyLink from "./components/InvalidSurveyLink.jsx";
 import {
@@ -32,6 +31,10 @@ import {
 } from "./features/questionSlice.js";
 import { StatusType } from "./features/StatusType.js";
 import { Consent } from "./components/Consent.jsx";
+import {
+  POST_SURVEY_AWARE_CONTENT,
+  POST_SURVEY_WORTH_CONTENT,
+} from "./features/postsurveyquestionssenseofpurpose.js";
 
 class ErrorBoundary extends React.Component {
   constructor(props) {
@@ -86,10 +89,21 @@ const App = () => {
                 element={<PostSurveyFinancialLit />}
               />
               <Route
-                path={"purposequestionaire"}
-                element={<PostSurveySenseOfPurpose />}
+                path={"purposeawarequestionaire"}
+                element={
+                  <PostSurveySenseOfPurpose
+                    content={POST_SURVEY_AWARE_CONTENT}
+                  />
+                }
               />
-              <Route path={"attentioncheck"} element={<AttentionCheck />} />
+              <Route
+                path={"purposeworthquestionaire"}
+                element={
+                  <PostSurveySenseOfPurpose
+                    content={POST_SURVEY_WORTH_CONTENT}
+                  />
+                }
+              />
               <Route path={"debrief"} element={<Debrief />} />
               <Route path={"invalidlink"} element={<InvalidSurveyLink />} />
               <Route path="*" element={<InvalidSurveyLink />} />

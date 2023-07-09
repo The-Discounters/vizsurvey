@@ -110,9 +110,12 @@ export const questionSlice = createSlice({
       financialLitSurveyQuestionsShownTimestamp: null,
       financialLitSurveyQuestionsCompletedTimestamp: null,
       financialLitSurveyTimeSec: null,
-      purposeSurveyQuestionsShownTimestamp: null,
-      purposeSurveyQuestionsCompletedTimestamp: null,
-      purposeSurveyTimeSec: null,
+      purposeSurveyAwareQuestionsShownTimestamp: null,
+      purposeSurveyAwareQuestionsCompletedTimestamp: null,
+      purposeSurveyAwareTimeSec: null,
+      purposeSurveyWorthQuestionsShownTimestamp: null,
+      purposeSurveyWorthQuestionsCompletedTimestamp: null,
+      purposeSurveyWorthTimeSec: null,
       debriefShownTimestamp: null,
       debriefCompletedTimestamp: null,
       debriefTimeSec: null,
@@ -313,15 +316,30 @@ export const questionSlice = createSlice({
       state.status = qe.nextState(state);
     },
     purposeSurveyQuestionsShown(state, action) {
-      state.timestamps.purposeSurveyQuestionsShownTimestamp = action.payload;
+      if (state.status === StatusType.PurposeAwareQuestionaire) {
+        state.timestamps.purposeSurveyAwareQuestionsShownTimestamp =
+          action.payload;
+      } else if (state.status === StatusType.PurposeWorthQuestionaire) {
+        state.timestamps.purposeSurveyWorthQuestionsShownTimestamp =
+          action.payload;
+      }
     },
     purposeSurveyQuestionsCompleted(state, action) {
-      state.timestamps.purposeSurveyQuestionsCompletedTimestamp =
-        action.payload;
-      state.timestamps.purposeSurveyTimeSec = secondsBetween(
-        state.timestamps.purposeSurveyQuestionsShownTimestamp,
-        state.timestamps.purposeSurveyQuestionsCompletedTimestamp
-      );
+      if (state.status === StatusType.PurposeAwareQuestionaire) {
+        state.timestamps.purposeSurveyAwareQuestionsCompletedTimestamp =
+          action.payload;
+        state.timestamps.purposeSurveyAwareTimeSec = secondsBetween(
+          state.timestamps.purposeSurveyAwareQuestionsShownTimestamp,
+          state.timestamps.purposeSurveyAwareQuestionsCompletedTimestamp
+        );
+      } else if (state.status === StatusType.PurposeWorthQuestionaire) {
+        state.timestamps.purposeSurveyWorthQuestionsCompletedTimestamp =
+          action.payload;
+        state.timestamps.purposeSurveyWorthTimeSec = secondsBetween(
+          state.timestamps.purposeSurveyWorthQuestionsShownTimestamp,
+          state.timestamps.purposeSurveyWorthQuestionsCompletedTimestamp
+        );
+      }
       writeStateAsCSV(state);
       state.status = qe.nextState(state);
     },
@@ -378,9 +396,12 @@ export const questionSlice = createSlice({
         financialLitSurveyQuestionsShownTimestamp: null,
         financialLitSurveyQuestionsCompletedTimestamp: null,
         financialLitSurveyTimeSec: null,
-        purposeSurveyQuestionsShownTimestamp: null,
-        purposeSurveyQuestionsCompletedTimestamp: null,
-        purposeSurveyTimeSec: null,
+        purposeSurveyAwareQuestionsShownTimestamp: null,
+        purposeSurveyAwareQuestionsCompletedTimestamp: null,
+        purposeSurveyAwareTimeSec: null,
+        purposeSurveyWorthQuestionsShownTimestamp: null,
+        purposeSurveyWorthQuestionsCompletedTimestamp: null,
+        purposeSurveyWorthTimeSec: null,
         debriefShownTimestamp: null,
         debriefCompletedTimestamp: null,
         debriefTimeSec: null,
@@ -465,8 +486,8 @@ export const getFinancialLitSurveyQuestion = (questionId) => (state) => {
   return state.questions.financialLitSurvey[questionId];
 };
 
-export const getPurposeSurveyQuestion = (questionId) => (state) => {
-  return state.questions.purposeSurvey[questionId];
+export const getPurposeSurveyAnswers = (state) => {
+  return state.questions.purposeSurvey;
 };
 
 export const getFinancialLitSurvey = (state) =>

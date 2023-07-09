@@ -98,7 +98,8 @@ function postsurvey(expects) {
                 attentionCheckShownTimestamp: 5000,
                 attentionCheckCompletedTimestamp: 6000,
                 financialLitSurveyQuestionsShownTimestamp: 6000,
-                purposeSurveyQuestionsShownTimestamp: 9000,
+                purposeSurveyAwareQuestionsShownTimestamp: 9000,
+                purposeSurveyWorthQuestionsShownTimestamp: 9000,
                 debriefShownTimestamp: null, // TODO
                 debriefCompletedTimestamp: null, // TODO
                 theEndShownTimestamp: 10000,
