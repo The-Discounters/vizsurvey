@@ -50,7 +50,10 @@ describe("QuestionEngine tests", () => {
       StatusType.FinancialQuestionaire
     );
     expect((state.status = qe.nextStatus(state, true))).toBe(
-      StatusType.PurposeQuestionaire
+      StatusType.PurposeAwareQuestionaire
+    );
+    expect((state.status = qe.nextStatus(state, true))).toBe(
+      StatusType.PurposeWorthQuestionaire
     );
     expect((state.status = qe.nextStatus(state, true))).toBe(
       StatusType.Demographic
@@ -78,7 +81,10 @@ describe("QuestionEngine tests", () => {
     );
     state.status = StatusType.Demographic;
     expect((state.status = qe.previousStatus(state, false))).toBe(
-      StatusType.PurposeQuestionaire
+      StatusType.PurposeWorthQuestionaire
+    );
+    expect((state.status = qe.previousStatus(state, false))).toBe(
+      StatusType.PurposeAwareQuestionaire
     );
     expect((state.status = qe.previousStatus(state, false))).toBe(
       StatusType.FinancialQuestionaire

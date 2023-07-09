@@ -309,8 +309,10 @@ export class QuestionEngine {
       case StatusType.ExperienceQuestionaire:
         return StatusType.FinancialQuestionaire;
       case StatusType.FinancialQuestionaire:
-        return StatusType.PurposeQuestionaire;
-      case StatusType.PurposeQuestionaire:
+        return StatusType.PurposeAwareQuestionaire;
+      case StatusType.PurposeAwareQuestionaire:
+        return StatusType.PurposeWorthQuestionaire;
+      case StatusType.PurposeWorthQuestionaire:
         return StatusType.Demographic;
       case StatusType.Demographic:
         return StatusType.Debrief;
@@ -345,10 +347,12 @@ export class QuestionEngine {
         return StatusType.Survey;
       case StatusType.FinancialQuestionaire:
         return StatusType.ExperienceQuestionaire;
-      case StatusType.PurposeQuestionaire:
+      case StatusType.PurposeAwareQuestionaire:
         return StatusType.FinancialQuestionaire;
+      case StatusType.PurposeWorthQuestionaire:
+        return StatusType.PurposeAwareQuestionaire;
       case StatusType.Demographic:
-        return StatusType.PurposeQuestionaire;
+        return StatusType.PurposeWorthQuestionaire;
       case StatusType.Debrief:
         return StatusType.Debrief; // once they have submitted answers, don't let them go back.
       case StatusType.Error:

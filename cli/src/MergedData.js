@@ -134,9 +134,15 @@ export class MergedData {
         );
         this.updateTimeSpent(
           newEntry,
-          "purposeSurveyTimeSec",
-          newEntry.purposeSurveyQuestionsShownTimestamp,
-          newEntry.purposeSurveyQuestionsCompletedTimestamp
+          "purposeSurveyAwareTimeSec",
+          newEntry.purposeSurveyAwareQuestionsShownTimestamp,
+          newEntry.purposeSurveyAwareQuestionsCompletedTimestamp
+        );
+        this.updateTimeSpent(
+          newEntry,
+          "purposeWorthAwareTimeSec",
+          newEntry.purposeSurveyWorthQuestionsShownTimestamp,
+          newEntry.purposeSurveyWorthQuestionsCompletedTimestamp
         );
         this.updateTimeSpent(
           newEntry,

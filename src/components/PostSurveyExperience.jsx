@@ -79,7 +79,7 @@ export function PostSurvey() {
       <div>
         <Grid container style={styles.root}>
           <Grid item xs={12}>
-            <Typography variant="h4">Additional Questions 1 of 3</Typography>
+            <Typography variant="h4">Additional Questions 1 of 4</Typography>
             <hr
               style={{
                 color: "#ea3433",

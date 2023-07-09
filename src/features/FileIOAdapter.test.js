@@ -86,6 +86,7 @@ describe("FileIOAdapter tests", () => {
       choiceTimestamp: DateTime.fromFormat("1/4/2001", "M/d/yyyy", {
         zone: "utc",
       }).toISO(),
+      choiceTimeSec: 1,
       highup: 20,
       lowdown: 21,
     });
@@ -126,6 +127,7 @@ describe("FileIOAdapter tests", () => {
       choiceTimestamp: DateTime.utc(2001, 1, 2, 4, 1, 1, 1, {
         zone: "utc",
       }).toISO(),
+      choiceTimeSec: 1,
       highup: 41,
       lowdown: 42,
     });
@@ -133,9 +135,9 @@ describe("FileIOAdapter tests", () => {
     const result = convertToCSV(answers);
     console.log(result);
     expect(result)
-      .toBe(`participantId,sessionId,studyId,treatmentId,position,viewType,interaction,variableAmount,amountEarlier,timeEarlier,dateEarlier,amountLater,timeLater,dateLater,maxAmount,maxTime,verticalPixels,horizontalPixels,leftMarginWidthIn,bottomMarginHeightIn,graphWidthIn,graphHeightIn,widthIn,heightIn,showMinorTicks,choice,dragAmount,shownTimestamp,choiceTimestamp,highup,lowdown
-1,2,3,4,5,word,none,earlierAmount,6,7,2001-01-01T00:00:00.000Z,8,9,2001-01-02T00:00:00.000Z,10,11,12,13,14,15,16,17,18,19,false,earlierAmount,,2001-01-03T00:00:00.000Z,2001-01-04T00:00:00.000Z,20,21·
-22,23,24,25,26,barchart,drag,earlierAmount,27,28,2001-01-02T01:01:01.001Z,29,30,2001-01-02T02:01:01.001Z,31,32,33,34,35,36,37,38,39,40,false,laterAmount,,2001-01-02T03:01:01.001Z,2001-01-02T04:01:01.001Z,41,42·`);
+      .toBe(`participantId,sessionId,studyId,treatmentId,position,viewType,interaction,variableAmount,amountEarlier,timeEarlier,dateEarlier,amountLater,timeLater,dateLater,maxAmount,maxTime,verticalPixels,horizontalPixels,leftMarginWidthIn,bottomMarginHeightIn,graphWidthIn,graphHeightIn,widthIn,heightIn,showMinorTicks,choice,dragAmount,shownTimestamp,choiceTimestamp,choiceTimeSec,highup,lowdown
+1,2,3,4,5,word,none,earlierAmount,6,7,2001-01-01T00:00:00.000Z,8,9,2001-01-02T00:00:00.000Z,10,11,12,13,14,15,16,17,18,19,false,earlierAmount,,2001-01-03T00:00:00.000Z,2001-01-04T00:00:00.000Z,1,20,21·
+22,23,24,25,26,barchart,drag,earlierAmount,27,28,2001-01-02T01:01:01.001Z,29,30,2001-01-02T02:01:01.001Z,31,32,33,34,35,36,37,38,39,40,false,laterAmount,,2001-01-02T03:01:01.001Z,2001-01-02T04:01:01.001Z,1,41,42·`);
   });
 
   // This test uses the write only creds to try and read from the bucket.  I need to figure out how to check
@@ -267,12 +269,15 @@ describe("FileIOAdapter tests", () => {
   //     financialLitSurveyQuestionsShownTimestamp: timestamp,
   //     financialLitSurveyQuestionsCompletedTimestamp: timestamp,
   //     financialLitSurveyTimeSec: 6,
-  //     purposeSurveyQuestionsShownTimestamp: timestamp,
-  //     purposeSurveyQuestionsCompletedTimestamp: timestamp,
-  //     purposeSurveyTimeSec: 7,
+  //     purposeSurveyAwareQuestionsShownTimestamp: timestamp,
+  //     purposeSurveyAwareQuestionsCompletedTimestamp: timestamp,
+  //     purposeSurveyAwareTimeSec: 7,
+  //     purposeSurveyWorthQuestionsShownTimestamp: timestamp,
+  //     purposeSurveyWorthQuestionsCompletedTimestamp: timestamp,
+  //     purposeSurveyWorthTimeSec: 8,
   //     debriefShownTimestamp: timestamp,
   //     debriefCompletedTimestamp: timestamp,
-  //     debriefTimeSec: 8,
+  //     debriefTimeSec: 9,
   //   };
 
   //   const demographic = {
