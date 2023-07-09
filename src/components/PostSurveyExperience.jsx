@@ -67,6 +67,7 @@ export function PostSurvey() {
 
   useEffect(() => {
     dispatch(experienceSurveyQuestionsShown(dateToState(DateTime.now())));
+    window.scrollTo(0, 0);
   }, []);
 
   useEffect(() => {

@@ -57,6 +57,7 @@ export function PostSurvey(props) {
 
   if (dispatchPageShown) {
     dispatch(purposeSurveyQuestionsShown(dateToState(DateTime.now())));
+    window.scrollTo(0, 0);
     setDispatchPageShown(false);
   }
 
@@ -141,7 +142,7 @@ export function PostSurvey(props) {
                           "strongly-disagree",
                           "disagree",
                           "somewhat-disagree",
-                          "either-agree-or-disagree",
+                          "neither-agree-nor-disagree",
                           "somewhat-agree",
                           "agree",
                           "strongly-agree",
