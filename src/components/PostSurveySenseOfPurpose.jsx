@@ -50,7 +50,9 @@ export function PostSurvey(props) {
   const [dispatchPageShown, setDispatchPageShown] = React.useState(true);
 
   useEffect(() => {
+    console.log("navigating to status=" + status);
     const path = navigateFromStatus(status);
+    console.log("setting setDispatchPageShown to true");
     setDispatchPageShown(true);
     navigate(path);
   }, [status]);
