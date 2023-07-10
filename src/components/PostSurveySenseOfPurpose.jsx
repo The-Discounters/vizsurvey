@@ -55,8 +55,11 @@ export function PostSurvey(props) {
     navigate(path);
   }, [status]);
 
+  console.log("dispatchPageShown=" + dispatchPageShown);
+
   if (dispatchPageShown) {
     dispatch(purposeSurveyQuestionsShown(dateToState(DateTime.now())));
+    console.log("About to scroll to 0,0");
     window.scrollTo(0, 0);
     setDispatchPageShown(false);
   }
