@@ -1,4 +1,4 @@
-id,status,num_participants_started,num_participants_completed,type,seven_squares,start_date,end_date,num_participants,prolific_code,prolific_study_id,description
+id,status,num_participants_started,num_participants_completed,type,latin_square,start_date,end_date,num_participants,prolific_code,prolific_study_id,description
 1,completed,1,1,betweenSubject,sequence,12/27/2022,,1,C1KQNGZK,,Between subject pilot 1 experiment.
 2,completed,2,3,betweenSubject,sequence,1/14/2023,,3,C1KQNGZK,,Between subject pilot 2 experiment to validate changes.
 3,completed,26,26,betweenSubject,sequence,1/16/2023,,26,C1KQNGZK,,Between subject remaing people from the initial 30.
