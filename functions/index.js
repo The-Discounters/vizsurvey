@@ -8,80 +8,84 @@
  */
 
 // The Cloud Functions for Firebase SDK to create Cloud Functions and triggers.
-import { logger } from "firebase-functions";
-import { onRequest } from "firebase-functions/v2/https";
-import { onDocumentCreated } from "firebase-functions/v2/firestore";
-
+import {logger} from "firebase-functions";
+import {onRequest} from "firebase-functions/v2/https";
 // The Firebase Admin SDK to access Firestore.
-const { initializeApp } = require("firebase-admin/app");
-const { getFirestore } = require("firebase-admin/firestore");
+import admin from "firebase-admin";
+// import {getFirestore} from "firebase-admin/firestore";
+// import {calcTreatmentIds, fetchExperiment} from "./functionsUtil.js";
+import SERVICE_ACCOUNT from "../admin-credentials-dev.json";
 
-import { ProlificStudyStatusType } from "../cli/src/ProlificStatusTypes.js";
+const useEmulator = false;
+
+if (useEmulator) {
+  process.env["FIRESTORE_EMULATOR_HOST"] = "localhost:8080";
+  // I think this will work when I enable auth on emulator
+  // process.env["FIREBASE_AUTH_EMULATOR_HOST"] = "localhost:9099";
+}
+
+admin.initializeApp({
+  credential: admin.credential.cert(SERVICE_ACCOUNT),
+  databaseURL: "https://vizsurvey-test.firebaseio.com/",
+});
+
+// const db = admin.firestore();
 
 export const fetchExpConfig = onRequest(async (request, response) => {
-  info(`fetchExpConfig(${request})`, { structuredData: true });
+  // logger.info(
+  //     `fetchExpConfig prolific_pid=${request.query.prolific_pid},
+  //     study_id=${request.query.study_id},
+  //     session_id=${request.query.session_id}`);
   try {
-    const prolific_pid = req.query.prolific_pid;
-    const study_id = req.query.study_id;
-    const session_id = req.query.session_id;
+    // const prolificPid = request.query.prolific_pid;
+    // const studyId = request.query.study_id;
+    // const sessionId = request.query.session_id;
 
-    if (!prolific_pid || !study_id) {
-      logger.error(
-        `fetchExpConfig Error with request parameters.  prolific_pid or study_id not in request`,
-        request
-      );
-      throw "Error with survey URL.";
-    }
+    // if (!prolificPid || !studyId) {
+    //   logger.error(`fetchExpConfig Error with request parameters.
+    //   prolific_pid or study_id not in request`, request);
+    //   throw Error("Error with survey URL.");
+    // }
 
-    const expColRef = db.collection("experiments");
-    const q = expColRef.where("prolific_study_id", "==", study_id);
-    let expSnapshot = await q.get();
-    if (expSnapshot.size != 1) {
-      logger.error(
-        `fetchExpConfig expects to find one experiment with study_id ${study_id} and found ${expSnapshot.size}`,
-        request,
-        expSnapshot.docs
-      );
-      throw "Error retrieving experiment configuration";
-    }
-    const expDoc = expSnapshot.docs[0];
-    if (expDoc.status != ProlificStudyStatusType.active) {
-      logger.error(
-        `fetchExpConfig Participant tried to access experiment that is not active ${
-          expDoc.data().status
-        } for study_id ${study_id}`,
-        request,
-        expDoc
-      );
-      throw "Error retrieving experiment configuration";
-    }
+    // const expDoc = await fetchExperiment(db, studyId);
 
-    if (
-      expDoc.data().num_participants_completed ===
-      expDoc.data().num_participants
-    ) {
-      logger.error(
-        `fetchExpConfig participant tried starting survey after the number of participants (${
-          expDoc.data().num_participants
-        }) has been fulfilled.`,
-        request,
-        expDoc
-      );
-    }
+    // if (
+    //   expDoc.data().num_participants_completed ===
+    //   expDoc.data().num_participants
+    // ) {
+    //   logger.error(`fetchExpConfig participant tried starting survey
+    //     after the
+    //     number of participants (${expDoc.data().num_participants})
+    //     has been fulfilled.`, request, expDoc);
+    //   throw Error("Error retrieving experiment configuration");
+    // }
 
-    let treatment_id;
+    // expDoc.data().num_participants_completed++;
 
-    const writeResult = await getFirestore().collection("results").add({
-      exp_id: expDoc.ref,
-      participant_id: prolific_pid,
-      session_id: session_id,
-      study_id: study_id,
-      treatment_id: treatment_id,
-    });
+    // const treatmentIds = calcTreatmentIds(
+    //     expDoc.data().latin_square,
+    //     expDoc.data().num_participants_completed,
+    // );
+
+    // logger.info(`assigned treatment order ${treatmentIds} to
+    //   participant id ${prolificPid}, for study id ${studyId}
+    //   for session id ${sessionId}`);
+
+    // // TODO
+
+    // const writeResult = await getFirestore().collection(
+    // "participantsAnswers")
+    //     .add({exp_id: expDoc.ref,
+    //       participant_id: prolificPid,
+    //       session_id: sessionId,
+    //       study_id: studyId,
+    //       treatment_id: treatmentIds});
 
     // Send back a message that we've successfully written the message
-    response.json({ result: `Message with ID: ${writeResult.id} added.` });
+    // response.json({result: `Message with ID: ${writeResult.id} added.`});
+    response.json({result: "hello world"});
   } catch (err) {
-    response.json({ error: err });
+    logger.error(err);
+    response.json({error: "There was an error with the server."});
   }
 });

@@ -36,6 +36,7 @@ import {
   parseLinkText,
 } from "./importUtil.js";
 
+const useEmulator = false;
 dotenv.config();
 
 const validateInt = (value, dummyPrevious) => {
@@ -352,7 +353,7 @@ program
     try {
       const colPath = args.collection;
       const file = args.src;
-      initAdminFirestoreDB();
+      initAdminFirestoreDB(useEmulator);
       initBatch(colPath);
       const data = parseFileToObj(file);
       const typeFieldsFn = typeFieldsFunction(colPath);

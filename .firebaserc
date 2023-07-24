@@ -1,5 +1,8 @@
 {
   "projects": {
-    "default": "vizsurvey"
-  }
+    "default": "vizsurvey",
+    "staging": "vizsurvey-test"
+  },
+  "targets": {},
+  "etags": {}
 }

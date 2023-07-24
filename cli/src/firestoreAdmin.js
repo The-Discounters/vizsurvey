@@ -1,17 +1,30 @@
 import admin from "firebase-admin";
-import SERVICE_ACCOUNT from "../admin-credentials-dev.json" assert { type: "json" };
+import SERVICE_ACCOUNT from "../../admin-credentials-dev.json" assert { type: "json" };
 
 var db;
 var batch;
 var colRef;
 
-export const initAdminFirestoreDB = () => {
-  admin.initializeApp({
-    credential: admin.credential.cert(SERVICE_ACCOUNT),
-    //databaseURL: "https://vizsurvey-test-default-rtdb.firebaseio.com/",
-    databaseURL: "https://vizsurvey-test.firebaseio.com/",
-  });
-  db = admin.firestore();
+export const initAdminFirestoreDB = (useEmulator) => {
+  if (useEmulator) {
+    process.env["FIRESTORE_EMULATOR_HOST"] = "127.0.0.1:8080";
+    process.env["FIREBASE_STORAGE_EMULATOR_HOST"] = "127.0.0.1:8080";
+    //process.env["FIREBASE_AUTH_EMULATOR_HOST"] = "localhost:9099"; I think this will work when I enable auth on emulator
+    const emulatorAdmin = admin.initializeApp(
+      {
+        projectId: "vizsurvey-emulator",
+      },
+      "emulator-app"
+    );
+    db = emulatorAdmin.firestore();
+  } else {
+    admin.initializeApp({
+      credential: admin.credential.cert(SERVICE_ACCOUNT),
+      //databaseURL: "https://vizsurvey-test-default-rtdb.firebaseio.com/",
+      databaseURL: "https://vizsurvey-test.firebaseio.com/",
+    });
+    db = admin.firestore();
+  }
 };
 
 export const initBatch = (colPath) => {

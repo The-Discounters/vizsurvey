@@ -11,7 +11,8 @@
     "start": "nodemon --exec babel-node src/index.js",
     "test": "jest NODE_OPTIONS=--experimental-vm-modules --config /Users/pete/vizsurvey/cli/jest.config.json --watchAll",
     "test:watch": "npm run test -- --watch",
-    "publish": "npm install -g"
+    "publish": "npm install -g",
+    "datarefresh": "pwsh ../scripts/refresh_exp_config.ps1"
   },
   "keywords": [
     "CLI",
