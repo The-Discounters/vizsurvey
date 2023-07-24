@@ -23,7 +23,7 @@ test/public
 .env.test
 discounters.development.json
 discounters.production.json
-cli/admin-credentials-dev.json
+admin-credentials-dev.json
 
 #logs
 #npm-debug.log*
