@@ -1,0 +1,13 @@
+{
+  "name": "@the-discounters/prolific",
+  "version": "1.0.0",
+  "description": "Code that wraps the Prolific API.",
+  "main": "index.js",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Peter N. Cordone",
+  "license": "ISC"
+}

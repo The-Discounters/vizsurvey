@@ -1,0 +1,13 @@
+{
+  "name": "@the-discounters/domain",
+  "version": "1.0.0",
+  "description": "Code that is related to vizsurvey domain (types, etc.).",
+  "main": "index.js",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Peter N. Cordone",
+  "license": "ISC"
+}
