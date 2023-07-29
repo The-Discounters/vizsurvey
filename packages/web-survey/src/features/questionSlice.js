@@ -6,7 +6,7 @@ import {
 } from "./TreatmentUtil.js";
 import { QuestionEngine } from "./QuestionEngine.js";
 import { StatusType } from "./StatusType.js";
-import { secondsBetween } from "@the-discounters/util/src/ConversionUtil.js";
+import { secondsBetween } from "@the-discounters/util";
 import { getRandomIntInclusive, writeStateAsCSV } from "./QuestionSliceUtil.js";
 import { getServerSequenceId } from "./firebase.js";
 import { LATIN_SQUARE } from "./TreatmentUtil.js";

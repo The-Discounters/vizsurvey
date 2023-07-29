@@ -5,7 +5,8 @@
       "packages/web-survey",
       "packages/test-server",
       "packages/domain",
-      "packages/firebase",
+      "packages/firebase-admin",
+      "packages/firebase/functions",
       "packages/prolific",
       "packages/util"
     ],

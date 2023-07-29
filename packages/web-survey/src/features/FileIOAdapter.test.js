@@ -1,10 +1,9 @@
 //import AWS from "aws-sdk";
 import { DateTime } from "luxon";
 import { InteractionType } from "./InteractionType";
-import { AmountType } from "@the-discounters/domain/src/AmountType";
-import { ViewType } from "@the-discounters/domain/src/ViewType";
+import { AmountType, ViewType } from "@the-discounters/domain";
 import { Answer } from "./Answer";
-import { convertToCSV } from "@the-discounters/util/src/parserUtil";
+import { convertToCSV } from "@the-discounters/util";
 
 describe("Enum tests", () => {
   const result = ViewType["barchart"];

@@ -1,9 +1,7 @@
 import { csvParse, group } from "d3";
 import { Question } from "./Question.js";
-import { ViewType } from "@the-discounters/domain/src/ViewType";
-import { InteractionType } from "@the-discounters/domain/src/InteractionType";
-import { AmountType } from "@the-discounters/domain/src/AmountType";
-import { stringToDate, dateToState } from "@the-discounters/";
+import { ViewType, InteractionType, AmountType } from "@the-discounters/domain";
+import { stringToDate, dateToState } from "@the-discounters/util";
 import {
   TREATMENTS_DEV_CSV,
   TREATMENTS_PROD_CSV,

@@ -2,7 +2,8 @@ import {logger} from "firebase-functions";
 // import { onRequest } from "firebase-functions/v2/https";
 // The Firebase Admin SDK to access Firestore.
 // import { getFirestore } from "firebase-admin/firestore";
-import {ProlificSumbissionStatusType} from "@the-discounters/prolific/src/ProlificSumbissionStatusType";
+// import {ProlificSumbissionStatusType} from "@the-discounters/util/index
+import {ProlificSumbissionStatusType} from "@the-discounters/util";
 
 export const calcTreatmentIds = (latinSquare, numParticipantsCompleted) => {
   const latinSquareAry = JSON.parse(latinSquare);

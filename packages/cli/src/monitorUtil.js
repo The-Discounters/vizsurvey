@@ -1,6 +1,6 @@
 import clui from "clui";
 import clc from "cli-color";
-import { stateToDate } from "@the-discounters/util/ConversionUtil.js";
+import { stateToDate } from "@the-discounters/util/ConversionUtil";
 
 export const drawStatus = (
   surveysTotal,

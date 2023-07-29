@@ -1,7 +1,7 @@
 import { StatusType } from "./StatusType.js";
-import { AmountType } from "@the-discounters/domain/src/AmountType";
+import { AmountType } from "@the-discounters/domain";
 import { Answer } from "./Answer.js";
-import { secondsBetween } from "@the-discounters/util/src/ConversionUtil";
+import { secondsBetween } from "@the-discounters/util";
 
 export const TIMESTAMP_FORMAT = "MM/dd/yyyy H:mm:ss:SSS ZZZZ";
 

@@ -3,10 +3,9 @@ import { QuestionEngine } from "./QuestionEngine.js";
 import { ViewType } from "@the-discounters/domain/src/ViewType";
 import { StatusType } from "./StatusType.js";
 import { Question } from "./Question.js";
-import { InteractionType } from "@the-discounters/domain/src/InteractionType";
-import { AmountType } from "@the-discounters/domain/src/AmountType";
+import { InteractionType, AmountType } from "@the-discounters/domain";
 import { Answer } from "./Answer.js";
-import { dateToState } from "@the-discounters/util/src/ConversionUtil.js";
+import { dateToState } from "@the-discounters/util";
 
 describe("QuestionEngine tests", () => {
   test("nextStatus testing state transitions with a single treatment.", () => {

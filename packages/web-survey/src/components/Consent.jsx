@@ -203,20 +203,6 @@ export function Consent() {
     );
   };
 
-  let qList2 = [];
-  let setQList2 = [];
-  [
-    "strongly-disagree",
-    "disagree",
-    "neutral",
-    "agree",
-    "strongly-agree",
-  ].forEach(() => {
-    const [q, setQ] = React.useState("");
-    qList2.push(q);
-    setQList2.push(setQ);
-  });
-
   return (
     <ThemeProvider theme={theme}>
       <div>
