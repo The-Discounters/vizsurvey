@@ -1,2 +1,5 @@
-import {ProlificSumbissionStatusType, ProlificStudyStatusType} from "./src/ProlificSumbissionStatusType";
-export {ProlificSumbissionStatusType, ProlificStudyStatusType};
+import {
+  ProlificSumbissionStatusType,
+  ProlificStudyStatusType,
+} from "./src/ProlificSumbissionStatusType.js";
+export { ProlificSumbissionStatusType, ProlificStudyStatusType };

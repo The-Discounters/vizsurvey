@@ -1,6 +1,6 @@
 //import AWS from "aws-sdk";
 import { DateTime } from "luxon";
-import { InteractionType } from "./InteractionType";
+import { InteractionType } from "@the-discounters/domain";
 import { AmountType, ViewType } from "@the-discounters/domain";
 import { Answer } from "./Answer";
 import { convertToCSV } from "@the-discounters/util";

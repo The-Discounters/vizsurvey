@@ -15,7 +15,7 @@
     "@the-discounters/util": "^1.0.0",
     "aws-sdk": "^2.1135.0",
     "calendar-matrix": "^1.0.0",
-    "chalk": "^5.2.0",
+    "chalk": "^5.3.0",
     "csvtojson": "^2.0.10",
     "cypress-real-events": "^1.7.1",
     "d3": "^7.4.4",
@@ -70,7 +70,8 @@
     ]
   },
   "devDependencies": {
-    "babel-eslint": "^10.1.0",
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+    "@the-discounters/eslint-config": "^1.0.0",
     "babel-preset-flow": "^6.23.0",
     "cypress": "^10.11.0",
     "eslint": "^7.32.0",
@@ -87,14 +88,5 @@
     "webpack": "^4.44.2",
     "webpack-cli": "^4.8.0",
     "webpack-dev-server": "^3.11.1"
-  },
-  "jest": {
-    "moduleNameMapper": {
-      "d3": "<rootDir>/node_modules/d3/dist/d3.min.js"
-    },
-    "transformIgnorePatterns": [
-      "/dist/.+\\.js"
-    ],
-    "globalSetup": "<rootDir>/src/dotenv-test.js"
   }
 }

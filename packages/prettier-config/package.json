@@ -1,0 +1,20 @@
+{
+  "name": "@the-discounters/prettier-config",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Global prettier configuration.",
+  "author": "Peter Cordone <pcordone@gmail.com>",
+  "homepage": "https://github.com/The-Discounters/vizsurvey#readme",
+  "license": "ISC",
+  "main": "index.js",
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/The-Discounters/vizsurvey.git"
+  },
+  "devDependencies": {
+    "prettier": "^3.0.0"
+  }
+}

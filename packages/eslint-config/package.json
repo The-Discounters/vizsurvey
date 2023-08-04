@@ -1,0 +1,12 @@
+{
+  "name": "@the-discounters/eslint-config",
+  "version": "1.0.0",
+  "description": "Global eslint configuration.",
+  "author": "Peter Cordone <pcordone@gmail.com>",
+  "homepage": "https://github.com/The-Discounters/vizsurvey#readme",
+  "license": "ISC",
+  "main": "index.js",
+  "publishConfig": {
+    "access": "public"
+  }
+}

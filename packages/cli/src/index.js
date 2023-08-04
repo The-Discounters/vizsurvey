@@ -8,11 +8,9 @@ import fs from "fs";
 import { DateTime } from "luxon";
 import readline from "readline";
 import isValid from "is-valid-path";
-import { parseCSV, convertToCSV } from "@the-discounters/util/src/parserUtil";
+import { parseCSV } from "@the-discounters/util";
 import {
-  getFilename,
   loadFile,
-  writeFile,
   appendSepToPath,
   isCSVExt,
   isJSONExt,
@@ -27,7 +25,7 @@ import {
   commitBatch,
   linkDocs,
   deleteDocs,
-} from "@the-discounters/firebase/src/firestoreAdmin";
+} from "@the-discounters/firebase-admin";
 import {
   typeExperimentObj,
   typeQuestionObj,
@@ -39,7 +37,7 @@ import {
 const useEmulator = false;
 dotenv.config();
 
-const validateInt = (value, dummyPrevious) => {
+const validateInt = (value) => {
   const parsedValue = parseInt(value, 10);
   if (isNaN(parsedValue)) {
     throw new InvalidArgumentError("Not a number.");
@@ -47,7 +45,7 @@ const validateInt = (value, dummyPrevious) => {
   return parsedValue;
 };
 
-const validateDate = (value, dummyPrevious) => {
+const validateDate = (value) => {
   const result = DateTime.fromFormat(value, "MM/dd/yyyy");
   if (result.invalidReason) {
     throw new InvalidArgumentError("Not a valid date.");
@@ -55,7 +53,7 @@ const validateDate = (value, dummyPrevious) => {
   return result;
 };
 
-const validatePath = (value, dummyPrevious) => {
+const validatePath = (value) => {
   if (!isValid(value)) {
     throw new InvalidArgumentError("Not a valid path.");
   }

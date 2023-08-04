@@ -1,21 +1,13 @@
 {
-    "name": "monorepo",
-    "workspaces": [
-      "packages/cli",
-      "packages/web-survey",
-      "packages/test-server",
-      "packages/domain",
-      "packages/firebase-admin",
-      "packages/firebase/functions",
-      "packages/prolific",
-      "packages/util"
-    ],
-    "scripts": {
-      "web-surveyr:eslint": "eslint './apps/web-survey/src/**/*.{jsx,js,tsx,ts}'",
-      "del-all-node-modules": "find . -name 'node_modules' -type d -prune -print -exec rm -rf '{}' \\;"
-    },
-    "dependencies": {
-    },
-    "devDependencies": {
-    }
+  "name": "monorepo",
+  "type": "module",
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "web-surveyr:eslint": "eslint './packages/web-survey/src/**/*.{jsx,js,tsx,ts}'"
+  },
+  "devDependencies": {
+    "lerna": "^7.1.4"
   }
+}

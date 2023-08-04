@@ -1,10 +1,12 @@
 import admin from "firebase-admin";
-import { ProlificStudyStatusType } from "@the-discounters/prolific/src/ProlificSumbissionStatusType";
-import { ExperimentType } from "@the-discounters/domain/src/experimentType";
-import { InteractionType } from "@the-discounters/domain/src/InteractionType"
-import { ViewType } from "@the-discounters/domain/src/ViewType";
-import { stringToDate } from "@the-discounters/util/src/ConversionUtil";
-import { AmountType } from "@the-discounters/domain/src/AmountType";
+import { ProlificStudyStatusType } from "@the-discounters/prolific";
+import {
+  ExperimentType,
+  InteractionType,
+  ViewType,
+  AmountType,
+} from "@the-discounters/domain";
+import { stringToDate } from "@the-discounters/util";
 
 export const typeExperimentObj = (obj) => {
   obj.id = +obj.id;

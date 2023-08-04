@@ -8,13 +8,13 @@
  */
 
 // The Cloud Functions for Firebase SDK to create Cloud Functions and triggers.
-import {logger} from "firebase-functions";
-import {onRequest} from "firebase-functions/v2/https";
+import { logger } from "firebase-functions";
+import { onRequest } from "firebase-functions/v2/https";
 // The Firebase Admin SDK to access Firestore.
 import admin from "firebase-admin";
 // import {getFirestore} from "firebase-admin/firestore";
 // import {calcTreatmentIds, fetchExperiment} from "./functionsUtil.js";
-import SERVICE_ACCOUNT from "../admin-credentials-dev.json";
+import SERVICE_ACCOUNT from "../../../admin-credentials-dev.json" assert { type: "json" };
 
 const useEmulator = false;
 
@@ -83,9 +83,9 @@ export const fetchExpConfig = onRequest(async (request, response) => {
 
     // Send back a message that we've successfully written the message
     // response.json({result: `Message with ID: ${writeResult.id} added.`});
-    response.json({result: "hello world"});
+    response.json({ result: "hello world" });
   } catch (err) {
     logger.error(err);
-    response.json({error: "There was an error with the server."});
+    response.json({ error: "There was an error with the server." });
   }
 });

@@ -7,12 +7,11 @@ import {
   typeTreatmentQuestionObj,
   parseLinkText,
 } from "./importUtil.js";
-import { ProlificSumbissionStatusType } from "../../src/prolific/ProlificSumbissionStatusType.js";
-import { ExperimentType } from "@the-discounters/domain/src/experimentType";
-import {InteractionType} from "@the-discounters/domain/src/InteractionType";
-import { AmountType } from "@the-discounters/domain/src/AmountType";
-import { ViewType } from "@the-discounters/domain/src/ViewType";
-import { ProlificStudyStatusType } from "@the-discounters/prolific/src/ProlificSumbissionStatusType";
+import { ExperimentType } from "@the-discounters/domain";
+import { InteractionType } from "@the-discounters/domain";
+import { AmountType } from "@the-discounters/domain";
+import { ViewType } from "@the-discounters/domain";
+import { ProlificStudyStatusType } from "@the-discounters/prolific";
 
 describe("importUtil test ", () => {
   it("Test typeExperimentObj valid fields.", async () => {

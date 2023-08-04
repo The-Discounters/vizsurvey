@@ -3,11 +3,13 @@
   "version": "1.0.0",
   "description": "Parking utility functions here until they should be put in their own package.",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Peter N. Cordone",
-  "license": "ISC",  "peerDependencies": {
+  "license": "ISC",
+  "peerDependencies": {
     "luxon": "^2.1.1",
     "d3": "^7.4.4",
     "to-csv": "^0.1.1"

@@ -1,6 +1,3 @@
 {
-    "parser": "babel-eslint",
-    "env": {
-        "node": true
-    }
+  "extends": ["@the-discounters/eslint-config"]
 }
