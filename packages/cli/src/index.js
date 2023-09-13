@@ -11,12 +11,11 @@ import isValid from "is-valid-path";
 import { parseCSV } from "@the-discounters/util";
 import {
   loadFile,
-  appendSepToPath,
   isCSVExt,
   isJSONExt,
   directoryOrFileExists,
 } from "./files.js";
-import { updateStats, createStat, clearStats } from "./stats.js";
+import { createStat, clearStats } from "./stats.js";
 import { drawStatus } from "./monitorUtil.js";
 import {
   initAdminFirestoreDB,
@@ -71,7 +70,7 @@ program
   )
   .version("1.0.0")
   .option("-q, --quiet", "run without showing the banner")
-  .hook("preAction", (thisCommand, actionCommand) => {
+  .hook("preAction", () => {
     if (!program.opts().quiet) {
       console.log(
         chalk.yellow(
@@ -90,43 +89,9 @@ program
     "the date to filter out files that are are equal to or later than",
     validateDate
   )
-  .action((source, options) => {
+  .action((/*source, options*/) => {
     try {
       console.log(`Downloading files from S3 bucket...`);
-      listFiles().then((response) => {
-        const files = response.Contents.filter((file) => {
-          if (
-            options.laterthan &&
-            DateTime.fromJSDate(file.LastModified) < options.laterthan
-          ) {
-            console.log(
-              `...skipping ${file.Key} since the date is before ${options.laterthan}`
-            );
-            return false;
-          } else {
-            return true;
-          }
-        });
-        files.forEach((file) => {
-          console.log(
-            `...downloading file ${file.Key} created on date ${file.LastModified}`
-          );
-          const data = downloadFile(file, (error) => {
-            console.log(chalk.red(error));
-          }).then((data) => {
-            const fullPath = `${appendSepToPath(source)}${file.Key}`;
-            console.log(`...writing file ${file.Key}`);
-            fs.writeFile(fullPath, data, (err) => {
-              if (err) {
-                console.log(
-                  chalk.red(`error writing file ${param.file.Key}`, err)
-                );
-                throw err;
-              }
-            });
-          });
-        });
-      });
     } catch (err) {
       console.log(chalk.red(err));
       throw err;
@@ -203,7 +168,7 @@ program
       let stats = createStat(options.numtreatments);
       let inFetchingData = false;
       let inRefreshingScreen = false;
-      let nIntervId = setInterval(() => {
+      setInterval(() => {
         try {
           switch (monitorState) {
             case MonitorStateType.monitorPaused:
@@ -211,48 +176,7 @@ program
             case MonitorStateType.fetchingData:
               if (inFetchingData) break;
               inFetchingData = true;
-              listFiles().then((response) => {
-                const files = response.Contents.filter((file) => {
-                  if (
-                    isCSVExt(file.Key) &&
-                    (!options.laterthan ||
-                      (options.laterthan &&
-                        DateTime.fromJSDate(file.LastModified) >=
-                          options.laterthan))
-                  ) {
-                    return true;
-                  } else {
-                    return false;
-                  }
-                });
-                let filesDownloaded = 0;
-                if (files.length === 0) {
-                  monitorState = MonitorStateType.refreshingScreen;
-                  inFetchingData = false;
-                } else {
-                  files.forEach((file, index) => {
-                    downloadFile(
-                      file /*, (error) => {
-                    //console.log(chalk.red(error));
-                  }*/
-                    ).then((data) => {
-                      filesDownloaded++;
-                      const CSVData = parseCSV(data)[0];
-                      if (CSVData.treatment_id > options.numtreatments) {
-                        console.log(
-                          `file ${file.Key} has treatment_id of ${CSVData.teratment_id} which is greater than ${options.numtreatments} exiting.`
-                        );
-                        process.exit(); // eslint-disable-line no-process-exit
-                      }
-                      stats = updateStats(CSVData);
-                      if (filesDownloaded === files.length) {
-                        monitorState = MonitorStateType.refreshingScreen;
-                        inFetchingData = false;
-                      }
-                    });
-                  });
-                }
-              });
+
               break;
             case MonitorStateType.refreshingScreen:
               if (inRefreshingScreen) break;
@@ -312,7 +236,7 @@ const ImportCollextionTypes = {
 };
 Object.freeze(ImportCollextionTypes);
 
-const validateImportCollextionType = (value, dummyPrevious) => {
+const validateImportCollextionType = (value) => {
   const result = ImportCollextionTypes[value];
   if (!result) {
     throw new InvalidArgumentError(
@@ -347,7 +271,7 @@ program
     validateImportCollextionType
   )
   .option("-i, --id [id]", "Optional field to use for document ID")
-  .action((args, options) => {
+  .action((args) => {
     try {
       const colPath = args.collection;
       const file = args.src;
@@ -374,9 +298,10 @@ program
     "-f, --fields <collection path>.<field name>=><collection path>.<field name>",
     "Collection and field paths to link."
   )
-  .action((args, options) => {
+  .action((args) => {
+    let fields;
     try {
-      const fields = args.fields;
+      fields = args.fields;
       const links = parseLinkText(fields);
       initAdminFirestoreDB();
       linkDocs(

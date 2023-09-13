@@ -8,10 +8,5 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Peter N. Cordone",
-  "license": "ISC",
-  "peerDependencies": {
-    "luxon": "^2.1.1",
-    "d3": "^7.4.4",
-    "to-csv": "^0.1.1"
-  }
+  "license": "ISC"
 }
