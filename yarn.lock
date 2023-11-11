@@ -9692,7 +9692,7 @@ __metadata:
     aws-sdk: "npm:^2.1295.0"
     babel-eslint: "npm:^10.1.0"
     babel-jest: "npm:^29.4.3"
-    chalk: "npm:^5.2.0"
+    chalk: "npm:^5.3.0"
     clear: "npm:^0.1.0"
     cli-color: "npm:^2.0.3"
     clui: "npm:^0.3.6"
@@ -9703,7 +9703,7 @@ __metadata:
     figlet: "npm:^1.5.2"
     inquirer: "npm:^9.1.4"
     is-valid-path: "npm:^0.1.1"
-    jest: "npm:^29.4.3"
+    jest: "npm:^29.7.0"
     lodash: "npm:^4.17.21"
     luxon: "npm:^3.3.0"
     to-csv: "npm:^0.1.1"
@@ -17856,7 +17856,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jest@npm:^29.4.3, jest@npm:^29.7.0":
+"jest@npm:^29.7.0":
   version: 29.7.0
   resolution: "jest@npm:29.7.0"
   dependencies:
@@ -26518,7 +26518,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "test-server@workspace:packages/test"
   dependencies:
-    chalk: "npm:^4.1.2"
+    chalk: "npm:^5.3.0"
     cors: "npm:^2.8.5"
     express: "npm:^4.18.2"
     luxon: "npm:^3.2.0"

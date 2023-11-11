@@ -4,7 +4,7 @@ const cors = require("cors");
 const http = require("http");
 const https = require("https");
 const luxon = require("luxon");
-const chalk = require("chalk");
+//const chalk = require("chalk");
 
 const app = express();
 
@@ -54,7 +54,7 @@ app.get("/files", (req, res) => {
     console.log("Returning result " + result);
     res.send(JSON.stringify(result));
   } catch (err) {
-    console.log(chalk.red(err));
+    console.log(/*chalk.red(*/ err /*)*/);
     res.send(err);
   }
 });
