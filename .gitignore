@@ -67,3 +67,12 @@ amplifytools.xcconfig
 
 #test data folders
 /cli/S3-downloaded
+
+# yarn with zero installs
+.yarn/*
+!.yarn/cache
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
