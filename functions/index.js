@@ -14,7 +14,12 @@ import {onRequest} from "firebase-functions/v2/https";
 import admin from "firebase-admin";
 // import {getFirestore} from "firebase-admin/firestore";
 // import {calcTreatmentIds, fetchExperiment} from "./functionsUtil.js";
-import SERVICE_ACCOUNT from "../admin-credentials-dev.json";
+// eslint-disable-next-line
+import { readFileSync } from "fs";
+// import SERVICE_ACCOUNT from "../admin-credentials-dev.json" assert
+// {type: "json"};
+const SERVICE_ACCOUNT =
+  JSON.parse(readFileSync("../admin-credentials-dev.json"));
 
 const useEmulator = false;
 
