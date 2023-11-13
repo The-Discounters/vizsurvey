@@ -5,14 +5,18 @@
   },
   "functions": [
     {
-      "source": "webpack",
+      "source": "functions",
+      "codebase": "default",
       "ignore": [
         "node_modules",
         ".git",
         "firebase-debug.log",
         "firebase-debug.*.log"
       ],
-      "predeploy": ["npm --prefix \"functions\" run webpack"]
+      "predeploy": [
+        "npm --prefix \"$RESOURCE_DIR\" run lint", "bash ./functions/deploy-cloud-functions.sh pre-deploy", "npm --prefix \"$RESOURCE_DIR\" run build"
+      ],
+      "postdeploy": ["bash ./functions/deploy-cloud-functions.sh post-deploy"]
     }
   ]
 }

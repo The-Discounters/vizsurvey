@@ -6606,7 +6606,6 @@ __metadata:
   resolution: "@the-discounters/functions@workspace:packages/firebase/functions"
   dependencies:
     "@babel/eslint-parser": "npm:^7.23.3"
-    "@babel/plugin-syntax-import-assertions": "npm:^7.23.3"
     "@the-discounters/firebase-shared": "npm:*"
     eslint: "npm:^8.15.0"
     eslint-config-google: "npm:^0.14.0"
@@ -10713,17 +10712,6 @@ __metadata:
   checksum: 2176952b3649293473999a95d7bebfc9dc96410f6cbd3d2595cf12fd401f63a4bf41a7adbfd3ab2ff09ed60cb9870c58c6acdd18b87767366fabfc163700f13b
   languageName: node
   linkType: hard
-
-"cloud-functions@workspace:packages/firebase/webpack":
-  version: 0.0.0-use.local
-  resolution: "cloud-functions@workspace:packages/firebase/webpack"
-  dependencies:
-    eslint: "npm:^8.15.0"
-    eslint-config-google: "npm:^0.14.0"
-    firebase-admin: "npm:^11.8.0"
-    firebase-functions: "npm:^4.4.0"
-  languageName: unknown
-  linkType: soft
 
 "clsx@npm:^1.0.4":
   version: 1.2.1

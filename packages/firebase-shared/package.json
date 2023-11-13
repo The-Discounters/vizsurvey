@@ -4,6 +4,7 @@
   "version": "1.0.0",
   "scripts": {
     "lint": "eslint .",
+    "build": "echo 'Build script currently does nothing in @the-discounters/firebase-shared module.'",
     "serve": "firebase emulators:start --only functions",
     "shell": "firebase functions:shell",
     "start": "yarn run shell",
