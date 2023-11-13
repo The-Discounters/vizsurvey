@@ -1,8 +1,8 @@
 import chalk from "chalk";
 import { participantUniqueKey } from "./QuestionSliceUtil.js";
 import { convertAnswersAryToObj } from "./ObjectUtil.js";
-import { secondsBetween } from "./ConversionUtil.js";
-import { stateToDate } from "./ConversionUtil.js";
+import { secondsBetween } from "@the-discounters/util";
+import { stateToDate } from "@the-discounters/util";
 import BLANK_STATE_JSON from "./excelObjectTemplate.json" assert { type: "json" };
 
 export class MergedData {

@@ -16,9 +16,9 @@ import {
 import { useD3 } from "../hooks/useD3.js";
 import { AmountType } from "../features/AmountType.js";
 import { StatusType } from "../features/StatusType.js";
-import { InteractionType } from "../features/InteractionType.js";
+import { InteractionType } from "@the-discounters/types";
 import { drawCalendar } from "./CalendarHelper.js";
-import { stateToDate, dateToState } from "../features/ConversionUtil.js";
+import { stateToDate, dateToState } from "@the-discounters/util";
 
 export function Calendar() {
   const dispatch = useDispatch();

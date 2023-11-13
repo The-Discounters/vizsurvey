@@ -8,7 +8,7 @@ import {
   drag,
   select,
 } from "d3";
-import { InteractionType } from "../features/InteractionType.js";
+import { InteractionType } from "@the-discounters/types";
 import { AmountType } from "../features/AmountType.js";
 import { calcScreenValues } from "./ScreenHelper.js";
 

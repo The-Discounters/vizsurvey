@@ -15,7 +15,7 @@ import {
   instructionsCompleted,
   getStatus,
 } from "../features/questionSlice.js";
-import { dateToState } from "../features/ConversionUtil.js";
+import { dateToState } from "@the-discounters/util";
 import { navigateFromStatus } from "./Navigate.js";
 import { styles, theme } from "./ScreenHelper.js";
 

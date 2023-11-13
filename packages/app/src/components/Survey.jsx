@@ -2,10 +2,8 @@ import { useSelector } from "react-redux";
 import MELForm from "./MELForm.jsx";
 import BarChart from "./BarChart.js";
 import Calendar from "./Calendar.js";
-import CalendarYear from "./CalendarYear.js";
-import { ViewType } from "../features/ViewType.js";
+import { ViewType } from "@the-discounters/types";
 import { getCurrentQuestion } from "../features/questionSlice.js";
-import { stateToDate } from "../features/ConversionUtil.js";
 
 export function Survey() {
   const q = useSelector(getCurrentQuestion);
@@ -30,16 +28,20 @@ export function Survey() {
           case ViewType.calendarBar:
           case ViewType.calendarIcon:
           case ViewType.calendarWord:
+          case ViewType.calendarWordYear:
+          case ViewType.calendarWordYearDual:
+            /*
             if (
               stateToDate(q.dateLater)
                 .diff(stateToDate(q.dateEarlier), "months")
                 .toObject().months <= 1
             ) {
-              return <Calendar />;
+*/
+            return <Calendar />;
+          /*
             }
             return <CalendarYear />;
-          default:
-            return null;
+*/
         }
       })()}
     </div>

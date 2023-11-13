@@ -16,3 +16,11 @@ Create a .env file in the root of the project with the following values.
 ENV=development
 AWS_ENABLED=false
 TEST_DATA_DIR=./S3-downloaded/
+
+### publishing to run at the command line
+
+To install the command globally so you don't have to run it in the deugger run:
+
+```console
+npm run publish
+```

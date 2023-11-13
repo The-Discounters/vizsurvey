@@ -2,13 +2,13 @@ import {
   loadAllTreatmentsConfiguration,
   loadTreatmentConfiguration,
 } from "./TreatmentUtil";
-import { InteractionType } from "./InteractionType";
+import { InteractionType } from "@the-discounters/types";
 import { AmountType } from "./AmountType";
-import { ViewType } from "./ViewType";
+import { ViewType } from "@the-discounters/types";
 
 describe("TreatmentUtil tests", () => {
-  test("Validate loadTreatment loads CSV fields correctly.", async () => {
-    var { questions, instructions } = await loadTreatmentConfiguration(1);
+  test("Validate loadTreatmentConfiguration loads CSV fields correctly single treatment with position values.", async () => {
+    var { questions, instructions } = await loadTreatmentConfiguration([1]);
     expect(questions.length).toBe(3);
     expect(questions[0].treatmentId).toBe(1);
     expect(questions[0].position).toBe(1);
@@ -42,7 +42,7 @@ describe("TreatmentUtil tests", () => {
     expect(instructions[0].amountLater).toBe(700);
     expect(instructions[0].timeLater).toBe(7);
 
-    ({ questions, instructions } = await loadTreatmentConfiguration(3));
+    ({ questions, instructions } = await loadTreatmentConfiguration([3]));
     expect(questions.length).toBe(5);
     expect(questions[0].treatmentId).toBe(3);
     expect(questions[0].position).toBe(1);
@@ -75,8 +75,29 @@ describe("TreatmentUtil tests", () => {
     expect(instructions[0].timeLater).toBe(7);
   });
 
-  test("Validate loadAllTreatments loads all treatments correctly.", async () => {
+  test("Validate loadAllTreatmentsConfiguration loads all treatments correctly.", async () => {
     var questions = await loadAllTreatmentsConfiguration();
-    expect(questions.length).toBe(66);
+    expect(questions.length).toBe(90);
+  });
+
+  test("Validate loadTreatmentConfiguration loads CSV fields correctly three treatment with random values", async () => {
+    const treatmentIds = [25, 24, 23];
+    var { questions, instructions } = await loadTreatmentConfiguration(
+      treatmentIds
+    );
+    expect(questions.length).toBe(24);
+    expect(instructions.length).toBe(3);
+    for (let i = 1; i < questions.length; i++) {
+      expect(
+        treatmentIds.indexOf(questions[i - 1].treatmentId) <=
+          treatmentIds.indexOf(questions[i].treatmentId)
+      ).toBe(true);
+      if (questions[i - 1].treatmentId == questions[i].treatmentId) {
+        expect(questions[i - 1].position <= questions[i].position).toBe(true);
+      } else {
+        expect(questions[i - 1].position).toBe(8);
+        expect(questions[i].position).toBe(1);
+      }
+    }
   });
 });

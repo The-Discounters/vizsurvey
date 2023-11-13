@@ -1,5 +1,5 @@
 {
-  "presets": ["@babel/preset-env"],
+   "extends": "../../babel.config.json",
     "plugins": [
     "@babel/plugin-syntax-import-assertions"
   ]

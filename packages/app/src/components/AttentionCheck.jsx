@@ -19,9 +19,10 @@ import {
   attentionCheckShown,
   setAttentionCheck,
 } from "../features/questionSlice.js";
-import { dateToState } from "../features/ConversionUtil.js";
+import { dateToState } from "@the-discounters/util";
 import { styles, theme } from "./ScreenHelper.js";
 import { navigateFromStatus } from "./Navigate.js";
+import { StatusType } from "../features/StatusType.js";
 
 export function AttentionCheck() {
   const dispatch = useDispatch();
@@ -36,6 +37,14 @@ export function AttentionCheck() {
   }, []);
 
   useEffect(() => {
+    if (
+      status !== StatusType.Survey &&
+      status !== StatusType.Attention &&
+      process.env.REACT_APP_FULLSCREEN === "enabled"
+    ) {
+      document.exitFullscreen();
+    }
+
     const path = navigateFromStatus(status);
     navigate(path);
   }, [status]);
@@ -61,8 +70,7 @@ export function AttentionCheck() {
     // https://www.cloudresearch.com/resources/blog/attention-check-questions-in-surveys-examples/
     question: {
       textShort: "attention-check",
-      textFull:
-        "Please select 'stongly agree' to show that you are paying attention to this question.",
+      textFull: "Please select the 'stongly agree' option below.",
     },
   };
   return (
@@ -70,6 +78,7 @@ export function AttentionCheck() {
       <div>
         <Grid container style={styles.root} justifyContent="center">
           <Grid item xs={12}>
+            <Typography variant="h4">Additional Question</Typography>
             <hr
               style={{
                 color: "#ea3433",
@@ -79,10 +88,7 @@ export function AttentionCheck() {
             />
           </Grid>
           <Grid item xs={12}>
-            <Typography paragraph>
-              The middle step in this survey is to answer the attention check
-              question below.
-            </Typography>
+            <Typography paragraph>Answer the question below.</Typography>
             <hr
               style={{
                 backgroundColor: "#aaaaaa",

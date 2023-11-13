@@ -1,4 +1,4 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { SystemZone } from "luxon";
 import {
   loadAllTreatmentsConfiguration,
@@ -6,18 +6,54 @@ import {
 } from "./TreatmentUtil.js";
 import { QuestionEngine } from "./QuestionEngine.js";
 import { StatusType } from "./StatusType.js";
-import { secondsBetween } from "./ConversionUtil.js";
+import { secondsBetween } from "@the-discounters/util";
 import { getRandomIntInclusive, writeStateAsCSV } from "./QuestionSliceUtil.js";
+import { getServerSequenceId } from "@the-discounters/firebase-shared";
+import { LATIN_SQUARE } from "./TreatmentUtil.js";
 
 const qe = new QuestionEngine();
+
+export const initializeSurvey = createAsyncThunk(
+  "survey/initialize",
+  async (parameters, thunkAPI) => {
+    const result = { ...parameters };
+    try {
+      if (isNaN(parameters.treatmentId)) {
+        const allTreatments = loadAllTreatmentsConfiguration();
+        if (parameters.treatmentId === "assigned") {
+          result.serverSequenceId = await getServerSequenceId();
+          const latinSquareIndex =
+            result.serverSequenceId % LATIN_SQUARE.length;
+          result.treatmentIds = LATIN_SQUARE[latinSquareIndex];
+        } else {
+          const min = allTreatments.reduce((pv, cv) => {
+            return cv.treatmentId < pv ? cv.treatmentId : pv;
+          }, allTreatments[0].treatmentId);
+          const max = allTreatments.reduce(
+            (pv, cv) => (cv.treatmentId > pv ? cv.treatmentId : pv),
+            allTreatments[0].treatmentId
+          );
+          result.treatmentIds = [getRandomIntInclusive(min, max)];
+        }
+      } else {
+        result.treatmentIds = [+parameters.treatmentId];
+      }
+      return result;
+    } catch (err) {
+      const { rejectWithValue } = thunkAPI;
+      return rejectWithValue(err.toString());
+    }
+  }
+);
 
 // Define the initial state of the store for this slicer.
 export const questionSlice = createSlice({
   name: "questions", // I believe the global state is partitioned by the name value thus the terminology "slice"
   initialState: {
     allTreatments: null,
-    treatmentId: null,
+    treatmentIds: [],
     participantId: null,
+    serverSequenceId: null,
     sessionId: null,
     studyId: null,
     experienceSurvey: {},
@@ -59,15 +95,15 @@ export const questionSlice = createSlice({
       demographicShownTimestamp: null,
       demographicCompletedTimestamp: null,
       demographicTimeSec: null,
-      introductionShownTimestamp: null,
-      introductionCompletedTimestamp: null,
-      introductionTimeSec: null,
+      introductionShownTimestamp: [], // TODO rename this ot MCLInstructionShownTimestamp
+      introductionCompletedTimestamp: [], // TODO rename this ot MCLInstructionConpletedTimestamp
+      introductionTimeSec: [], // TODO rename this ot MCLIntroductionTimeSec
       instructionsShownTimestamp: null,
       instructionsCompletedTimestamp: null,
       instructionsTimeSec: null,
-      attentionCheckShownTimestamp: null,
-      attentionCheckCompletedTimestamp: null,
-      attentionCheckTimeSec: null,
+      attentionCheckShownTimestamp: [],
+      attentionCheckCompletedTimestamp: [],
+      attentionCheckTimeSec: [],
       experienceSurveyQuestionsShownTimestamp: null,
       experienceSurveyQuestionsCompletedTimestamp: null,
       experienceSurveyTimeSec: null,
@@ -84,12 +120,12 @@ export const questionSlice = createSlice({
       debriefCompletedTimestamp: null,
       debriefTimeSec: null,
     },
-    attentionCheck: null,
+    attentionCheck: [],
     feedback: "",
     treatments: [],
-    instructionTreatment: null,
+    instructionTreatment: [],
     answers: [],
-    currentQuestionIdx: 0,
+    currentAnswerIdx: 0,
     highup: undefined,
     lowdown: undefined,
     status: StatusType.Unitialized,
@@ -122,27 +158,6 @@ export const questionSlice = createSlice({
       state.screenAttributes.windowOuterWidth = action.payload.windowOuterWidth;
       state.screenAttributes.windowScreenLeft = action.payload.windowScreenLeft;
       state.screenAttributes.windowScreenTop = action.payload.windowScreenTop;
-    },
-    setUserAgent(state, action) {
-      state.userAgent = action.payload;
-    },
-    setParticipantId(state, action) {
-      state.participantId = action.payload;
-      return state;
-    },
-    setTreatmentId(state, action) {
-      state.treatmentId = action.payload;
-      return state;
-    },
-    setSessionId(state, action) {
-      state.sessionId = action.payload;
-      return state;
-    },
-    setStudyId(state, action) {
-      state.studyId = action.payload;
-      state.experienceSurvey.studyId = action.payload;
-      state.financialLitSurvey.studyId = action.payload;
-      state.purposeSurvey.studyId = action.payload;
     },
     setCountryOfResidence(state, action) {
       state.countryOfResidence = action.payload;
@@ -193,30 +208,27 @@ export const questionSlice = createSlice({
       state.purposeSurvey[action.payload.key] = action.payload.value;
     },
     setAttentionCheck(state, action) {
-      state.attentionCheck = action.payload.value;
-      state.timestamps.attentionCheckCompletedTimestamp =
-        action.payload.timestamp;
-      state.timestamps.attentionCheckTimeSec = secondsBetween(
-        state.timestamps.attentionCheckShownTimestamp,
-        state.timestamps.attentionCheckCompletedTimestamp
-      );
+      state.attentionCheck.push({
+        treatmentId: qe.currentAnswer(state).treatmentId,
+        value: action.payload.value,
+      });
+      state.timestamps.attentionCheckCompletedTimestamp.push({
+        treatmentId: qe.currentAnswer(state).treatmentId,
+        value: action.payload.timestamp,
+      });
+      const shownTimestamp = state.timestamps.attentionCheckShownTimestamp.find(
+        (cv) => cv.treatmentId === qe.currentAnswer(state).treatmentId
+      ).timestamp;
+      state.timestamps.attentionCheckTimeSec.push({
+        treatmentId: qe.currentAnswer(state).treatmentId,
+        value: secondsBetween(shownTimestamp, action.payload.timestamp),
+      });
       writeStateAsCSV(state);
-      state.status = qe.nextStatus(state, false);
-    },
-    loadTreatment(state) {
-      state.status = StatusType.Fetching;
-      const { questions, instructions } = loadTreatmentConfiguration(
-        state.treatmentId
-      );
-      state.treatments = questions;
-      state.instructionTreatment = instructions[0];
-      state.status = qe.nextStatus(state, false);
-      return state;
+      state.status = qe.nextState(state);
     },
     loadAllTreatments(state) {
       state.status = StatusType.Fetching;
       state.allTreatments = loadAllTreatmentsConfiguration();
-      state.status = qe.nextStatus(state, false);
       return state;
     },
     consentShown(state, action) {
@@ -234,7 +246,7 @@ export const questionSlice = createSlice({
       );
       state.timezone = SystemZone.instance.name;
       writeStateAsCSV(state);
-      state.status = qe.nextStatus(state, false);
+      state.status = qe.nextState(state);
     },
     demographicShown(state, action) {
       state.timestamps.demographicShownTimestamp = action.payload;
@@ -246,20 +258,28 @@ export const questionSlice = createSlice({
         state.timestamps.demographicCompletedTimestamp
       );
       writeStateAsCSV(state);
-      state.status = qe.nextStatus(state, false);
+      state.status = qe.nextState(state);
     },
-    introductionShown(state, action) {
-      state.timestamps.introductionShownTimestamp = action.payload;
+    MCLInstructionsShown(state, action) {
+      state.timestamps.introductionShownTimestamp.push({
+        treatmentId: qe.currentAnswer(state).treatmentId,
+        value: action.payload,
+      });
     },
     MCLInstructionsCompleted(state, action) {
-      state.timestamps.introductionCompletedTimestamp = action.payload;
-      state.timestamps.introductionTimeSec = secondsBetween(
-        state.timestamps.introductionShownTimestamp,
-        state.timestamps.introductionCompletedTimestamp
-      );
-      // TODO I could record the participants choice on the instructions
+      state.timestamps.introductionCompletedTimestamp.push({
+        treatmentId: qe.currentAnswer(state).treatmentId,
+        value: action.payload,
+      });
+      const shownTimestamp = state.timestamps.introductionShownTimestamp.find(
+        (cv) => cv.treatmentId === qe.currentAnswer(state).treatmentId
+      ).timestamp;
+      state.timestamps.introductionTimeSec.push({
+        treatmentId: qe.currentAnswer(state).treatmentId,
+        value: secondsBetween(shownTimestamp, action.payload),
+      });
       writeStateAsCSV(state);
-      qe.startSurvey(state);
+      state.status = qe.nextState(state);
     },
     instructionsShown(state, action) {
       state.timestamps.instructionsShownTimestamp = action.payload;
@@ -271,25 +291,25 @@ export const questionSlice = createSlice({
         state.timestamps.instructionsCompletedTimestamp
       );
       writeStateAsCSV(state);
-      state.status = qe.nextStatus(state, false);
+      state.status = qe.nextState(state);
     },
     setFeedback(state, action) {
       state.feedback = action.payload;
     },
     setQuestionShownTimestamp(state, action) {
-      qe.setLatestAnswerShown(state, action.payload);
+      qe.setCurrentAnswerShown(state, action.payload);
       return state;
     },
     attentionCheckShown(state, action) {
-      state.timestamps.attentionCheckShownTimestamp = action.payload;
+      state.timestamps.attentionCheckShownTimestamp.push({
+        treatmentId: qe.currentTreatment(state).treatmentId,
+        value: action.payload,
+      });
     },
     // we define our actions on the slice of global store data here.
     answer(state, action) {
       qe.answerCurrentQuestion(state, action.payload);
       writeStateAsCSV(state);
-    },
-    previousQuestion(state) {
-      qe.decPreviousQuestion(state);
     },
     nextQuestion(state) {
       qe.incNextQuestion(state);
@@ -305,7 +325,7 @@ export const questionSlice = createSlice({
         state.timestamps.experienceSurveyQuestionsCompletedTimestamp
       );
       writeStateAsCSV(state);
-      state.status = qe.nextStatus(state, false);
+      state.status = qe.nextState(state);
     },
     financialLitSurveyQuestionsShown(state, action) {
       state.timestamps.financialLitSurveyQuestionsShownTimestamp =
@@ -319,7 +339,7 @@ export const questionSlice = createSlice({
         state.timestamps.financialLitSurveyQuestionsCompletedTimestamp
       );
       writeStateAsCSV(state);
-      state.status = qe.nextStatus(state, false);
+      state.status = qe.nextState(state);
     },
     purposeSurveyQuestionsShown(state, action) {
       if (state.status === StatusType.PurposeAwareQuestionaire) {
@@ -347,7 +367,7 @@ export const questionSlice = createSlice({
         );
       }
       writeStateAsCSV(state);
-      state.status = qe.nextStatus(state, false);
+      state.status = qe.nextState(state);
     },
     debriefShownTimestamp(state, action) {
       state.timestamps.debriefShownTimestamp = action.payload;
@@ -359,12 +379,13 @@ export const questionSlice = createSlice({
         state.timestamps.debriefCompletedTimestamp
       );
       writeStateAsCSV(state);
-      state.status = qe.nextStatus(state, false);
+      state.status = qe.nextState(state);
     },
     clearState(state) {
       state.allTreatments = null;
-      state.treatmentId = null;
+      state.treatmentIds = [];
       state.participantId = null;
+      state.serverSequenceId = null;
       state.sessionId = null;
       state.studyId = null;
       state.experienceSurvey = {};
@@ -405,15 +426,15 @@ export const questionSlice = createSlice({
         demographicShownTimestamp: null,
         demographicCompletedTimestamp: null,
         demographicTimeSec: null,
-        introductionShownTimestamp: null,
-        introductionCompletedTimestamp: null,
-        introductionTimeSec: null,
+        introductionShownTimestamp: [],
+        introductionCompletedTimestamp: [],
+        introductionTimeSec: [],
         instructionsShownTimestamp: null,
         instructionsCompletedTimestamp: null,
         instructionsTimeSec: null,
-        attentionCheckShownTimestamp: null,
-        attentionCheckCompletedTimestamp: null,
-        attentionCheckTimeSec: null,
+        attentionCheckShownTimestamp: [],
+        attentionCheckCompletedTimestamp: [],
+        attentionCheckTimeSec: [],
         experienceSurveyQuestionsShownTimestamp: null,
         experienceSurveyQuestionsCompletedTimestamp: null,
         experienceSurveyTimeSec: null,
@@ -430,45 +451,52 @@ export const questionSlice = createSlice({
         debriefCompletedTimestamp: null,
         debriefTimeSec: null,
       };
-      state.attentionCheck = null;
+      state.attentionCheck = [];
       state.consentChecked = false;
       state.feedback = "";
       state.treatments = [];
       state.instructionTreatment = null;
       state.answers = [];
-      state.currentQuestionIdx = 0;
+      state.currentAnswerIdx = 0;
       state.highup = undefined;
       state.lowdown = undefined;
       state.status = StatusType.Unitialized;
       state.error = null;
       state.userAgent = null;
     },
-    genRandomTreatment(state) {
-      // figure out the min and max treatment id
-      const allTreatments = loadAllTreatmentsConfiguration();
-      const min = allTreatments.reduce((pv, cv) => {
-        return cv.treatmentId < pv ? cv.treatmentId : pv;
-      }, allTreatments[0].treatmentId);
-      const max = allTreatments.reduce(
-        (pv, cv) => (cv.treatmentId > pv ? cv.treatmentId : pv),
-        allTreatments[0].treatmentId
-      );
-      state.treatmentId = getRandomIntInclusive(min, max);
-    },
     nextStatus(state) {
-      qe.nextStatus(state);
-    },
-    previousStatus(state) {
-      qe.previousStatus(state);
+      state.status = qe.nextState(state);
     },
   },
+
+  extraReducers: (builder) => {
+    builder
+      .addCase(initializeSurvey.pending, (state) => {
+        state.status = StatusType.Fetching;
+      })
+      .addCase(initializeSurvey.fulfilled, (state, action) => {
+        state.participantId = action.payload.participantId;
+        state.sessionId = action.payload.sessionId;
+        state.studyId = action.payload.studyId;
+        state.userAgent = action.payload.userAgent;
+        state.serverSequenceId = action.payload.serverSequenceId;
+        state.treatmentIds = action.payload.treatmentIds;
+        const { questions, instructions } = loadTreatmentConfiguration(
+          state.treatmentIds
+        );
+        state.treatments = questions;
+        state.instructionTreatment = instructions;
+        // create an answer for each treatment question up front
+        qe.createAnswersForTreatments(state);
+
+        state.status = qe.nextState(state);
+      })
+      .addCase(initializeSurvey.rejected, (state, action) => {
+        state.error = action.error;
+        state.status = StatusType.Error;
+      });
+  },
 });
-
-export const isFirstTreatment = (state) => qe.isFirstTreatment(state.questions);
-
-export const isLastTreatment = (state) => qe.isLastTreatment(state.questions);
-
-export const selectAllQuestions = (state) => qe.allQuestions(state.questions);
 
 export const getParticipant = (state) => state.questions.participantId;
 
@@ -517,28 +545,22 @@ export const getExperienceSurveyAnswers = (state) => {
 export const getAttentionCheck = (state) => state.questions.attentionCheck;
 
 export const getCurrentQuestionIndex = (state) =>
-  state.questions.currentQuestionIdx;
+  state.questions.currentAnswerIdx;
 
 export const fetchCurrentTreatment = (state) =>
   qe.currentTreatment(state.questions);
 
 export const getInstructionTreatment = (state) =>
-  state.questions.instructionTreatment;
+  qe.currentInstructions(state.questions);
 
 export const fetchAllTreatments = (state) => state.questions.allTreatments;
 
-export const getCurrentQuestion = (state) => qe.latestAnswer(state.questions);
+export const getCurrentQuestion = (state) => qe.currentAnswer(state.questions);
 
 export const getCurrentChoice = (state) =>
-  qe.latestAnswer(state.questions).choice;
+  qe.currentAnswer(state.questions).choice;
 
 export const getStatus = (state) => state.questions.status;
-
-export const fetchTreatmentId = (state) => state.questions.treatmentId;
-
-export const fetchParticipantId = (state) => state.questions.participantId;
-
-export const fetchSessionId = (state) => state.questions.sessionId;
 
 export const getStudyId = (state) => state.questions.studyId;
 
@@ -546,16 +568,11 @@ export const getConsentChecked = (state) => state.questions.consentChecked;
 
 // Action creators are generated for each case reducer function
 export const {
-  loadTreatment,
   loadAllTreatments,
   setQuestionShownTimestamp,
   answer,
   previousQuestion,
   nextQuestion,
-  setParticipantId,
-  setTreatmentId,
-  setSessionId,
-  setStudyId,
   consentShown,
   consentCompleted,
   demographicShown,
@@ -579,7 +596,7 @@ export const {
   instructionsShown,
   setFeedback,
   instructionsCompleted,
-  introductionShown,
+  MCLInstructionsShown,
   MCLInstructionsCompleted,
   attentionCheckShown,
   experienceSurveyQuestionsShown,
@@ -591,7 +608,6 @@ export const {
   debriefShownTimestamp,
   debriefCompleted,
   clearState,
-  genRandomTreatment,
   nextStatus,
   setUserAgent,
   setWindowAttributes,

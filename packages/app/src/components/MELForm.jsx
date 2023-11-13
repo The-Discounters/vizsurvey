@@ -17,7 +17,7 @@ import {
   nextQuestion,
   answer,
 } from "../features/questionSlice.js";
-import { dateToState } from "../features/ConversionUtil.js";
+import { dateToState } from "@the-discounters/util";
 import { styles, theme } from "./ScreenHelper.js";
 import { navigateFromStatus } from "./Navigate.js";
 import { StatusType } from "../features/StatusType.js";
@@ -82,8 +82,10 @@ function MELForm() {
           textShort={q.textShort}
           error={error}
           amountEarlier={q.amountEarlier}
+          dateEarlier={q.dateEarlier}
           timeEarlier={q.timeEarlier}
           amountLater={q.amountLater}
+          dateLater={q.dateLater}
           timeLater={q.timeLater}
           helperText={helperText}
           onClickCallback={onClickCallback}
@@ -100,6 +102,7 @@ function MELForm() {
         <Grid item xs={12} style={{ margin: 0 }}>
           <Box display="flex" justifyContent="center">
             <Button
+              id="buttonNext"
               variant="contained"
               color="secondary"
               disableRipple

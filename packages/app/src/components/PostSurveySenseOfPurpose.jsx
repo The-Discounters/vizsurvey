@@ -24,7 +24,7 @@ import {
   setPurposeSurveyQuestion,
   getPurposeSurveyAnswers,
 } from "../features/questionSlice.js";
-import { dateToState } from "../features/ConversionUtil.js";
+import { dateToState } from "@the-discounters/util";
 import { styles, theme } from "./ScreenHelper.js";
 import { navigateFromStatus } from "./Navigate.js";
 
@@ -50,19 +50,14 @@ export function PostSurvey(props) {
   const [dispatchPageShown, setDispatchPageShown] = React.useState(true);
 
   useEffect(() => {
-    console.log("navigating to status=" + status);
     const path = navigateFromStatus(status);
-    console.log("setting setDispatchPageShown to true");
     setDispatchPageShown(true);
     navigate(path);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status]);
 
-  console.log("dispatchPageShown=" + dispatchPageShown);
-
   if (dispatchPageShown) {
     dispatch(purposeSurveyQuestionsShown(dateToState(DateTime.now())));
-    console.log("About to scroll to 0,0");
     window.scrollTo(0, 0);
     setDispatchPageShown(false);
   }

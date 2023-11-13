@@ -1,10 +1,15 @@
 import { csvParse, group } from "d3";
 import { Question } from "./Question.js";
-import { ViewType } from "./ViewType.js";
-import { InteractionType } from "./InteractionType.js";
+import { ViewType } from "@the-discounters/types";
+import { InteractionType } from "@the-discounters/types";
 import { AmountType } from "./AmountType.js";
-import { stringToDate, dateToState } from "./ConversionUtil.js";
-import { TREATMENTS_DEV_CSV, TREATMENTS_PROD_CSV } from "./treatments.js";
+import { stringToDate, dateToState } from "@the-discounters/util";
+import {
+  TREATMENTS_DEV_CSV,
+  TREATMENTS_PROD_CSV,
+  LATIN_SQUARE_DEV,
+  LATIN_SQUARE_PROD,
+} from "./treatments.js";
 
 var TREATMENTS_CSV;
 if (process.env.REACT_APP_ENV !== "production") {
@@ -13,27 +18,74 @@ if (process.env.REACT_APP_ENV !== "production") {
   TREATMENTS_CSV = TREATMENTS_PROD_CSV;
 }
 
-export const INSTRUCTIONS_TREATMENT_POSITION = "instructions";
+export var LATIN_SQUARE;
+if (process.env.REACT_APP_ENV !== "production") {
+  LATIN_SQUARE = LATIN_SQUARE_DEV;
+} else {
+  LATIN_SQUARE = LATIN_SQUARE_PROD;
+}
 
-export const loadTreatmentConfiguration = (treatmentId) => {
-  treatmentId = +treatmentId;
+export const INSTRUCTIONS_TREATMENT_POSITION = "instructions";
+export const RANDOM_TREATMENT_POSITION = "random";
+
+/**
+ * Got this from https://dev.to/codebubb/how-to-shuffle-an-array-in-javascript-2ikj.  It uses Fisher-Yates algorithm
+ * to randomly shuffle the array.
+ * @param {*} array
+ */
+const shuffleArray = (array) => {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    const temp = array[i];
+    array[i] = array[j];
+    array[j] = temp;
+  }
+};
+
+export const loadTreatmentConfiguration = (treatmentIds) => {
   const rows = csvParse(TREATMENTS_CSV, (e) => {
     return fromCSVRow(e);
-  }).filter((d) => d.treatmentId === treatmentId);
+  }).filter((d) => treatmentIds.includes(d.treatmentId));
   const grouped = group(rows, (d) =>
-    Number.isInteger(d.position) ? "questions" : INSTRUCTIONS_TREATMENT_POSITION
+    Number.isInteger(d.position) || d.position === RANDOM_TREATMENT_POSITION
+      ? "questions"
+      : INSTRUCTIONS_TREATMENT_POSITION
   );
-  const questions = grouped
-    .get("questions")
-    .filter((d) => Number.isInteger(d.position))
-    .sort((a, b) =>
-      a.position < b.position ? -1 : a.position === b.position ? 0 : 1
-    );
-
-  return {
-    questions: questions,
-    instructions: grouped.get(INSTRUCTIONS_TREATMENT_POSITION),
+  let questions = grouped.get("questions");
+  const result = {
+    questions: null,
+    instructions: grouped
+      .get(INSTRUCTIONS_TREATMENT_POSITION)
+      .sort(
+        (a, b) =>
+          treatmentIds.indexOf(a.treatmentId) -
+          treatmentIds.indexOf(b.treatmentId)
+      ),
   };
+  if (questions[0].position === RANDOM_TREATMENT_POSITION) {
+    result.questions = new Array();
+    const questionsByTreatment = group(questions, (d) => d.treatmentId);
+    treatmentIds.forEach((treatmentId) => {
+      const questionsForTreatment = questionsByTreatment.get(treatmentId);
+      shuffleArray(questionsForTreatment);
+      questionsForTreatment.forEach((cv, i) => {
+        cv.position = i + 1;
+      });
+      result.questions.push(...questionsForTreatment);
+    });
+  } else {
+    questions.sort((a, b) => {
+      const treatmentSortResult =
+        treatmentIds.indexOf(a.treatmentId) -
+        treatmentIds.indexOf(b.treatmentId);
+      const positionSortResult = a.positionId - b.positionId;
+      return treatmentSortResult != 0
+        ? treatmentSortResult
+        : positionSortResult;
+    });
+    result.questions = questions;
+  }
+  return result;
 };
 
 export const loadAllTreatmentsConfiguration = () => {
@@ -41,9 +93,13 @@ export const loadAllTreatmentsConfiguration = () => {
     return fromCSVRow(e);
   })
     .filter((d) => d.position !== INSTRUCTIONS_TREATMENT_POSITION)
-    .sort((a, b) =>
-      a.position < b.position ? -1 : a.position === b.position ? 0 : 1
-    );
+    .sort((a, b) => {
+      const treatmentSortResult = a.treatmentId - b.treatmentId;
+      const positionSortResult = a.positionId - b.positionId;
+      return treatmentSortResult != 0
+        ? treatmentSortResult
+        : positionSortResult;
+    });
   return treatments;
 };
 
@@ -51,7 +107,8 @@ const fromCSVRow = (row) => {
   return Question({
     treatmentId: row.treatment_id ? +row.treatment_id : undefined,
     position:
-      row.position === INSTRUCTIONS_TREATMENT_POSITION
+      row.position === INSTRUCTIONS_TREATMENT_POSITION ||
+      row.position === RANDOM_TREATMENT_POSITION
         ? row.position
         : row.position
         ? +row.position

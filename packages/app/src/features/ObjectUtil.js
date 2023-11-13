@@ -11,6 +11,12 @@ export const convertKeysToUnderscore = (obj) => {
   });
 };
 
+export const setAllPropertiesEmpty = (obj) => {
+  return _.mapValues(obj, function () {
+    return "";
+  });
+};
+
 export const convertAnswersAryToObj = (answersAry) => {
   const result = answersAry.reduce((acc, current) => {
     // eslint-disable-next-line no-undef
@@ -20,14 +26,12 @@ export const convertAnswersAryToObj = (answersAry) => {
         key === "participantId" ||
         key === "session_id" ||
         key === "sessionId" ||
-        key === "treatment_id" ||
-        key === "treatmentId" ||
         key === "study_id" ||
         key === "studyId"
       ) {
         return key;
       } else {
-        return `${key}_${object.position}`;
+        return `${key}_${object.treatmentId}_${object.position}`;
       }
     });
     return {
@@ -36,10 +40,4 @@ export const convertAnswersAryToObj = (answersAry) => {
     };
   }, {});
   return result;
-};
-
-export const setAllPropertiesEmpty = (obj) => {
-  return _.mapValues(obj, function () {
-    return "";
-  });
 };

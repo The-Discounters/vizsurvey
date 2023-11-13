@@ -1,8 +1,8 @@
-import AWS from "aws-sdk";
+//import AWS from "aws-sdk";
 import { DateTime } from "luxon";
-import { InteractionType } from "./InteractionType";
+import { InteractionType } from "@the-discounters/types";
 import { AmountType } from "./AmountType";
-import { ViewType } from "./ViewType";
+import { ViewType } from "@the-discounters/types";
 import { Answer } from "./Answer";
 import { convertToCSV } from "./parserUtil";
 
@@ -133,11 +133,9 @@ describe("FileIOAdapter tests", () => {
     });
     const answers = [answer1, answer2];
     const result = convertToCSV(answers);
-    console.log(result);
-    expect(result)
-      .toBe(`participantId,sessionId,studyId,treatmentId,position,viewType,interaction,variableAmount,amountEarlier,timeEarlier,dateEarlier,amountLater,timeLater,dateLater,maxAmount,maxTime,verticalPixels,horizontalPixels,leftMarginWidthIn,bottomMarginHeightIn,graphWidthIn,graphHeightIn,widthIn,heightIn,showMinorTicks,choice,dragAmount,shownTimestamp,choiceTimestamp,choiceTimeSec,highup,lowdown
-1,2,3,4,5,word,none,earlierAmount,6,7,2001-01-01T00:00:00.000Z,8,9,2001-01-02T00:00:00.000Z,10,11,12,13,14,15,16,17,18,19,false,earlierAmount,,2001-01-03T00:00:00.000Z,2001-01-04T00:00:00.000Z,1,20,21·
-22,23,24,25,26,barchart,drag,earlierAmount,27,28,2001-01-02T01:01:01.001Z,29,30,2001-01-02T02:01:01.001Z,31,32,33,34,35,36,37,38,39,40,false,laterAmount,,2001-01-02T03:01:01.001Z,2001-01-02T04:01:01.001Z,1,41,42·`);
+    expect(result).toBe(
+      `participantId,sessionId,studyId,treatmentId,position,viewType,interaction,variableAmount,amountEarlier,timeEarlier,dateEarlier,amountLater,timeLater,dateLater,maxAmount,maxTime,verticalPixels,horizontalPixels,leftMarginWidthIn,bottomMarginHeightIn,graphWidthIn,graphHeightIn,widthIn,heightIn,showMinorTicks,choice,dragAmount,shownTimestamp,choiceTimestamp,choiceTimeSec,highup,lowdown\n1,2,3,4,5,word,none,earlierAmount,6,7,2001-01-01T00:00:00.000Z,8,9,2001-01-02T00:00:00.000Z,10,11,12,13,14,15,16,17,18,19,false,earlierAmount,,2001-01-03T00:00:00.000Z,2001-01-04T00:00:00.000Z,,20,21\r\n22,23,24,25,26,barchart,drag,earlierAmount,27,28,2001-01-02T01:01:01.001Z,29,30,2001-01-02T02:01:01.001Z,31,32,33,34,35,36,37,38,39,40,false,laterAmount,,2001-01-02T03:01:01.001Z,2001-01-02T04:01:01.001Z,,41,42\r\n`
+    );
   });
 
   // This test uses the write only creds to try and read from the bucket.  I need to figure out how to check
@@ -160,152 +158,5 @@ describe("FileIOAdapter tests", () => {
   //       const files = response.Contents;
   //       expect(files.length);
   //     });
-  // });
-  // This test is kind of meaningless as it is and needs some thought.
-  // test("Validate writeCSV writes data correctly.", async () => {
-  //   const timestamp = DateTime.fromFormat("1/1/2001", "M/d/yyyy", {
-  //     zone: "utc",
-  //   }).toMillis();
-
-  //   const answer1 = Answer({
-  //     treatmentId: 1,
-  //     position: 2,
-  //     viewType: ViewType.word,
-  //     interaction: InteractionType.none,
-  //     variableAmount: AmountType.earlierAmount,
-  //     amountEarlier: 3,
-  //     timeEarlier: 4,
-  //     dateEarlier: DateTime.fromFormat("1/1/2001", "M/d/yyyy", {
-  //       zone: "utc",
-  //     }).toMillis(),
-  //     amountLater: 5,
-  //     timeLater: 6,
-  //     dateLater: DateTime.fromFormat("1/2/2001", "M/d/yyyy", {
-  //       zone: "utc",
-  //     }).toMillis(),
-  //     maxAmount: 7,
-  //     maxTime: 8,
-  //     verticalPixels: 9,
-  //     horizontalPixels: 10,
-  //     leftMarginWidthIn: 11,
-  //     bottomMarginHeightIn: 12,
-  //     graphWidthIn: 13,
-  //     graphHeightIn: 14,
-  //     widthIn: 15,
-  //     heightIn: 16,
-  //     choice: AmountType.earlierAmount,
-  //     shownTimestamp: DateTime.fromFormat("1/3/2001", "M/d/yyyy", {
-  //       zone: "utc",
-  //     }).toMillis(),
-  //     choiceTimestamp: DateTime.fromFormat("1/4/2001", "M/d/yyyy", {
-  //       zone: "utc",
-  //     }).toMillis(),
-  //     highup: 17,
-  //     lowdown: 18,
-  //     participantId: "participant id",
-  //   });
-  //   const answer2 = Answer({
-  //     treatmentId: 13,
-  //     position: 14,
-  //     viewType: ViewType.barchart,
-  //     interaction: InteractionType.drag,
-  //     variableAmount: AmountType.earlierAmount,
-  //     amountEarlier: 15,
-  //     timeEarlier: 16,
-  //     dateEarlier: DateTime.utc(2001, 1, 2, 1, 1, 1, 1, {
-  //       zone: "utc",
-  //     }).toMillis(),
-  //     amountLater: 17,
-  //     timeLater: 18,
-  //     dateLater: DateTime.utc(2001, 1, 2, 2, 1, 1, 1, {
-  //       zone: "utc",
-  //     }).toMillis(),
-  //     maxAmount: 19,
-  //     maxTime: 20,
-  //     verticalPixels: 21,
-  //     horizontalPixels: 22,
-  //     leftMarginWidthIn: 23,
-  //     bottomMarginHeightIn: 24,
-  //     graphWidthIn: 25,
-  //     graphHeightIn: 26,
-  //     widthIn: 27,
-  //     heightIn: 28,
-  //     choice: AmountType.laterAmount,
-  //     shownTimestamp: DateTime.utc(2001, 1, 2, 3, 1, 1, 1, {
-  //       zone: "utc",
-  //     }).toMillis(),
-  //     choiceTimestamp: DateTime.utc(2001, 1, 2, 4, 1, 1, 1, {
-  //       zone: "utc",
-  //     }).toMillis(),
-  //     highup: 29,
-  //     lowdown: 30,
-  //     participantId: "participant id 2",
-  //   });
-  //   const answers = [answer1, answer2];
-
-  //   const survey = {
-  //     participantId: 1,
-  //     key1: "value1",
-  //     key2: "value2",
-  //   };
-
-  //   const timestamps = {
-  //     participantId: 1,
-  //     consentShownTimestamp: timestamp,
-  //     consentCompletedTimestamp: timestamp,
-  //     consentTimeSec: 1,
-  //     demographicShownTimestamp: timestamp,
-  //     demographicCompletedTimestamp: timestamp,
-  //     demographicTimeSec: 2,
-  //     introductionShownTimestamp: timestamp,
-  //     introductionCompletedTimestamp: timestamp,
-  //     introductionTimeSec: 3,
-  //     instructionsShownTimestamp: timestamp,
-  //     instructionsCompletedTimestamp: timestamp,
-  //     instructionsTimeSec: 4,
-  //     attentionCheckShownTimestamp: timestamp,
-  //     attentionCheckCompletedTimestamp: timestamp,
-  //     attentionCheckTimeSec: 5,
-  //     financialLitSurveyQuestionsShownTimestamp: timestamp,
-  //     financialLitSurveyQuestionsCompletedTimestamp: timestamp,
-  //     financialLitSurveyTimeSec: 6,
-  //     purposeSurveyAwareQuestionsShownTimestamp: timestamp,
-  //     purposeSurveyAwareQuestionsCompletedTimestamp: timestamp,
-  //     purposeSurveyAwareTimeSec: 7,
-  //     purposeSurveyWorthQuestionsShownTimestamp: timestamp,
-  //     purposeSurveyWorthQuestionsCompletedTimestamp: timestamp,
-  //     purposeSurveyWorthTimeSec: 8,
-  //     debriefShownTimestamp: timestamp,
-  //     debriefCompletedTimestamp: timestamp,
-  //     debriefTimeSec: 9,
-  //   };
-
-  //   const demographic = {
-  //     participantId: 1,
-  //     countryOfResidence: "Country of residence",
-  //     vizFamiliarity: "vis familiarity",
-  //     age: "age",
-  //     gender: "gender",
-  //     selfDescribeGender: "self describe gender",
-  //     profession: "profession",
-  //   };
-
-  //   const legal = {
-  //     participantId: 1,
-  //     consentChecked: true,
-  //     attentionCheck: true,
-  //   };
-
-  //   const feedback = {
-  //     participantId: 1,
-  //     sessionId: 2,
-  //     studyId: 3,
-  //     treatmentId: 1,
-  //     feedback: "feedback comment",
-  //   };
-
-  //   io.writeCSV(1, 2, 3, DataType.Answer.filenamePrefix, {
-  //     answers,
-  //   });
   // });
 });

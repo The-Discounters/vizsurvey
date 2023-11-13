@@ -1,6 +1,6 @@
 import clui from "clui";
 import clc from "cli-color";
-import { stateToDate } from "./ConversionUtil.js";
+import { stateToDate } from "@the-discounters/util";
 
 export const drawStatus = (
   surveysTotal,
@@ -209,7 +209,7 @@ export const drawStatus = (
   for (let i = 1; i <= numTreatments; i++) {
     line.column(
       clui.Gauge(
-        stats.experienceComplete[i - 1],
+        stats.experienceInProgress[i - 1],
         inProgressMax,
         15,
         inProgressMax,
@@ -226,7 +226,7 @@ export const drawStatus = (
   for (let i = 1; i <= numTreatments; i++) {
     line.column(
       clui.Gauge(
-        stats.financialComplete[i - 1],
+        stats.financialInProgress[i - 1],
         inProgressMax,
         15,
         inProgressMax,
@@ -299,9 +299,14 @@ export const drawStatus = (
     .slice(0, outputBuffer.height() - 20)
     .forEach((e) =>
       new clui.Line(outputBuffer)
-        .column(`${e.treatmentId} ${e.date}: ${e.feedback}`, "console", [
-          clc.white,
-        ])
+        .column(
+          `${e.treatmentId} ${e.date}: ${e.feedback.slice(
+            0,
+            outputBuffer.width()
+          )}`,
+          "console",
+          [clc.white]
+        )
         .fill()
         .store()
     );

@@ -11,21 +11,24 @@ import { useSelector, useDispatch } from "react-redux";
 import { DateTime } from "luxon";
 import { useD3 } from "../hooks/useD3.js";
 import "../App.css";
-import { ViewType } from "../features/ViewType.js";
+import { ViewType } from "@the-discounters/types";
 import { navigateFromStatus } from "./Navigate.js";
 import {
-  introductionShown,
+  MCLInstructionsShown,
   MCLInstructionsCompleted,
   fetchCurrentTreatment,
   getInstructionTreatment,
   getStatus,
 } from "../features/questionSlice.js";
-import { dateToState } from "../features/ConversionUtil.js";
+import { dateToState } from "@the-discounters/util";
+
 import { styles, theme, calcScreenValues } from "./ScreenHelper.js";
 import { AmountType } from "../features/AmountType.js";
 import { MELSelectionForm } from "./MELSelectionForm.jsx";
 import { drawBarChart } from "./BarChartComponent.js";
 import { StatusType } from "../features/StatusType.js";
+import { drawCalendar } from "./CalendarHelper.js";
+import { drawCalendarYear } from "./CalendarYearHelper.js";
 
 const MCLInstructions = () => {
   const dispatch = useDispatch();
@@ -51,7 +54,7 @@ const MCLInstructions = () => {
     );
 
   useEffect(() => {
-    dispatch(introductionShown(dateToState(DateTime.now())));
+    dispatch(MCLInstructionsShown(dateToState(DateTime.now())));
     setChoice("");
     if (!treatment) navigate("/invalidlink");
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -196,7 +199,7 @@ const MCLInstructions = () => {
     switch (instructionTreatment.viewType) {
       case ViewType.word:
         return instructions(
-          "radio buttons",
+          "a radio button",
           "buttons",
           "Radio button example",
           "button on the left",
@@ -222,13 +225,15 @@ const MCLInstructions = () => {
           "clicking the button"
         );
       case ViewType.calendarWord:
+      case ViewType.calendarWordYear:
+      case ViewType.calendarWordYearDual:
         return instructions(
-          "calendar word chart",
-          "amounts",
+          "a calendar space",
+          "spaces",
           "Calendar word chart example",
-          "bar on the earlier day",
-          "bar on the laster day",
-          "clicking the bar"
+          "space on the earlier day",
+          "space on the later day",
+          "clicking the day"
         );
       case ViewType.calendarIcon:
         return instructions(
@@ -236,7 +241,7 @@ const MCLInstructions = () => {
           "icon charts",
           "Calendar icon chart example",
           "icon chart on the earlier day",
-          "icon chart on the laster day",
+          "icon chart on the later day",
           "clicking the icon chart"
         );
       default:
@@ -253,8 +258,10 @@ const MCLInstructions = () => {
             error={error}
             amountEarlier={instructionTreatment.amountEarlier}
             timeEarlier={instructionTreatment.timeEarlier}
+            dateEarlier={instructionTreatment.dateEarlier}
             amountLater={instructionTreatment.amountLater}
             timeLater={instructionTreatment.timeLater}
+            dateLater={instructionTreatment.dateLater}
             helperText={helperText}
             onClickCallback={onClickCallback}
             choice={choice}
@@ -265,7 +272,48 @@ const MCLInstructions = () => {
       case ViewType.calendarBar:
         return "";
       case ViewType.calendarWord:
-        return "";
+        return (
+          <table
+            id="calendar"
+            style={{ borderCollapse: "collapse", tableLayout: "fixed" }}
+            ref={useD3(
+              (table) => {
+                drawCalendar({
+                  table: table,
+                  qDateEarlier: instructionTreatment.dateEarlier,
+                  qDateLater: instructionTreatment.dateLater,
+                  qAmountEarlier: instructionTreatment.amountEarlier,
+                  qAmountLater: instructionTreatment.amountLater,
+                  onClickCallback: onClickCallback,
+                  choice: choice,
+                });
+              },
+              [choice]
+            )}
+          ></table>
+        );
+      case ViewType.calendarWordYear:
+      case ViewType.calendarWordYearDual:
+        return (
+          <table
+            id="calendar"
+            style={{ borderCollapse: "collapse", tableLayout: "fixed" }}
+            ref={useD3(
+              (table) => {
+                drawCalendarYear({
+                  table: table,
+                  qDateEarlier: instructionTreatment.dateEarlier,
+                  qDateLater: instructionTreatment.dateLater,
+                  qAmountEarlier: instructionTreatment.amountEarlier,
+                  qAmountLater: instructionTreatment.amountLater,
+                  onClickCallback: onClickCallback,
+                  choice: choice,
+                });
+              },
+              [choice]
+            )}
+          ></table>
+        );
       case ViewType.calendarIcon:
         return "";
       default:

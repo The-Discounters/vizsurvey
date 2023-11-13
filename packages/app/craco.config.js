@@ -20,5 +20,27 @@ module.exports = {
       }
       return webpackConfig;
     },
+    entry: "./src/index.js",
+    output: {
+      path: path.resolve(__dirname, "dist"),
+      filename: "bundle.js",
+    },
+    devtool: "eval-source-map",
+  },
+  babel: {
+    extends: "../../babel.config.json",
+    presets: ["@babel/preset-react"],
+    plugins: [
+      ["@babel/plugin-syntax-dynamic-import", { loose: true }],
+      ["@babel/plugin-proposal-class-properties", { loose: true }],
+      ["@babel/plugin-syntax-import-attributes", { loose: true }],
+    ],
+    loaderOptions: {
+      /* ... */
+    },
+    loaderOptions: (babelLoaderOptions, { env, paths }) => {
+      /* ... */
+      return babelLoaderOptions;
+    },
   },
 };

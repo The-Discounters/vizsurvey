@@ -15,7 +15,7 @@ import {
   nextQuestion,
   answer,
 } from "../features/questionSlice.js";
-import { dateToState } from "../features/ConversionUtil.js";
+import { dateToState } from "@the-discounters/util";
 import { drawBarChart } from "./BarChartComponent.js";
 import { styles, theme, calcScreenValues } from "./ScreenHelper.js";
 import { navigateFromStatus } from "./Navigate.js";
@@ -116,9 +116,18 @@ function BarChart() {
             )}
           ></svg>
         </Grid>
+        <Grid item xs={12}>
+          <hr
+            style={{
+              backgroundColor: "#aaaaaa",
+              height: 4,
+            }}
+          />
+        </Grid>
         <Grid item xs={12} style={{ margin: 0 }}>
           <Box display="flex" justifyContent="center">
             <Button
+              id="buttonNext"
               variant="contained"
               color="secondary"
               disableRipple
