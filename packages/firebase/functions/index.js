@@ -6,41 +6,43 @@
  *
  * See a full list of supported triggers at https://firebase.google.com/docs/functions
  */
-
 // The Cloud Functions for Firebase SDK to create Cloud Functions and triggers.
+// The Firebase Admin SDK to access Firestore.
+import {initializeApp} from "firebase-admin/app";
 import {logger} from "firebase-functions";
 import {onRequest} from "firebase-functions/v2/https";
-// The Firebase Admin SDK to access Firestore.
-import admin from "firebase-admin";
+// import {getApp} from "firebase/app";
+
+initializeApp();
+
+// const functions = getFunctions(getApp());
+// connectFunctionsEmulator(functions, "127.0.0.1", 5001);
+
+
 // import {getFirestore} from "firebase-admin/firestore";
 // import {calcTreatmentIds, fetchExperiment} from "./functionsUtil.js";
 // eslint-disable-next-line
 import {readFileSync} from "fs";
 // import SERVICE_ACCOUNT from "../admin-credentials-dev.json" assert
 // {type: "json"};
-const SERVICE_ACCOUNT =
-  JSON.parse(readFileSync("../../../admin-credentials-dev.json"));
+// const SERVICE_ACCOUNT =
+//  JSON.parse(readFileSync("../../../admin-credentials-dev.json"));
 
-const useEmulator = false;
+// const useEmulator = true;
 
-if (useEmulator) {
-  process.env["FIRESTORE_EMULATOR_HOST"] = "localhost:8080";
-  // I think this will work when I enable auth on emulator
-  // process.env["FIREBASE_AUTH_EMULATOR_HOST"] = "localhost:9099";
-}
-
-admin.initializeApp({
-  credential: admin.credential.cert(SERVICE_ACCOUNT),
-  databaseURL: "https://vizsurvey-test.firebaseio.com/",
-});
+// if (useEmulator) {
+//   process.env["FIRESTORE_EMULATOR_HOST"] = "localhost:8080";
+//   // I think this will work when I enable auth on emulator
+//   // process.env["FIREBASE_AUTH_EMULATOR_HOST"] = "localhost:9099";
+// }
 
 // const db = admin.firestore();
 
 export const fetchExpConfig = onRequest(async (request, response) => {
-  // logger.info(
-  //     `fetchExpConfig prolific_pid=${request.query.prolific_pid},
-  //     study_id=${request.query.study_id},
-  //     session_id=${request.query.session_id}`);
+  logger.info(
+      `fetchExpConfig prolific_pid=${request.query.prolific_pid},
+      study_id=${request.query.study_id},
+      session_id=${request.query.session_id}`);
   try {
     // const prolificPid = request.query.prolific_pid;
     // const studyId = request.query.study_id;
@@ -88,7 +90,7 @@ export const fetchExpConfig = onRequest(async (request, response) => {
 
     // Send back a message that we've successfully written the message
     // response.json({result: `Message with ID: ${writeResult.id} added.`});
-    response.json({result: "hello world"});
+    response.json({result: "hello local"});
   } catch (err) {
     logger.error(err);
     response.json({error: "There was an error with the server."});

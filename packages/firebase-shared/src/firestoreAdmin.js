@@ -1,5 +1,8 @@
 import admin from "firebase-admin";
-import SERVICE_ACCOUNT from "../../../admin-credentials-dev.json" with { type: "json" };
+//import SERVICE_ACCOUNT from "../../../admin-credentials-dev.json" with { type: "json" };
+const SERVICE_ACCOUNT = JSON.parse(
+  readFileSync("../../../admin-credentials-dev.json")
+);
 
 var db;
 var batch;

@@ -1,5 +1,17 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
+# creds
+*admin-credentials-dev.json
+.env
+.env.local
+.env.development
+.env.test.local
+.env.production
+.env.test
+discounters.development.json
+discounters.production.json
+/setenv.sh
+
 # dependencies
 /node_modules
 /.pnp
@@ -15,15 +27,6 @@ test/public
 
 # misc
 .DS_Store
-.env
-.env.local
-.env.development
-.env.test.local
-.env.production
-.env.test
-discounters.development.json
-discounters.production.json
-cli/admin-credentials-dev.json
 
 #logs
 #npm-debug.log*
