@@ -6979,9 +6979,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@the-discounters/firebase-shared@npm:*, @the-discounters/firebase-shared@workspace:packages/firebase-shared":
+"@the-discounters/firebase-shared@npm:*, @the-discounters/firebase-shared@workspace:packages/firebase/firebase-shared":
   version: 0.0.0-use.local
-  resolution: "@the-discounters/firebase-shared@workspace:packages/firebase-shared"
+  resolution: "@the-discounters/firebase-shared@workspace:packages/firebase/firebase-shared"
   dependencies:
     "@firebase/rules-unit-testing": "npm:^3.0.1"
     "@firebase/testing": "npm:^0.20.11"

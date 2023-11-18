@@ -26,7 +26,6 @@ import {
 // });
 
 describe("firestoreAdmin test ", () => {
-  console.log("describe start");
   let testEnv, db;  
 
   before(async () => {
@@ -34,11 +33,11 @@ describe("firestoreAdmin test ", () => {
     testEnv = await initializeTestEnvironment({
       projectId: MY_PROJECT_ID,
       firestore: {
-        rules: readFileSync("firestore.rules", "utf8"),
+        rules: readFileSync("../firestore.rules", "utf8"),
       },
     });
-    db = testEnv.firestore();
-    console.log("before end");
+    const alice = testEnv.unauthenticatedContext();
+    db = alice.firestore();
   });
 
   it("Integration test for batch writing data to firestore.", async () => {
@@ -46,7 +45,7 @@ describe("firestoreAdmin test ", () => {
     setBatchItem(null, { item1: "value1" });
     await commitBatch();
     const testDoc = db.collection("integrationTests").doc("value1");
-    await firebase.assertSucceeds(testDoc.get());
+    await assertSucceeds(testDoc.get());
     //await deleteDocs(db, "integrationTests");
   });
 
