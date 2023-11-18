@@ -353,7 +353,7 @@ program
     try {
       const colPath = args.collection;
       const file = args.src;
-      initAdminFirestoreDB(useEmulator);
+      initAdminFirestoreDB();
       initBatch(colPath);
       const data = parseFileToObj(file);
       const typeFieldsFn = typeFieldsFunction(colPath);

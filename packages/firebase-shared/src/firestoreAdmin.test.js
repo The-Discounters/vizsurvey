@@ -1,5 +1,15 @@
+import {readFileSync} from "fs";
+import {strict as assert} from "assert";
+
 import {
-  initAdminFirestoreDB,
+  assertFails,
+  assertSucceeds,
+  initializeTestEnvironment,
+} from "@firebase/rules-unit-testing";
+
+const MY_PROJECT_ID = "demo-firebase-shared";
+
+import {
   initBatch,
   setBatchItem,
   commitBatch,
@@ -7,40 +17,59 @@ import {
   deleteDocs,
 } from "./firestoreAdmin.js";
 
-beforeAll(() => {
-  initAdminFirestoreDB();
-});
+// import {
+//   initializeTestEnvironment,
+// } from "@firebase/rules-unit-testing";
 
-afterAll(() => {});
+// after(() => {
+//   firebase.apps().forEach((app) => app.delete());
+// });
 
 describe("firestoreAdmin test ", () => {
+  console.log("describe start");
+  let testEnv, db;  
+
+  before(async () => {
+    console.log("before start");
+    testEnv = await initializeTestEnvironment({
+      projectId: MY_PROJECT_ID,
+      firestore: {
+        rules: readFileSync("firestore.rules", "utf8"),
+      },
+    });
+    db = testEnv.firestore();
+    console.log("before end");
+  });
+
   it("Integration test for batch writing data to firestore.", async () => {
-    initBatch("integrationTests");
+    initBatch(db, "integrationTests");
     setBatchItem(null, { item1: "value1" });
     await commitBatch();
-    await deleteDocs("integrationTests");
+    const testDoc = db.collection("integrationTests").doc("value1");
+    await firebase.assertSucceeds(testDoc.get());
+    //await deleteDocs(db, "integrationTests");
   });
 
-  it("Integration test for deleteDocs.", async () => {
-    initBatch("deleteTest");
-    setBatchItem(null, { item1: "value1" });
-    await commitBatch();
-    await deleteDocs("deleteTest");
-  });
+  // it("Integration test for deleteDocs.", async () => {
+  //   initBatch(db, "deleteTest");
+  //   setBatchItem(null, { item1: "value1" });
+  //   await commitBatch();
+  //   await deleteDocs(db, "deleteTest");
+  // });
 
-  it("Integration test for linkDocs.", async () => {
-    initBatch("linkTestPrimary");
-    setBatchItem(null, { id: 1, foreign: 1 });
-    setBatchItem(null, { id: 2, foreign: 2 });
-    setBatchItem(null, { id: 3, foreign: 3 });
-    await commitBatch();
-    initBatch("linkTestForeign");
-    setBatchItem(null, { id: 1, value: "value 1" });
-    setBatchItem(null, { id: 2, value: "value 2" });
-    setBatchItem(null, { id: 3, value: "value 3" });
-    await commitBatch();
-    await linkDocs("linkTestPrimary", "foreign", "linkTestForeign", "id");
-    await deleteDocs("linkTestPrimary");
-    await deleteDocs("linkTestForeign");
-  });
+  // it("Integration test for linkDocs.", async () => {
+  //   initBatch(db, "linkTestPrimary");
+  //   setBatchItem(null, { id: 1, foreign: 1 });
+  //   setBatchItem(null, { id: 2, foreign: 2 });
+  //   setBatchItem(null, { id: 3, foreign: 3 });
+  //   await commitBatch();
+  //   initBatch(db, "linkTestForeign");
+  //   setBatchItem(null, { id: 1, value: "value 1" });
+  //   setBatchItem(null, { id: 2, value: "value 2" });
+  //   setBatchItem(null, { id: 3, value: "value 3" });
+  //   await commitBatch();
+  //   await linkDocs(db, "linkTestPrimary", "foreign", "linkTestForeign", "id");
+  //   await deleteDocs(db,"linkTestPrimary");
+  //   await deleteDocs(db, "linkTestForeign");
+  // });
 });

@@ -40,19 +40,19 @@ import {readFileSync} from "fs";
 
 export const fetchExpConfig = onRequest(async (request, response) => {
   logger.info(
-      `fetchExpConfig prolific_pid=${request.query.prolific_pid},
-      study_id=${request.query.study_id},
-      session_id=${request.query.session_id}`);
+      // eslint-disable-next-line max-len
+      `fetchExpConfig prolific_pid=${request.query.prolific_pid}, study_id=${request.query.study_id}, session_id=${request.query.session_id}`);
   try {
-    // const prolificPid = request.query.prolific_pid;
-    // const studyId = request.query.study_id;
-    // const sessionId = request.query.session_id;
+    const prolificPid = request.query.prolific_pid;
+    const studyId = request.query.study_id;
+    const sessionId = request.query.session_id;
 
-    // if (!prolificPid || !studyId) {
-    //   logger.error(`fetchExpConfig Error with request parameters.
-    //   prolific_pid or study_id not in request`, request);
-    //   throw Error("Error with survey URL.");
-    // }
+    if (!prolificPid || !studyId) {
+      logger.error(
+          // eslint-disable-next-line max-len
+          "fetchExpConfig Error with request parameters. prolific_pid or study_id not in request", request);
+      throw Error("Error with survey URL.");
+    }
 
     // const expDoc = await fetchExperiment(db, studyId);
 

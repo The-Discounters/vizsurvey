@@ -1,36 +1,14 @@
-import admin from "firebase-admin";
+// import {readFileSync} from "fs";
+// import admin from "firebase-admin";
 //import SERVICE_ACCOUNT from "../../../admin-credentials-dev.json" with { type: "json" };
-const SERVICE_ACCOUNT = JSON.parse(
-  readFileSync("../../../admin-credentials-dev.json")
-);
+// const SERVICE_ACCOUNT = JSON.parse(
+//   readFileSync("../../../admin-credentials-dev.json")
+// );
 
-var db;
 var batch;
 var colRef;
 
-export const initAdminFirestoreDB = (useEmulator) => {
-  if (useEmulator) {
-    process.env["FIRESTORE_EMULATOR_HOST"] = "127.0.0.1:8080";
-    process.env["FIREBASE_STORAGE_EMULATOR_HOST"] = "127.0.0.1:8080";
-    //process.env["FIREBASE_AUTH_EMULATOR_HOST"] = "localhost:9099"; I think this will work when I enable auth on emulator
-    const emulatorAdmin = admin.initializeApp(
-      {
-        projectId: "vizsurvey-emulator",
-      },
-      "emulator-app"
-    );
-    db = emulatorAdmin.firestore();
-  } else {
-    admin.initializeApp({
-      credential: admin.credential.cert(SERVICE_ACCOUNT),
-      //databaseURL: "https://vizsurvey-test-default-rtdb.firebaseio.com/",
-      databaseURL: "https://vizsurvey-test.firebaseio.com/",
-    });
-    db = admin.firestore();
-  }
-};
-
-export const initBatch = (colPath) => {
+export const initBatch = (db, colPath) => {
   colRef = db.collection(colPath);
   batch = db.batch();
 };
@@ -41,7 +19,7 @@ export const setBatchItem = (idfield, item) => {
   batch.set(docRef, item);
 };
 
-export const deleteDocs = async (path) => {
+export const deleteDocs = async (db, path) => {
   const docRef = db.collection(path);
   const snapshot = await docRef.get();
   for (let i = 0; i < snapshot.size; i++) {
@@ -52,6 +30,7 @@ export const deleteDocs = async (path) => {
 
 export const commitBatch = async () => {
   await batch.commit();
+  batch = null;
 };
 
 // TODO I need to implement linking a two dimensional array type field that could result from seven squares
@@ -60,7 +39,13 @@ export const commitBatch = async () => {
 // (1, 2, 3, ...).  Then I can sort the kwys by natural order and convert the map of arrays into a two dimensional
 // array in the function code to access the next row of treatment sequence assignment.  I would need this for the
 // within subject study and we aren't running that yet so I didn't do it.
-export const linkDocs = async (leftPath, leftField, rightPath, rightField) => {
+export const linkDocs = async (
+  db,
+  leftPath,
+  leftField,
+  rightPath,
+  rightField
+) => {
   const leftRef = db.collection(leftPath);
   const rightRef = db.collection(rightPath);
 
