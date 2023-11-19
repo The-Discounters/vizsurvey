@@ -1,5 +1,5 @@
-import {readFileSync} from "fs";
-import {strict as assert} from "assert";
+import { readFileSync } from "fs";
+import { strict as assert } from "assert";
 
 import {
   assertFails,
@@ -7,6 +7,7 @@ import {
   initializeTestEnvironment,
 } from "@firebase/rules-unit-testing";
 
+// this needs to match the value that is passed to firebase emulators:start --project=
 const MY_PROJECT_ID = "demo-firebase-shared";
 
 import {
@@ -17,36 +18,52 @@ import {
   deleteDocs,
 } from "./firestoreAdmin.js";
 
-// import {
-//   initializeTestEnvironment,
-// } from "@firebase/rules-unit-testing";
-
-// after(() => {
-//   firebase.apps().forEach((app) => app.delete());
-// });
-
 describe("firestoreAdmin test ", () => {
-  let testEnv, db;  
+  let testEnv, db;
 
   before(async () => {
-    console.log("before start");
     testEnv = await initializeTestEnvironment({
       projectId: MY_PROJECT_ID,
       firestore: {
-        rules: readFileSync("../firestore.rules", "utf8"),
+        rules: readFileSync(
+          "/Users/pete/vizsurvey/packages/firebase/firestore.rules",
+          "utf8"
+        ),
+        host: "127.0.0.1",
+        port: "8080",
       },
     });
-    const alice = testEnv.unauthenticatedContext();
-    db = alice.firestore();
+    db = testEnv.unauthenticatedContext().firestore();
+  });
+
+  after(() => {
+    testEnv.cleanup();
+  });
+
+  afterEach(function () {
+    testEnv.clearFirestore();
+  });
+
+  it("Test for writing using firestore batch.", async () => {
+    const colRef = db.collection("test-1");
+    const batch = db.batch();
+    const docId = colRef.doc().id;
+    const docRef = colRef.doc(docId);
+    batch.set(docRef, { item1: "value1" });
+    await batch.commit();
   });
 
   it("Integration test for batch writing data to firestore.", async () => {
-    initBatch(db, "integrationTests");
+    initBatch(db, "test-2");
     setBatchItem(null, { item1: "value1" });
     await commitBatch();
-    const testDoc = db.collection("integrationTests").doc("value1");
-    await assertSucceeds(testDoc.get());
-    //await deleteDocs(db, "integrationTests");
+    const testDoc = db.collection("test-2");
+    const snapshot = await testDoc.get();
+    assert.equal(
+      "value1",
+      snapshot.docs[0].data()["item1"],
+      snapshot.docs[0].data()["item1"] + " doesn't equal 'value1'"
+    );
   });
 
   // it("Integration test for deleteDocs.", async () => {

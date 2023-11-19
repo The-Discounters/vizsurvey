@@ -10,8 +10,10 @@
     "build": "echo 'Build script currently does nothing in @the-discounters/firebase-shared module.'",
     "shell": "firebase functions:shell",
     "start": "yarn run shell",
-    "test": "firebase emulators:exec \"mocha './src/**/*.test.js'\"",
-    "demulator": "firebase emulators:start --project=demo-test --inspect-functions"
+    "test": "mocha './src/**/*.test.js'",
+    "test:watch": "mocha './src/**/*.test.js' --watch --parallel",
+    "emulator:start": "echo \"Be sure to run source ../../../setenv.sh so that firebase SDK can find admin creds!\" && firebase emulators:start --project=demo-firebase-shared --inspect-functions",
+    "emulator:dstart": "echo \"Be sure to run source ../../../setenv.sh so that firebase SDK can find admin creds!\" && firebase emulators:start --project=demo-firebase-shared --inspect-functions"
   },
   "dependencies": {
     "firebase": "^10.6.0",
