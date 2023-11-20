@@ -1,4 +1,3 @@
-import { getId, getServerSequenceId } from "./src/firebase.js";
 import {
   initAdminFirestoreDB,
   initBatch,

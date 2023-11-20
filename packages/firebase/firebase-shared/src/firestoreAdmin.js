@@ -19,6 +19,11 @@ export const setBatchItem = (idfield, item) => {
   batch.set(docRef, item);
 };
 
+export const commitBatch = async () => {
+  await batch.commit();
+  batch = null;
+};
+
 export const deleteDocs = async (db, path) => {
   const docRef = db.collection(path);
   const snapshot = await docRef.get();
@@ -26,11 +31,6 @@ export const deleteDocs = async (db, path) => {
     const data = snapshot.docs[i];
     data.ref.delete();
   }
-};
-
-export const commitBatch = async () => {
-  await batch.commit();
-  batch = null;
 };
 
 // TODO I need to implement linking a two dimensional array type field that could result from seven squares
