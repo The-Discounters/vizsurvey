@@ -1,35 +1,13 @@
-import {
-  initializeTestEnvironment,
-} from "@firebase/rules-unit-testing";
 import {initializeApp} from "firebase-admin/app";
 import {cert} from "firebase-admin/app";
 import {getFirestore} from "firebase-admin/firestore";
-import {readFileSync} from "fs";
 import {logger} from "firebase-functions";
 // import { onRequest } from "firebase-functions/v2/https";
 // The Firebase Admin SDK to access Firestore.
 // import { getFirestore } from "firebase-admin/firestore";
 import {ProlificSumbissionStatusType} from "@the-discounters/prolific";
 
-export const initEmulatorEnv = async (
-  projectId,
-  rulesPath,
-  host,
-  port,
-) => {
-  const testEnv = await initializeTestEnvironment({
-      projectId: projectId,
-      firestore: {
-        rules: readFileSync(rulesPath, "utf8"),
-        host: host,
-        port: port,
-      },
-    });
-  const db = testEnv.unauthenticatedContext().firestore();
-  return { testEnv: testEnv, db: db };
-};
-
-export const initLiveEnv = async (projectId, databaseURL, adminCred) => {
+export const initFirestore = async (projectId, databaseURL, adminCred) => {
   const app = initializeApp({
       projectId: projectId,
       credential: cert(adminCred),

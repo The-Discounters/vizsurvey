@@ -12,8 +12,8 @@
     "start": "yarn run shell",
     "test": "mocha './src/**/*.test.js' --timeout 5s",
     "test:watch": "mocha './src/**/*.test.js' --watch --parallel --timeout 5s",
-    "emulator:start": "echo \"Be sure to run source ../../../setenv.sh so that firebase SDK can find admin creds!\" && firebase emulators:start --project=demo-firebase-shared --inspect-functions",
-    "emulator:dstart": "echo \"Be sure to run source ../../../setenv.sh so that firebase SDK can find admin creds!\" && firebase emulators:start --project=demo-firebase-shared --inspect-functions"
+    "emulator:start": "echo \"Be sure to run source ../../../setenv.sh so that firebase SDK can find admin creds for live tests.  Set FIRESTORE_EMULATOR_HOST if using the emulator!\" && firebase emulators:start --project=vizsurvey-test --inspect-functions",
+    "emulator:dstart": "echo \"Be sure to run source ../../../setenv.sh so that firebase SDK can find admin creds for live tests.  Set FIRESTORE_EMULATOR_HOST if using the emulator!\" && firebase emulators:start --project=vizsurvey-test --inspect-functions"
   },
   "dependencies": {
     "firebase": "^10.6.0",

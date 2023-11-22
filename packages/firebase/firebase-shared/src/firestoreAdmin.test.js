@@ -1,12 +1,12 @@
 import {strict as assert} from "assert";
-import {assertSucceeds} from "@firebase/rules-unit-testing";
-import {collection, doc, setDoc, addDoc } from "firebase/firestore";
+import {
+  assertSucceeds,
+} from "@firebase/rules-unit-testing";
+
 import ADMIN_CREDS from "../../../../admin-credentials-dev.json" assert {type: "json"};
 
 // this needs to match the value that is passed to firebase emulators:start --project=
-const SIMULATOR_PROJECT_ID = "demo-firebase-shared";
-const LIVE_PROJECT_ID = "vizsurvey-test";
-const useEmulator = true;
+const PROJECT_ID = "vizsurvey-test";
 
 import {
   initBatch,
@@ -15,38 +15,38 @@ import {
   linkDocs,
   deleteDocs,
 } from "./firestoreAdmin.js";
-import { initEmulatorEnv, initLiveEnv } from "./firestoreFacade.js";
+import {initFirestore} from "./firestoreFacade.js";
+
+const deleteCollection = async (db, path) => {
+  const docRef = db.collection(path);
+  const snapshot = assertSucceeds(await docRef.get());
+  for (let i = 0; i < snapshot.size; i++) {
+    const data = snapshot.docs[i];
+    assertSucceeds(data.ref.delete());
+  }
+};
 
 describe("firestoreAdmin test ", () => {
-  let testEnv, app, db;
+  let app, db;
 
   before(async () => {
-    if (useEmulator) {
-      const result = await initEmulatorEnv(
-        SIMULATOR_PROJECT_ID,
-        "/Users/pete/vizsurvey/packages/firebase/firestore.rules",
-        "127.0.0.1",
-        "8080",
-      );
-      testEnv = result.testEnv;
-      db = result.db;
-    } else {
-      const result = await initLiveEnv(LIVE_PROJECT_ID, "https://vizsurvey-test.firebaseio.com/", ADMIN_CREDS);
-      app = result.app;
-      db = result.db;
-    }
+    const result = await initFirestore(
+      PROJECT_ID,
+      "https://vizsurvey-test.firebaseio.com/",
+      ADMIN_CREDS
+    );
+    app = result.app;
+    db = result.db;
   });
 
   after(() => {
-    if (testEnv) {
-      testEnv.cleanup();
-    }
   });
 
-  afterEach(() => {
-    if (testEnv) {
-      testEnv.clearFirestore();
-    }
+  afterEach(async () => {
+    await deleteCollection(db, "firestoreAdmin-test-test-1");
+    await deleteCollection(db, "firestoreAdmin-test-test-2");
+    await deleteCollection(db, "firestoreAdmin-test-test-4-linkTestPrimary");
+    await deleteCollection(db, "firestoreAdmin-test-test-4-linkTestForeign");
   });
 
   it("Test for writing using firestore APIbatch.", async () => {
