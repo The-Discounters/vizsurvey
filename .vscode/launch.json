@@ -5,6 +5,7 @@
     "version": "0.2.0",
     "configurations": [                
         {
+            "name": "Mocha Tests",
             "args": [
                 "--timeout",
                 "999999",
@@ -12,7 +13,6 @@
                 "${workspaceFolder}/packages/firebase/firebase-shared/src/**/*.test.js"
             ],
             "internalConsoleOptions": "openOnSessionStart",
-            "name": "Mocha Tests",
             "program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
             "request": "launch",
             "skipFiles": [
@@ -21,9 +21,9 @@
             "type": "node"
         },
         {
+            "name": "Launch Chrome against localhost",
             "type": "pwa-chrome",
             "request": "launch",
-            "name": "Launch Chrome against localhost",
             "url": "http://localhost:3000/dev",
             "webRoot": "${workspaceFolder}/src"
         },
@@ -50,99 +50,11 @@
             "internalConsoleOptions": "neverOpen"
         },
         {
+            "name": "Jest single run all tests",
             "type": "node",
             "request": "launch",
-            "name": "Jest single run all tests",
             "program": "${workspaceRoot}/node_modules/jest/bin/jest.js",
             "args": ["--verbose", "-i", "--no-cache -- --silent=false"],
-            "console": "integratedTerminal",
-            "internalConsoleOptions": "neverOpen"
-        },
-        {
-            "name": "Debug CLI download production 12/27/22",
-            "type": "node",
-            "request": "launch",
-            "runtimeExecutable": "/Users/pete/.nvm/versions/node/v19.3.0/bin/node",
-            "program": "${workspaceFolder}/cli/src/index.js",
-            "args": ["download", "/Users/pete/Library/CloudStorage/OneDrive-WorcesterPolytechnicInstitute(wpi.edu)/thesis/shared/data/pilot study 3","-l", "12/27/2022"],
-            "cwd": "${workspaceRoot}/cli",
-            "console": "integratedTerminal",
-            "internalConsoleOptions": "neverOpen"
-        },
-        {
-            "name": "Debug CLI split production",
-            "type": "node",
-            "request": "launch",
-            "runtimeExecutable": "/Users/pete/.nvm/versions/node/v19.3.0/bin/node",
-            "program": "${workspaceFolder}/cli/src/index.js",
-            "args": ["split", "/Users/pete/Library/CloudStorage/OneDrive-WorcesterPolytechnicInstitute(wpi.edu)/thesis/shared/data/pilot study 3"],
-            "cwd": "${workspaceRoot}/cli",
-            "console": "integratedTerminal",
-            "internalConsoleOptions": "neverOpen"
-        },
-        {
-            "name": "Debug CLI merge production",
-            "type": "node",
-            "request": "launch",
-            "runtimeExecutable": "/Users/pete/.nvm/versions/node/v19.3.0/bin/node",
-            "program": "${workspaceFolder}/cli/src/index.js",
-            "args": ["merge", "/Users/pete/Library/CloudStorage/OneDrive-WorcesterPolytechnicInstitute(wpi.edu)/thesis/shared/data/pilot study 3"],
-            "cwd": "${workspaceRoot}/cli",
-            "console": "integratedTerminal",
-            "internalConsoleOptions": "neverOpen"
-        },
-        {
-            "name": "Debug CLI download test folder all",
-            "type": "node",
-            "request": "launch",
-            "runtimeExecutable": "/Users/pete/.nvm/versions/node/v19.3.0/bin/node",
-            "program": "${workspaceFolder}/cli/src/index.js",
-            "args": ["download", "./S3-downloaded"],
-            "cwd": "${workspaceRoot}/cli",
-            "console": "integratedTerminal",
-            "internalConsoleOptions": "neverOpen"
-        },
-        {
-            "name": "Debug CLI download test folder 03/06/2023",
-            "type": "node",
-            "request": "launch",
-            "runtimeExecutable": "/Users/pete/.nvm/versions/node/v19.3.0/bin/node",
-            "program": "${workspaceFolder}/cli/src/index.js",
-            "args": ["download", "./S3-downloaded","-l", "03/06/2023"],
-            "cwd": "${workspaceRoot}/cli",
-            "console": "integratedTerminal",
-            "internalConsoleOptions": "neverOpen"
-        },
-        {
-            "name": "Debug CLI split test folder",
-            "type": "node",
-            "request": "launch",
-            "runtimeExecutable": "/Users/pete/.nvm/versions/node/v19.3.0/bin/node",
-            "program": "${workspaceFolder}/cli/src/index.js",
-            "args": ["split", "./S3-downloaded"],
-            "cwd": "${workspaceRoot}/cli",
-            "console": "integratedTerminal",
-            "internalConsoleOptions": "neverOpen"
-        },
-        {
-            "name": "Debug CLI merge test folder",
-            "type": "node",
-            "request": "launch",
-            "runtimeExecutable": "/Users/pete/.nvm/versions/node/v19.3.0/bin/node",
-            "program": "${workspaceFolder}/cli/src/index.js",
-            "args": ["merge", "./S3-downloaded"],
-            "cwd": "${workspaceRoot}/cli",
-            "console": "integratedTerminal",
-            "internalConsoleOptions": "neverOpen"
-        },
-        {
-            "name": "Debug CLI merge public test folder",
-            "type": "node",
-            "request": "launch",
-            "runtimeExecutable": "/Users/pete/.nvm/versions/node/v19.3.0/bin/node",
-            "program": "${workspaceFolder}/cli/src/index.js",
-            "args": ["merge", "../test/public"],
-            "cwd": "${workspaceRoot}/cli",
             "console": "integratedTerminal",
             "internalConsoleOptions": "neverOpen"
         },

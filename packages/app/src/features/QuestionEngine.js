@@ -10,22 +10,22 @@ export class QuestionEngine {
   constructor() {}
 
   isFirstQuestion(state) {
-    return state.currentAnswerIdx == 0;
+    return state.currentAnswerIdx === 0;
   }
 
   isLastQuestion(state) {
-    return state.currentAnswerIdx == state.answers.length - 1;
+    return state.currentAnswerIdx === state.answers.length - 1;
   }
-
+ 
   isLastTreatmentQuestion(state) {
     if (
-      state.answers.length == 1 ||
-      state.currentAnswerIdx == state.answers.length - 1
+      state.answers.length === 1 ||
+      state.currentAnswerIdx === state.answers.length - 1
     ) {
       return true;
     }
     return (
-      this.currentAnswer(state).treatmentId !=
+      this.currentAnswer(state).treatmentId !==
       this.nextAnswer(state).treatmentId
     );
   }
@@ -35,7 +35,7 @@ export class QuestionEngine {
   }
 
   nextAnswer(state) {
-    if (state.currentAnswerIdx == state.answers.length - 1) {
+    if (state.currentAnswerIdx === state.answers.length - 1) {
       return null;
     } else {
       return state.answers[state.currentAnswerIdx + 1];
@@ -202,6 +202,7 @@ export class QuestionEngine {
         return StatusType.Finished;
       case StatusType.Error:
         return StatusType.Error;
+      default: return null;
     }
   }
 }

@@ -1,10 +1,3 @@
-// import {readFileSync} from "fs";
-// import admin from "firebase-admin";
-//import SERVICE_ACCOUNT from "../../../admin-credentials-dev.json" with { type: "json" };
-// const SERVICE_ACCOUNT = JSON.parse(
-//   readFileSync("../../../admin-credentials-dev.json")
-// );
-
 var batch;
 var colRef;
 

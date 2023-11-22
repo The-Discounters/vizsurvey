@@ -1,17 +1,12 @@
-import { readFileSync } from "fs";
-import { strict as assert } from "assert";
-
-import {
-  assertFails,
-  assertSucceeds,
-  initializeTestEnvironment,
-} from "@firebase/rules-unit-testing";
-
-import { addDoc, collection } from "firebase/firestore";
-
+import {strict as assert} from "assert";
+import {assertSucceeds} from "@firebase/rules-unit-testing";
+import {collection, doc, setDoc, addDoc } from "firebase/firestore";
+import ADMIN_CREDS from "../../../../admin-credentials-dev.json" assert {type: "json"};
 
 // this needs to match the value that is passed to firebase emulators:start --project=
-const MY_PROJECT_ID = "demo-firebase-shared";
+const SIMULATOR_PROJECT_ID = "demo-firebase-shared";
+const LIVE_PROJECT_ID = "vizsurvey-test";
+const useEmulator = true;
 
 import {
   initBatch,
@@ -20,35 +15,42 @@ import {
   linkDocs,
   deleteDocs,
 } from "./firestoreAdmin.js";
+import { initEmulatorEnv, initLiveEnv } from "./firestoreFacade.js";
 
 describe("firestoreAdmin test ", () => {
-  let testEnv, db;
+  let testEnv, app, db;
 
   before(async () => {
-    testEnv = await initializeTestEnvironment({
-      projectId: MY_PROJECT_ID,
-      firestore: {
-        rules: readFileSync(
-          "/Users/pete/vizsurvey/packages/firebase/firestore.rules",
-          "utf8"
-        ),
-        host: "127.0.0.1",
-        port: "8080",
-      },
-    });
-    db = testEnv.unauthenticatedContext().firestore();
+    if (useEmulator) {
+      const result = await initEmulatorEnv(
+        SIMULATOR_PROJECT_ID,
+        "/Users/pete/vizsurvey/packages/firebase/firestore.rules",
+        "127.0.0.1",
+        "8080",
+      );
+      testEnv = result.testEnv;
+      db = result.db;
+    } else {
+      const result = await initLiveEnv(LIVE_PROJECT_ID, "https://vizsurvey-test.firebaseio.com/", ADMIN_CREDS);
+      app = result.app;
+      db = result.db;
+    }
   });
 
   after(() => {
-    testEnv.cleanup();
+    if (testEnv) {
+      testEnv.cleanup();
+    }
   });
 
-  afterEach(function () {
-    testEnv.clearFirestore();
+  afterEach(() => {
+    if (testEnv) {
+      testEnv.clearFirestore();
+    }
   });
 
   it("Test for writing using firestore APIbatch.", async () => {
-    const colRef = db.collection("test-1");
+    const colRef = db.collection("firestoreAdmin-test-test-1");
     const batch = db.batch();
     const docId = colRef.doc().id;
     const docRef = colRef.doc(docId);
@@ -57,69 +59,93 @@ describe("firestoreAdmin test ", () => {
   });
 
   it("Integration test for batch writing data to firestore.", async () => {
-    initBatch(db, "test-2");
+    initBatch(db, "firestoreAdmin-test-test-2");
     setBatchItem(null, { item1: "value1" });
     await commitBatch();
-    const snapshot = await assertSucceeds(db.collection("test-2").get());
+    const snapshot = await assertSucceeds(
+      db.collection("firestoreAdmin-test-test-2").get()
+    );
     assert.equal(
       "value1",
       snapshot.docs[0].data()["item1"],
-      `Did not read back what was written.  ${snapshot.docs[0].data()["item1"]} doesn't equal 'value1'`
+      `Did not read back what was written.  ${
+        snapshot.docs[0].data()["item1"]
+      } doesn't equal 'value1'`
     );
   });
 
   it("Integration test for deleteDocs.", async () => {
-    await assertSucceeds(addDoc(collection(db, "test-3"), { key1: "value1" }));
-    const snapshot = await assertSucceeds(db.collection("test-3").get());
-     assert.equal(
-       "value1",
-       snapshot.docs[0].data()["key1"],
-       `Wasn't able to read back written document as part of setup.  ${
-         snapshot.docs[0].data()["key1"]
-       } doesn't equal 'value1'`
-     );
-    await deleteDocs(db, "test-3");
-    const readBackSnapshot = await assertSucceeds(db.collection("test-3").get());
-    assert.equal(0, readBackSnapshot.docs.length, "The document wasn't deleted.");
+    await assertSucceeds(db
+      .collection("firestoreAdmin-test-test-3")
+      .doc()
+      .create({key1: "value1"}));
+    const snapshot = await assertSucceeds(
+      db.collection("firestoreAdmin-test-test-3").get()
+    );
+    assert.equal(
+      "value1",
+      snapshot.docs[0].data()["key1"],
+      `Wasn't able to read back written document as part of setup.  ${
+        snapshot.docs[0].data()["key1"]
+      } doesn't equal 'value1'`
+    );
+    await deleteDocs(db, "firestoreAdmin-test-test-3");
+    const readBackSnapshot = await assertSucceeds(
+      db.collection("firestoreAdmin-test-test-3").get()
+    );
+    assert.equal(
+      0,
+      readBackSnapshot.docs.length,
+      "The document wasn't deleted."
+    );
   });
 
   it("Integration test for linkDocs.", async () => {
     await assertSucceeds(
-      addDoc(collection(db, "test-4-linkTestPrimary"), { id: 1, foreign: 1 })
+      db.collection("firestoreAdmin-test-test-4-linkTestPrimary").doc().create({
+        id: 1,
+        foreign: 1,
+      })
     );
     await assertSucceeds(
-      addDoc(collection(db, "test-4-linkTestPrimary"), { id: 2, foreign: 2 })
+      db.collection("firestoreAdmin-test-test-4-linkTestPrimary").doc().create({
+        id: 2,
+        foreign: 2,
+      })
     );
     await assertSucceeds(
-      addDoc(collection(db, "test-4-linkTestPrimary"), { id: 3, foreign: 3 })
+      db.collection("firestoreAdmin-test-test-4-linkTestPrimary").doc().create({
+        id: 3,
+        foreign: 3,
+      })
     );
-     await assertSucceeds(
-       addDoc(collection(db, "test-4-linkTestForeign"), {
-         id: 1,
-         value: "value 1",
-       })
-     );
-     await assertSucceeds(
-       addDoc(collection(db, "test-4-linkTestForeign"), {
-         id: 2,
-         value: "value 2",
-       })
-     );
-     await assertSucceeds(
-       addDoc(collection(db, "test-4-linkTestForeign"), {
-         id: 3,
-         value: "value 3",
-       })
-     );
+    await assertSucceeds(
+      db.collection("firestoreAdmin-test-test-4-linkTestForeign").doc().create({
+        id: 1,
+        value: "value 1",
+      })
+    );
+    await assertSucceeds(
+      db.collection("firestoreAdmin-test-test-4-linkTestForeign").doc().create({
+        id: 2,
+        value: "value 2",
+      })
+    );
+    await assertSucceeds(
+      db.collection("firestoreAdmin-test-test-4-linkTestForeign").doc().create({
+        id: 3,
+        value: "value 3",
+      })
+    );
     await linkDocs(
       db,
-      "test-4-linkTestPrimary",
+      "firestoreAdmin-test-test-4-linkTestPrimary",
       "foreign",
-      "test-4-linkTestForeign",
+      "firestoreAdmin-test-test-4-linkTestForeign",
       "id"
     );
     const snapshot = await assertSucceeds(
-      db.collection("test-4-linkTestPrimary").get()
+      db.collection("firestoreAdmin-test-test-4-linkTestPrimary").get()
     );
     for (let i = 0; i < snapshot.size; i++) {
       const entry = snapshot.docs[i];
@@ -131,6 +157,6 @@ describe("firestoreAdmin test ", () => {
         foreignEntryValue,
         `Wasn't able to follow the foreign reference ${entryId} to the object.`
       );
-    };
+    }
   });
 });
