@@ -1,5 +1,4 @@
 import {
-  initAdminFirestoreDB,
   initBatch,
   setBatchItem,
   deleteDocs,
@@ -7,13 +6,14 @@ import {
   linkDocs,
 } from "./src/firestoreAdmin.js";
 
+import { initFirestore, fetchExperiment } from "./src/firestoreFacade.js";
+
 export {
-  getId,
-  getServerSequenceId,
-  initAdminFirestoreDB,
   initBatch,
   setBatchItem,
   deleteDocs,
   commitBatch,
   linkDocs,
+  initFirestore,
+  fetchExperiment,
 };

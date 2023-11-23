@@ -6998,6 +6998,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@the-discounters/functions@workspace:packages/firebase/functions"
   dependencies:
+    "@the-discounters/firebase-shared": "npm:*"
     eslint: "npm:^8.15.0"
     eslint-config-google: "npm:^0.14.0"
     eslint-plugin-import: "npm:^2.22.0"

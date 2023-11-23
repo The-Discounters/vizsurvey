@@ -15,7 +15,13 @@ import {
   linkDocs,
   deleteDocs,
 } from "./firestoreAdmin.js";
-import {initFirestore} from "./firestoreFacade.js";
+import {
+  initFirestore,
+  fetchExperiment,
+  fetchTreatments,
+  writeTreatmentAssignment,
+  writeAnswers,
+} from "./firestoreFacade.js";
 
 const deleteCollection = async (db, path) => {
   const docRef = db.collection(path);
@@ -49,14 +55,21 @@ describe("firestoreAdmin test ", () => {
     await deleteCollection(db, "firestoreAdmin-test-test-4-linkTestForeign");
   });
 
-  it("Test for writing using firestore APIbatch.", async () => {
-    const colRef = db.collection("firestoreAdmin-test-test-1");
-    const batch = db.batch();
-    const docId = colRef.doc().id;
-    const docRef = colRef.doc(docId);
-    batch.set(docRef, { item1: "value1" });
-    await batch.commit();
-  });
+  // it("Query test.", async () => {
+  //   const expRef = db.collection("experiments");
+  //   const q = expRef.where("prolific_study_id", "==", "1");
+  //   const expSnapshot = await assertSucceeds(q.get());
+  //   assert.equal(expSnapshot.docs[0].data().prolific_study_id, "1", "Did not retrieve expected data from query");
+  // });  
+
+  // it("Test for writing using firestore APIbatch.", async () => {
+  //   const colRef = db.collection("firestoreAdmin-test-test-1");
+  //   const batch = db.batch();
+  //   const docId = colRef.doc().id;
+  //   const docRef = colRef.doc(docId);
+  //   batch.set(docRef, {item1: "value1"});
+  //   await batch.commit();
+  // });
 
   it("Integration test for batch writing data to firestore.", async () => {
     initBatch(db, "firestoreAdmin-test-test-2");
@@ -158,5 +171,14 @@ describe("firestoreAdmin test ", () => {
         `Wasn't able to follow the foreign reference ${entryId} to the object.`
       );
     }
+  });
+
+  it("Integration test for fetchExperiment.", async () => {
+    const exp = await fetchExperiment(db, "1");
+    assert.equal(
+      exp.prolificStudyId,
+      "1",
+      'experiment prolificStudyId="1" not loaded correctly.'
+    );
   });
 });
