@@ -240,7 +240,6 @@ describe("firestoreAdmin test ", () => {
 
   it("Integration test for fetchExperiments.", async () => {
     const exp = await fetchExperiments(db);
-    console.log(exp);
     assert.equal(
       exp.length,
       6,
