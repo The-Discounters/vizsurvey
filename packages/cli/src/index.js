@@ -91,9 +91,9 @@ program
   .description(
     "CLI for processing files created from vizsurvey capturing participants survey answers."
   )
-  .version("1.0.0")
+  .version("2.0.0")
   .option("-q, --quiet", "run without showing the banner")
-  .hook("preAction", (thisCommand, actionCommand) => {
+  .hook("preAction", (thisCommand, actionCommand) => {    
     if (!program.opts().quiet) {
       console.log(
         chalk.yellow(
@@ -345,17 +345,23 @@ const typeFieldsFunction = (collectionType) => {
   }
 };
 
+const importWithoutParent = (db, collection, data) => {
+  initBatch(db, collection);
+  for (const item of data) {
+    setBatchItem(null, item);
+  }
+  commitBatchSync();
+}
+
 const importWithParent = async (
   db,
   collection,
   data,
   linkFields,
-  typeFieldsFn
 ) => {
   const experiments = await fetchExperiments(db);  
-  const typedData = data.map(v => typeFieldsFn(v));
   for (const exp of experiments) {
-    const dataToWrite = typedData.filter(
+    const dataToWrite = data.filter(
       (v) => v[linkFields.rightField] === exp[linkFields.leftField]
     );
     if (dataToWrite.length === 0) {
@@ -366,11 +372,7 @@ const importWithParent = async (
           `value ${exp[linkFields.leftField]}`)
       );
     } else {
-      initBatch(db, exp.path + "/" + collection);
-      for (const item of dataToWrite) {
-        setBatchItem(null, item);
-      }
-      await commitBatchSync();
+      importWithoutParent(db, exp.path + "/" + collection, dataToWrite);
     }
   }
 };
@@ -407,16 +409,13 @@ program
         const linkFields = parseLookupText(args.lookup);
         const data = parseFileToObj(args.src);
         const typeFieldsFn = typeFieldsFunction(args.collection);
-        importWithParent(db, args.collection, data, linkFields, typeFieldsFn);
+        const typedData = data.map((v) => typeFieldsFn(v));
+        importWithParent(db, args.collection, typedData, linkFields);
       } else {
-        initBatch(db, args.collection);
         const data = parseFileToObj(args.src);
         const typeFieldsFn = typeFieldsFunction(args.collection);
-        for (const item of data) {
-          const typedItem = typeFieldsFn(item);
-          setBatchItem(null, typedItem);
-        }
-        commitBatchSync();
+        const typedData = data.map((v) => typeFieldsFn(v));
+        importWithoutParent(db, args.collection, typedData);
       }
       console.log("Firestore import successfull!");
     } catch (err) {

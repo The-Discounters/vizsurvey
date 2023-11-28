@@ -1,6 +1,6 @@
 {
   "name": "cli",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Command line interface for downloading and splitting Vizsurvey data files.",
   "main": "index.js",
   "type": "module",
