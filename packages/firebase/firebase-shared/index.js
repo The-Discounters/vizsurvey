@@ -1,7 +1,6 @@
 import {
   initFirestore,
   initBatch,
-  fetchExperimentSnapshot,
   fetchExperiment,
   fetchExperiments,
   setBatchItem,
@@ -17,7 +16,6 @@ export {
   deleteDocs,
   commitBatch,
   linkDocs,
-  fetchExperimentSnapshot,
   fetchExperiment,
   fetchExperiments,
 };

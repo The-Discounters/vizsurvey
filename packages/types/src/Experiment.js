@@ -12,6 +12,7 @@ export const Experiment = ({
   prolificCode,
   prolificStudyId,
   description,
+  treatmentQuestions,
 }) =>
   Object.freeze({
     path,
@@ -27,4 +28,5 @@ export const Experiment = ({
     prolificCode,
     prolificStudyId,
     description,
+    treatmentQuestions,
   });

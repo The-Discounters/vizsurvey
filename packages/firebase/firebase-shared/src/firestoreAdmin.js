@@ -2,7 +2,7 @@ import { initializeApp } from "firebase-admin/app";
 import { cert } from "firebase-admin/app";
 import { getFirestore } from "firebase-admin/firestore";
 import { logger } from "firebase-functions";
-import { Experiment } from "@the-discounters/types";
+import { Experiment, TreatmentQuestion } from "@the-discounters/types";
 import { ProlificSumbissionStatusType } from "@the-discounters/prolific";
 
 var batch;
@@ -18,22 +18,36 @@ export const initFirestore = (projectId, databaseURL, adminCred) => {
   return { app: app, db: db };
 };
 
-export const fetchExperimentSnapshot = async (db, studyId) => {
-  console.log("studyId=" + studyId);
-  const expRef = await db.collection("experiments");
-  const q = expRef.where("prolific_study_id", "==", studyId);
-  const expSnapshot = await q.get();
-  console.log("expSnapshot=" + expSnapshot);
-  return expSnapshot;
+const fetchTreatmentQuestions = async (db, expPath) => {
+  const result = [];
+  const tqds = await db.collection(expPath + "/treatmentQuestions").get();
+  for (let j = 0; j < tqds.size; j++) {
+    const tqd = tqds.docs[j];
+    result.push(
+      TreatmentQuestion({
+        path: tqd.ref.path,
+        exp_id: tqd.data().exp_id,
+        id: tqd.data().id,
+        question_id: tqd.data().question_id,
+        sequence_id: tqd.data().sequence_id,
+        treatment_id: tqd.data().treatment_id,
+      })
+    );
+  }
+  return result;
 };
 
 export const fetchExperiment = async (db, studyId) => {
-  const expSnapshot = await fetchExperimentSnapshot(db, studyId);
-  console.log("expSnapshot.size" + expSnapshot.size);
+  const expRef = await db.collection("experiments");
+  const q = expRef.where("prolific_study_id", "==", studyId);
+  const expSnapshot = await q.get();
+  if (expSnapshot.docs.length != 1) {
+    return null;
+  }
   const expDoc = expSnapshot.docs[0];
-  console.log("expSnapshot.docs[0]" + expSnapshot.docs[0]);
-  console.log("data" + expDoc.data().id);
+  const tqs = await fetchTreatmentQuestions(db, expDoc.ref.path);
   const result = Experiment({
+    path: expDoc.ref.path,
     id: expDoc.data().id,
     status: expDoc.data().status,
     numParticipantsStarted: expDoc.data().num_participants_started,
@@ -46,30 +60,37 @@ export const fetchExperiment = async (db, studyId) => {
     prolificCode: expDoc.data().prolific_code,
     prolificStudyId: expDoc.data().prolific_study_id,
     description: expDoc.data().description,
+    treatmentQuestions: tqs,
   });
   return result;
 };
 
 export const fetchExperiments = async (db) => {
-  const entries = await db.collection("experiments").get();
-  const result = await entries.docs.map((exp) =>
-    Experiment({
-      path: exp.ref.path,
-      id: exp.data().id,
-      status: exp.data().status,
-      numParticipantsStarted: exp.data().num_participants_started,
-      numParticipantsCompleted: exp.data().num_participants_completed,
-      type: exp.data().type,
-      latinSquare: exp.data().latin_square,
-      startDate: exp.data().start_date,
-      endDate: exp.data().end_date,
-      numParticipants: exp.data().num_participants,
-      prolificCode: exp.data().prolific_code,
-      prolificStudyId: exp.data().prolific_study_id,
-      description: exp.data().description,
-    })
-  );
-  return result;
+  const expCol = await db.collection("experiments").get();
+  const expAry = [];
+  for (let i = 0; i < expCol.size; i++) {
+    const expDoc = expCol.docs[i];
+    const tqs = await fetchTreatmentQuestions(db, expDoc.ref.path);
+    expAry.push(
+      Experiment({
+        path: expDoc.ref.path,
+        id: expDoc.data().id,
+        status: expDoc.data().status,
+        numParticipantsStarted: expDoc.data().num_participants_started,
+        numParticipantsCompleted: expDoc.data().num_participants_completed,
+        type: expDoc.data().type,
+        latinSquare: expDoc.data().latin_square,
+        startDate: expDoc.data().start_date,
+        endDate: expDoc.data().end_date,
+        numParticipants: expDoc.data().num_participants,
+        prolificCode: expDoc.data().prolific_code,
+        prolificStudyId: expDoc.data().prolific_study_id,
+        description: expDoc.data().description,
+        treatmentQuestions: tqs,
+      })
+    );
+  }
+  return expAry;
 }
 
 export const writeTreatmentAssignment = async (

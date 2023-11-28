@@ -230,20 +230,29 @@ describe("firestoreAdmin test ", () => {
   // });
 
   it("Integration test for fetchExperiment.", async () => {
-    const exp = await fetchExperiment(db, "1");
+    const exp = await fetchExperiment(db, "649f3cffea5a1b2817d17d7e");
     assert.equal(
       exp.prolificStudyId,
-      "1",
-      'experiment prolificStudyId="1" not loaded correctly.'
+      "649f3cffea5a1b2817d17d7e",
+      'experiment prolificStudyId="-649f3cffea5a1b2817d17d7e" not loaded correctly.'
     );
   });
 
   it("Integration test for fetchExperiments.", async () => {
     const exp = await fetchExperiments(db);
+    console.log(exp);
     assert.equal(
       exp.length,
       6,
       `${exp.length} was not the expected number of experiment entries.`
+    );
+    const exp5 = exp.filter((v) => {
+      return v.id === 5;
+    });
+    assert.equal(
+      exp5[0].treatmentQuestions.length,
+      48,
+      `Expected to find 6 entries in treatmentQuestions and found ${exp5[0].treatmentQuestions.length}`
     );
   });
 });
