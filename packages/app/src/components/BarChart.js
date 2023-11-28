@@ -5,7 +5,7 @@ import { DateTime } from "luxon";
 import { ThemeProvider, Box, Button } from "@mui/material";
 import { Grid } from "@material-ui/core";
 import { useD3 } from "../hooks/useD3.js";
-import { AmountType } from "../features/AmountType.js";
+import { AmountType } from "@the-discounters/types";
 import {
   getCurrentQuestion,
   getCurrentChoice,

@@ -6,13 +6,14 @@ import {
   typeTreatmentObj,
   typeTreatmentQuestionObj,
   parseLinkText,
+  parseLookupText,
 } from "./importUtil.js";
-import { ProlificSumbissionStatusType } from "../../src/prolific/ProlificSumbissionStatusType.js";
-import { ExperimentType } from "../../src/features/experimentType.js";
+import { ProlificSumbissionStatusType } from "@the-discounters/prolific";
+import { ExperimentType } from "@the-discounters/types";
 import { InteractionType } from "@the-discounters/types";
-import { AmountType } from "../../src/features/AmountType.js";
+import { AmountType } from "@the-discounters/types";
 import { ViewType } from "@the-discounters/types";
-import { ProlificStudyStatusType } from "./ProlificStatusTypes.js";
+import { ProlificStudyStatusType } from "@the-discounters/prolific";
 
 describe("importUtil test ", () => {
   it("Test typeExperimentObj valid fields.", async () => {
@@ -136,4 +137,15 @@ describe("importUtil test ", () => {
     expect(result.rightPath).toBe("docRefPrimary");
     expect(result.rightField).toBe("primaryKey");
   });
+
+  it("Test parseLookupText.", async () => {
+    const result = parseLookupText("parentKey=>childKey");
+    expect(result.leftField).toBe("parentKey");
+    expect(result.leftField).toBe("childKey");
+  });
+
+
+
+
+  ;
 });

@@ -1,3 +1,4 @@
+#!/usr/bin/env pwsh
 $ErrorActionPreference = "Stop"
 # import the experiment configuration documents
 Write-Output "Start import of configurations."
@@ -17,7 +18,7 @@ if (!($?)) {
     Throw "dsc failed! See above for error."
 }
 Write-Output "Importing treatmentQuestions"
-dsc -q import -s $PSScriptRoot/fire_treat_ques_prod.csv -c treatmentQuestions
+dsc -q import -s $PSScriptRoot/fire_treat_ques_prod.csv -c treatmentQuestions -p experiments -l "id=>exp_id"
 if (!($?)) {
     Throw "dsc failed! See above for error."
 }

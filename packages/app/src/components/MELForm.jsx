@@ -7,7 +7,7 @@ import Grid from "@mui/material/Unstable_Grid2";
 
 import { MELSelectionForm } from "./MELSelectionForm.jsx";
 
-import { AmountType } from "../features/AmountType.js";
+import { AmountType } from "@the-discounters/types";
 import {
   getCurrentQuestion,
   getCurrentChoice,

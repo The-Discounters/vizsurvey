@@ -1,5 +1,5 @@
 import { StatusType } from "./StatusType.js";
-import { AmountType } from "./AmountType.js";
+import { AmountType } from "@the-discounters/types";
 import { Answer } from "./Answer.js";
 import { secondsBetween } from "@the-discounters/util";
 

@@ -1,19 +1,23 @@
 import {
+  initFirestore,
   initBatch,
+  fetchExperimentSnapshot,
+  fetchExperiment,
+  fetchExperiments,
   setBatchItem,
   deleteDocs,
   commitBatch,
   linkDocs,
 } from "./src/firestoreAdmin.js";
 
-import { initFirestore, fetchExperiment } from "./src/firestoreFacade.js";
-
 export {
+  initFirestore,
   initBatch,
   setBatchItem,
   deleteDocs,
   commitBatch,
   linkDocs,
-  initFirestore,
+  fetchExperimentSnapshot,
   fetchExperiment,
+  fetchExperiments,
 };

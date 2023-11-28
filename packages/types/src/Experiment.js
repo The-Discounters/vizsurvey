@@ -1,4 +1,5 @@
 export const Experiment = ({
+  path,
   id,
   status,
   numParticipantsStarted,
@@ -13,6 +14,7 @@ export const Experiment = ({
   description,
 }) =>
   Object.freeze({
+    path,
     id,
     status,
     numParticipantsStarted,

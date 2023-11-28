@@ -4,7 +4,7 @@ import { ViewType } from "@the-discounters/types";
 import { StatusType } from "./StatusType.js";
 import { Question } from "./Question.js";
 import { InteractionType } from "@the-discounters/types";
-import { AmountType } from "./AmountType.js";
+import { AmountType } from "@the-discounters/types";
 import { Answer } from "./Answer.js";
 import { dateToState } from "@the-discounters/util";
 

@@ -14,7 +14,7 @@ import {
   answer,
 } from "../features/questionSlice.js";
 import { useD3 } from "../hooks/useD3.js";
-import { AmountType } from "../features/AmountType.js";
+import { AmountType } from "@the-discounters/types";
 import { StatusType } from "../features/StatusType.js";
 import { InteractionType } from "@the-discounters/types";
 import { drawCalendar } from "./CalendarHelper.js";

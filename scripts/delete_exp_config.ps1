@@ -1,3 +1,4 @@
+#!/usr/bin/env pwsh
 $ErrorActionPreference = "Stop"
 # import the experiment configuration documents
 Write-Output "Start delete of configurations."

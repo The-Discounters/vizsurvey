@@ -9,7 +9,7 @@ import {
   select,
 } from "d3";
 import { InteractionType } from "@the-discounters/types";
-import { AmountType } from "../features/AmountType.js";
+import { AmountType } from "@the-discounters/types";
 import { calcScreenValues } from "./ScreenHelper.js";
 
 export const drawBarChart = ({

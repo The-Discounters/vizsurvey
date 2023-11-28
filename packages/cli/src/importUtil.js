@@ -1,10 +1,10 @@
 import admin from "firebase-admin";
-import { ProlificStudyStatusType } from "./ProlificStatusTypes.js";
-import { ExperimentType } from "./experimentType.js";
+import { ProlificStudyStatusType } from "@the-discounters/prolific";
+import { ExperimentType } from "@the-discounters/types";
 import { InteractionType } from "@the-discounters/types";
 import { ViewType } from "@the-discounters/types";
-import { stringToDate } from "@the-discounters/util";
-import { AmountType } from "./AmountType.js";
+import {stringToDate, isJSONExt, isCSVExt, loadFile, parseCSV } from "@the-discounters/util";
+import {AmountType} from "@the-discounters/types";
 
 export const typeExperimentObj = (obj) => {
   obj.id = +obj.id;
@@ -91,6 +91,7 @@ export const typeTreatmentObj = (obj) => {
 };
 
 export const typeTreatmentQuestionObj = (obj) => {
+  obj.id = +obj.id;
   obj.exp_id = +obj.exp_id;
   obj.treatment_id = +obj.treatment_id;
   obj.question_id = +obj.question_id;
@@ -109,4 +110,23 @@ export const parseLinkText = (text) => {
     rightPath: rightTerm[0],
     rightField: rightTerm[1],
   };
+};
+
+export const parseLookupText = (text) => {
+  const terms = text.split("=>");
+  if (terms.length >=2)
+    return {leftField: terms[0], rightField: terms[1]};
+  return null;
+}
+
+export const parseFileToObj = (file) => {
+  let data;
+  if (isJSONExt(file)) {
+    data = fs.readJSONSync(file);
+  }
+  if (isCSVExt(file)) {
+    const fileData = loadFile(file);
+    data = parseCSV(fileData);
+  }
+  return data;
 };

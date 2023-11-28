@@ -1,5 +1,5 @@
 import { select /*, format, scaleLinear, scaleBand, range, drag */ } from "d3";
-import { AmountType } from "../features/AmountType.js";
+import { AmountType } from "@the-discounters/types";
 
 export const monthNames = [
   "January",

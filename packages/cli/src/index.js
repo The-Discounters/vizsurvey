@@ -1,5 +1,4 @@
 #!/usr/bin/env node
-import * as dotenv from "dotenv";
 import chalk from "chalk";
 import clear from "clear";
 import figlet from "figlet";
@@ -8,36 +7,34 @@ import fs from "fs";
 import { DateTime } from "luxon";
 import readline from "readline";
 import isValid from "is-valid-path";
-import { parseCSV, convertToCSV } from "./parserUtil.js";
+import {parseCSV} from "@the-discounters/util";
 import {
-  getFilename,
-  loadFile,
-  writeFile,
   appendSepToPath,
   isCSVExt,
-  isJSONExt,
   directoryOrFileExists,
-} from "./files.js";
-import { updateStats, createStat, clearStats } from "./stats.js";
+} from "@the-discounters/util";
+import {
+  updateStats, createStat, clearStats
+} from "./stats.js";
 import { drawStatus } from "./monitorUtil.js";
 import {
-  initAdminFirestoreDB,
+  initFirestore,
   initBatch,
   setBatchItem,
   commitBatch,
   linkDocs,
   deleteDocs,
-} from "./firestoreAdmin.js";
+  fetchExperiments,
+} from "@the-discounters/firebase-shared";
 import {
   typeExperimentObj,
   typeQuestionObj,
   typeTreatmentObj,
   typeTreatmentQuestionObj,
   parseLinkText,
+  parseFileToObj,
+  parseLookupText,
 } from "./importUtil.js";
-
-const useEmulator = false;
-dotenv.config();
 
 const validateInt = (value, dummyPrevious) => {
   const parsedValue = parseInt(value, 10);
@@ -64,6 +61,29 @@ const validatePath = (value, dummyPrevious) => {
   }
   return value;
 };
+
+const initializeDB = () => {
+  console.log(
+    chalk.yellow(
+      `Using creds from ${process.env.GOOGLE_APPLICATION_CREDENTIALS} ` +
+      `and project id ${process.env.FIRESTORE_PROJECT_ID} ` +
+      `and database url ${process.env.FIRESTORE_DATABASE_URL} ` +
+      "set with environment variables GOOGLE_APPLICATION_CREDENTIALS, " +
+      "FIRESTORE_PROJECT_ID, and FIRESTORE_DATABASE_URL"
+    )
+  );
+  const ADMIN_CREDS = JSON.parse(
+    fs.readFileSync(
+      new URL(process.env.GOOGLE_APPLICATION_CREDENTIALS, import.meta.url)
+    )
+  );
+  const result = initFirestore(
+    process.env.FIRESTORE_PROJECT_ID,
+    process.env.FIRESTORE_DATABASE_URL,
+    ADMIN_CREDS
+  );
+  return result;  
+}
 
 const program = new Command();
 program
@@ -289,18 +309,6 @@ program
     }
   });
 
-const parseFileToObj = (file) => {
-  let data;
-  if (isJSONExt(file)) {
-    data = fs.readJSONSync(file);
-  }
-  if (isCSVExt(file)) {
-    const fileData = loadFile(file);
-    data = parseCSV(fileData);
-  }
-  return data;
-};
-
 const commitBatchSync = async () => {
   await commitBatch();
 };
@@ -337,6 +345,36 @@ const typeFieldsFunction = (collectionType) => {
   }
 };
 
+const importWithParent = async (
+  db,
+  collection,
+  data,
+  linkFields,
+  typeFieldsFn
+) => {
+  const experiments = await fetchExperiments(db);  
+  const typedData = data.map(v => typeFieldsFn(v));
+  for (const exp of experiments) {
+    const dataToWrite = typedData.filter(
+      (v) => v[linkFields.rightField] === exp[linkFields.leftField]
+    );
+    if (dataToWrite.length === 0) {
+      console.log(chalk.yellow(
+        `No entries found in the file for parent entry ${exp.path}` +
+        "matched on fields " +
+        `${linkFields.leftField}=>${linkFields.rightField} ` +
+          `value ${exp[linkFields.leftField]}`)
+      );
+    } else {
+      initBatch(db, exp.path + "/" + collection);
+      for (const item of dataToWrite) {
+        setBatchItem(null, item);
+      }
+      await commitBatchSync();
+    }
+  }
+};
+
 program
   .command("import")
   .description(
@@ -344,24 +382,42 @@ program
   )
   .option("-s, --src <path>", "Source file path", validatePath)
   .option(
-    "-c, --collection <path>",
-    "Collection path in database",
+    "-c, --collection <name>",
+    "Collection name in database",
     validateImportCollextionType
   )
-  .option("-i, --id [id]", "Optional field to use for document ID")
+  .option(
+    "-p, --parent <name>",
+    "Collection parent name in database",
+    validateImportCollextionType
+  )
+  .option(
+    "-l, --lookup <parent field name>=><child field name>",
+    "Parent and child collection fields to lookup the parent entry for the child entries."
+  )
   .action((args, options) => {
     try {
-      const colPath = args.collection;
-      const file = args.src;
-      initAdminFirestoreDB();
-      initBatch(colPath);
-      const data = parseFileToObj(file);
-      const typeFieldsFn = typeFieldsFunction(colPath);
-      for (const item of data) {
-        const typedItem = typeFieldsFn(item);
-        setBatchItem(args.id, typedItem);
+      const {db} = initializeDB();      
+      if (args.parent) {
+        if (args.parent !== ImportCollextionTypes.experiments) {
+          throw new InvalidArgumentError(
+            "parent of experiment type is the only supported at this time."
+          );
+        };
+        const linkFields = parseLookupText(args.lookup);
+        const data = parseFileToObj(args.src);
+        const typeFieldsFn = typeFieldsFunction(args.collection);
+        importWithParent(db, args.collection, data, linkFields, typeFieldsFn);
+      } else {
+        initBatch(db, args.collection);
+        const data = parseFileToObj(args.src);
+        const typeFieldsFn = typeFieldsFunction(args.collection);
+        for (const item of data) {
+          const typedItem = typeFieldsFn(item);
+          setBatchItem(null, typedItem);
+        }
+        commitBatchSync();
       }
-      commitBatchSync();
       console.log("Firestore import successfull!");
     } catch (err) {
       console.log(chalk.red("Migration failed!"), err);
@@ -380,8 +436,9 @@ program
     try {
       const fields = args.fields;
       const links = parseLinkText(fields);
-      initAdminFirestoreDB();
+      const {db} = initializeDB();
       linkDocs(
+        db,
         links.leftPath,
         links.leftField,
         links.rightPath,
@@ -394,8 +451,8 @@ program
     }
   });
 
-const deletePath = async (path) => {
-  await deleteDocs(path);
+const deletePath = async (db, path) => {
+  await deleteDocs(db, path);
 };
 
 program
@@ -409,13 +466,12 @@ program
     validateImportCollextionType
   )
   .action((args) => {
-    const colPath = args.collection;
     try {
-      initAdminFirestoreDB();
-      deletePath(colPath);
+      const {db} = initializeDB();
+      deletePath(db, args.collection);
       console.log("Firestore delete collection was successfull!");
     } catch (err) {
-      console.log(chalk.red(`Delete failed for ${colPath}!`), err);
+      console.log(chalk.red(`Delete failed for ${args.collection}!`), err);
       throw err;
     }
   });
@@ -423,5 +479,6 @@ program
 try {
   program.parse();
 } catch (err) {
+  console.log(chalk.red(err));
   process.exit(1);
 }

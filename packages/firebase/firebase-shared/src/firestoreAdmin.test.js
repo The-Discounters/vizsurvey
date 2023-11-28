@@ -9,19 +9,15 @@ import ADMIN_CREDS from "../../../../admin-credentials-dev.json" assert {type: "
 const PROJECT_ID = "vizsurvey-test";
 
 import {
+  initFirestore,
+  fetchExperiment,
+  fetchExperiments,
   initBatch,
   setBatchItem,
   commitBatch,
   linkDocs,
   deleteDocs,
 } from "./firestoreAdmin.js";
-import {
-  initFirestore,
-  fetchExperiment,
-  fetchTreatments,
-  writeTreatmentAssignment,
-  writeAnswers,
-} from "./firestoreFacade.js";
 
 const deleteCollection = async (db, path) => {
   const docRef = db.collection(path);
@@ -113,7 +109,7 @@ describe("firestoreAdmin test ", () => {
     );
   });
 
-  it("Integration test for linkDocs.", async () => {
+  it("Integration test for linkDocs one to one link.", async () => {
     await assertSucceeds(
       db.collection("firestoreAdmin-test-test-4-linkTestPrimary").doc().create({
         id: 1,
@@ -173,12 +169,81 @@ describe("firestoreAdmin test ", () => {
     }
   });
 
+  // it("Integration test for linkDocs array reference link.", async () => {
+  //   await assertSucceeds(
+  //     db.collection("firestoreAdmin-test-test-5-linkTestPrimary").doc().create({
+  //       id: 1,
+  //       foreign: "[1,2]",
+  //     })
+  //   );
+  //   await assertSucceeds(
+  //     db.collection("firestoreAdmin-test-test-5-linkTestPrimary").doc().create({
+  //       id: 2,
+  //       foreign: "[3]",
+  //     })
+  //   );
+  //   await assertSucceeds(
+  //     db.collection("firestoreAdmin-test-test-5-linkTestPrimary").doc().create({
+  //       id: 3,
+  //       foreign: "",
+  //     })
+  //   );
+  //   await assertSucceeds(
+  //     db.collection("firestoreAdmin-test-test-5-linkTestForeign").doc().create({
+  //       id: 1,
+  //       value: "value 1",
+  //     })
+  //   );
+  //   await assertSucceeds(
+  //     db.collection("firestoreAdmin-test-test-5-linkTestForeign").doc().create({
+  //       id: 2,
+  //       value: "value 2",
+  //     })
+  //   );
+  //   await assertSucceeds(
+  //     db.collection("firestoreAdmin-test-test-5-linkTestForeign").doc().create({
+  //       id: 3,
+  //       value: "value 3",
+  //     })
+  //   );
+  //   await linkDocs(
+  //     db,
+  //     "firestoreAdmin-test-test-5-linkTestPrimary",
+  //     "foreign",
+  //     "firestoreAdmin-test-test-5-linkTestForeign",
+  //     "id"
+  //   );
+  //   const snapshot = await assertSucceeds(
+  //     db.collection("firestoreAdmin-test-test-5-linkTestPrimary").get()
+  //   );
+  //   for (let i = 0; i < snapshot.size; i++) {
+  //     const entry = snapshot.docs[i];
+  //     const foreignEntry = await assertSucceeds(entry.data()["foreign"].get());
+  //     const entryId = entry.data()["id"];
+  //     const foreignEntryValue = foreignEntry.data()["value"];
+  //     assert.equal(
+  //       `value ${entryId}`,
+  //       foreignEntryValue,
+  //       `Wasn't able to follow the foreign reference ${entryId} to the object.`
+  //     );
+  //   }
+  // });
+
   it("Integration test for fetchExperiment.", async () => {
     const exp = await fetchExperiment(db, "1");
     assert.equal(
       exp.prolificStudyId,
       "1",
       'experiment prolificStudyId="1" not loaded correctly.'
+    );
+  });
+
+  it("Integration test for fetchExperiments.", async () => {
+    const exp = await fetchExperiments(db);
+    assert.equal(
+      exp.length,
+      6,
+      `${exp.length} was not the expected number of experiment entries.`
     );
   });
 });

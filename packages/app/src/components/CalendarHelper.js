@@ -1,6 +1,6 @@
 import { select } from "d3";
 import { format } from "d3";
-import { AmountType } from "../features/AmountType.js";
+import { AmountType } from "@the-discounters/types";
 
 export const dayNames = ["S", "M", "T", "W", "T", "F", "S"];
 

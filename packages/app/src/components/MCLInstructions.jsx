@@ -23,7 +23,7 @@ import {
 import { dateToState } from "@the-discounters/util";
 
 import { styles, theme, calcScreenValues } from "./ScreenHelper.js";
-import { AmountType } from "../features/AmountType.js";
+import { AmountType } from "@the-discounters/types";
 import { MELSelectionForm } from "./MELSelectionForm.jsx";
 import { drawBarChart } from "./BarChartComponent.js";
 import { StatusType } from "../features/StatusType.js";

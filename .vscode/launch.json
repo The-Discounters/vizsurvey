@@ -68,6 +68,72 @@
             "cwd": "${workspaceRoot}/cli",
             "console": "integratedTerminal",
             "internalConsoleOptions": "neverOpen"
+        },
+        {
+            "name": "Debug CLI import firebase experiments",
+            "type": "node",
+            "request": "launch",
+            "runtimeExecutable": "/Users/pete/.nvm/versions/node/v18.17.0/bin/node",
+            "program": "${workspaceFolder}/packages/cli/src/index.js",
+            "args": ["import", "-s", "../../scripts/fire_exp_prod.csv", "-c", "experiments"],
+            "cwd": "${workspaceRoot}/packages/cli",
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen"
+        },
+        {
+            "name": "Debug CLI import firebase questions",
+            "type": "node",
+            "request": "launch",
+            "runtimeExecutable": "/Users/pete/.nvm/versions/node/v18.17.0/bin/node",
+            "program": "${workspaceFolder}/packages/cli/src/index.js",
+            "args": ["import", "-s", "../../scripts/fire_ques_prod.csv", "-c", "questions"],
+            "cwd": "${workspaceRoot}/packages/cli",
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen"
+        },
+        {
+            "name": "Debug CLI import firebase treatments",
+            "type": "node",
+            "request": "launch",
+            "runtimeExecutable": "/Users/pete/.nvm/versions/node/v18.17.0/bin/node",
+            "program": "${workspaceFolder}/packages/cli/src/index.js",
+            "args": ["import", "-s", "../../scripts/fire_treat_prod.csv", "-c", "treatments"],
+            "cwd": "${workspaceRoot}/packages/cli",
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen"
+        },
+        {
+            "name": "Debug CLI import firebase treatment questions.",
+            "type": "node",
+            "request": "launch",
+            "runtimeExecutable": "/Users/pete/.nvm/versions/node/v18.17.0/bin/node",
+            "program": "${workspaceFolder}/packages/cli/src/index.js",
+            "args": ["import", "-s", "../../scripts/fire_treat_ques_prod.csv", "-c", "treatmentQuestions", "-p", "experiments",  "-l", "id=>exp_id"],
+            "cwd": "${workspaceRoot}/packages/cli",
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen"
+        },
+        {
+            "name": "Debug CLI link treatments",
+            "type": "node",
+            "request": "launch",
+            "runtimeExecutable": "/Users/pete/.nvm/versions/node/v18.17.0/bin/node",
+            "program": "${workspaceFolder}/packages/cli/src/index.js",
+            "args": ["-q", "link", "-f", "treatments.instruction_question_id=>questions.id"],
+            "cwd": "${workspaceRoot}/packages/cli",
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen"
+        },
+        {
+            "name": "Debug CLI delete path",
+            "type": "node",
+            "request": "launch",
+            "runtimeExecutable": "/Users/pete/.nvm/versions/node/v18.17.0/bin/node",
+            "program": "${workspaceFolder}/packages/cli/src/index.js",
+            "args": ["-q", "delete", "-c", "experiments"],
+            "cwd": "${workspaceRoot}/packages/cli",
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen"
         }
     ]
 }

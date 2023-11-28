@@ -9,7 +9,7 @@ import {
 import { format } from "d3";
 import { Grid } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import { AmountType } from "../features/AmountType.js";
+import { AmountType } from "@the-discounters/types";
 import { formControl } from "./ScreenHelper.js";
 
 export function MELSelectionForm(props) {
