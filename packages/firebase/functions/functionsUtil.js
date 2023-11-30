@@ -14,10 +14,12 @@ export const calcTreatmentIds = (latinSquare, participantCount) => {
   return latinSquareAry[index];
 };
 
-export const createQuestions = (parentPath, exp) => {
-  return [...exp.treatmentQuestions].forEach(
-    (e) => (e.path = `${parentPath}/`)
-  );
+export const createQuestions = (parentPath, treatmentQuestions) => {
+  let result = [...treatmentQuestions];
+  result.forEach((e) => (e.path = `${parentPath}/${e.id}`));
+  return result;
 };
 
-export const orderQuestions = (q) => {};
+export const orderQuestions = (q, latinSquare) => {
+  // order the questions by treatment dicated by the latin square array and sequence number.
+};
