@@ -1,9 +1,7 @@
-import {strict as assert} from "assert";
-import {
-  assertSucceeds,
-} from "@firebase/rules-unit-testing";
+import { strict as assert } from "assert";
+import { assertSucceeds } from "@firebase/rules-unit-testing";
 
-import ADMIN_CREDS from "../../../../admin-credentials-dev.json" assert {type: "json"};
+import ADMIN_CREDS from "../../../../admin-credentials-dev.json" assert { type: "json" };
 
 // this needs to match the value that is passed to firebase emulators:start --project=
 const PROJECT_ID = "vizsurvey-test";
@@ -32,7 +30,7 @@ describe("firestoreAdmin test ", () => {
   let app, db;
 
   before(async () => {
-    const result = await initFirestore(
+    const result = initFirestore(
       PROJECT_ID,
       "https://vizsurvey-test.firebaseio.com/",
       ADMIN_CREDS
@@ -41,8 +39,7 @@ describe("firestoreAdmin test ", () => {
     db = result.db;
   });
 
-  after(() => {
-  });
+  after(() => {});
 
   afterEach(async () => {
     await deleteCollection(db, "firestoreAdmin-test-test-1");
@@ -56,7 +53,7 @@ describe("firestoreAdmin test ", () => {
   //   const q = expRef.where("prolific_study_id", "==", "1");
   //   const expSnapshot = await assertSucceeds(q.get());
   //   assert.equal(expSnapshot.docs[0].data().prolific_study_id, "1", "Did not retrieve expected data from query");
-  // });  
+  // });
 
   // it("Test for writing using firestore APIbatch.", async () => {
   //   const colRef = db.collection("firestoreAdmin-test-test-1");
@@ -84,10 +81,12 @@ describe("firestoreAdmin test ", () => {
   });
 
   it("Integration test for deleteDocs.", async () => {
-    await assertSucceeds(db
-      .collection("firestoreAdmin-test-test-3")
-      .doc()
-      .create({key1: "value1"}));
+    await assertSucceeds(
+      db
+        .collection("firestoreAdmin-test-test-3")
+        .doc()
+        .create({ key1: "value1" })
+    );
     const snapshot = await assertSucceeds(
       db.collection("firestoreAdmin-test-test-3").get()
     );

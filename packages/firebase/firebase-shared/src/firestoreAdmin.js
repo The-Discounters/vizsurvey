@@ -91,7 +91,11 @@ export const fetchExperiments = async (db) => {
     );
   }
   return expAry;
-}
+};
+
+export const updateParticipantCount = (db, studyId, newCount) => {};
+
+export const writeQuestions = async (questions) => {};
 
 export const writeTreatmentAssignment = async (
   db,
@@ -133,8 +137,6 @@ export const deleteDocs = async (db, path) => {
     await data.ref.delete();
   }
 };
-
-
 
 // TODO I need to implement linking a two dimensional array type field that could result from seven squares
 // assignment, for example [[1, 2, 3], [1, 3, 2], [3, 1, 2], [3, 2, 1], [2, 3, 1], [2, 1, 3]].  I can do this

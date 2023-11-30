@@ -22,3 +22,9 @@ To run the unit tests with the emulator.
 5. If you want to shut the emulator off and run the tests on the live
     firestore instance, run:
     ```unset FIRESTORE_EMULATOR_HOST```
+
+# Reference
+See the links below for information on how I got all this running.
+https://firebase.google.com/docs/rules/unit-tests
+https://firebase.google.com/docs/reference/emulator-suite/rules-unit-testing/rules-unit-testing.rulestestenvironment
+https://firebase.google.com/docs/emulator-suite/connect_firestore
