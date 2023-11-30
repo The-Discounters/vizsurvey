@@ -3,8 +3,14 @@ import { ProlificStudyStatusType } from "@the-discounters/prolific";
 import { ExperimentType } from "@the-discounters/types";
 import { InteractionType } from "@the-discounters/types";
 import { ViewType } from "@the-discounters/types";
-import {stringToDate, isJSONExt, isCSVExt, loadFile, parseCSV } from "@the-discounters/util";
-import {AmountType} from "@the-discounters/types";
+import {
+  stringToDate,
+  isJSONExt,
+  isCSVExt,
+  loadFile,
+  parseCSV,
+} from "@the-discounters/util";
+import { AmountType } from "@the-discounters/types";
 
 export const typeExperimentObj = (obj) => {
   obj.id = +obj.id;
@@ -114,10 +120,9 @@ export const parseLinkText = (text) => {
 
 export const parseLookupText = (text) => {
   const terms = text.split("=>");
-  if (terms.length >=2)
-    return {leftField: terms[0], rightField: terms[1]};
+  if (terms.length >= 2) return { leftField: terms[0], rightField: terms[1] };
   return null;
-}
+};
 
 export const parseFileToObj = (file) => {
   let data;

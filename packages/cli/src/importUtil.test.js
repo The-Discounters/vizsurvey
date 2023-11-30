@@ -114,6 +114,7 @@ describe("importUtil test ", () => {
 
   it("Test typeTreatmentQuestionObj.", async () => {
     const input = {
+      id: "1",
       exp_id: "1",
       treatment_id: "1",
       question_id: "1",
@@ -122,6 +123,7 @@ describe("importUtil test ", () => {
     const result = typeTreatmentQuestionObj(input);
     expect(result).toEqual({
       exp_id: 1,
+      id: 1,
       treatment_id: 1,
       question_id: 1,
       sequence_id: 1,
@@ -141,11 +143,6 @@ describe("importUtil test ", () => {
   it("Test parseLookupText.", async () => {
     const result = parseLookupText("parentKey=>childKey");
     expect(result.leftField).toBe("parentKey");
-    expect(result.leftField).toBe("childKey");
+    expect(result.rightField).toBe("childKey");
   });
-
-
-
-
-  ;
 });
