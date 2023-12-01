@@ -241,16 +241,16 @@ describe("firestoreAdmin test ", () => {
     const exp = await fetchExperiments(db);
     assert.equal(
       exp.length,
-      6,
+      7,
       `${exp.length} was not the expected number of experiment entries.`
     );
-    const exp5 = exp.filter((v) => {
-      return v.id === 5;
+    const exp6 = exp.filter((v) => {
+      return v.id === 6;
     });
     assert.equal(
-      exp5[0].treatmentQuestions.length,
-      48,
-      `Expected to find 6 entries in treatmentQuestions and found ${exp5[0].treatmentQuestions.length}`
+      exp6[0].treatmentQuestions.length,
+      27,
+      `Did not find the expected number of questions in experiment 6.`
     );
   });
 });

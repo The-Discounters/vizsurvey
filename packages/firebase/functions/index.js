@@ -75,9 +75,10 @@ export const fetchExpConfig = onRequest(async (request, response) => {
         `participant id ${prolificPid}, for study id ${studyId} for ` +
         `session id ${sessionId}`
     );
+
     const questions = createQuestions(
       `${exp.path}/questions/${studyId}/${prolificPid}`,
-      exp
+      exp.treatmentQuestions
     );
     const orderedQuestions = orderQuestions(questions, treatmentIds);
 

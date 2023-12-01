@@ -5,6 +5,7 @@ export const TreatmentQuestion = ({
   question_id,
   sequence_id,
   treatment_id,
+  instruction_question,
 }) =>
   Object.freeze({
     path,
@@ -13,4 +14,5 @@ export const TreatmentQuestion = ({
     question_id,
     sequence_id,
     treatment_id,
+    instruction_question,
   });

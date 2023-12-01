@@ -7,15 +7,13 @@ import fs from "fs";
 import { DateTime } from "luxon";
 import readline from "readline";
 import isValid from "is-valid-path";
-import {parseCSV} from "@the-discounters/util";
+import { parseCSV } from "@the-discounters/util";
 import {
   appendSepToPath,
   isCSVExt,
   directoryOrFileExists,
 } from "@the-discounters/util";
-import {
-  updateStats, createStat, clearStats
-} from "./stats.js";
+import { updateStats, createStat, clearStats } from "./stats.js";
 import { drawStatus } from "./monitorUtil.js";
 import {
   initFirestore,
@@ -66,10 +64,10 @@ const initializeDB = () => {
   console.log(
     chalk.yellow(
       `Using creds from ${process.env.GOOGLE_APPLICATION_CREDENTIALS} ` +
-      `and project id ${process.env.FIRESTORE_PROJECT_ID} ` +
-      `and database url ${process.env.FIRESTORE_DATABASE_URL} ` +
-      "set with environment variables GOOGLE_APPLICATION_CREDENTIALS, " +
-      "FIRESTORE_PROJECT_ID, and FIRESTORE_DATABASE_URL"
+        `and project id ${process.env.FIRESTORE_PROJECT_ID} ` +
+        `and database url ${process.env.FIRESTORE_DATABASE_URL} ` +
+        "set with environment variables GOOGLE_APPLICATION_CREDENTIALS, " +
+        "FIRESTORE_PROJECT_ID, and FIRESTORE_DATABASE_URL"
     )
   );
   const ADMIN_CREDS = JSON.parse(
@@ -82,8 +80,8 @@ const initializeDB = () => {
     process.env.FIRESTORE_DATABASE_URL,
     ADMIN_CREDS
   );
-  return result;  
-}
+  return result;
+};
 
 const program = new Command();
 program
@@ -93,7 +91,7 @@ program
   )
   .version("2.0.0")
   .option("-q, --quiet", "run without showing the banner")
-  .hook("preAction", (thisCommand, actionCommand) => {    
+  .hook("preAction", (thisCommand, actionCommand) => {
     if (!program.opts().quiet) {
       console.log(
         chalk.yellow(
@@ -351,25 +349,22 @@ const importWithoutParent = (db, collection, data) => {
     setBatchItem(null, item);
   }
   commitBatchSync();
-}
+};
 
-const importWithParent = async (
-  db,
-  collection,
-  data,
-  linkFields,
-) => {
-  const experiments = await fetchExperiments(db);  
+const importWithParent = async (db, collection, data, linkFields) => {
+  const experiments = await fetchExperiments(db);
   for (const exp of experiments) {
     const dataToWrite = data.filter(
       (v) => v[linkFields.rightField] === exp[linkFields.leftField]
     );
     if (dataToWrite.length === 0) {
-      console.log(chalk.yellow(
-        `No entries found in the file for parent entry ${exp.path}` +
-        "matched on fields " +
-        `${linkFields.leftField}=>${linkFields.rightField} ` +
-          `value ${exp[linkFields.leftField]}`)
+      console.log(
+        chalk.yellow(
+          `No entries found in the file for parent entry ${exp.path}` +
+            "matched on fields " +
+            `${linkFields.leftField}=>${linkFields.rightField} ` +
+            `value ${exp[linkFields.leftField]}`
+        )
       );
     } else {
       importWithoutParent(db, exp.path + "/" + collection, dataToWrite);
@@ -399,13 +394,13 @@ program
   )
   .action((args, options) => {
     try {
-      const {db} = initializeDB();      
+      const { db } = initializeDB();
       if (args.parent) {
         if (args.parent !== ImportCollextionTypes.experiments) {
           throw new InvalidArgumentError(
             "parent of experiment type is the only supported at this time."
           );
-        };
+        }
         const linkFields = parseLookupText(args.lookup);
         const data = parseFileToObj(args.src);
         const typeFieldsFn = typeFieldsFunction(args.collection);
@@ -435,7 +430,7 @@ program
     try {
       const fields = args.fields;
       const links = parseLinkText(fields);
-      const {db} = initializeDB();
+      const { db } = initializeDB();
       linkDocs(
         db,
         links.leftPath,
@@ -466,7 +461,7 @@ program
   )
   .action((args) => {
     try {
-      const {db} = initializeDB();
+      const { db } = initializeDB();
       deletePath(db, args.collection);
       console.log("Firestore delete collection was successfull!");
     } catch (err) {

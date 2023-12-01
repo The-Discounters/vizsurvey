@@ -79,7 +79,6 @@ describe("importUtil test ", () => {
       id: "1",
       interaction: "none",
       variable_amount: "earlierAmount",
-      instruction_question_id: "1",
       view_type: "word",
       horizontal_pixels: "100",
       vertical_pixels: "200",
@@ -97,7 +96,6 @@ describe("importUtil test ", () => {
       id: 1,
       interaction: InteractionType.none,
       variable_amount: AmountType.earlierAmount,
-      instruction_question_id: 1,
       view_type: ViewType.word,
       horizontal_pixels: 100,
       vertical_pixels: 200,
@@ -119,6 +117,7 @@ describe("importUtil test ", () => {
       treatment_id: "1",
       question_id: "1",
       sequence_id: "1",
+      instruction_question: "yes",
     };
     const result = typeTreatmentQuestionObj(input);
     expect(result).toEqual({
@@ -127,6 +126,7 @@ describe("importUtil test ", () => {
       treatment_id: 1,
       question_id: 1,
       sequence_id: 1,
+      instruction_question: true,
     });
   });
 

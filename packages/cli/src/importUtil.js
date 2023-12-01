@@ -75,7 +75,6 @@ export const typeTreatmentObj = (obj) => {
   if (!AmountType[obj.variable_amount]) {
     throw "Invalid variable_amount column value.";
   }
-  obj.instruction_question_id = +obj.instruction_question_id;
   obj.horizontal_pixels = obj.horizontal_pixels ? +obj.horizontal_pixels : null;
   obj.vertical_pixels = obj.vertical_pixels ? +obj.vertical_pixels : null;
   obj.left_margin_width_in = obj.left_margin_width_in
@@ -102,6 +101,7 @@ export const typeTreatmentQuestionObj = (obj) => {
   obj.treatment_id = +obj.treatment_id;
   obj.question_id = +obj.question_id;
   obj.sequence_id = +obj.sequence_id;
+  obj.instruction_question = obj.instruction_question === "yes" ? true : false;
   return obj;
 };
 

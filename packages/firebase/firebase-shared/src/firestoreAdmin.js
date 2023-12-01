@@ -31,6 +31,7 @@ const fetchTreatmentQuestions = async (db, expPath) => {
         question_id: tqd.data().question_id,
         sequence_id: tqd.data().sequence_id,
         treatment_id: tqd.data().treatment_id,
+        instruction_question: tqd.data().instruction_question,
       })
     );
   }
