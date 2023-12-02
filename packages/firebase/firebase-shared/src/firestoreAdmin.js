@@ -96,16 +96,6 @@ export const fetchExperiments = async (db) => {
 
 export const updateParticipantCount = (db, studyId, newCount) => {};
 
-export const writeQuestions = async (questions) => {};
-
-export const writeTreatmentAssignment = async (
-  db,
-  prolificPid,
-  studyId,
-  sessionId,
-  treatments
-) => {};
-
 export const writeAnswers = (
   db,
   prolificPid,

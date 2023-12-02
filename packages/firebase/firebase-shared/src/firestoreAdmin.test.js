@@ -1,5 +1,6 @@
 import { strict as assert } from "assert";
 import { assertSucceeds } from "@firebase/rules-unit-testing";
+import { deleteCollection } from "./firestoreTestUtil.js";
 
 import ADMIN_CREDS from "../../../../admin-credentials-dev.json" assert { type: "json" };
 
@@ -17,15 +18,6 @@ import {
   deleteDocs,
 } from "./firestoreAdmin.js";
 
-const deleteCollection = async (db, path) => {
-  const docRef = db.collection(path);
-  const snapshot = assertSucceeds(await docRef.get());
-  for (let i = 0; i < snapshot.size; i++) {
-    const data = snapshot.docs[i];
-    assertSucceeds(data.ref.delete());
-  }
-};
-
 describe("firestoreAdmin test ", () => {
   let app, db;
 
@@ -42,10 +34,11 @@ describe("firestoreAdmin test ", () => {
   after(() => {});
 
   afterEach(async () => {
-    await deleteCollection(db, "firestoreAdmin-test-test-1");
-    await deleteCollection(db, "firestoreAdmin-test-test-2");
-    await deleteCollection(db, "firestoreAdmin-test-test-4-linkTestPrimary");
-    await deleteCollection(db, "firestoreAdmin-test-test-4-linkTestForeign");
+    await deleteCollection(db, "firestoreAdmin-test-batch-idfield-null");
+    await deleteCollection(db, "firestoreAdmin-test-batch-idfield-notnull");
+    await deleteCollection(db, "firestoreAdmin-test-deleteDocs");
+    await deleteCollection(db, "firestoreAdmin-test-linkTestPrimary");
+    await deleteCollection(db, "firestoreAdmin-test-linkTestForeign");
   });
 
   // it("Query test.", async () => {
@@ -64,12 +57,28 @@ describe("firestoreAdmin test ", () => {
   //   await batch.commit();
   // });
 
-  it("Integration test for batch writing data to firestore.", async () => {
-    initBatch(db, "firestoreAdmin-test-test-2");
+  it("Integration test for batch writing data to firestore null id field.", async () => {
+    initBatch(db, "firestoreAdmin-test-batch-idfield-null");
     setBatchItem(null, { item1: "value1" });
     await commitBatch();
     const snapshot = await assertSucceeds(
-      db.collection("firestoreAdmin-test-test-2").get()
+      db.collection("firestoreAdmin-test-batch-idfield-null").get()
+    );
+    assert.equal(
+      "value1",
+      snapshot.docs[0].data()["item1"],
+      `Did not read back what was written.  ${
+        snapshot.docs[0].data()["item1"]
+      } doesn't equal 'value1'`
+    );
+  });
+
+  it("Integration test for batch writing data to firestore .", async () => {
+    initBatch(db, "firestoreAdmin-test-batch-idfield-notnull");
+    setBatchItem("item1", { item1: "value1" });
+    await commitBatch();
+    const snapshot = await assertSucceeds(
+      db.collection("firestoreAdmin-test-batch-idfield-notnull").get()
     );
     assert.equal(
       "value1",
@@ -83,12 +92,12 @@ describe("firestoreAdmin test ", () => {
   it("Integration test for deleteDocs.", async () => {
     await assertSucceeds(
       db
-        .collection("firestoreAdmin-test-test-3")
+        .collection("firestoreAdmin-test-deleteDocs")
         .doc()
         .create({ key1: "value1" })
     );
     const snapshot = await assertSucceeds(
-      db.collection("firestoreAdmin-test-test-3").get()
+      db.collection("firestoreAdmin-test-deleteDocs").get()
     );
     assert.equal(
       "value1",
@@ -97,9 +106,9 @@ describe("firestoreAdmin test ", () => {
         snapshot.docs[0].data()["key1"]
       } doesn't equal 'value1'`
     );
-    await deleteDocs(db, "firestoreAdmin-test-test-3");
+    await deleteDocs(db, "firestoreAdmin-test-deleteDocs");
     const readBackSnapshot = await assertSucceeds(
-      db.collection("firestoreAdmin-test-test-3").get()
+      db.collection("firestoreAdmin-test-deleteDocs").get()
     );
     assert.equal(
       0,
@@ -110,50 +119,50 @@ describe("firestoreAdmin test ", () => {
 
   it("Integration test for linkDocs one to one link.", async () => {
     await assertSucceeds(
-      db.collection("firestoreAdmin-test-test-4-linkTestPrimary").doc().create({
+      db.collection("firestoreAdmin-test-linkTestPrimary").doc().create({
         id: 1,
         foreign: 1,
       })
     );
     await assertSucceeds(
-      db.collection("firestoreAdmin-test-test-4-linkTestPrimary").doc().create({
+      db.collection("firestoreAdmin-test-linkTestPrimary").doc().create({
         id: 2,
         foreign: 2,
       })
     );
     await assertSucceeds(
-      db.collection("firestoreAdmin-test-test-4-linkTestPrimary").doc().create({
+      db.collection("firestoreAdmin-test-linkTestPrimary").doc().create({
         id: 3,
         foreign: 3,
       })
     );
     await assertSucceeds(
-      db.collection("firestoreAdmin-test-test-4-linkTestForeign").doc().create({
+      db.collection("firestoreAdmin-test-linkTestForeign").doc().create({
         id: 1,
         value: "value 1",
       })
     );
     await assertSucceeds(
-      db.collection("firestoreAdmin-test-test-4-linkTestForeign").doc().create({
+      db.collection("firestoreAdmin-test-linkTestForeign").doc().create({
         id: 2,
         value: "value 2",
       })
     );
     await assertSucceeds(
-      db.collection("firestoreAdmin-test-test-4-linkTestForeign").doc().create({
+      db.collection("firestoreAdmin-test-linkTestForeign").doc().create({
         id: 3,
         value: "value 3",
       })
     );
     await linkDocs(
       db,
-      "firestoreAdmin-test-test-4-linkTestPrimary",
+      "firestoreAdmin-test-linkTestPrimary",
       "foreign",
-      "firestoreAdmin-test-test-4-linkTestForeign",
+      "firestoreAdmin-test-linkTestForeign",
       "id"
     );
     const snapshot = await assertSucceeds(
-      db.collection("firestoreAdmin-test-test-4-linkTestPrimary").get()
+      db.collection("firestoreAdmin-test-linkTestPrimary").get()
     );
     for (let i = 0; i < snapshot.size; i++) {
       const entry = snapshot.docs[i];
