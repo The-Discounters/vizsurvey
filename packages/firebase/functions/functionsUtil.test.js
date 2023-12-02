@@ -8,8 +8,21 @@ import {
   parseQuestions,
   orderQuestions,
   orderQuestionsRandom,
+  writeQuestions,
 } from "./functionsUtil.js";
+import {
+  initBatch,
+  setBatchItem,
+  commitBatch,
+  initFirestore,
+  deleteCollection,
+} from "@the-discounters/firebase-shared";
 import TREATMENT_QUESTIONS_JSON from "./treatmentQuestionsTest.json" assert { type: "json" };
+import QUESTIONS_JSON from "./questionsTest.json" assert { type: "json" };
+import ADMIN_CREDS from "../../../admin-credentials-dev.json" assert { type: "json" };
+
+// this needs to match the value that is passed to firebase emulators:start --project=
+const PROJECT_ID = "vizsurvey-test";
 
 function arraysEqual(a, b) {
   if (a === b) return true;
@@ -22,6 +35,39 @@ function arraysEqual(a, b) {
 }
 
 describe("functionsUtil test ", () => {
+  let app, db;
+
+  before(async () => {
+    const result = initFirestore(
+      PROJECT_ID,
+      "https://vizsurvey-test.firebaseio.com/",
+      ADMIN_CREDS
+    );
+    app = result.app;
+    db = result.db;
+    //await deleteCollection(db, "functionsUtil-writeQuestions-test");
+  });
+
+  after(async () => {
+    //await deleteCollection(db, "functionsUtil-writeQuestions-test");
+  });
+
+  // it("Integration test for batch writing data to firestore null id field.", async () => {
+  //   initBatch(db, "firestoreAdmin-test-batch-idfield-null");
+  //   setBatchItem(null, { item1: "value1" });
+  //   await commitBatch();
+  //   const snapshot = await assertSucceeds(
+  //     db.collection("firestoreAdmin-test-batch-idfield-null").get()
+  //   );
+  //   assert.equal(
+  //     "value1",
+  //     snapshot.docs[0].data()["item1"],
+  //     `Did not read back what was written.  ${
+  //       snapshot.docs[0].data()["item1"]
+  //     } doesn't equal 'value1'`
+  //   );
+  // });
+
   it("Test for calcTreatmentIds .", async () => {
     const latinSquare = JSON.parse(
       "[[1, 2, 3], [1, 3, 2], [3, 1, 2], [3, 2, 1], [2, 3, 1], [2, 1, 3]]"
@@ -69,13 +115,8 @@ describe("functionsUtil test ", () => {
   });
 
   it("Test for createQuestions for within subject study (treatmentIds array like [1,2,3]).", async () => {
-    const result = createQuestions("parent-path", TREATMENT_QUESTIONS_JSON);
+    const result = createQuestions(1, 2, 3, TREATMENT_QUESTIONS_JSON);
     assert.equal(result.length, 27, "Returned array was not expected size.");
-    assert.equal(
-      "parent-path/178",
-      result[0].path,
-      "path property did not match the expected value 'parent-path/21'"
-    );
     assert.notEqual(
       result,
       TREATMENT_QUESTIONS_JSON,
@@ -84,13 +125,8 @@ describe("functionsUtil test ", () => {
   });
 
   it("Test for createQuestions for between subject study (treatmentIds array like [1]).", async () => {
-    const result = createQuestions("parent-path", TREATMENT_QUESTIONS_JSON);
+    const result = createQuestions(1, 2, 3, TREATMENT_QUESTIONS_JSON);
     assert.equal(result.length, 27, "Returned array was not expected size.");
-    assert.equal(
-      result[0].path,
-      "parent-path/178",
-      "path property did not match the expected value."
-    );
     assert.notEqual(
       result,
       TREATMENT_QUESTIONS_JSON,
@@ -167,6 +203,14 @@ describe("functionsUtil test ", () => {
       first,
       second,
       "Order of entries returned by orderQuestionsRandom was the same which is higly unlikely but possible."
+    );
+  });
+
+  it("Test for writeQuestions.", async () => {
+    await writeQuestions(
+      db,
+      "functionsUtil-writeQuestions-test",
+      QUESTIONS_JSON
     );
   });
 });

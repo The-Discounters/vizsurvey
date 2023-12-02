@@ -12,8 +12,10 @@ import { logger } from "firebase-functions";
 import { onRequest } from "firebase-functions/v2/https";
 import {
   calcTreatmentIds,
+  filterQuestions,
   createQuestions,
   orderQuestions,
+  writeQuestions,
 } from "./functionsUtil.js";
 import {
   fetchExperiment,
@@ -75,25 +77,15 @@ export const fetchExpConfig = onRequest(async (request, response) => {
         `participant id ${prolificPid}, for study id ${studyId} for ` +
         `session id ${sessionId}`
     );
-
-    const questions = createQuestions(
-      `${exp.path}/questions/${studyId}/${prolificPid}`,
-      exp.treatmentQuestions
+    let questions = filterQuestions(treatmentIds, exp.treatmentQuestions);
+    const { instruction, survey } = parseQuestions(questions);
+    questions = createQuestions(studyId, sessionId, prolificPid, survey);
+    questions = orderQuestions(questions, treatmentIds);
+    writeQuestions(db, questions);
+    logger.info(
+      `${questions.length} questions sent back to participant for participant id ${prolificPid}, ` +
+        `study id ${studyId}, session id ${sessionId}`
     );
-    const orderedQuestions = orderQuestions(questions, treatmentIds);
-
-    // writeTreatmentAssignment(db, prolificPid, studyId, sessionId, treatments);
-
-    // const writeResult = await getFirestore().collection(
-    // "participantsAnswers")
-    //     .add({exp_id: expDoc.ref,
-    //       participant_id: prolificPid,
-    //       session_id: sessionId,
-    //       study_id: studyId,
-    //       treatment_id: treatmentIds});
-
-    // Send back a message that we've successfully written the message
-    // response.json({result: `Message with ID: ${writeResult.id} added.`});
     response.json({ result: "Treatment assigned" });
   } catch (err) {
     logger.error(err);

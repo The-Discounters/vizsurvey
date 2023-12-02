@@ -1,3 +1,9 @@
+import { Question } from "@the-discounters/types";
+import {
+  initBatch,
+  setBatchItem,
+  commitBatch,
+} from "@the-discounters/firebase-shared";
 import { group } from "d3";
 
 export const calcTreatmentIds = (latinSquare, participantCount) => {
@@ -19,9 +25,24 @@ export const parseQuestions = (treatmentQuestions) => {
   return { instruction: grouped.get(true), survey: grouped.get(false) };
 };
 
-export const createQuestions = (parentPath, treatmentQuestions) => {
-  const result = [...treatmentQuestions];
-  result.forEach((e) => (e.path = `${parentPath}/${e.id}`));
+export const createQuestions = (
+  studyId,
+  sessionId,
+  prolificPid,
+  treatmentQuestions
+) => {
+  const result = treatmentQuestions.map((v) =>
+    Question({
+      id: `${prolificPid}-${studyId}-${sessionId}-${v.treatment_id}-${v.question_id}`,
+      exp_id: v.exp_id,
+      participant_id: prolificPid,
+      session_id: sessionId,
+      study_id: studyId,
+      question_id: v.question_id,
+      sequence_id: v.sequence_id,
+      treatment_id: v.treatment_id,
+    })
+  );
   return result;
 };
 
@@ -62,4 +83,12 @@ export const orderQuestionsRandom = (questions, treatmentIds) => {
     result.push(...q);
   });
   return result;
+};
+
+export const writeQuestions = async (db, rootPath, answers) => {
+  initBatch(db, rootPath);
+  answers.forEach((a) => {
+    setBatchItem("id", a);
+  });
+  await commitBatch();
 };
