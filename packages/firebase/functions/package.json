@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "lint": "eslint .",
-    "serve": "echo \"Be sure to run source ../../../setenv.sh so that firebase SDK can find admin creds!\" && firebase emulators:start",
+    "emulator:start": "echo \"Be sure to run source ../../../setenv.sh so that firebase SDK can find admin creds for live tests.  Set FIRESTORE_EMULATOR_HOST if using the emulator!\" && firebase emulators:start --project=vizsurvey-test --inspect-functions --import ../import",
+    "emulator:dstart": "echo \"Be sure to run source ../../../setenv.sh so that firebase SDK can find admin creds for live tests.  Set FIRESTORE_EMULATOR_HOST if using the emulator!\" && firebase emulators:start --project=vizsurvey-test --inspect-functions --import ../import",
     "shell": "firebase functions:shell",
     "start": "npm run shell",
     "deploy": "firebase deploy --only functions",
@@ -22,6 +23,7 @@
     "firebase-functions": "^4.4.1"
   },
   "devDependencies": {
+    "@the-discounters/test-shared": "*",
     "eslint": "^8.15.0",
     "eslint-config-google": "^0.14.0",
     "eslint-plugin-import": "^2.22.0",

@@ -10,13 +10,7 @@ import { initializeApp } from "firebase-admin/app";
 import { getFirestore } from "firebase-admin/firestore";
 import { logger } from "firebase-functions";
 import { onRequest } from "firebase-functions/v2/https";
-import {
-  calcTreatmentIds,
-  filterQuestions,
-  createQuestions,
-  orderQuestions,
-  writeQuestions,
-} from "./functionsUtil.js";
+import { signupParticipant } from "./functionsUtil.js";
 import {
   fetchExperiment,
   updateParticipantCount,
@@ -66,27 +60,25 @@ export const fetchExpConfig = onRequest(async (request, response) => {
       );
       throw Error("Error experiment is not active.");
     }
-    exp.num_participants_started++;
-    updateParticipantCount(db, studyId, exp.num_participants_started);
-    const treatmentIds = calcTreatmentIds(
-      exp.latin_square,
-      exp.num_participants_started
+    const newExpCount = exp.num_participants_started + 1;
+    updateParticipantCount(db, studyId, newExpCount, (msg) => {
+      logger.info(msg);
+    });
+    const result = signupParticipant(
+      db,
+      prolificPid,
+      studyId,
+      sessionId,
+      exp,
+      (isError, msg) => {
+        if (!isError) {
+          logger.info(msg);
+        } else {
+          throw Error(msg);
+        }
+      }
     );
-    logger.info(
-      `assigned treatment order ${treatmentIds} to ` +
-        `participant id ${prolificPid}, for study id ${studyId} for ` +
-        `session id ${sessionId}`
-    );
-    let questions = filterQuestions(treatmentIds, exp.treatmentQuestions);
-    const { instruction, survey } = parseQuestions(questions);
-    questions = createQuestions(studyId, sessionId, prolificPid, survey);
-    questions = orderQuestions(questions, treatmentIds);
-    writeQuestions(db, questions);
-    logger.info(
-      `${questions.length} questions sent back to participant for participant id ${prolificPid}, ` +
-        `study id ${studyId}, session id ${sessionId}`
-    );
-    response.json({ result: "Treatment assigned" });
+    response.json(result);
   } catch (err) {
     logger.error(err);
     response.json({ error: "There was an error with the server." });

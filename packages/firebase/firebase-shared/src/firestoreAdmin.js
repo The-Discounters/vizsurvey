@@ -1,9 +1,6 @@
 import { initializeApp } from "firebase-admin/app";
 import { cert } from "firebase-admin/app";
 import { getFirestore } from "firebase-admin/firestore";
-import { logger } from "firebase-functions";
-import { Experiment, TreatmentQuestion } from "@the-discounters/types";
-import { ProlificSumbissionStatusType } from "@the-discounters/prolific";
 
 var batch;
 var colRef;
@@ -20,20 +17,17 @@ export const initFirestore = (projectId, databaseURL, adminCred) => {
 
 const fetchTreatmentQuestions = async (db, expPath) => {
   const result = [];
-  const tqds = await db.collection(expPath + "/treatmentQuestions").get();
+  const tqds = await db.collection(`${expPath}/treatmentQuestions`).get();
   for (let j = 0; j < tqds.size; j++) {
     const tqd = tqds.docs[j];
-    result.push(
-      TreatmentQuestion({
-        path: tqd.ref.path,
-        exp_id: tqd.data().exp_id,
-        id: tqd.data().id,
-        question_id: tqd.data().question_id,
-        sequence_id: tqd.data().sequence_id,
-        treatment_id: tqd.data().treatment_id,
-        instruction_question: tqd.data().instruction_question,
-      })
-    );
+    const treatmentSnapshot = await tqd.data().treatment_id.get();
+    const questionSnapshot = await tqd.data().question_id.get();
+    result.push({
+      path: tqd.ref.path, // TODO do I really need this field in the object?
+      ...tqd.data(),
+      ...treatmentSnapshot.data(),
+      ...questionSnapshot.data(),
+    });
   }
   return result;
 };
@@ -47,22 +41,11 @@ export const fetchExperiment = async (db, studyId) => {
   }
   const expDoc = expSnapshot.docs[0];
   const tqs = await fetchTreatmentQuestions(db, expDoc.ref.path);
-  const result = Experiment({
-    path: expDoc.ref.path,
-    id: expDoc.data().id,
-    status: expDoc.data().status,
-    numParticipantsStarted: expDoc.data().num_participants_started,
-    numParticipantsCompleted: expDoc.data().num_participants_completed,
-    type: expDoc.data().type,
-    latinSquare: expDoc.data().latin_square,
-    startDate: expDoc.data().start_date,
-    endDate: expDoc.data().end_date,
-    numParticipants: expDoc.data().num_participants,
-    prolificCode: expDoc.data().prolific_code,
-    prolificStudyId: expDoc.data().prolific_study_id,
-    description: expDoc.data().description,
+  const result = {
+    path: expDoc.ref.path, // TODO do I really need this field in the object?
+    ...expDoc.data(),
     treatmentQuestions: tqs,
-  });
+  };
   return result;
 };
 
@@ -72,45 +55,101 @@ export const fetchExperiments = async (db) => {
   for (let i = 0; i < expCol.size; i++) {
     const expDoc = expCol.docs[i];
     const tqs = await fetchTreatmentQuestions(db, expDoc.ref.path);
-    expAry.push(
-      Experiment({
-        path: expDoc.ref.path,
-        id: expDoc.data().id,
-        status: expDoc.data().status,
-        numParticipantsStarted: expDoc.data().num_participants_started,
-        numParticipantsCompleted: expDoc.data().num_participants_completed,
-        type: expDoc.data().type,
-        latinSquare: expDoc.data().latin_square,
-        startDate: expDoc.data().start_date,
-        endDate: expDoc.data().end_date,
-        numParticipants: expDoc.data().num_participants,
-        prolificCode: expDoc.data().prolific_code,
-        prolificStudyId: expDoc.data().prolific_study_id,
-        description: expDoc.data().description,
-        treatmentQuestions: tqs,
-      })
-    );
+    expAry.push({
+      path: expDoc.ref.path, // TODO do I really need this field in the object?
+      ...expDoc.data(),
+      treatmentQuestions: tqs,
+    });
   }
   return expAry;
 };
 
-export const updateParticipantCount = (db, studyId, newCount) => {};
-
-export const writeAnswers = (
+export const updateParticipantCount = async (
   db,
-  prolificPid,
   studyId,
+  newCount,
+  callback
+) => {
+  const expRef = await db.collection("experiments");
+  const q = expRef.where("prolific_study_id", "==", studyId);
+  const expSnapshot = await q.get();
+  if (expSnapshot.docs.length != 1) {
+    return null;
+  }
+  const expDoc = expSnapshot.docs[0];
+  const updateObj = { num_participants_started: newCount };
+  const res = await expDoc.ref.update(updateObj);
+  callback(
+    `updated partcipant count for study ${studyId} with result ${JSON.stringify(
+      res
+    )}`
+  );
+};
+
+export const writeAnswers = async (
+  db,
+  expPath,
+  participantId,
   sessionId,
   answers
-) => {};
+) => {
+  initBatch(db, `${expPath}/answers`);
+  answers.forEach((a) => {
+    const writeData = {
+      participantId: participantId,
+      ...a,
+    };
+    setBatchItem(
+      `${participantId}-${writeData.treatment_question_id}`,
+      null,
+      writeData
+    );
+  });
+  // TODO write the audit log entries
+};
+
+export const writeSurveyQuestions = async (
+  db,
+  expPath,
+  participantId,
+  sessionId,
+  questions
+) => {
+  initBatch(db, `${expPath}/answers`);
+  questions.forEach((a) => {
+    const writeData = {
+      participantId: participantId,
+      sessionId: sessionId,
+      ...a,
+    };
+    setBatchItem(
+      `${participantId}-${writeData.treatment_question_id}`,
+      null,
+      writeData
+    );
+  });
+  // TODO add writing the data to the audit table
+  await commitBatch();
+};
+
+export const writeParticipant = async (db, expPath, participant) => {
+  const ref = await db
+    .collection(`${expPath}/participants`)
+    .doc(`${participant.participantId}`)
+    .create(participant);
+};
 
 export const initBatch = (db, colPath) => {
   colRef = db.collection(colPath);
   batch = db.batch();
 };
 
-export const setBatchItem = (idfield, item) => {
-  const docId = idfield ? item[idfield].toString() : colRef.doc().id;
+export const setBatchItem = (idvalue, idfield, item) => {
+  const docId = idvalue
+    ? idvalue
+    : idfield
+    ? item[idfield].toString()
+    : colRef.doc().id;
   const docRef = colRef.doc(docId);
   batch.set(docRef, item);
 };
@@ -135,7 +174,7 @@ export const deleteDocs = async (db, path) => {
 // (1, 2, 3, ...).  Then I can sort the kwys by natural order and convert the map of arrays into a two dimensional
 // array in the function code to access the next row of treatment sequence assignment.  I would need this for the
 // within subject study and we aren't running that yet so I didn't do it.
-export const linkDocs = async (
+export const linkDocsForDoc = async (
   db,
   leftPath,
   leftField,
@@ -162,6 +201,38 @@ export const linkDocs = async (
       updateObj[leftField] = rightDoc.ref;
       const res = await leftDoc.ref.update(updateObj);
       console.log(`...update result ${JSON.stringify(res)}`);
+    }
+  }
+};
+
+export const linkDocs = async (
+  db,
+  leftPath,
+  leftField,
+  rightPath,
+  rightField
+) => {
+  const pathSegs = leftPath.split("/");
+  if (pathSegs.length === 1) {
+    await linkDocsForDoc(db, leftPath, leftField, rightPath, rightField);
+  } else if (pathSegs.length > 2) {
+    throw Error(
+      "linking with more than a single parent path is not supported at this time."
+    );
+  } else {
+    const lastSeg = pathSegs[1];
+    const parentSeg = pathSegs[0];
+    const parentSegRef = db.collection(parentSeg);
+    let parentSegSnapshot = await parentSegRef.get();
+    for (let i = 0; i < parentSegSnapshot.size; i++) {
+      const leftDoc = parentSegSnapshot.docs[i];
+      await linkDocsForDoc(
+        db,
+        `${leftDoc.ref.path}/${lastSeg}`,
+        leftField,
+        rightPath,
+        rightField
+      );
     }
   }
 };

@@ -18,7 +18,7 @@ import { ProlificStudyStatusType } from "@the-discounters/prolific";
 describe("importUtil test ", () => {
   it("Test typeExperimentObj valid fields.", async () => {
     const input = {
-      id: "1",
+      experiment_id: "1",
       status: "unpublished",
       type: "betweenSubject",
       start_date: "1/1/2023",
@@ -29,7 +29,7 @@ describe("importUtil test ", () => {
     };
     const result = typeExperimentObj(input);
     expect(result).toEqual({
-      id: 1,
+      experiment_id: 1,
       status: ProlificStudyStatusType.unpublished,
       type: ExperimentType.betweenSubject,
       start_date: admin.firestore.Timestamp.fromDate(
@@ -46,7 +46,7 @@ describe("importUtil test ", () => {
 
   it("Test typeQuestionObj valid fields.", async () => {
     const input = {
-      id: "1",
+      question_id: "1",
       amount_earlier: "100",
       time_earlier: "1",
       date_earlier: "1/1/2023",
@@ -58,7 +58,7 @@ describe("importUtil test ", () => {
     };
     const result = typeQuestionObj(input);
     expect(result).toEqual({
-      id: 1,
+      question_id: 1,
       amount_earlier: 100,
       time_earlier: 1,
       date_earlier: admin.firestore.Timestamp.fromDate(
@@ -76,7 +76,7 @@ describe("importUtil test ", () => {
 
   it("Test typeTreatmentObj.", async () => {
     const input = {
-      id: "1",
+      treatment_id: "1",
       interaction: "none",
       variable_amount: "earlierAmount",
       view_type: "word",
@@ -93,7 +93,7 @@ describe("importUtil test ", () => {
     };
     const result = typeTreatmentObj(input);
     expect(result).toEqual({
-      id: 1,
+      treatment_id: 1,
       interaction: InteractionType.none,
       variable_amount: AmountType.earlierAmount,
       view_type: ViewType.word,
@@ -112,8 +112,8 @@ describe("importUtil test ", () => {
 
   it("Test typeTreatmentQuestionObj.", async () => {
     const input = {
-      id: "1",
-      exp_id: "1",
+      treatment_question_id: "1",
+      experiment_id: "1",
       treatment_id: "1",
       question_id: "1",
       sequence_id: "1",
@@ -121,8 +121,8 @@ describe("importUtil test ", () => {
     };
     const result = typeTreatmentQuestionObj(input);
     expect(result).toEqual({
-      exp_id: 1,
-      id: 1,
+      experiment_id: 1,
+      treatment_question_id: 1,
       treatment_id: 1,
       question_id: 1,
       sequence_id: 1,

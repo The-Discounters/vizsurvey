@@ -1,6 +1,10 @@
 import { strict as assert } from "assert";
 import { assertSucceeds } from "@firebase/rules-unit-testing";
-import { deleteCollection } from "./firestoreTestUtil.js";
+import {
+  deleteCollection,
+  SURVEY_QUESTIONS_JSON,
+} from "@the-discounters/test-shared";
+import { Participant } from "@the-discounters/types";
 
 import ADMIN_CREDS from "../../../../admin-credentials-dev.json" assert { type: "json" };
 
@@ -16,6 +20,9 @@ import {
   commitBatch,
   linkDocs,
   deleteDocs,
+  writeSurveyQuestions,
+  updateParticipantCount,
+  writeParticipant,
 } from "./firestoreAdmin.js";
 
 describe("firestoreAdmin test ", () => {
@@ -31,7 +38,9 @@ describe("firestoreAdmin test ", () => {
     db = result.db;
   });
 
-  after(() => {});
+  after(() => {
+    // RulesTestEnvironment.emulators;
+  });
 
   afterEach(async () => {
     await deleteCollection(db, "firestoreAdmin-test-batch-idfield-null");
@@ -39,7 +48,18 @@ describe("firestoreAdmin test ", () => {
     await deleteCollection(db, "firestoreAdmin-test-deleteDocs");
     await deleteCollection(db, "firestoreAdmin-test-linkTestPrimary");
     await deleteCollection(db, "firestoreAdmin-test-linkTestForeign");
+    await deleteCollection(db, "firestoreAdmin-test-linkTestParentPrimary");
+    await deleteCollection(db, "firestoreAdmin-test-linkTestParentForeign");
   });
+
+  // it("Getting to the emulator.", async () => {
+  //   const emulator = RulesTestEnvironment.emulators;
+  //   assert.notEqual(
+  //     undefined,
+  //     emulator,
+  //     "Didn't get a reference to the emulator."
+  //   );
+  // });
 
   // it("Query test.", async () => {
   //   const expRef = db.collection("experiments");
@@ -57,9 +77,30 @@ describe("firestoreAdmin test ", () => {
   //   await batch.commit();
   // });
 
+  // it("Test for writing to a nested collection when the parent collection doesn't exist.", async () => {
+  //   const parentColRef = db.collection("firestoreAdmin-test-nested-collection");
+  //   let batch = db.batch();
+  //   let parentDocRef = parentColRef.doc("1");
+  //   batch.set(parentDocRef, { value: "parentValue1" });
+  //   await batch.commit();
+  //   // child reference is always to a document, not the collection, when writing.
+  //   let childColRef = db.collection(
+  //     "firestoreAdmin-test-nested-collection/answers/1"
+  //   );
+  //   batch = db.batch();
+  //   let docRef = childColRef.doc("1");
+  //   batch.set(docRef, { value: "value1" });
+  //   childColRef = db.collection(
+  //     "firestoreAdmin-test-nested-collection/answers/2"
+  //   );
+  //   docRef = childColRef.doc("2");
+  //   batch.set(docRef, { value: "value2" });
+  //   await batch.commit();
+  // });
+
   it("Integration test for batch writing data to firestore null id field.", async () => {
     initBatch(db, "firestoreAdmin-test-batch-idfield-null");
-    setBatchItem(null, { item1: "value1" });
+    setBatchItem(null, null, { item1: "value1" });
     await commitBatch();
     const snapshot = await assertSucceeds(
       db.collection("firestoreAdmin-test-batch-idfield-null").get()
@@ -75,7 +116,7 @@ describe("firestoreAdmin test ", () => {
 
   it("Integration test for batch writing data to firestore .", async () => {
     initBatch(db, "firestoreAdmin-test-batch-idfield-notnull");
-    setBatchItem("item1", { item1: "value1" });
+    setBatchItem(null, "item1", { item1: "value1" });
     await commitBatch();
     const snapshot = await assertSucceeds(
       db.collection("firestoreAdmin-test-batch-idfield-notnull").get()
@@ -90,7 +131,7 @@ describe("firestoreAdmin test ", () => {
   });
 
   it("Integration test for deleteDocs.", async () => {
-    await assertSucceeds(
+    const ref = await assertSucceeds(
       db
         .collection("firestoreAdmin-test-deleteDocs")
         .doc()
@@ -177,72 +218,101 @@ describe("firestoreAdmin test ", () => {
     }
   });
 
-  // it("Integration test for linkDocs array reference link.", async () => {
-  //   await assertSucceeds(
-  //     db.collection("firestoreAdmin-test-test-5-linkTestPrimary").doc().create({
-  //       id: 1,
-  //       foreign: "[1,2]",
-  //     })
-  //   );
-  //   await assertSucceeds(
-  //     db.collection("firestoreAdmin-test-test-5-linkTestPrimary").doc().create({
-  //       id: 2,
-  //       foreign: "[3]",
-  //     })
-  //   );
-  //   await assertSucceeds(
-  //     db.collection("firestoreAdmin-test-test-5-linkTestPrimary").doc().create({
-  //       id: 3,
-  //       foreign: "",
-  //     })
-  //   );
-  //   await assertSucceeds(
-  //     db.collection("firestoreAdmin-test-test-5-linkTestForeign").doc().create({
-  //       id: 1,
-  //       value: "value 1",
-  //     })
-  //   );
-  //   await assertSucceeds(
-  //     db.collection("firestoreAdmin-test-test-5-linkTestForeign").doc().create({
-  //       id: 2,
-  //       value: "value 2",
-  //     })
-  //   );
-  //   await assertSucceeds(
-  //     db.collection("firestoreAdmin-test-test-5-linkTestForeign").doc().create({
-  //       id: 3,
-  //       value: "value 3",
-  //     })
-  //   );
-  //   await linkDocs(
-  //     db,
-  //     "firestoreAdmin-test-test-5-linkTestPrimary",
-  //     "foreign",
-  //     "firestoreAdmin-test-test-5-linkTestForeign",
-  //     "id"
-  //   );
-  //   const snapshot = await assertSucceeds(
-  //     db.collection("firestoreAdmin-test-test-5-linkTestPrimary").get()
-  //   );
-  //   for (let i = 0; i < snapshot.size; i++) {
-  //     const entry = snapshot.docs[i];
-  //     const foreignEntry = await assertSucceeds(entry.data()["foreign"].get());
-  //     const entryId = entry.data()["id"];
-  //     const foreignEntryValue = foreignEntry.data()["value"];
-  //     assert.equal(
-  //       `value ${entryId}`,
-  //       foreignEntryValue,
-  //       `Wasn't able to follow the foreign reference ${entryId} to the object.`
-  //     );
-  //   }
-  // });
+  it("Integration test for linkDocs parent path and one to one link.", async () => {
+    await assertSucceeds(
+      db.collection("firestoreAdmin-test-linkTestParentPrimary").doc().create({
+        id: 1,
+      })
+    );
+    const testPrimaryRef = await db.collection(
+      "firestoreAdmin-test-linkTestParentPrimary"
+    );
+    let q = testPrimaryRef.where("id", "==", 1);
+    let primarySnapshot = await q.get();
+    await assertSucceeds(
+      primarySnapshot.docs[0].ref.collection("nested").doc().create({
+        id: 1,
+        foreign: 1,
+      })
+    );
+    await assertSucceeds(
+      db.collection("firestoreAdmin-test-linkTestParentPrimary").doc().create({
+        id: 2,
+      })
+    );
+    q = testPrimaryRef.where("id", "==", 2);
+    primarySnapshot = await q.get();
+    await assertSucceeds(
+      primarySnapshot.docs[0].ref.collection("nested").doc().create({
+        id: 2,
+        foreign: 2,
+      })
+    );
+    await assertSucceeds(
+      db.collection("firestoreAdmin-test-linkTestParentPrimary").doc().create({
+        id: 3,
+      })
+    );
+    q = testPrimaryRef.where("id", "==", 3);
+    primarySnapshot = await q.get();
+    await assertSucceeds(
+      primarySnapshot.docs[0].ref.collection("nested").doc().create({
+        id: 3,
+        foreign: 3,
+      })
+    );
+    await assertSucceeds(
+      db.collection("firestoreAdmin-test-linkTestParentForeign").doc().create({
+        id: 1,
+        value: "value 1",
+      })
+    );
+    await assertSucceeds(
+      db.collection("firestoreAdmin-test-linkTestParentForeign").doc().create({
+        id: 2,
+        value: "value 2",
+      })
+    );
+    await assertSucceeds(
+      db.collection("firestoreAdmin-test-linkTestParentForeign").doc().create({
+        id: 3,
+        value: "value 3",
+      })
+    );
+    await linkDocs(
+      db,
+      "firestoreAdmin-test-linkTestParentPrimary/nested",
+      "foreign",
+      "firestoreAdmin-test-linkTestParentForeign",
+      "id"
+    );
+    const checkSnapshot = await assertSucceeds(
+      db.collection("firestoreAdmin-test-linkTestParentPrimary").get()
+    );
+    for (let i = 0; i < checkSnapshot.size; i++) {
+      const entryDoc = checkSnapshot.docs[i];
+      const nestedSnapshot = await assertSucceeds(
+        db.collection(`${entryDoc.ref.path}/nested`).get()
+      );
+      const foreignDoc = await assertSucceeds(
+        nestedSnapshot.docs[0].data().foreign.get()
+      );
+      const entryId = entryDoc.data().id;
+      const foreignEntryValue = foreignDoc.data().value;
+      assert.equal(
+        `value ${entryId}`,
+        foreignEntryValue,
+        `Wasn't able to follow the foreign reference ${entryId} to the object.`
+      );
+    }
+  });
 
   it("Integration test for fetchExperiment.", async () => {
     const exp = await fetchExperiment(db, "649f3cffea5a1b2817d17d7e");
     assert.equal(
-      exp.prolificStudyId,
-      "649f3cffea5a1b2817d17d7e",
-      'experiment prolificStudyId="-649f3cffea5a1b2817d17d7e" not loaded correctly.'
+      exp.experiment_id,
+      5,
+      "experiment experiment_id=5 not loaded correctly."
     );
   });
 
@@ -250,16 +320,109 @@ describe("firestoreAdmin test ", () => {
     const exp = await fetchExperiments(db);
     assert.equal(
       exp.length,
-      7,
+      8,
       `${exp.length} was not the expected number of experiment entries.`
     );
-    const exp6 = exp.filter((v) => {
-      return v.id === 6;
+    const exp5 = exp.filter((v) => {
+      return v.experiment_id === 5;
     });
     assert.equal(
-      exp6[0].treatmentQuestions.length,
+      exp5[0].treatmentQuestions.length,
       27,
       `Did not find the expected number of questions in experiment 6.`
     );
   });
+
+  it("Test for writeSurveyQuestions.", async () => {
+    await assertSucceeds(
+      db
+        .collection("functionsUtil-writeSurveyQuestions-test")
+        .doc()
+        .create({ id: 1 })
+    );
+    let snapshot = await assertSucceeds(
+      db.collection("functionsUtil-writeSurveyQuestions-test").get()
+    );
+    const path = snapshot.docs[0].ref.path;
+    await writeSurveyQuestions(db, path, 1, 2, SURVEY_QUESTIONS_JSON);
+    snapshot = await assertSucceeds(db.collection(`${path}/answers`).get());
+    assert.equal(
+      snapshot.docs.length,
+      27,
+      "Number of survey questions written did not match was expected."
+    );
+    assert.equal(
+      snapshot.docs[0].id,
+      "1-161",
+      "Did not write what was expected for the questions."
+    );
+  });
+
+  it("Test for updateParticipantCount", async () => {
+    await updateParticipantCount(db, "test", 1, (msg) => {
+      console.log(msg);
+    });
+    const expRef = db.collection("experiments");
+    const q = expRef.where("prolific_study_id", "==", "test");
+    const expSnapshot = await assertSucceeds(q.get());
+    assert.equal(
+      expSnapshot.docs.length,
+      1,
+      "Expected to retrieve one experiment"
+    );
+    assert.equal(expSnapshot.docs[0].data().num_participants_started, 1);
+  });
+
+  it("Test for writeParticipant", async () => {
+    await assertSucceeds(
+      db
+        .collection("firestoreAdmin-writeParticipant-test")
+        .doc()
+        .create({ id: 1 })
+    );
+    let snapshot = await assertSucceeds(
+      db.collection("firestoreAdmin-writeParticipant-test").get()
+    );
+    const path = snapshot.docs[0].ref.path;
+    const data = Participant({
+      participantId: 1,
+      countryOfResidence: "Country",
+      vizFamiliarity: 1,
+      age: 55,
+      gender: "gender",
+      selfDescribeGender: "selfDescribeGender",
+      profession: "profession",
+      employment: "employment",
+      selfDescribeEmployment: "selfDescribeEmployment",
+      consentChecked: false,
+      timezone: "EST",
+      feedback: "feedback",
+      userAgent: "userAgent",
+    });
+    await writeParticipant(db, path, data);
+    snapshot = await assertSucceeds(
+      db.collection(`${path}/participants`).get()
+    );
+    assert.equal(
+      snapshot.docs.length,
+      1,
+      "Expected one participant document to be retrieved."
+    );
+    assert.equal(
+      snapshot.docs[0].data().participantId,
+      1,
+      "Did not write what was expected for the participant."
+    );
+  });
+
+  // fetchback and test
+  //   const q = expRef.where("prolific_study_id", "==", "test");
+  //   const expSnapshot = await assertSucceeds(q.get());
+  //   assert.equal(
+  //     expSnapshot.docs.length,
+  //     1,
+  //     "Expected to retrieve one experiment"
+  //   );
+  //   assert.equal(expSnapshot.docs[0].data().num_participants_started, 1);
+  // });
 });

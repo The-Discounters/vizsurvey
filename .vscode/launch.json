@@ -123,7 +123,13 @@
             "args": ["import", "-s", "../../scripts/fire_ques_prod.csv", "-c", "questions"],
             "cwd": "${workspaceRoot}/packages/cli",
             "console": "integratedTerminal",
-            "internalConsoleOptions": "neverOpen"
+            "internalConsoleOptions": "neverOpen",
+            "env": {
+                "GOOGLE_APPLICATION_CREDENTIALS": "/Users/pete/vizsurvey/admin-credentials-dev.json",
+                "FIRESTORE_EMULATOR_HOST": "127.0.0.1:8080",
+                "FIRESTORE_PROJECT_ID": "vizsurvey-test",
+                "FIRESTORE_DATABASE_URL": "https://vizsurvey-test.firebaseio.com/"
+            } 
         },
         {
             "name": "Debug CLI import firebase treatments",
@@ -134,7 +140,13 @@
             "args": ["import", "-s", "../../scripts/fire_treat_prod.csv", "-c", "treatments"],
             "cwd": "${workspaceRoot}/packages/cli",
             "console": "integratedTerminal",
-            "internalConsoleOptions": "neverOpen"
+            "internalConsoleOptions": "neverOpen",
+            "env": {
+                "GOOGLE_APPLICATION_CREDENTIALS": "/Users/pete/vizsurvey/admin-credentials-dev.json",
+                "FIRESTORE_EMULATOR_HOST": "127.0.0.1:8080",
+                "FIRESTORE_PROJECT_ID": "vizsurvey-test",
+                "FIRESTORE_DATABASE_URL": "https://vizsurvey-test.firebaseio.com/"
+            }             
         },
         {
             "name": "Debug CLI import firebase treatment questions.",
@@ -142,10 +154,16 @@
             "request": "launch",
             "runtimeExecutable": "/Users/pete/.nvm/versions/node/v18.17.0/bin/node",
             "program": "${workspaceFolder}/packages/cli/src/index.js",
-            "args": ["import", "-s", "../../scripts/fire_treat_ques_prod.csv", "-c", "treatmentQuestions", "-p", "experiments",  "-l", "id=>exp_id"],
+            "args": ["import", "-s", "../../scripts/fire_treat_ques_prod.csv", "-c", "treatmentQuestions", "-p", "experiments",  "-l", "experiment_id=>experiment_id"],
             "cwd": "${workspaceRoot}/packages/cli",
             "console": "integratedTerminal",
-            "internalConsoleOptions": "neverOpen"
+            "internalConsoleOptions": "neverOpen",
+            "env": {
+                "GOOGLE_APPLICATION_CREDENTIALS": "/Users/pete/vizsurvey/admin-credentials-dev.json",
+                "FIRESTORE_EMULATOR_HOST": "127.0.0.1:8080",
+                "FIRESTORE_PROJECT_ID": "vizsurvey-test",
+                "FIRESTORE_DATABASE_URL": "https://vizsurvey-test.firebaseio.com/"
+            }             
         },
         {
             "name": "Debug CLI delete path",
@@ -156,7 +174,47 @@
             "args": ["-q", "delete", "-c", "experiments"],
             "cwd": "${workspaceRoot}/packages/cli",
             "console": "integratedTerminal",
-            "internalConsoleOptions": "neverOpen"
-        }
+            "internalConsoleOptions": "neverOpen",
+            "env": {
+                "GOOGLE_APPLICATION_CREDENTIALS": "/Users/pete/vizsurvey/admin-credentials-dev.json",
+                "FIRESTORE_EMULATOR_HOST": "127.0.0.1:8080",
+                "FIRESTORE_PROJECT_ID": "vizsurvey-test",
+                "FIRESTORE_DATABASE_URL": "https://vizsurvey-test.firebaseio.com/"
+            }             
+        },
+        {
+            "name": "Debug CLI link treatments",
+            "type": "node",
+            "request": "launch",
+            "runtimeExecutable": "/Users/pete/.nvm/versions/node/v18.17.0/bin/node",
+            "program": "${workspaceFolder}/packages/cli/src/index.js",
+            "args": ["-q", "link", "-f", "experiments/treatmentQuestions.treatment_id=>treatments.treatment_id"],
+            "cwd": "${workspaceRoot}/packages/cli",
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen",
+            "env": {
+                "GOOGLE_APPLICATION_CREDENTIALS": "/Users/pete/vizsurvey/admin-credentials-dev.json",
+                "FIRESTORE_EMULATOR_HOST": "127.0.0.1:8080",
+                "FIRESTORE_PROJECT_ID": "vizsurvey-test",
+                "FIRESTORE_DATABASE_URL": "https://vizsurvey-test.firebaseio.com/"
+            }             
+        },
+                {
+            "name": "Debug CLI link questions",
+            "type": "node",
+            "request": "launch",
+            "runtimeExecutable": "/Users/pete/.nvm/versions/node/v18.17.0/bin/node",
+            "program": "${workspaceFolder}/packages/cli/src/index.js",
+            "args": ["-q", "link", "-f", "experiments/treatmentQuestions.question_id=>questions.question_id"],
+            "cwd": "${workspaceRoot}/packages/cli",
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen",
+            "env": {
+                "GOOGLE_APPLICATION_CREDENTIALS": "/Users/pete/vizsurvey/admin-credentials-dev.json",
+                "FIRESTORE_EMULATOR_HOST": "127.0.0.1:8080",
+                "FIRESTORE_PROJECT_ID": "vizsurvey-test",
+                "FIRESTORE_DATABASE_URL": "https://vizsurvey-test.firebaseio.com/"
+            }             
+        },
     ]
 }

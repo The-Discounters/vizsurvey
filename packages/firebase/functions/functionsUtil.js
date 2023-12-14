@@ -1,10 +1,9 @@
-import { Question } from "@the-discounters/types";
-import {
-  initBatch,
-  setBatchItem,
-  commitBatch,
-} from "@the-discounters/firebase-shared";
 import { group } from "d3";
+import {
+  writeSurveyQuestions,
+  writeParticipant,
+} from "@the-discounters/firebase-shared";
+import { Participant } from "@the-discounters/types";
 
 export const calcTreatmentIds = (latinSquare, participantCount) => {
   const index = participantCount % latinSquare.length;
@@ -23,27 +22,6 @@ export const filterQuestions = (treatmentIds, treatmentQuestions) => {
 export const parseQuestions = (treatmentQuestions) => {
   const grouped = group(treatmentQuestions, (d) => d.instruction_question);
   return { instruction: grouped.get(true), survey: grouped.get(false) };
-};
-
-export const createQuestions = (
-  studyId,
-  sessionId,
-  prolificPid,
-  treatmentQuestions
-) => {
-  const result = treatmentQuestions.map((v) =>
-    Question({
-      id: `${prolificPid}-${studyId}-${sessionId}-${v.treatment_id}-${v.question_id}`,
-      exp_id: v.exp_id,
-      participant_id: prolificPid,
-      session_id: sessionId,
-      study_id: studyId,
-      question_id: v.question_id,
-      sequence_id: v.sequence_id,
-      treatment_id: v.treatment_id,
-    })
-  );
-  return result;
 };
 
 export const orderQuestions = (questions, treatmentIds) => {
@@ -85,10 +63,36 @@ export const orderQuestionsRandom = (questions, treatmentIds) => {
   return result;
 };
 
-export const writeQuestions = async (db, rootPath, answers) => {
-  initBatch(db, rootPath);
-  answers.forEach((a) => {
-    setBatchItem("id", a);
-  });
-  await commitBatch();
+export const signupParticipant = (
+  db,
+  participantId,
+  studyId,
+  sessionId,
+  exp,
+  callback
+) => {
+  const treatmentIds = calcTreatmentIds(
+    JSON.parse(exp.latin_square),
+    exp.num_participants_started
+  );
+  callback(
+    false,
+    `assigned treatment order ${treatmentIds} to ` +
+      `participant id ${participantId}, for study id ${studyId} for ` +
+      `session id ${sessionId}`
+  );
+  let treatmentQuestions = filterQuestions(
+    treatmentIds,
+    exp.treatmentQuestions
+  );
+  let { instruction, survey } = parseQuestions(treatmentQuestions);
+  survey = orderQuestions(survey, treatmentIds);
+  writeSurveyQuestions(db, exp.path, participantId, sessionId, survey);
+  writeParticipant(db, exp.path, { participantId: participantId });
+  callback(
+    false,
+    `${survey.length} questions sent back to participant for participant id ${participantId}, ` +
+      `study id ${studyId}, session id ${sessionId}`
+  );
+  return { instruction, questions: survey };
 };

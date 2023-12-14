@@ -13,7 +13,7 @@ import {
 import { AmountType } from "@the-discounters/types";
 
 export const typeExperimentObj = (obj) => {
-  obj.id = +obj.id;
+  obj.experiment_id = +obj.experiment_id;
   if (!ProlificStudyStatusType[obj.status]) {
     throw "Invalid status column value.";
   }
@@ -41,7 +41,7 @@ export const typeExperimentObj = (obj) => {
 };
 
 export const typeQuestionObj = (obj) => {
-  obj.id = +obj.id;
+  obj.question_id = +obj.question_id;
   obj.amount_earlier = +obj.amount_earlier;
   obj.time_earlier = +obj.time_earlier;
   obj.date_earlier = obj.date_earlier
@@ -62,7 +62,7 @@ export const typeQuestionObj = (obj) => {
 };
 
 export const typeTreatmentObj = (obj) => {
-  obj.id = +obj.id;
+  obj.treatment_id = +obj.treatment_id;
   if (!InteractionType[obj.interaction]) {
     throw "Invalid interaction type column value.";
   }
@@ -96,8 +96,8 @@ export const typeTreatmentObj = (obj) => {
 };
 
 export const typeTreatmentQuestionObj = (obj) => {
-  obj.id = +obj.id;
-  obj.exp_id = +obj.exp_id;
+  obj.treatment_question_id = +obj.treatment_question_id;
+  obj.experiment_id = +obj.experiment_id;
   obj.treatment_id = +obj.treatment_id;
   obj.question_id = +obj.question_id;
   obj.sequence_id = +obj.sequence_id;

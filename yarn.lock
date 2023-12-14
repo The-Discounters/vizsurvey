@@ -6983,6 +6983,7 @@ __metadata:
   dependencies:
     "@firebase/rules-unit-testing": "npm:^3.0.1"
     "@firebase/testing": "npm:^0.20.11"
+    "@the-discounters/test-shared": "npm:*"
     eslint: "npm:^8.15.0"
     eslint-config-google: "npm:^0.14.0"
     firebase: "npm:^10.6.0"
@@ -6999,6 +7000,7 @@ __metadata:
   resolution: "@the-discounters/functions@workspace:packages/firebase/functions"
   dependencies:
     "@the-discounters/firebase-shared": "npm:*"
+    "@the-discounters/test-shared": "npm:*"
     d3: "npm:^7.8.5"
     eslint: "npm:^8.15.0"
     eslint-config-google: "npm:^0.14.0"
@@ -7025,6 +7027,15 @@ __metadata:
   dependencies:
     craco: "npm:^0.0.3"
     lerna: "npm:^4.0.0"
+  languageName: unknown
+  linkType: soft
+
+"@the-discounters/test-shared@npm:*, @the-discounters/test-shared@workspace:packages/test-shared":
+  version: 0.0.0-use.local
+  resolution: "@the-discounters/test-shared@workspace:packages/test-shared"
+  dependencies:
+    eslint: "npm:^8.15.0"
+    eslint-config-google: "npm:^0.14.0"
   languageName: unknown
   linkType: soft
 

@@ -18,7 +18,7 @@ if (!($?)) {
     Throw "dsc failed! See above for error."
 }
 Write-Output "Importing treatmentQuestions"
-dsc -q import -s $PSScriptRoot/fire_treat_ques_prod.csv -c treatmentQuestions -p experiments -l "id=>exp_id"
+dsc -q import -s $PSScriptRoot/fire_treat_ques_prod.csv -c treatmentQuestions -p experiments -l "experiment_id=>experiment_id"
 if (!($?)) {
     Throw "dsc failed! See above for error."
 }

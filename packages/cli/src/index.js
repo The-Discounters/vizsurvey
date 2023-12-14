@@ -346,7 +346,7 @@ const typeFieldsFunction = (collectionType) => {
 const importWithoutParent = (db, collection, data) => {
   initBatch(db, collection);
   for (const item of data) {
-    setBatchItem(null, item);
+    setBatchItem(null, null, item);
   }
   commitBatchSync();
 };
@@ -424,7 +424,7 @@ program
   .description("Creates reference fields between firestore documents.")
   .option(
     "-f, --fields <collection path>.<field name>=><collection path>.<field name>",
-    "Collection and field paths to link."
+    "Collection and field paths to link.  Each left path segment will be scanned for right collection entries to link."
   )
   .action((args, options) => {
     try {

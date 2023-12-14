@@ -12,11 +12,6 @@ dsc -q delete -c questions
 if (!($?)) {
     Throw "dsc failed! See above for error."
 }
-Write-Output "....Deleting visualizations"
-dsc -q delete -c visualizations
-if (!($?)) {
-    Throw "dsc failed! See above for error."
-}
 Write-Output "...Deleting treatments"
 dsc -q delete -c treatments
 if (!($?)) {

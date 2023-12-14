@@ -3,22 +3,20 @@ import { assertSucceeds } from "@firebase/rules-unit-testing";
 import { group } from "d3";
 import {
   calcTreatmentIds,
-  createQuestions,
   filterQuestions,
   parseQuestions,
   orderQuestions,
   orderQuestionsRandom,
-  writeQuestions,
+  signupParticipant,
 } from "./functionsUtil.js";
 import {
-  initBatch,
-  setBatchItem,
-  commitBatch,
   initFirestore,
-  deleteCollection,
+  fetchExperiment,
 } from "@the-discounters/firebase-shared";
-import TREATMENT_QUESTIONS_JSON from "./treatmentQuestionsTest.json" assert { type: "json" };
-import QUESTIONS_JSON from "./questionsTest.json" assert { type: "json" };
+import {
+  SURVEY_QUESTIONS_JSON,
+  deleteCollection,
+} from "@the-discounters/test-shared";
 import ADMIN_CREDS from "../../../admin-credentials-dev.json" assert { type: "json" };
 
 // this needs to match the value that is passed to firebase emulators:start --project=
@@ -45,28 +43,12 @@ describe("functionsUtil test ", () => {
     );
     app = result.app;
     db = result.db;
-    //await deleteCollection(db, "functionsUtil-writeQuestions-test");
+    await deleteCollection(db, "functionsUtil-writeQuestions-test");
   });
 
   after(async () => {
-    //await deleteCollection(db, "functionsUtil-writeQuestions-test");
+    await deleteCollection(db, "functionsUtil-writeQuestions-test");
   });
-
-  // it("Integration test for batch writing data to firestore null id field.", async () => {
-  //   initBatch(db, "firestoreAdmin-test-batch-idfield-null");
-  //   setBatchItem(null, { item1: "value1" });
-  //   await commitBatch();
-  //   const snapshot = await assertSucceeds(
-  //     db.collection("firestoreAdmin-test-batch-idfield-null").get()
-  //   );
-  //   assert.equal(
-  //     "value1",
-  //     snapshot.docs[0].data()["item1"],
-  //     `Did not read back what was written.  ${
-  //       snapshot.docs[0].data()["item1"]
-  //     } doesn't equal 'value1'`
-  //   );
-  // });
 
   it("Test for calcTreatmentIds .", async () => {
     const latinSquare = JSON.parse(
@@ -105,37 +87,17 @@ describe("functionsUtil test ", () => {
   });
 
   it("Test for filterQuestions between subject study (treatmentIds array like [1]).", async () => {
-    const result = filterQuestions([1], TREATMENT_QUESTIONS_JSON);
+    const result = filterQuestions([1], SURVEY_QUESTIONS_JSON);
     assert.equal(result.length, 9, "Returned array was not expected size.");
   });
 
   it("Test for filterQuestions for within subject study (treatmentIds array like [1,2,3]).", async () => {
-    const result = filterQuestions([1, 2, 3], TREATMENT_QUESTIONS_JSON);
+    const result = filterQuestions([1, 2, 3], SURVEY_QUESTIONS_JSON);
     assert.equal(result.length, 27, "Returned array was not expected size.");
-  });
-
-  it("Test for createQuestions for within subject study (treatmentIds array like [1,2,3]).", async () => {
-    const result = createQuestions(1, 2, 3, TREATMENT_QUESTIONS_JSON);
-    assert.equal(result.length, 27, "Returned array was not expected size.");
-    assert.notEqual(
-      result,
-      TREATMENT_QUESTIONS_JSON,
-      "Arrays should not point to the same reference."
-    );
-  });
-
-  it("Test for createQuestions for between subject study (treatmentIds array like [1]).", async () => {
-    const result = createQuestions(1, 2, 3, TREATMENT_QUESTIONS_JSON);
-    assert.equal(result.length, 27, "Returned array was not expected size.");
-    assert.notEqual(
-      result,
-      TREATMENT_QUESTIONS_JSON,
-      "Arrays should not point to the same reference."
-    );
   });
 
   it("Test for parseQuestions.", async () => {
-    const { instruction, survey } = parseQuestions(TREATMENT_QUESTIONS_JSON);
+    const { instruction, survey } = parseQuestions(SURVEY_QUESTIONS_JSON);
     assert.equal(
       instruction.length,
       3,
@@ -173,20 +135,14 @@ describe("functionsUtil test ", () => {
   };
 
   it("Test for orderQuestions for within subject study (latin square 1, 2, 3]).", async () => {
-    const grouped = group(
-      TREATMENT_QUESTIONS_JSON,
-      (d) => d.instruction_question
-    );
+    const grouped = group(SURVEY_QUESTIONS_JSON, (d) => d.instruction_question);
     const q = grouped.get(false);
     const result = orderQuestions(q, [1, 2, 3]);
     assertCorrectOrder(result);
   });
 
   it("Test for orderQuestionsRandom for within subject study (latin square 1, 2, 3]).", async () => {
-    const grouped = group(
-      TREATMENT_QUESTIONS_JSON,
-      (d) => d.instruction_question
-    );
+    const grouped = group(SURVEY_QUESTIONS_JSON, (d) => d.instruction_question);
     const q = grouped.get(false);
     let result = orderQuestionsRandom(q, [1, 2, 3]);
     assert.notEqual(
@@ -195,10 +151,10 @@ describe("functionsUtil test ", () => {
       "Array instance returned should not be the same as parameter value."
     );
     assertCorrectOrder(result);
-    const first = result.map((v) => v.id);
+    const first = result.map((v) => v.treatment_question_id);
     result = orderQuestionsRandom(q, [1, 2, 3]);
     assertCorrectOrder(result);
-    const second = result.map((v) => v.id);
+    const second = result.map((v) => v.treatment_question_id);
     assert.notDeepEqual(
       first,
       second,
@@ -206,11 +162,47 @@ describe("functionsUtil test ", () => {
     );
   });
 
-  it("Test for writeQuestions.", async () => {
-    await writeQuestions(
-      db,
-      "functionsUtil-writeQuestions-test",
-      QUESTIONS_JSON
+  it("Test for signupParticipant for within subject study (latin square entries [1, 2, 3]).", async () => {
+    const exp = await fetchExperiment(db, "next");
+    const result = signupParticipant(db, "1", "2", "3", exp, (isError, msg) => {
+      assert.equal(
+        isError,
+        false,
+        `Expected there not to be an error in callback with message: ${msg}.`
+      );
+    });
+    assert.equal(
+      result.questions.length,
+      24,
+      "Wrong number of questions returned."
+    );
+    assertCorrectOrder(result);
+    assert.equal(
+      result.instruction.length,
+      3,
+      "Wrong number of instruction questions returned."
+    );
+  });
+
+  it("Test for signupParticipant for between subject study (latin square entries [1[], [2], [3]).", async () => {
+    const exp = await fetchExperiment(db, "test");
+    const result = signupParticipant(db, "1", "2", "3", exp, (isError, msg) => {
+      assert.equal(
+        isError,
+        false,
+        `Expected there not to be an error in callback with message: ${msg}.`
+      );
+    });
+    assert.equal(
+      result.questions.length,
+      8,
+      "Wrong number of questions returned."
+    );
+    assertCorrectOrder(result);
+    assert.equal(
+      result.instruction.length,
+      1,
+      "Wrong number of instruction questions returned."
     );
   });
 });

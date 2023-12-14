@@ -10,7 +10,8 @@
 .env.test
 discounters.development.json
 discounters.production.json
-/setenv.sh
+/setenvprod.sh
+/setenvdev.sh
 
 # dependencies
 /node_modules
