@@ -1,16 +1,13 @@
 import admin from "firebase-admin";
 import { ProlificStudyStatusType } from "@the-discounters/prolific";
-import { ExperimentType } from "@the-discounters/types";
-import { InteractionType } from "@the-discounters/types";
-import { ViewType } from "@the-discounters/types";
 import {
-  stringToDate,
-  isJSONExt,
-  isCSVExt,
-  loadFile,
-  parseCSV,
-} from "@the-discounters/util";
-import { AmountType } from "@the-discounters/types";
+  ExperimentType,
+  InteractionType,
+  ViewType,
+  AmountType,
+} from "@the-discounters/types";
+import { isJSONExt, isCSVExt, loadFile } from "./files.js";
+import { parseCSV, stringToDate } from "@the-discounters/util";
 
 export const typeExperimentObj = (obj) => {
   obj.experiment_id = +obj.experiment_id;

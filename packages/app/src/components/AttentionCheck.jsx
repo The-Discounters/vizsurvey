@@ -34,6 +34,7 @@ export function AttentionCheck() {
 
   useEffect(() => {
     dispatch(attentionCheckShown(dateToState(DateTime.now())));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -47,6 +48,7 @@ export function AttentionCheck() {
 
     const path = navigateFromStatus(status);
     navigate(path);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status]);
 
   const checkEnableSubmit = () => {
@@ -59,6 +61,7 @@ export function AttentionCheck() {
 
   useEffect(() => {
     checkEnableSubmit();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [attentionCheckValue]);
 
   const handleFieldChange = (event, setter) => {

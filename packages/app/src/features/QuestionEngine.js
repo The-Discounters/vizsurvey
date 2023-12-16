@@ -7,8 +7,6 @@ export const TIMESTAMP_FORMAT = "MM/dd/yyyy H:mm:ss:SSS ZZZZ";
 
 // TODO Need to capture errors in processing by settings state.status = StatusType.Error
 export class QuestionEngine {
-  constructor() {}
-
   isFirstQuestion(state) {
     return state.currentAnswerIdx === 0;
   }
@@ -16,7 +14,7 @@ export class QuestionEngine {
   isLastQuestion(state) {
     return state.currentAnswerIdx === state.answers.length - 1;
   }
- 
+
   isLastTreatmentQuestion(state) {
     if (
       state.answers.length === 1 ||
@@ -177,16 +175,12 @@ export class QuestionEngine {
       case StatusType.MCLInstructions:
         return StatusType.Survey;
       case StatusType.Survey:
-        if (onLastTreatmentQuestion) {
-          return StatusType.Attention;
-        } else {
-          return StatusType.Survey;
-        }
-      case StatusType.Attention:
         if (onLastQuestion) {
           return StatusType.ExperienceQuestionaire;
-        } else {
+        } else if (onLastTreatmentQuestion) {
           return StatusType.MCLInstructions;
+        } else {
+          return StatusType.Survey;
         }
       case StatusType.ExperienceQuestionaire:
         return StatusType.FinancialQuestionaire;
@@ -202,7 +196,8 @@ export class QuestionEngine {
         return StatusType.Finished;
       case StatusType.Error:
         return StatusType.Error;
-      default: return null;
+      default:
+        return null;
     }
   }
 }

@@ -63,7 +63,7 @@ export const loadTreatmentConfiguration = (treatmentIds) => {
       ),
   };
   if (questions[0].position === RANDOM_TREATMENT_POSITION) {
-    result.questions = new Array();
+    result.questions = [];
     const questionsByTreatment = group(questions, (d) => d.treatmentId);
     treatmentIds.forEach((treatmentId) => {
       const questionsForTreatment = questionsByTreatment.get(treatmentId);
@@ -79,7 +79,7 @@ export const loadTreatmentConfiguration = (treatmentIds) => {
         treatmentIds.indexOf(a.treatmentId) -
         treatmentIds.indexOf(b.treatmentId);
       const positionSortResult = a.positionId - b.positionId;
-      return treatmentSortResult != 0
+      return treatmentSortResult !== 0
         ? treatmentSortResult
         : positionSortResult;
     });
@@ -96,7 +96,7 @@ export const loadAllTreatmentsConfiguration = () => {
     .sort((a, b) => {
       const treatmentSortResult = a.treatmentId - b.treatmentId;
       const positionSortResult = a.positionId - b.positionId;
-      return treatmentSortResult != 0
+      return treatmentSortResult !== 0
         ? treatmentSortResult
         : positionSortResult;
     });

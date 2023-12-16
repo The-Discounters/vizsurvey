@@ -61,7 +61,7 @@
             "request": "launch",
             "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/react-scripts",
             "args": ["test", "--runInBand", "--no-cache", "--watchAll -- --silent=false"],
-            "cwd": "${workspaceRoot}",
+            "cwd": "${workspaceRoot}/packages/app",
             "protocol": "inspector",
             "console": "integratedTerminal",
             "internalConsoleOptions": "neverOpen"
@@ -72,7 +72,7 @@
             "request": "launch",
             "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/react-scripts",
             "args": ["test", "${fileBasenameNoExtension}", "--runInBand", "--no-cache", "--watchAll -- --silent=false"],
-            "cwd": "${workspaceRoot}",
+            "cwd": "${workspaceRoot}/packages/app",
             "protocol": "inspector",
             "console": "integratedTerminal",
             "internalConsoleOptions": "neverOpen"
@@ -93,7 +93,7 @@
             "runtimeExecutable": "/Users/pete/.nvm/versions/node/v19.3.0/bin/node",
             "program": "${workspaceFolder}/cli/src/index.js",
             "args": ["monitor", "450", "-l", "06/30/2023", "-t", "3"],
-            "cwd": "${workspaceRoot}/cli",
+            "cwd": "${workspaceRoot}/packages/cli",
             "console": "integratedTerminal",
             "internalConsoleOptions": "neverOpen"
         },

@@ -1,10 +1,10 @@
-const express = require("express");
-const fs = require("fs");
-const cors = require("cors");
-const http = require("http");
-const https = require("https");
-const luxon = require("luxon");
-const chalk = require("chalk");
+import express from "express";
+import fs from "fs";
+import cors from "cors";
+import http from "http";
+import https from "https";
+import { DateTime } from "luxon";
+import chalk from "chalk";
 
 const app = express();
 
@@ -62,7 +62,7 @@ app.get("/files", (req, res) => {
 app.post("/test", (req, res) => {
   var dir = "public/";
 
-  console.log(`post to /test received on ${luxon.DateTime.now().toISO()}`);
+  console.log(`post to /test received on ${DateTime.now().toISO()}`);
 
   if (!fs.existsSync(dir)) {
     fs.mkdirSync(dir);

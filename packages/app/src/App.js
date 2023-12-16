@@ -131,6 +131,7 @@ const GenTreatmentId = () => {
         userAgent: navigator.userAgent,
       })
     );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -416,12 +417,15 @@ const DevHome = () => {
               </Link>
             </p>
             <p>
-              <b>Production assigned randomly by the server.</b>
+              <b>
+                Production within subject and latin square with question order
+                assigned randomly by the server.
+              </b>
             </p>
             <p>
               <Link
                 id="23"
-                to="/start?participant_id=1&treatment_id=23&study_id=2&session_id=3"
+                to="/start?participant_id=1&treatment_id=assigned&study_id=2&session_id=3"
               >
                 {allTreatments.filter((d) => d.treatmentId === 23)[0].comment}
               </Link>
@@ -429,7 +433,7 @@ const DevHome = () => {
             <p>
               <Link
                 id="24"
-                to="/start?participant_id=1&treatment_id=24&study_id=2&session_id=3"
+                to="/start?participant_id=1&treatment_id=assigned&study_id=2&session_id=3"
               >
                 {allTreatments.filter((d) => d.treatmentId === 24)[0].comment}
               </Link>
@@ -437,13 +441,13 @@ const DevHome = () => {
             <p>
               <Link
                 id="25"
-                to="/start?participant_id=1&treatment_id=25&study_id=2&session_id=3"
+                to="/start?participant_id=1&treatment_id=assigned&study_id=2&session_id=3"
               >
                 {allTreatments.filter((d) => d.treatmentId === 25)[0].comment}
               </Link>
             </p>
             <p>
-              <b>Production calendar treatments.</b>
+              <b>Production between subject calendar treatments.</b>
             </p>
             <p>
               <Link

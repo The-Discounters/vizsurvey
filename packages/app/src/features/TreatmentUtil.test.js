@@ -2,9 +2,7 @@ import {
   loadAllTreatmentsConfiguration,
   loadTreatmentConfiguration,
 } from "./TreatmentUtil";
-import { InteractionType } from "@the-discounters/types";
-import { AmountType } from "./AmountType";
-import { ViewType } from "@the-discounters/types";
+import { InteractionType, AmountType, ViewType } from "@the-discounters/types";
 
 describe("TreatmentUtil tests", () => {
   test("Validate loadTreatmentConfiguration loads CSV fields correctly single treatment with position values.", async () => {
@@ -76,8 +74,8 @@ describe("TreatmentUtil tests", () => {
   });
 
   test("Validate loadAllTreatmentsConfiguration loads all treatments correctly.", async () => {
-    var questions = await loadAllTreatmentsConfiguration();
-    expect(questions.length).toBe(90);
+    var questions = loadAllTreatmentsConfiguration();
+    expect(questions.length).toBe(122);
   });
 
   test("Validate loadTreatmentConfiguration loads CSV fields correctly three treatment with random values", async () => {

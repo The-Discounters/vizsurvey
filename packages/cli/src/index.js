@@ -8,11 +8,7 @@ import { DateTime } from "luxon";
 import readline from "readline";
 import isValid from "is-valid-path";
 import { parseCSV } from "@the-discounters/util";
-import {
-  appendSepToPath,
-  isCSVExt,
-  directoryOrFileExists,
-} from "@the-discounters/util";
+import { appendSepToPath, isCSVExt, directoryOrFileExists } from "./files.js";
 import { updateStats, createStat, clearStats } from "./stats.js";
 import { drawStatus } from "./monitorUtil.js";
 import {

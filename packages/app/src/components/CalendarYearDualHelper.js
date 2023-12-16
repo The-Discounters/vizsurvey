@@ -69,13 +69,13 @@ export const todayText = function (sooner_time) {
 };
 
 export const drawCalendarYearDual = ({
-  table: table,
-  onClickCallback: onClickCallback,
-  choice: choice,
-  qDateEarlier: qDateEarlier,
-  qDateLater: qDateLater,
-  qAmountEarlier: qAmountEarlier,
-  qAmountLater: qAmountLater,
+  table,
+  onClickCallback,
+  choice,
+  qDateEarlier,
+  qDateLater,
+  qAmountEarlier,
+  qAmountLater,
 }) => {
   let selection = { d: -1, a: -1 };
   const date = new Date(qDateEarlier);

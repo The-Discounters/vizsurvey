@@ -249,6 +249,52 @@ const MCLInstructions = () => {
     }
   };
 
+  const DrawCalendar = () => {
+    return (
+      <table
+        id="calendar"
+        style={{ borderCollapse: "collapse", tableLayout: "fixed" }}
+        ref={useD3(
+          (table) => {
+            drawCalendar({
+              table: table,
+              qDateEarlier: instructionTreatment.dateEarlier,
+              qDateLater: instructionTreatment.dateLater,
+              qAmountEarlier: instructionTreatment.amountEarlier,
+              qAmountLater: instructionTreatment.amountLater,
+              onClickCallback: onClickCallback,
+              choice: choice,
+            });
+          },
+          [choice]
+        )}
+      ></table>
+    );
+  };
+
+  const DrawCalendarYear = () => {
+    return (
+      <table
+        id="calendar"
+        style={{ borderCollapse: "collapse", tableLayout: "fixed" }}
+        ref={useD3(
+          (table) => {
+            drawCalendarYear({
+              table: table,
+              qDateEarlier: instructionTreatment.dateEarlier,
+              qDateLater: instructionTreatment.dateLater,
+              qAmountEarlier: instructionTreatment.amountEarlier,
+              qAmountLater: instructionTreatment.amountLater,
+              onClickCallback: onClickCallback,
+              choice: choice,
+            });
+          },
+          [choice]
+        )}
+      ></table>
+    );
+  };
+
   const vizTry = () => {
     switch (instructionTreatment.viewType) {
       case ViewType.word:
@@ -272,48 +318,10 @@ const MCLInstructions = () => {
       case ViewType.calendarBar:
         return "";
       case ViewType.calendarWord:
-        return (
-          <table
-            id="calendar"
-            style={{ borderCollapse: "collapse", tableLayout: "fixed" }}
-            ref={useD3(
-              (table) => {
-                drawCalendar({
-                  table: table,
-                  qDateEarlier: instructionTreatment.dateEarlier,
-                  qDateLater: instructionTreatment.dateLater,
-                  qAmountEarlier: instructionTreatment.amountEarlier,
-                  qAmountLater: instructionTreatment.amountLater,
-                  onClickCallback: onClickCallback,
-                  choice: choice,
-                });
-              },
-              [choice]
-            )}
-          ></table>
-        );
+        return <DrawCalendar />;
       case ViewType.calendarWordYear:
       case ViewType.calendarWordYearDual:
-        return (
-          <table
-            id="calendar"
-            style={{ borderCollapse: "collapse", tableLayout: "fixed" }}
-            ref={useD3(
-              (table) => {
-                drawCalendarYear({
-                  table: table,
-                  qDateEarlier: instructionTreatment.dateEarlier,
-                  qDateLater: instructionTreatment.dateLater,
-                  qAmountEarlier: instructionTreatment.amountEarlier,
-                  qAmountLater: instructionTreatment.amountLater,
-                  onClickCallback: onClickCallback,
-                  choice: choice,
-                });
-              },
-              [choice]
-            )}
-          ></table>
-        );
+        return <DrawCalendarYear />;
       case ViewType.calendarIcon:
         return "";
       default:

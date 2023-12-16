@@ -8,11 +8,12 @@ import {
   parseLinkText,
   parseLookupText,
 } from "./importUtil.js";
-import { ProlificSumbissionStatusType } from "@the-discounters/prolific";
-import { ExperimentType } from "@the-discounters/types";
-import { InteractionType } from "@the-discounters/types";
-import { AmountType } from "@the-discounters/types";
-import { ViewType } from "@the-discounters/types";
+import {
+  ExperimentType,
+  ViewType,
+  InteractionType,
+  AmountType,
+} from "@the-discounters/types";
 import { ProlificStudyStatusType } from "@the-discounters/prolific";
 
 describe("importUtil test ", () => {

@@ -9,7 +9,7 @@ import { Answer } from "./Answer.js";
 import { dateToState } from "@the-discounters/util";
 
 describe("QuestionEngine tests", () => {
-  test("nextStatus testing state transitions with a single treatment.", () => {
+  test("createAnswersForTreatments test.", () => {
     const state = {
       treatments: [
         TestDataFactory.createQuestionNoTitrate(1, 1),
@@ -31,41 +31,29 @@ describe("QuestionEngine tests", () => {
 
   test("nextStatus testing state transitions with a single treatment.", () => {
     const state = {
-      treatments: [
-        TestDataFactory.createQuestionNoTitrate(1, 1),
-        TestDataFactory.create2ndQuestionNoTitrate(1, 2),
-        TestDataFactory.create2ndQuestionNoTitrate(1, 3),
-      ],
-      currentAnswerIdx: 0,
       status: StatusType.Unitialized,
-      treatmentIds: [1],
     };
     const qe = new QuestionEngine();
     expect((state.status = qe.nextStatus(state, false, true))).toBe(
       StatusType.Fetching
     );
-    expect((state.status = qe.nextStatus(state, false, true))).toBe(
+    expect((state.status = qe.nextStatus(state, false, false))).toBe(
       StatusType.Consent
     );
-    expect((state.status = qe.nextStatus(state, false, true))).toBe(
+    expect((state.status = qe.nextStatus(state, false, false))).toBe(
       StatusType.Instructions
     );
-    expect((state.status = qe.nextStatus(state, false, true))).toBe(
+    expect((state.status = qe.nextStatus(state, false, false))).toBe(
       StatusType.MCLInstructions
     );
-    expect((state.status = qe.nextStatus(state, false, true))).toBe(
+    expect((state.status = qe.nextStatus(state, false, false))).toBe(
       StatusType.Survey
     );
-    state.currentAnswerIdx = 1;
-    expect((state.status = qe.nextStatus(state, false, true))).toBe(
-      StatusType.Survey
+    expect((state.status = qe.nextStatus(state, true, false))).toBe(
+      StatusType.MCLInstructions
     );
-    state.currentAnswerIdx = 2;
-    expect((state.status = qe.nextStatus(state, false, true))).toBe(
+    expect((state.status = qe.nextStatus(state, true, false))).toBe(
       StatusType.Survey
-    );
-    expect((state.status = qe.nextStatus(state, true, true))).toBe(
-      StatusType.Attention
     );
     expect((state.status = qe.nextStatus(state, true, true))).toBe(
       StatusType.ExperienceQuestionaire
@@ -73,10 +61,10 @@ describe("QuestionEngine tests", () => {
     expect((state.status = qe.nextStatus(state, true, true))).toBe(
       StatusType.FinancialQuestionaire
     );
-    expect((state.status = qe.nextStatus(state, true))).toBe(
+    expect((state.status = qe.nextStatus(state, true, true))).toBe(
       StatusType.PurposeAwareQuestionaire
     );
-    expect((state.status = qe.nextStatus(state, true))).toBe(
+    expect((state.status = qe.nextStatus(state, true, true))).toBe(
       StatusType.PurposeWorthQuestionaire
     );
     expect((state.status = qe.nextStatus(state, true, true))).toBe(
@@ -182,22 +170,17 @@ describe("QuestionEngine tests", () => {
     expect(state.currentAnswerIdx).toBe(2);
     expect(qe.currentTreatment(state).treatmentId).toBe(2);
     expect(state.answers).not.toBeUndefined();
-    expect(state.status).toBe(StatusType.Attention);
-    expect((state.status = qe.nextStatus(state, true, false))).toBe(
-      StatusType.MCLInstructions
-    );
+    expect(state.status).toBe(StatusType.MCLInstructions);
     qe.incNextQuestion(state);
     expect(qe.currentTreatment(state).treatmentId).toBe(2);
     expect(state.currentAnswerIdx).toBe(3);
     expect(state.answers).not.toBeUndefined();
+    expect(state.status).toBe(StatusType.Survey);
     qe.incNextQuestion(state);
     expect(qe.currentTreatment(state).treatmentId).toBe(2);
     expect(state.currentAnswerIdx).toBe(3);
     expect(state.answers).not.toBeUndefined();
-    expect(state.status).toBe(StatusType.Attention);
-    expect((state.status = qe.nextStatus(state, true, true))).toBe(
-      StatusType.ExperienceQuestionaire
-    );
+    expect(state.status).toBe(StatusType.ExperienceQuestionaire);
   });
 
   test("incNextQuestion for three questions single treatment should increment question index and enter attention state then experiene survey.", () => {
@@ -223,9 +206,6 @@ describe("QuestionEngine tests", () => {
     qe.incNextQuestion(state);
     expect(state.currentAnswerIdx).toBe(2);
     expect(state.status).toBe(StatusType.Survey);
-    qe.incNextQuestion(state);
-    expect(state.currentAnswerIdx).toBe(2);
-    expect(state.status).toBe(StatusType.Attention);
     qe.incNextQuestion(state);
     expect(state.currentAnswerIdx).toBe(2);
     expect(state.status).toBe(StatusType.ExperienceQuestionaire);

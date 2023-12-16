@@ -1,3 +1,4 @@
+import React from "react";
 import { useSelector } from "react-redux";
 import MELForm from "./MELForm.jsx";
 import BarChart from "./BarChart.js";
@@ -42,6 +43,8 @@ export function Survey() {
             }
             return <CalendarYear />;
 */
+          default:
+            return "";
         }
       })()}
     </div>

@@ -8,10 +8,6 @@ import { QuestionEngine } from "./QuestionEngine.js";
 import { StatusType } from "./StatusType.js";
 import { secondsBetween } from "@the-discounters/util";
 import { getRandomIntInclusive, writeStateAsCSV } from "./QuestionSliceUtil.js";
-import {
-  initFirestoreDB,
-  getServerSequenceId,
-} from "@the-discounters/firebase-shared";
 import { LATIN_SQUARE } from "./TreatmentUtil.js";
 
 const qe = new QuestionEngine();
@@ -21,11 +17,10 @@ export const initializeSurvey = createAsyncThunk(
   async (parameters, thunkAPI) => {
     const result = { ...parameters };
     try {
-      initFirestoreDB();
       if (isNaN(parameters.treatmentId)) {
         const allTreatments = loadAllTreatmentsConfiguration();
         if (parameters.treatmentId === "assigned") {
-          result.serverSequenceId = await getServerSequenceId();
+          result.serverSequenceId = 1;
           const latinSquareIndex =
             result.serverSequenceId % LATIN_SQUARE.length;
           result.treatmentIds = LATIN_SQUARE[latinSquareIndex];

@@ -2,13 +2,13 @@ import { select } from "d3";
 import { drawCalendar } from "./CalendarHelper.js";
 
 export const drawCalendarYear = ({
-  table: table,
-  onClickCallback: onClickCallback,
-  choice: choice,
-  qDateEarlier: qDateEarlier,
-  qDateLater: qDateLater,
-  qAmountEarlier: qAmountEarlier,
-  qAmountLater: qAmountLater,
+  table,
+  onClickCallback,
+  choice,
+  qDateEarlier,
+  qDateLater,
+  qAmountEarlier,
+  qAmountLater,
 }) => {
   const date = new Date(qDateEarlier);
   const dateLater = new Date(qDateLater);

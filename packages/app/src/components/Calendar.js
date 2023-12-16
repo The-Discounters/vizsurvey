@@ -40,7 +40,7 @@ export function Calendar() {
 
   useEffect(() => {
     dispatch(setQuestionShownTimestamp(dateToState(DateTime.now())));
-  }, [qi]);
+  }, [qi, dispatch]);
 
   useEffect(() => {
     switch (choice) {
@@ -64,7 +64,7 @@ export function Calendar() {
       document.exitFullscreen();
     }
     navigate(path);
-  }, [status]);
+  }, [status, navigate]);
 
   const onClickCallback = (value) => {
     dispatch(
@@ -119,6 +119,8 @@ export function Calendar() {
                     qAmountLater: q.amountLater,
                   });
                   break;
+                default:
+                  return "";
               }
             },
             [q]
