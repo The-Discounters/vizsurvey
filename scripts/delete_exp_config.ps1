@@ -1,3 +1,4 @@
+#!/usr/bin/env pwsh
 $ErrorActionPreference = "Stop"
 # import the experiment configuration documents
 Write-Output "Start delete of configurations."
@@ -8,11 +9,6 @@ if (!($?)) {
 }
 Write-Output "...Deleting questions"
 dsc -q delete -c questions
-if (!($?)) {
-    Throw "dsc failed! See above for error."
-}
-Write-Output "....Deleting visualizations"
-dsc -q delete -c visualizations
 if (!($?)) {
     Throw "dsc failed! See above for error."
 }

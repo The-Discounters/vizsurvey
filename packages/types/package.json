@@ -1,0 +1,11 @@
+{
+  "name": "@the-discounters/types",
+  "version": "1.0.0",
+  "description": "Types used in different applications.",
+  "main": "index.js",
+  "type": "module",
+  "devDependencies": {
+    "eslint": "^8.15.0"
+  },
+  "private": true
+}

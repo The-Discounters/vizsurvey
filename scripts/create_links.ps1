@@ -1,20 +1,12 @@
+#!/usr/bin/env pwsh
 Write-Output "Start conversion of ids to reference links."
-Write-Output "...Creating links for treatments."
-dsc -q link -f treatments.instruction_question_id=>questions.id
+Write-Output "...Creating links for experiments/treatmentQuestions."
+# need the "" around the path with the / or it gets interpreted as redirecting output to a file called treatments.id
+dsc -q link -f "experiments/treatmentQuestions.treatment_id=>treatments.treatment_id"
 if (!($?)) {
-    Throw "link failed! See above for error."
+   Throw "link failed! See above for error."
 }
-Write-Output "...Creating links for treatmentQuestions."
-dsc -q link -f treatmentQuestions.exp_id=>experiments.id
+dsc -q link -f "experiments/treatmentQuestions.question_id=>questions.question_id"
 if (!($?)) {
-    Throw "link failed! See above for error."
+   Throw "link failed! See above for error."
 }
-dsc -q link -f treatmentQuestions.treatment_id=>treatments.id
-if (!($?)) {
-    Throw "link failed! See above for error."
-}
-dsc -q link -f treatmentQuestions.question_id=>questions.id
-if (!($?)) {
-    Throw "link failed! See above for error."
-}
-Write-Output "Linking ran succesfully!"

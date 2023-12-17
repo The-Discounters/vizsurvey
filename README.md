@@ -2,13 +2,14 @@
 
 We created VizSurvey out of a need to have a tool with survey questions with an accompanying visualization that could be data driven for our masters thesis reasearch. We originally investigated using survey monkey and other online survey tools; however, they lacked the ability to embed visualizations and we could't find any with a REST API that would allow the visualizations to be driven off the survey questions, so we wrote VizSurvey.
 
-The application is written in react using redux and uses firestore to retrieve treatment definitions, store survey results, and assign survey treatments across participants. The application loads the treatments for the survey questionaire data, and renders the questions in a click through format making the data avialable to the react component that wraps the D3 visualization.
+The application is written in javascript with react using redux and uses firestore to retrieve treatment definitions, store survey answers, and assign survey treatments across participants. The application loads the treatments for the survey questionaire data, and renders the questions in a click through format making the data avialable to the react component that wraps the D3 visualization. The app connects
+to a google function to have treatment questions assigned to the participant and calls another google function to record answers.
 
 We hope you find it useful.
 
 # Architecture
 
-Architecture is straight forward as a React SPA with redux using react router. The next and previous buttons on each page update a status redux field and routing is driven in the react component off of the value of that field. A sing redux slice currently contains all the application logic. We integrated the application with Prolific and treatment configurations and survey results are read from and written to firestore.
+Architecture is straight forward as a React SPA with redux using react router. The next buttons on each page update a status redux field and routing is driven in the react component off of the value of that field. A single redux slice currently contains all the application logic. We integrated the application with Prolific and treatment configurations and survey results are read from and written to firestore.
 
 # Reference
 
@@ -16,25 +17,29 @@ We looked at code from https://supp-exp-en.netlify.app/ for examples of how to s
 
 # Setup
 
+### Create your instance in firestore for staging and production
+
+TBD flush out instructions here.
+
+### Download firestore credentials files
+
+Download the credential files from the firestore instances you created above and put them in files named as below. Environment
+variables set via the scripts setenvdev.sh, setenvprod.sh, and setenvstating.sh will tell the firebase SDK on how to find the files.
+admin-credentials-dev.json
+admin-credentials-prod.json
+
 ### Create .env file
 
-Create a .env.development and .env.production file in the root and include these settings
+Create a .env.development, .env.production, and .env.test file in packages/app so that the web app can locate settings.
+Modify the settings to the appropriate values.
 
 REACT_APP_ENV=<development or production>
 REACT_APP_VERSION=<product version>
-REACT_APP_S3_BUCKET=<bucket name>
-REACT_APP_REGION=<region>
-REACT_APP_accessKeyId=<access id>
-REACT_APP_secretAccessKey=<secret access key>
-REACT_APP_AWS_ENABLED=<true for enabled blank otherwise>
-REACT_APP_FIREBASE_API_KEY=<firebase API key>
-REACT_APP_FIREBASE_AUTH_DOMAIN=<firebase domain>
-REACT_APP_FIREBASE_DATABASE_URL=<firebase database URL>
-REACT_APP_FIREBASE_PROJECT_ID=<firebase project ID>
-REACT_APP_FIREBASE_STORAGE_BUCKET=<firebase storage bucket>
-REACT_APP_FIREBASE_MESSAGING_SENDER_ID=<firebase messaging sender id>
-REACT_APP_FIREBASE_APP_ID=<firebase app id>
-REACT_APP_FIREBASE_MEASUREMENT_ID=<firebase measurement id>
+REACT_APP_S3_BUCKET=<S3 bucket name (getting rid of this for firestore)>
+REACT_APP_REGION=<region (getting rid of this for firestore)>
+REACT_APP_accessKeyId=<S3 access id (getting rid of this for firestore)>
+REACT_APP_secretAccessKey=<secret access key (getting rid of this for firestore)>
+REACT_APP_AWS_ENABLED=<true for enabled blank otherwise. (getting rid of this for firestore since the function emulator can run locally)>
 REACT_APP_FULLSCREEN=enabled=<enabled or empty>
 REACT_APP_PAYMENT_AMOUT=<payment amount including currency symbol and I needed a slash before symbol i.e. \$3>
 REACT_APP_PROLIFIC_CODE=<prolific code>
@@ -56,19 +61,84 @@ REACT_APP_HPA_PHONE=<Human protection admin contact phone>
 From https://stackoverflow.com/questions/42458434/how-to-set-build-env-variables-when-running-create-react-app-build-script
 npm start will set REACT_APP_NODE_ENV to development, and so it will automatically use the .env.development file, and npm run build sets REACT_APP_NODE_ENV to production, and so it will automatically use .env.production. Values set in these will override the values in your .env.
 
+### Installing Learna
+
+See https://lerna.js.org/.
+TODO add better instructions here.
+
+### Installing yarn
+
+See https://yarnpkg.com/corepack. Yarn wants to be installed via corepack so it's per project and not global.
+
 ### Installing Dependencies
 
 In the root folder of the project run
 
 ```console
-npm install
+yarn install
 ```
 
-There is also a command line utility tool for importing treatment definitions to firestore, downloading data from firestore, and monitoring experiments. The code is located in the cli subfolder. Switch to the cli subfolder and run the command below to install dependencies
+It's not clear to me if you have to run yarn install in each mono repo (folder under packages). Or maybe this is where lerna is relevant.
+
+Open a bash terminal and run
 
 ```console
-npm install
+source ./setenvdev.sh
 ```
+
+Then start the firebase emulator by running
+
+```console
+cd packages/firebase/functions
+yarn emulator:start
+```
+
+The emulator should start and run firestore and functions emulation. You should be able to browse to http://127.0.0.1:4000/
+and see the emulator admin screen. You will see initial data seeded since the emulator was started with seeding data from the
+packages/firebase/import folder.
+
+Create another bash shell and run
+
+```console
+source ./setenvdev.sh
+```
+
+You should be able to run the unit tests for functions with
+
+```console
+cd pacakges/firebase/functions
+yarn test
+```
+
+And if you want to run the firebase-shared project unit tests, open another bash terminal and run
+
+```console
+source ./setenvdev.sh
+cd pacakges/firebase/firebase-shared
+yarn test
+```
+
+To run the web app create a bash terminal and run
+
+```console
+cd pacakges/app
+yarn run
+```
+
+A browswer should launch and then go to [http://localhost:3000/dev] and you will see a list of predefined
+experiments you can launch into on the app.
+
+If you want to re-import the data, go to the emulator and click the "Clear all data" button. Then
+open a bash shell and run
+
+```console
+source ./setenvdev.sh
+cd scripts
+./refresh_exp_config.ps1
+```
+
+The script will delete existing data and then re-import from the csv files and convert the primary/foreign key references
+to reference types.
 
 You can also run the command below to install the CLI globally so you can run it at a command prompt
 
@@ -82,10 +152,6 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 ## Available Scripts
 
-In the project directory, you can run:
-
-### `npm start`
-
 Runs the app in the development mode.\
 Open [http://localhost:3000/dev] to view it in the browser.
 
@@ -94,25 +160,19 @@ You will also see any lint errors in the console.
 
 To run using .env.production use
 
-### `npm run start:prod`
-
 ### Running file server (needed for Cypress tests)
 
-cd into the test folder and also run `npm start` in a separate terminal if you want the file server to run. This is needed to run cypres tests. If this is the first time then you need to run `npm install` from the test folder.
+THIS IS GOING TO BE DELETED SINCE DATA IS READ FROM AND WRITTEN TO GOOGLE FUNCTIONS.
+cd into the test folder and also run `yarn start` in a separate terminal if you want the file server to run. This is needed to run cypres tests. If this is the first time then you need to run `yarn install` from the test folder.
 
-### `npm run build; serve -s build`
+### `yarn build; serve -s build`
 
 Runs the app in production mode.\
 http://localhost:3000/start?participant_id=1&treatment_id=1&session_id=1 where you can edit the treatment_id value to load the treatment you want to test.
 
-### `npm test`
+### `yarn build`
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
+From the pacakges/app folder Builds the app for production to the `build` folder.\
 It correctly bundles React in production mode and optimizes the build for the best performance.
 
 The build is minified and the filenames include the hashes.\
@@ -146,28 +206,14 @@ https://release.d2ptxb5fbsc082.amplifyapp.com/start?participant_id=1&session_id=
 http://localhost:3000?treatment_id=3&participant_id=1&session_id=3 will take you to the treatment survey.
 http://localhost:3000/dev?participant_id=1&session_id=3 will take you to the list of treatments.
 
-**This is obsoleted by the deployment in AWS**
+### `yarn cypress-open`
 
-### `npm run deploy`
-
-Will deploy the application to github pages via gh_pages package. Then surf to https://release.d2ptxb5fbsc082.amplifyapp.com?treatment_id=2&participant_id=1&session_id=3
-
-Change the participant_id to the value for the person taking the survey.
-
-### Online Hosting
-
-The survey is hosted in AWS and writes the responses to an S3 bucket. Go to
-
-Change the participant_id to the value for the person taking the survey.
-
-### `npm run cypress-open`
-
-Opens cypress window to selenct and run cypress tests. Make sure to already have the app running with `npm start`.
+Opens cypress window to selenct and run cypress tests. Make sure to already have the app running with `yarn start`.
 https://docs.cypress.io/guides/guides/command-line
 
-### `npm run cypress-run`
+### `yarn cypress-run`
 
-Runs cypress tests automatically in headless mode. Make sure to already have the app running with `npm start`.
+Runs cypress tests automatically in headless mode. Make sure to already have the app running with `yarn start`.
 https://docs.cypress.io/guides/guides/command-line
 
 ## Learn More
@@ -196,7 +242,7 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/a
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
 
-### `npm run build` fails to minify
+### `yarn build` fails to minify
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
 

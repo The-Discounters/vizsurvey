@@ -1,0 +1,36 @@
+export const ScreenAttributes = ({
+  // screen properties
+  screenAvailHeight,
+  screenAvailWidth,
+  screenColorDepth,
+  screenWidth,
+  screenHeight,
+  screenOrientationAngle,
+  screenOrientationType,
+  screenPixelDepth,
+  // window properties
+  windowDevicePixelRatio,
+  windowInnerHeight,
+  windowInnerWidth,
+  windowOuterHeight,
+  windowOuterWidth,
+  windowScreenLeft,
+  windowScreenTop,
+}) =>
+  Object.freeze({
+    screenAvailHeight,
+    screenAvailWidth,
+    screenColorDepth,
+    screenWidth,
+    screenHeight,
+    screenOrientationAngle,
+    screenOrientationType,
+    screenPixelDepth,
+    windowDevicePixelRatio,
+    windowInnerHeight,
+    windowInnerWidth,
+    windowOuterHeight,
+    windowOuterWidth,
+    windowScreenLeft,
+    windowScreenTop,
+  });

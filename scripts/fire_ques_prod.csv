@@ -1,4 +1,4 @@
-id,amount_earlier,time_earlier,date_earlier,amount_later,time_later,date_later,max_amount,max_time,comment
+question_id,amount_earlier,time_earlier,date_earlier,amount_later,time_later,date_later,max_amount,max_time,question_comment
 1,350,4,,430,13,,,,Experiment 1 date/delay paper.
 2,490,2,,700,18,,,,Experiment 1 date/delay paper.
 3,720,6,,1390,24,,,,Experiment 1 date/delay paper.
