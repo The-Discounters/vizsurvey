@@ -1,1 +1,0 @@
-export GOOGLE_APPLICATION_CREDENTIALS="/Users/pete/vizsurvey/admin-credentials-dev.json"
