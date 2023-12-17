@@ -61,9 +61,7 @@ export class QuestionEngine {
     studyId,
     treatment,
     amountEarlier,
-    amountLater,
-    highup,
-    lowdown
+    amountLater
   ) {
     const answer = Answer({
       participantId: participantId,
@@ -92,8 +90,6 @@ export class QuestionEngine {
       heightIn: treatment.heightIn,
       showMinorTicks: treatment.showMinorTicks,
       choice: AmountType.none,
-      highup: highup,
-      lowdown: lowdown,
     });
     return answer;
   }
@@ -107,9 +103,7 @@ export class QuestionEngine {
           state.studyId,
           treatment,
           treatment.amountEarlier,
-          treatment.amountLater,
-          state.highup,
-          state.lowdown
+          treatment.amountLater
         )
       );
     });

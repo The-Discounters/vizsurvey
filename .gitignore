@@ -12,6 +12,7 @@ discounters.development.json
 discounters.production.json
 /setenvprod.sh
 /setenvdev.sh
+/setenvstaging.sh
 
 # dependencies
 /node_modules

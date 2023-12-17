@@ -49,7 +49,5 @@ export function Question({
     showMinorTicks: showMinorTicks,
     comment: comment,
     instructionGifPrefix: instructionGifPrefix,
-    highup: null,
-    lowdown: null,
   };
 }

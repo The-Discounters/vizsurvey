@@ -29,8 +29,6 @@ export function Answer({
   shownTimestamp,
   choiceTimestamp,
   choiceTimeSec,
-  highup,
-  lowdown,
 }) {
   return {
     participantId: participantId,
@@ -63,7 +61,5 @@ export function Answer({
     shownTimestamp: shownTimestamp,
     choiceTimestamp: choiceTimestamp,
     choiceTimeSec: choiceTimeSec,
-    highup: highup,
-    lowdown: lowdown,
   };
 }

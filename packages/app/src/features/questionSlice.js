@@ -125,8 +125,6 @@ export const questionSlice = createSlice({
     instructionTreatment: [],
     answers: [],
     currentAnswerIdx: 0,
-    highup: undefined,
-    lowdown: undefined,
     status: StatusType.Unitialized,
     error: null,
     userAgent: null,
@@ -457,8 +455,6 @@ export const questionSlice = createSlice({
       state.instructionTreatment = null;
       state.answers = [];
       state.currentAnswerIdx = 0;
-      state.highup = undefined;
-      state.lowdown = undefined;
       state.status = StatusType.Unitialized;
       state.error = null;
       state.userAgent = null;

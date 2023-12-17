@@ -261,8 +261,6 @@ export class TestDataFactory {
       choice: AmountType.none,
       shownTimestamp: null,
       choiceTimestamp: null,
-      highup: null,
-      lowdown: null,
     });
   }
 
