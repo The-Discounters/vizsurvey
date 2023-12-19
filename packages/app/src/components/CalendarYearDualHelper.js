@@ -80,10 +80,6 @@ export const drawCalendarYearDual = ({
   let selection = { d: -1, a: -1 };
   const date = new Date(qDateEarlier);
   const dateLater = new Date(qDateLater);
-  console.log("date: " + date);
-  console.log("date.getMonth(): " + date.getMonth());
-  console.log("dateLater: " + dateLater);
-  console.log("dateLater.getMonth(): " + dateLater.getMonth());
   const year = [];
   let counter = 0;
   let change = 1;
@@ -121,10 +117,7 @@ export const drawCalendarYearDual = ({
         return d > 0 ? "" : "empty";
       })
       .on("click", (d) => {
-        console.log("click: target: " + JSON.stringify(d.target.__data__));
         if (isNaN(d.target.__data__)) {
-          console.log("click: setselection");
-          console.log("click: target: selection: " + JSON.stringify(selection));
           if (
             d.target.__data__.k === "earlierAmount" &&
             choice !== AmountType.earlierAmount
@@ -140,7 +133,6 @@ export const drawCalendarYearDual = ({
               .selectAll("#earlierAmount")
               .style("background-color", "steelblue");
           }
-          console.log("click: selection: " + JSON.stringify(selection));
           select(this)
             .selectAll("#laterAmount")
             .style("background-color", "lightblue");
@@ -148,16 +140,13 @@ export const drawCalendarYearDual = ({
             .selectAll("#earlierAmount")
             .style("background-color", "lightblue");
           if (d.target.__data__.k === "earlierAmount") {
-            console.log("click: target: onClickCallback: earlierAmount");
             onClickCallback(AmountType.earlierAmount);
           } else {
-            console.log("click: target: onClickCallback: laterAmount");
             onClickCallback(AmountType.laterAmount);
           }
         }
       })
       .on("mouseover", function (d) {
-        console.log("mouseover: target: " + JSON.stringify(d.target.__data__));
         if (isNaN(d.target.__data__)) {
           select(this)
             .selectAll("#laterAmount")
@@ -168,8 +157,6 @@ export const drawCalendarYearDual = ({
         }
       })
       .on("mouseout", function (d) {
-        console.log("mouseout: target: " + JSON.stringify(d.target.__data__));
-        console.log("mouseout: selection: " + selection.d);
         if (
           isNaN(d.target.__data__) &&
           ((d.target.__data__.k === "earlierAmount" &&
@@ -187,7 +174,6 @@ export const drawCalendarYearDual = ({
       })
       .each(function (d) {
         const td = select(this);
-        console.log(d);
         if (isNaN(d)) {
           td.append("div")
             .text(function (d) {

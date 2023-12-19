@@ -83,7 +83,6 @@ export function Calendar() {
           style={{ borderCollapse: "collapse", tableLayout: "fixed" }}
           ref={useD3(
             (table) => {
-              console.log("====== q.viewType: ======= " + q.viewType);
               switch (q.viewType) {
                 case ViewType.calendarWord:
                   drawCalendar({
