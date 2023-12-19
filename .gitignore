@@ -21,8 +21,8 @@ discounters.production.json
 
 # testing
 /coverage
-test/node_modules
-test/public
+pacakages/test/node_modules
+packages/test/public
 
 # production
 /build
