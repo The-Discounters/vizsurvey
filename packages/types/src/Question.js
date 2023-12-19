@@ -1,4 +1,3 @@
-//TODO Rename this since it conflicts with Question.js in app/src/features (which should probably be moved to types).
 export const Question = ({
   question_id,
   amount_earlier,

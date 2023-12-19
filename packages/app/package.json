@@ -65,10 +65,13 @@
     ]
   },
   "devDependencies": {
-    "@babel/core": "^7.23.3",
+    "@babel/core": "^7.23.6",
+    "@babel/plugin-syntax-import-assertions": "^7.23.3",
     "@babel/plugin-syntax-import-attributes": "^7.23.3",
+    "@babel/preset-env": "^7.23.6",
     "@craco/craco": "^7.1.0",
     "babel-eslint": "^10.1.0",
+    "babel-jest": "^29.7.0",
     "babel-preset-flow": "^6.23.0",
     "cypress": "^10.11.0",
     "eslint": "^8.1.0",

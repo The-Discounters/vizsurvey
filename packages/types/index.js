@@ -6,8 +6,23 @@ import { Experiment } from "./src/Experiment.js";
 import { Question } from "./src/Question.js";
 import { Treatment } from "./src/Treatment.js";
 import { TreatmentQuestion } from "./src/TreatmentQuestion.js";
+import { SurveyQuestion } from "./src/SurveyQuestion.js";
+
 import { Participant } from "./src/Participant.js";
 import { ScreenAttributes } from "./src/ScreenAttributes.js";
+import {
+  participantUniqueKey,
+  stateUniqueKey,
+  CSVDataFilename,
+  CSVDataFilenameFromKey,
+  stateFilename,
+  stateFormatFilename,
+} from "./src/QuestionSliceUtil.js";
+import {
+  convertKeysToUnderscore,
+  setAllPropertiesEmpty,
+  convertAnswersAryToObj,
+} from "./src/ObjectUtil.js";
 
 export {
   AmountType,
@@ -18,6 +33,16 @@ export {
   Question,
   Treatment,
   TreatmentQuestion,
+  SurveyQuestion,
   Participant,
   ScreenAttributes,
+  convertKeysToUnderscore,
+  setAllPropertiesEmpty,
+  convertAnswersAryToObj,
+  participantUniqueKey,
+  stateUniqueKey,
+  CSVDataFilename,
+  CSVDataFilenameFromKey,
+  stateFilename,
+  stateFormatFilename,
 };

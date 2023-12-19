@@ -3,7 +3,6 @@ import {
   writeSurveyQuestions,
   writeParticipant,
 } from "@the-discounters/firebase-shared";
-import { Participant } from "@the-discounters/types";
 
 export const calcTreatmentIds = (latinSquare, participantCount) => {
   const index = participantCount % latinSquare.length;

@@ -1,25 +1,19 @@
 import { StatusType } from "./StatusType.js";
-import { AmountType } from "@the-discounters/types";
-import { Answer } from "./Answer.js";
 import { secondsBetween } from "@the-discounters/util";
 
 export const TIMESTAMP_FORMAT = "MM/dd/yyyy H:mm:ss:SSS ZZZZ";
 
-// TODO Need to capture errors in processing by settings state.status = StatusType.Error
 export class QuestionEngine {
   isFirstQuestion(state) {
     return state.currentAnswerIdx === 0;
   }
 
   isLastQuestion(state) {
-    return state.currentAnswerIdx === state.answers.length - 1;
+    return state.currentAnswerIdx === state.treatments.length - 1;
   }
 
   isLastTreatmentQuestion(state) {
-    if (
-      state.answers.length === 1 ||
-      state.currentAnswerIdx === state.answers.length - 1
-    ) {
+    if (state.currentAnswerIdx === state.treatments.length - 1) {
       return true;
     }
     return (
@@ -29,84 +23,28 @@ export class QuestionEngine {
   }
 
   currentAnswer(state) {
-    return state.answers[state.currentAnswerIdx];
+    return state.treatments[state.currentAnswerIdx];
   }
 
   nextAnswer(state) {
-    if (state.currentAnswerIdx === state.answers.length - 1) {
+    if (state.currentAnswerIdx === state.treatments.length - 1) {
       return null;
     } else {
-      return state.answers[state.currentAnswerIdx + 1];
+      return state.treatments[state.currentAnswerIdx + 1];
     }
   }
 
-  currentTreatment(state) {
-    const treatment = state.treatments[this.currentTreatmentIndex(state)];
-    return treatment;
-  }
-
   currentInstructions(state) {
-    const instructions =
-      state.instructionTreatment[this.currentTreatmentIndex(state)];
-    return instructions;
-  }
-
-  currentTreatmentIndex(state) {
-    return state.treatmentIds.indexOf(this.currentAnswer(state).treatmentId);
-  }
-
-  createNextAnswer(
-    participantId,
-    sessionId,
-    studyId,
-    treatment,
-    amountEarlier,
-    amountLater
-  ) {
-    const answer = Answer({
-      participantId: participantId,
-      sessionId: sessionId,
-      studyId: studyId,
-      treatmentId: treatment.treatmentId,
-      position: treatment.position,
-      viewType: treatment.viewType,
-      interaction: treatment.interaction,
-      variableAmount: treatment.variableAmount,
-      amountEarlier: amountEarlier,
-      timeEarlier: treatment.timeEarlier,
-      dateEarlier: treatment.dateEarlier,
-      amountLater: amountLater,
-      timeLater: treatment.timeLater,
-      dateLater: treatment.dateLater,
-      maxAmount: treatment.maxAmount,
-      maxTime: treatment.maxTime,
-      verticalPixels: treatment.verticalPixels,
-      horizontalPixels: treatment.horizontalPixels,
-      leftMarginWidthIn: treatment.leftMarginWidthIn,
-      bottomMarginHeightIn: treatment.bottomMarginHeightIn,
-      graphWidthIn: treatment.graphWidthIn,
-      graphHeightIn: treatment.graphHeightIn,
-      widthIn: treatment.widthIn,
-      heightIn: treatment.heightIn,
-      showMinorTicks: treatment.showMinorTicks,
-      choice: AmountType.none,
-    });
-    return answer;
-  }
-
-  createAnswersForTreatments(state) {
-    state.treatments.forEach((treatment) => {
-      state.answers.push(
-        this.createNextAnswer(
-          state.participantId,
-          state.sessionId,
-          state.studyId,
-          treatment,
-          treatment.amountEarlier,
-          treatment.amountLater
-        )
+    const currentTreatmentId = this.currentAnswer(state).treatmentId;
+    const result = state.instructionTreatment.filter(
+      (v) => v.treatmentId === currentTreatmentId
+    );
+    if (result.length !== 1) {
+      throw Error(
+        "currentInstructions found more than one treatment instruction entry!"
       );
-    });
+    }
+    return result[0];
   }
 
   setCurrentAnswerShown(state, date) {

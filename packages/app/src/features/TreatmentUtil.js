@@ -1,8 +1,10 @@
 import { csvParse, group } from "d3";
-import { Question } from "./Question.js";
-import { ViewType } from "@the-discounters/types";
-import { InteractionType } from "@the-discounters/types";
-import { AmountType } from "@the-discounters/types";
+import {
+  SurveyQuestion,
+  ViewType,
+  InteractionType,
+  AmountType,
+} from "@the-discounters/types";
 import { stringToDate, dateToState } from "@the-discounters/util";
 import {
   TREATMENTS_DEV_CSV,
@@ -104,7 +106,7 @@ export const loadAllTreatmentsConfiguration = () => {
 };
 
 const fromCSVRow = (row) => {
-  return Question({
+  return SurveyQuestion({
     treatmentId: row.treatment_id ? +row.treatment_id : undefined,
     position:
       row.position === INSTRUCTIONS_TREATMENT_POSITION ||

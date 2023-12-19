@@ -4,7 +4,12 @@
   "description": "Types used in different applications.",
   "main": "index.js",
   "type": "module",
+  "scripts": {
+    "test": "node --experimental-vm-modules ../../node_modules/jest/bin/jest.js",
+    "test:watch": "npm run test -- --watch"
+  },
   "devDependencies": {
+    "@the-discounters/test-shared": "*",
     "eslint": "^8.15.0"
   },
   "private": true

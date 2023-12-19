@@ -34,10 +34,11 @@ export const convertAnswersAryToObj = (answersAry) => {
         return `${key}_${object.treatmentId}_${object.position}`;
       }
     });
-    return {
+    const mappedObj = {
       ...acc,
       ...answerObj,
     };
+    return mappedObj;
   }, {});
   return result;
 };

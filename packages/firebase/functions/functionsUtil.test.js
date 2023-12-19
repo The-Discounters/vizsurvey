@@ -13,10 +13,8 @@ import {
   initFirestore,
   fetchExperiment,
 } from "@the-discounters/firebase-shared";
-import {
-  SURVEY_QUESTIONS_JSON,
-  deleteCollection,
-} from "@the-discounters/test-shared";
+import { SURVEY_QUESTIONS_JSON } from "@the-discounters/test-shared";
+import { deleteCollection } from "@the-discounters/firebase-test-shared";
 import ADMIN_CREDS from "../../../admin-credentials-dev.json" assert { type: "json" };
 
 // this needs to match the value that is passed to firebase emulators:start --project=

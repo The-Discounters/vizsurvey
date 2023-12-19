@@ -1,9 +1,7 @@
 import { strict as assert } from "assert";
 import { assertSucceeds } from "@firebase/rules-unit-testing";
-import {
-  deleteCollection,
-  SURVEY_QUESTIONS_JSON,
-} from "@the-discounters/test-shared";
+import { SURVEY_QUESTIONS_JSON } from "@the-discounters/test-shared";
+import { deleteCollection } from "@the-discounters/firebase-test-shared";
 import { Participant } from "@the-discounters/types";
 
 import ADMIN_CREDS from "../../../../admin-credentials-dev.json" assert { type: "json" };

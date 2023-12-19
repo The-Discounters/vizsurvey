@@ -19,7 +19,7 @@ describe("ObjectUtil test.", () => {
     expect(result.property__five).toBe("value5");
   });
 
-  test("convertAnswersAryToObj test.", async () => {
+  test("convertAnswersAryToObj with all properties populated.", async () => {
     const input = [
       {
         participantId: 1,
@@ -43,6 +43,32 @@ describe("ObjectUtil test.", () => {
     expect(result.treatmentId_2_1).toBe(2);
     expect(result.data_1_1).toBe("data1");
     expect(result.data_2_1).toBe("data2");
+  });
+
+  test("convertAnswersAryToObj with undefined and null properties.", async () => {
+    const input = [
+      {
+        participantId: 1,
+        sessionId: 2,
+        treatmentId: 1,
+        position: 1,
+        data: undefined,
+      },
+      {
+        participantId: 1,
+        sessionId: 2,
+        treatmentId: 2,
+        position: 1,
+        data: null,
+      },
+    ];
+    const result = obj.convertAnswersAryToObj(input);
+    expect(result.participantId).toBe(1);
+    expect(result.sessionId).toBe(2);
+    expect(result.treatmentId_1_1).toBe(1);
+    expect(result.treatmentId_2_1).toBe(2);
+    expect(result.data_1_1).toBeUndefined();
+    expect(result.data_2_1).toBeNull();
   });
 
   test("setAllPropertiesEmpty test.", async () => {

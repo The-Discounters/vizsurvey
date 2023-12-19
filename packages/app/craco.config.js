@@ -28,12 +28,11 @@ module.exports = {
     devtool: "eval-source-map",
   },
   babel: {
-    extends: "../../babel.config.json",
     presets: ["@babel/preset-react"],
     plugins: [
       ["@babel/plugin-syntax-dynamic-import", { loose: true }],
       ["@babel/plugin-proposal-class-properties", { loose: true }],
-      ["@babel/plugin-syntax-import-attributes", { loose: true }],
+      ["@babel/plugin-syntax-import-assertions", { loose: true }],
     ],
     loaderOptions: {
       /* ... */

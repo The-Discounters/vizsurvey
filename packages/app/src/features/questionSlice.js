@@ -6,8 +6,8 @@ import {
 } from "./TreatmentUtil.js";
 import { QuestionEngine } from "./QuestionEngine.js";
 import { StatusType } from "./StatusType.js";
-import { secondsBetween } from "@the-discounters/util";
-import { getRandomIntInclusive, writeStateAsCSV } from "./QuestionSliceUtil.js";
+import { getRandomIntInclusive, secondsBetween } from "@the-discounters/util";
+import { writeStateAsCSV } from "./FileIOAdapter.js";
 import { LATIN_SQUARE } from "./TreatmentUtil.js";
 
 const qe = new QuestionEngine();
@@ -299,7 +299,7 @@ export const questionSlice = createSlice({
     },
     attentionCheckShown(state, action) {
       state.timestamps.attentionCheckShownTimestamp.push({
-        treatmentId: qe.currentTreatment(state).treatmentId,
+        treatmentId: qe.currentAnswer(state).treatmentId,
         value: action.payload,
       });
     },
@@ -453,7 +453,6 @@ export const questionSlice = createSlice({
       state.feedback = "";
       state.treatments = [];
       state.instructionTreatment = null;
-      state.answers = [];
       state.currentAnswerIdx = 0;
       state.status = StatusType.Unitialized;
       state.error = null;
@@ -481,8 +480,6 @@ export const questionSlice = createSlice({
         );
         state.treatments = questions;
         state.instructionTreatment = instructions;
-        // create an answer for each treatment question up front
-        qe.createAnswersForTreatments(state);
 
         state.status = qe.nextState(state);
       })
@@ -543,7 +540,7 @@ export const getCurrentQuestionIndex = (state) =>
   state.questions.currentAnswerIdx;
 
 export const fetchCurrentTreatment = (state) =>
-  qe.currentTreatment(state.questions);
+  qe.currentAnswer(state.questions);
 
 export const getInstructionTreatment = (state) =>
   qe.currentInstructions(state.questions);

@@ -54,21 +54,27 @@ const MCLInstructions = () => {
     );
 
   useEffect(() => {
+    console.log("useEffect[] start");
     dispatch(MCLInstructionsShown(dateToState(DateTime.now())));
     setChoice("");
     if (!treatment) navigate("/invalidlink");
     // eslint-disable-next-line react-hooks/exhaustive-deps
+    console.log("useEffect[] done");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
+    console.log("useEffect[showNextPrevious] start");
     const nextButtonContentHeight =
       document.querySelector("#buttonNext").scrollHeight;
     const nextButtonHintArrow = document.querySelector("#nextButtonHintArrow");
     if (nextButtonHintArrow)
       nextButtonHintArrow.height = nextButtonContentHeight;
+    console.log("useEffect[showNextPrevious] done");
   }, [showNextPrevious]);
 
   useEffect(() => {
+    console.log("useEffect[choice] start");
     if (
       choice === AmountType.earlierAmount ||
       choice === AmountType.laterAmount
@@ -77,9 +83,11 @@ const MCLInstructions = () => {
     } else {
       setDisableSubmit(true);
     }
+    console.log("useEffect[choice] done");
   }, [choice]);
 
   useEffect(() => {
+    console.log("useEffect[status] start");
     setChoice("");
     const path = navigateFromStatus(status);
     if (
@@ -89,23 +97,27 @@ const MCLInstructions = () => {
       document.body.requestFullscreen();
     }
     navigate(path);
+    console.log("useEffect[status] done");
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status]);
 
   const onClickCallback = (value) => {
+    console.log("onClickCallback start");
     setChoice(value);
     setShowNextPrevious(true);
     setHelperText("");
     setError(false);
+    console.log("onClickCallback done");
   };
 
   /**
    * @returns The name of the animated gif filename to show in the instructions page.
    */
   const gifFilename = () => {
+    console.log("gifFilename start");
     const randIndex = Math.floor(Math.random() * 2);
     const randAmountType = AmountType[Object.keys(AmountType)[randIndex + 1]];
-
+    console.log("gifFilename done");
     return `${instructionTreatment.instructionGifPrefix}-${randAmountType}.gif`;
   };
 

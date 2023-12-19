@@ -23,6 +23,7 @@
     "firebase-functions": "^4.4.1"
   },
   "devDependencies": {
+    "@the-discounters/firebase-test-shared": "*",
     "@the-discounters/test-shared": "*",
     "eslint": "^8.15.0",
     "eslint-config-google": "^0.14.0",
