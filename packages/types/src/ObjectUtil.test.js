@@ -1,7 +1,7 @@
 import * as obj from "./ObjectUtil";
 
 describe("ObjectUtil test.", () => {
-  test("convertKeysToUnderscore test.", async () => {
+  test("convertKeysCamelCaseToUnderscore test.", async () => {
     const input = {
       propertyOne: "value1",
       propertyTwo: "value2",
@@ -9,11 +9,10 @@ describe("ObjectUtil test.", () => {
       property_four: "value4",
       property_Five: "value5",
     };
-    const result = obj.convertKeysToUnderscore(input);
+    const result = obj.convertKeysCamelCaseToUnderscore(input);
     expect(result.property_one).toBe("value1");
     expect(result.property_two).toBe("value2");
     expect(result.propertythree).toBe("value3");
-    expect(result.property_four).toBe("value4");
     expect(result.property_four).toBe("value4");
     // TODO do we want to fix this situation where we are mixing camel case and underscores?
     expect(result.property__five).toBe("value5");
@@ -76,5 +75,23 @@ describe("ObjectUtil test.", () => {
     const result = obj.setAllPropertiesEmpty(input);
     expect(result.property1).toBe("");
     expect(result.property2).toBe("");
+  });
+
+  test("convertKeysUnderscoreToCamelCase test.", async () => {
+    const input = {
+      propertyOne: "value1",
+      propertyTwo: "value2",
+      propertythree: "value3",
+      property_four: "value4",
+      property_Five: "value5",
+      property__six: "value6",
+    };
+    const result = obj.convertKeysUnderscoreToCamelCase(input);
+    expect(result.propertyOne).toBe("value1");
+    expect(result.propertyTwo).toBe("value2");
+    expect(result.propertythree).toBe("value3");
+    expect(result.propertyFour).toBe("value4");
+    expect(result.propertyFive).toBe("value5");
+    expect(result.propertySix).toBe("value6");
   });
 });

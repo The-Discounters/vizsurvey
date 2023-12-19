@@ -19,9 +19,10 @@ import {
   stateFormatFilename,
 } from "./src/QuestionSliceUtil.js";
 import {
-  convertKeysToUnderscore,
+  convertKeysCamelCaseToUnderscore,
   setAllPropertiesEmpty,
   convertAnswersAryToObj,
+  convertKeysUnderscoreToCamelCase,
 } from "./src/ObjectUtil.js";
 
 export {
@@ -36,7 +37,8 @@ export {
   SurveyQuestion,
   Participant,
   ScreenAttributes,
-  convertKeysToUnderscore,
+  convertKeysCamelCaseToUnderscore,
+  convertKeysUnderscoreToCamelCase,
   setAllPropertiesEmpty,
   convertAnswersAryToObj,
   participantUniqueKey,

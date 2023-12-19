@@ -3,7 +3,7 @@ import {
   stateFilename,
   setAllPropertiesEmpty,
   stateFormatFilename,
-  convertKeysToUnderscore,
+  convertKeysCamelCaseToUnderscore,
   CSVDataFilename,
   convertAnswersAryToObj,
 } from "@the-discounters/types";
@@ -185,7 +185,7 @@ export const writeStateAsCSV = (state) => {
   const allKeysState = JSON.stringify(setAllPropertiesEmpty(flattenedState));
   writeFile(stateFormatFilename(state), allKeysState);
   // change capital letter in camel case to _ with lower case letter to make the column headers easier to read when importing to excel
-  const underscoreKeys = convertKeysToUnderscore(flattenedState);
+  const underscoreKeys = convertKeysCamelCaseToUnderscore(flattenedState);
   const filename = CSVDataFilename(state);
   const CSVData = convertToCSV(underscoreKeys);
   writeFile(filename, CSVData);

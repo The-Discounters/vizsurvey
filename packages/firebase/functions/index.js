@@ -41,10 +41,10 @@ export const fetchExpConfig = onRequest(async (request, response) => {
     }
     // TODO put this in a transaction
     const exp = await fetchExperiment(db, studyId);
-    if (exp.num_participants_started === exp.num_participants) {
+    if (exp.numParticipantsStarted === exp.numParticipants) {
       logger.error(
         "fetchExpConfig participant tried starting survey after " +
-          `the number of participants (${exp.num_participants}) ` +
+          `the number of participants (${exp.numParticipants}) ` +
           "has been fulfilled.",
         request,
         exp
@@ -60,7 +60,7 @@ export const fetchExpConfig = onRequest(async (request, response) => {
       );
       throw Error("Error experiment is not active.");
     }
-    const newExpCount = exp.num_participants_started + 1;
+    const newExpCount = exp.numParticipantsStarted + 1;
     updateParticipantCount(db, studyId, newExpCount, (msg) => {
       logger.info(msg);
     });

@@ -61,9 +61,9 @@ describe("firestoreAdmin test ", () => {
 
   // it("Query test.", async () => {
   //   const expRef = db.collection("experiments");
-  //   const q = expRef.where("prolific_study_id", "==", "1");
+  //   const q = expRef.where("prolificStudyId", "==", "1");
   //   const expSnapshot = await assertSucceeds(q.get());
-  //   assert.equal(expSnapshot.docs[0].data().prolific_study_id, "1", "Did not retrieve expected data from query");
+  //   assert.equal(expSnapshot.docs[0].data().prolificStudyId, "1", "Did not retrieve expected data from query");
   // });
 
   // it("Test for writing using firestore APIbatch.", async () => {
@@ -308,9 +308,9 @@ describe("firestoreAdmin test ", () => {
   it("Integration test for fetchExperiment.", async () => {
     const exp = await fetchExperiment(db, "649f3cffea5a1b2817d17d7e");
     assert.equal(
-      exp.experiment_id,
+      exp.experimentId,
       5,
-      "experiment experiment_id=5 not loaded correctly."
+      "experiment experimentId=5 not loaded correctly."
     );
   });
 
@@ -322,7 +322,7 @@ describe("firestoreAdmin test ", () => {
       `${exp.length} was not the expected number of experiment entries.`
     );
     const exp5 = exp.filter((v) => {
-      return v.experiment_id === 5;
+      return v.experimentId === 5;
     });
     assert.equal(
       exp5[0].treatmentQuestions.length,
@@ -361,14 +361,14 @@ describe("firestoreAdmin test ", () => {
       console.log(msg);
     });
     const expRef = db.collection("experiments");
-    const q = expRef.where("prolific_study_id", "==", "test");
+    const q = expRef.where("prolificStudyId", "==", "test");
     const expSnapshot = await assertSucceeds(q.get());
     assert.equal(
       expSnapshot.docs.length,
       1,
       "Expected to retrieve one experiment"
     );
-    assert.equal(expSnapshot.docs[0].data().num_participants_started, 1);
+    assert.equal(expSnapshot.docs[0].data().numParticipantsStarted, 1);
   });
 
   it("Test for writeParticipant", async () => {
@@ -414,13 +414,13 @@ describe("firestoreAdmin test ", () => {
   });
 
   // fetchback and test
-  //   const q = expRef.where("prolific_study_id", "==", "test");
+  //   const q = expRef.where("prolificStudyId", "==", "test");
   //   const expSnapshot = await assertSucceeds(q.get());
   //   assert.equal(
   //     expSnapshot.docs.length,
   //     1,
   //     "Expected to retrieve one experiment"
   //   );
-  //   assert.equal(expSnapshot.docs[0].data().num_participants_started, 1);
+  //   assert.equal(expSnapshot.docs[0].data().numParticipantsStarted, 1);
   // });
 });

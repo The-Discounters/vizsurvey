@@ -1,13 +1,19 @@
 // TODO move this into a utility class for manimulating objects.
 import _ from "lodash";
 
-export const convertKeysToUnderscore = (obj) => {
+export const convertKeysCamelCaseToUnderscore = (obj) => {
   return _.mapKeys(obj, function (value, key) {
     return [...key].reduce((accu, x) => {
       const result =
         x >= "A" && x <= "Z" ? accu + "_" + x.toLowerCase() : accu + x;
       return result;
     }, "");
+  });
+};
+
+export const convertKeysUnderscoreToCamelCase = (obj) => {
+  return _.mapKeys(obj, function (value, key) {
+    return _.camelCase(_.replace(key, "_", " "));
   });
 };
 

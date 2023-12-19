@@ -20,8 +20,8 @@ const fetchTreatmentQuestions = async (db, expPath) => {
   const tqds = await db.collection(`${expPath}/treatmentQuestions`).get();
   for (let j = 0; j < tqds.size; j++) {
     const tqd = tqds.docs[j];
-    const treatmentSnapshot = await tqd.data().treatment_id.get();
-    const questionSnapshot = await tqd.data().question_id.get();
+    const treatmentSnapshot = await tqd.data().treatmentId.get();
+    const questionSnapshot = await tqd.data().questionId.get();
     result.push({
       path: tqd.ref.path, // TODO do I really need this field in the object?
       ...tqd.data(),
@@ -34,7 +34,7 @@ const fetchTreatmentQuestions = async (db, expPath) => {
 
 export const fetchExperiment = async (db, studyId) => {
   const expRef = await db.collection("experiments");
-  const q = expRef.where("prolific_study_id", "==", studyId);
+  const q = expRef.where("prolificStudyId", "==", studyId);
   const expSnapshot = await q.get();
   if (expSnapshot.docs.length != 1) {
     return null;
@@ -71,13 +71,13 @@ export const updateParticipantCount = async (
   callback
 ) => {
   const expRef = await db.collection("experiments");
-  const q = expRef.where("prolific_study_id", "==", studyId);
+  const q = expRef.where("prolificStudyId", "==", studyId);
   const expSnapshot = await q.get();
   if (expSnapshot.docs.length != 1) {
     return null;
   }
   const expDoc = expSnapshot.docs[0];
-  const updateObj = { num_participants_started: newCount };
+  const updateObj = { numParticipantsStarted: newCount };
   const res = await expDoc.ref.update(updateObj);
   callback(
     `updated partcipant count for study ${studyId} with result ${JSON.stringify(
@@ -100,7 +100,7 @@ export const writeAnswers = async (
       ...a,
     };
     setBatchItem(
-      `${participantId}-${writeData.treatment_question_id}`,
+      `${participantId}-${writeData.treatmentQuestionId}`,
       null,
       writeData
     );
@@ -123,7 +123,7 @@ export const writeSurveyQuestions = async (
       ...a,
     };
     setBatchItem(
-      `${participantId}-${writeData.treatment_question_id}`,
+      `${participantId}-${writeData.treatmentQuestionId}`,
       null,
       writeData
     );

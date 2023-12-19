@@ -13,22 +13,21 @@ export const filterQuestions = (treatmentIds, treatmentQuestions) => {
   // between subject studies will have a latin square sub array
   // of one entry so filtering will leave only one treatment.
   const result = treatmentQuestions.filter((d) =>
-    treatmentIds.includes(d.treatment_id)
+    treatmentIds.includes(d.treatmentId)
   );
   return result;
 };
 
 export const parseQuestions = (treatmentQuestions) => {
-  const grouped = group(treatmentQuestions, (d) => d.instruction_question);
+  const grouped = group(treatmentQuestions, (d) => d.instructionQuestion);
   return { instruction: grouped.get(true), survey: grouped.get(false) };
 };
 
 export const orderQuestions = (questions, treatmentIds) => {
   questions.sort((a, b) => {
     const tsr =
-      treatmentIds.indexOf(a.treatment_id) -
-      treatmentIds.indexOf(b.treatment_id);
-    const psr = a.sequence_id - b.sequence_id;
+      treatmentIds.indexOf(a.treatmentId) - treatmentIds.indexOf(b.treatmentId);
+    const psr = a.sequenceId - b.sequenceId;
     return tsr != 0 ? tsr : psr;
   });
   return questions;
@@ -50,12 +49,12 @@ const shuffleArray = (array) => {
 
 export const orderQuestionsRandom = (questions, treatmentIds) => {
   const result = new Array();
-  const qbt = group(questions, (d) => d.treatment_id);
+  const qbt = group(questions, (d) => d.treatmentId);
   treatmentIds.forEach((id) => {
     const q = qbt.get(id);
     shuffleArray(q);
     q.forEach((cv, i) => {
-      cv.sequence_id = i + 1;
+      cv.sequenceId = i + 1;
     });
     result.push(...q);
   });
@@ -71,8 +70,8 @@ export const signupParticipant = (
   callback
 ) => {
   const treatmentIds = calcTreatmentIds(
-    JSON.parse(exp.latin_square),
-    exp.num_participants_started
+    JSON.parse(exp.latinSquare),
+    exp.numParticipantsStarted
   );
   callback(
     false,

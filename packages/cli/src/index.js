@@ -29,6 +29,7 @@ import {
   parseFileToObj,
   parseLookupText,
 } from "./importUtil.js";
+import { convertKeysUnderscoreToCamelCase } from "@the-discounters/types";
 
 const validateInt = (value, dummyPrevious) => {
   const parsedValue = parseInt(value, 10);
@@ -342,7 +343,8 @@ const typeFieldsFunction = (collectionType) => {
 const importWithoutParent = (db, collection, data) => {
   initBatch(db, collection);
   for (const item of data) {
-    setBatchItem(null, null, item);
+    const camelCaseItem = convertKeysUnderscoreToCamelCase(item);
+    setBatchItem(null, null, camelCaseItem);
   }
   commitBatchSync();
 };

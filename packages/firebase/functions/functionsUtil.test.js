@@ -110,22 +110,22 @@ describe("functionsUtil test ", () => {
 
   const assertCorrectOrder = (result) => {
     for (let i = 1; i < result.length; i++) {
-      if (result[i - 1].treatment_id === result[i].treatment_id) {
+      if (result[i - 1].treatmentId === result[i].treatmentId) {
         assert.equal(
-          result[i - 1].sequence_id < result[i].sequence_id,
+          result[i - 1].sequenceId < result[i].sequenceId,
           true,
           `Question number ${i} was out of order.`
         );
-      } else if (result[i - 1].treatment_id < result[i].treatment_id) {
+      } else if (result[i - 1].treatmentId < result[i].treatmentId) {
         assert.equal(
-          result[i].sequence_id,
+          result[i].sequenceId,
           1,
           "First question in a treatment should be sequence number 1."
         );
       } else {
         fail(
-          `Treatment id ${result[i - 1].treatment_id} was larger than ${
-            result[i].treatment_id
+          `Treatment id ${result[i - 1].treatmentId} was larger than ${
+            result[i].treatmentId
           }`
         );
       }
@@ -133,14 +133,14 @@ describe("functionsUtil test ", () => {
   };
 
   it("Test for orderQuestions for within subject study (latin square 1, 2, 3]).", async () => {
-    const grouped = group(SURVEY_QUESTIONS_JSON, (d) => d.instruction_question);
+    const grouped = group(SURVEY_QUESTIONS_JSON, (d) => d.instructionQuestion);
     const q = grouped.get(false);
     const result = orderQuestions(q, [1, 2, 3]);
     assertCorrectOrder(result);
   });
 
   it("Test for orderQuestionsRandom for within subject study (latin square 1, 2, 3]).", async () => {
-    const grouped = group(SURVEY_QUESTIONS_JSON, (d) => d.instruction_question);
+    const grouped = group(SURVEY_QUESTIONS_JSON, (d) => d.instructionQuestion);
     const q = grouped.get(false);
     let result = orderQuestionsRandom(q, [1, 2, 3]);
     assert.notEqual(
@@ -149,10 +149,10 @@ describe("functionsUtil test ", () => {
       "Array instance returned should not be the same as parameter value."
     );
     assertCorrectOrder(result);
-    const first = result.map((v) => v.treatment_question_id);
+    const first = result.map((v) => v.treatmentQuestionId);
     result = orderQuestionsRandom(q, [1, 2, 3]);
     assertCorrectOrder(result);
-    const second = result.map((v) => v.treatment_question_id);
+    const second = result.map((v) => v.treatmentQuestionId);
     assert.notDeepEqual(
       first,
       second,
