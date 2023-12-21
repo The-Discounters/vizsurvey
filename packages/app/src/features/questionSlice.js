@@ -1,14 +1,10 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { SystemZone } from "luxon";
-import {
-  loadAllTreatmentsConfiguration,
-  loadTreatmentConfiguration,
-} from "./TreatmentUtil.js";
 import { QuestionEngine } from "./QuestionEngine.js";
 import { StatusType } from "./StatusType.js";
-import { getRandomIntInclusive, secondsBetween } from "@the-discounters/util";
+import { secondsBetween } from "@the-discounters/util";
 import { writeStateAsCSV } from "./FileIOAdapter.js";
-import { LATIN_SQUARE } from "./TreatmentUtil.js";
+import { ServerStatusType } from "@the-discounters/types";
 
 const qe = new QuestionEngine();
 
@@ -17,26 +13,18 @@ export const initializeSurvey = createAsyncThunk(
   async (parameters, thunkAPI) => {
     const result = { ...parameters };
     try {
-      if (isNaN(parameters.treatmentId)) {
-        const allTreatments = loadAllTreatmentsConfiguration();
-        if (parameters.treatmentId === "assigned") {
-          result.serverSequenceId = 1;
-          const latinSquareIndex =
-            result.serverSequenceId % LATIN_SQUARE.length;
-          result.treatmentIds = LATIN_SQUARE[latinSquareIndex];
-        } else {
-          const min = allTreatments.reduce((pv, cv) => {
-            return cv.treatmentId < pv ? cv.treatmentId : pv;
-          }, allTreatments[0].treatmentId);
-          const max = allTreatments.reduce(
-            (pv, cv) => (cv.treatmentId > pv ? cv.treatmentId : pv),
-            allTreatments[0].treatmentId
-          );
-          result.treatmentIds = [getRandomIntInclusive(min, max)];
+      const response = await fetch(
+        `${process.env.REACT_APP_SERVER_URL}/fetchExpConfig?prolific_pid=${parameters.participantId}&study_id=${parameters.studyId}&session_id=${parameters.sessionId}&user_agent=${parameters.userAgent}`,
+        {
+          headers: { "Content-Type": "application/json" },
         }
-      } else {
-        result.treatmentIds = [+parameters.treatmentId];
+      );
+      const data = await response.json();
+      if (data.status !== ServerStatusType.success) {
+        throw new Error("Server Error signingup participant!");
       }
+      result.questions = data.survey;
+      result.instruction = data.instruction;
       return result;
     } catch (err) {
       const { rejectWithValue } = thunkAPI;
@@ -49,7 +37,6 @@ export const initializeSurvey = createAsyncThunk(
 export const questionSlice = createSlice({
   name: "questions", // I believe the global state is partitioned by the name value thus the terminology "slice"
   initialState: {
-    allTreatments: null,
     treatmentIds: [],
     participantId: null,
     serverSequenceId: null,
@@ -223,11 +210,6 @@ export const questionSlice = createSlice({
       writeStateAsCSV(state);
       state.status = qe.nextState(state);
     },
-    loadAllTreatments(state) {
-      state.status = StatusType.Fetching;
-      state.allTreatments = loadAllTreatmentsConfiguration();
-      return state;
-    },
     consentShown(state, action) {
       state.timestamps.consentShownTimestamp = action.payload;
       writeStateAsCSV(state);
@@ -379,8 +361,6 @@ export const questionSlice = createSlice({
       state.status = qe.nextState(state);
     },
     clearState(state) {
-      state.allTreatments = null;
-      state.treatmentIds = [];
       state.participantId = null;
       state.serverSequenceId = null;
       state.sessionId = null;
@@ -474,12 +454,9 @@ export const questionSlice = createSlice({
         state.studyId = action.payload.studyId;
         state.userAgent = action.payload.userAgent;
         state.serverSequenceId = action.payload.serverSequenceId;
-        state.treatmentIds = action.payload.treatmentIds;
-        const { questions, instructions } = loadTreatmentConfiguration(
-          state.treatmentIds
-        );
-        state.treatments = questions;
-        state.instructionTreatment = instructions;
+        state.questions = action.payload.questions;
+        state.treatments = action.payload.questions;
+        state.instructionTreatment = action.payload.instruction;
 
         state.status = qe.nextState(state);
       })
@@ -545,8 +522,6 @@ export const fetchCurrentTreatment = (state) =>
 export const getInstructionTreatment = (state) =>
   qe.currentInstructions(state.questions);
 
-export const fetchAllTreatments = (state) => state.questions.allTreatments;
-
 export const getCurrentQuestion = (state) => qe.currentAnswer(state.questions);
 
 export const getCurrentChoice = (state) =>
@@ -560,7 +535,6 @@ export const getConsentChecked = (state) => state.questions.consentChecked;
 
 // Action creators are generated for each case reducer function
 export const {
-  loadAllTreatments,
   setQuestionShownTimestamp,
   answer,
   previousQuestion,

@@ -12,6 +12,7 @@ export const initFirestore = (projectId, databaseURL, adminCred) => {
     databaseURL: databaseURL,
   });
   const db = getFirestore(app);
+  db.settings({ ignoreUndefinedProperties: true });
   return { app: app, db: db };
 };
 

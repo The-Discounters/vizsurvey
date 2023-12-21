@@ -20,7 +20,7 @@ import ADMIN_CREDS from "../../../admin-credentials-dev.json" assert { type: "js
 // this needs to match the value that is passed to firebase emulators:start --project=
 const PROJECT_ID = "vizsurvey-test";
 
-function arraysEqual(a, b) {
+const arraysEqual = (a, b) => {
   if (a === b) return true;
   if (a == null || b == null) return false;
   if (a.length !== b.length) return false;
@@ -28,7 +28,16 @@ function arraysEqual(a, b) {
     if (a[i] !== b[i]) return false;
   }
   return true;
-}
+};
+
+const resetExperiments = async (db) => {
+  const docRef = db.collection("experiments");
+  const snapshot = assertSucceeds(await docRef.get());
+  for (const docSnapshot of snapshot.docs) {
+    await deleteCollection(db, `${docSnapshot.ref.path}/answers`);
+    await deleteCollection(db, `${docSnapshot.ref.path}/participants`);
+  }
+};
 
 describe("functionsUtil test ", () => {
   let app, db;
@@ -46,6 +55,10 @@ describe("functionsUtil test ", () => {
 
   after(async () => {
     await deleteCollection(db, "functionsUtil-writeQuestions-test");
+  });
+
+  afterEach(async () => {
+    await resetExperiments(db);
   });
 
   it("Test for calcTreatmentIds .", async () => {
@@ -161,16 +174,23 @@ describe("functionsUtil test ", () => {
   });
 
   it("Test for signupParticipant for within subject study (latin square entries [1, 2, 3]).", async () => {
-    const exp = await fetchExperiment(db, "next");
-    const result = signupParticipant(db, "1", "2", "3", exp, (isError, msg) => {
-      assert.equal(
-        isError,
-        false,
-        `Expected there not to be an error in callback with message: ${msg}.`
-      );
-    });
+    const exp = await fetchExperiment(db, "testwithin");
+    const result = await signupParticipant(
+      db,
+      "1",
+      "2",
+      "3",
+      exp,
+      (isError, msg) => {
+        assert.equal(
+          isError,
+          false,
+          `Expected there not to be an error in callback with message: ${msg}.`
+        );
+      }
+    );
     assert.equal(
-      result.questions.length,
+      result.survey.length,
       24,
       "Wrong number of questions returned."
     );
@@ -182,17 +202,24 @@ describe("functionsUtil test ", () => {
     );
   });
 
-  it("Test for signupParticipant for between subject study (latin square entries [1[], [2], [3]).", async () => {
-    const exp = await fetchExperiment(db, "test");
-    const result = signupParticipant(db, "1", "2", "3", exp, (isError, msg) => {
-      assert.equal(
-        isError,
-        false,
-        `Expected there not to be an error in callback with message: ${msg}.`
-      );
-    });
+  it("Test for signupParticipant for between subject study (latin square entries [1], [2], [3]).", async () => {
+    const exp = await fetchExperiment(db, "testbetween");
+    const result = await signupParticipant(
+      db,
+      "1",
+      "2",
+      "3",
+      exp,
+      (isError, msg) => {
+        assert.equal(
+          isError,
+          false,
+          `Expected there not to be an error in callback with message: ${msg}.`
+        );
+      }
+    );
     assert.equal(
-      result.questions.length,
+      result.survey.length,
       8,
       "Wrong number of questions returned."
     );

@@ -1,13 +1,13 @@
 question_id,amount_earlier,time_earlier,date_earlier,amount_later,time_later,date_later,max_amount,max_time,question_comment
-1,350,4,,430,13,,,,Experiment 1 date/delay paper.
-2,490,2,,700,18,,,,Experiment 1 date/delay paper.
-3,720,6,,1390,24,,,,Experiment 1 date/delay paper.
-4,840,3,,1120,16,,,,Experiment 1 date/delay paper.
-5,32,4,,39,13,,,,Experiment 3 of date/delay paper.
-6,45,2,,70,18,,,,Experiment 3 of date/delay paper.
-7,66,6,,110,24,,,,Experiment 3 of date/delay paper.
-8,77,3,,118,16,,,,Experiment 3 of date/delay paper.
-9,300,2,,700,7,,,,Instruction question
+1,350,4,,430,13,,430,14,Experiment 1 date/delay paper.
+2,490,2,,700,18,,700,19,Experiment 1 date/delay paper.
+3,720,6,,1390,24,,1390,25,Experiment 1 date/delay paper.
+4,840,3,,1120,16,,1120,17,Experiment 1 date/delay paper.
+5,32,4,,39,13,,40,14,Experiment 3 of date/delay paper.
+6,45,2,,70,18,,70,19,Experiment 3 of date/delay paper.
+7,66,6,,110,24,,110,25,Experiment 3 of date/delay paper.
+8,77,3,,118,16,,120,17,Experiment 3 of date/delay paper.
+9,300,2,,700,7,,1000,8,Instruction question
 10,350,4,,430,13,,430,14,Experiment 1 date/delay paper.
 11,490,2,,700,18,,700,19,Experiment 1 date/delay paper.
 12,720,6,,1390,24,,1390,25,Experiment 1 date/delay paper.
@@ -27,13 +27,13 @@ question_id,amount_earlier,time_earlier,date_earlier,amount_later,time_later,dat
 26,77,3,,118,16,,120,33,Experiment 3 of date/delay paper.
 27,300,2,,700,7,,1000,15,Instruction question
 28,350,,01/04/2023,430,,01/13/2023,430,,Worded MEL question experiment 1 date / delay paper TODO fix dates here so that it represent weeks to match up with MEL Word version.
-29,490,,01/02/2023,700,,01/18/2023,,,Experiment 1 date/delay paper.
-30,720,,01/06/2023,1390,,01/24/2023,,,Experiment 1 date/delay paper.
-31,840,,01/03/2023,1120,,01/16/2023,,,Experiment 1 date/delay paper.
-32,32,,01/04/2023,39,,01/13/2023,,,Experiment 3 of date/delay paper.
-33,45,,01/02/2023,70,,01/18/2023,,,Experiment 3 of date/delay paper.
-34,66,,01/06/2023,110,,01/24/2023,,,Experiment 3 of date/delay paper.
-35,77,,01/03/2023,118,,01/16/2023,,,Experiment 3 of date/delay paper.
-36,300,,01/02/2023,700,,01/07/2023,,,Instruction question
-37,300,,05/07/2023,700,,10/02/2023,,,Instruction question
-38,300,,10/02/2023,700,,01/07/2023,,,Instruction question
+29,490,,01/02/2023,700,,01/18/2023,700,,Experiment 1 date/delay paper.
+30,720,,01/06/2023,1390,,01/24/2023,1390,,Experiment 1 date/delay paper.
+31,840,,01/03/2023,1120,,01/16/2023,1120,,Experiment 1 date/delay paper.
+32,32,,01/04/2023,39,,01/13/2023,40,,Experiment 3 of date/delay paper.
+33,45,,01/02/2023,70,,01/18/2023,70,,Experiment 3 of date/delay paper.
+34,66,,01/06/2023,110,,01/24/2023,110,,Experiment 3 of date/delay paper.
+35,77,,01/03/2023,118,,01/16/2023,120,,Experiment 3 of date/delay paper.
+36,300,,01/02/2023,700,,01/07/2023,1000,,Instruction question
+37,300,,05/07/2023,700,,10/02/2023,1000,,Instruction question
+38,300,,10/02/2023,700,,01/07/2023,1000,,Instruction question

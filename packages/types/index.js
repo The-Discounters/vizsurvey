@@ -10,6 +10,7 @@ import { SurveyQuestion } from "./src/SurveyQuestion.js";
 
 import { Participant } from "./src/Participant.js";
 import { ScreenAttributes } from "./src/ScreenAttributes.js";
+import { ServerStatusType } from "./src/ServerStatusType.js";
 import {
   participantUniqueKey,
   stateUniqueKey,
@@ -21,8 +22,10 @@ import {
 import {
   convertKeysCamelCaseToUnderscore,
   setAllPropertiesEmpty,
+  setUndefinedPropertiesNull,
   convertAnswersAryToObj,
   convertKeysUnderscoreToCamelCase,
+  injectSurveyQuestionFields,
 } from "./src/ObjectUtil.js";
 
 export {
@@ -30,6 +33,7 @@ export {
   ExperimentType,
   InteractionType,
   ViewType,
+  ServerStatusType,
   Experiment,
   Question,
   Treatment,
@@ -40,6 +44,7 @@ export {
   convertKeysCamelCaseToUnderscore,
   convertKeysUnderscoreToCamelCase,
   setAllPropertiesEmpty,
+  setUndefinedPropertiesNull,
   convertAnswersAryToObj,
   participantUniqueKey,
   stateUniqueKey,
@@ -47,4 +52,5 @@ export {
   CSVDataFilenameFromKey,
   stateFilename,
   stateFormatFilename,
+  injectSurveyQuestionFields,
 };

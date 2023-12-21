@@ -5,10 +5,10 @@ import {
   AmountType,
 } from "@the-discounters/types";
 
-export const createQuestionNoTitrate = (treatmentId, positionId) => {
+export const createQuestionNoTitrate = (treatmentId, sequenceId) => {
   return SurveyQuestion({
     treatmentId: treatmentId,
-    position: positionId,
+    sequenceId: sequenceId,
     viewType: ViewType.barchart,
     interaction: InteractionType.none,
     variableAmount: AmountType.laterAmount,
@@ -32,10 +32,10 @@ export const createQuestionNoTitrate = (treatmentId, positionId) => {
   });
 };
 
-export const create2ndQuestionNoTitrate = (treatmentId, positionId) => {
+export const create2ndQuestionNoTitrate = (treatmentId, sequenceId) => {
   return SurveyQuestion({
     treatmentId: treatmentId,
-    position: positionId,
+    sequenceId: sequenceId,
     viewType: ViewType.barchart,
     interaction: InteractionType.none,
     variableAmount: AmountType.laterAmount,

@@ -3,6 +3,11 @@ import {
   writeSurveyQuestions,
   writeParticipant,
 } from "@the-discounters/firebase-shared";
+import { Participant } from "@the-discounters/types";
+import {
+  setUndefinedPropertiesNull,
+  injectSurveyQuestionFields,
+} from "@the-discounters/types";
 
 export const calcTreatmentIds = (latinSquare, participantCount) => {
   const index = participantCount % latinSquare.length;
@@ -61,7 +66,7 @@ export const orderQuestionsRandom = (questions, treatmentIds) => {
   return result;
 };
 
-export const signupParticipant = (
+export const signupParticipant = async (
   db,
   participantId,
   studyId,
@@ -84,13 +89,19 @@ export const signupParticipant = (
     exp.treatmentQuestions
   );
   let { instruction, survey } = parseQuestions(treatmentQuestions);
+  survey = injectSurveyQuestionFields(survey);
+  survey = survey.map((v) => setUndefinedPropertiesNull(v));
   survey = orderQuestions(survey, treatmentIds);
-  writeSurveyQuestions(db, exp.path, participantId, sessionId, survey);
-  writeParticipant(db, exp.path, { participantId: participantId });
+  await writeSurveyQuestions(db, exp.path, participantId, sessionId, survey);
+  await writeParticipant(
+    db,
+    exp.path,
+    setUndefinedPropertiesNull(Participant({ participantId }))
+  );
   callback(
     false,
     `${survey.length} questions sent back to participant for participant id ${participantId}, ` +
       `study id ${studyId}, session id ${sessionId}`
   );
-  return { instruction, questions: survey };
+  return { instruction, survey };
 };

@@ -357,11 +357,11 @@ describe("firestoreAdmin test ", () => {
   });
 
   it("Test for updateParticipantCount", async () => {
-    await updateParticipantCount(db, "test", 1, (msg) => {
+    await updateParticipantCount(db, "testbetween", 1, (msg) => {
       console.log(msg);
     });
     const expRef = db.collection("experiments");
-    const q = expRef.where("prolificStudyId", "==", "test");
+    const q = expRef.where("prolificStudyId", "==", "testbetween");
     const expSnapshot = await assertSucceeds(q.get());
     assert.equal(
       expSnapshot.docs.length,
@@ -414,7 +414,7 @@ describe("firestoreAdmin test ", () => {
   });
 
   // fetchback and test
-  //   const q = expRef.where("prolificStudyId", "==", "test");
+  //   const q = expRef.where("prolificStudyId", "==", "testbetween");
   //   const expSnapshot = await assertSucceeds(q.get());
   //   assert.equal(
   //     expSnapshot.docs.length,

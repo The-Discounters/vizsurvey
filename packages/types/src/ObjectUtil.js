@@ -1,5 +1,5 @@
-// TODO move this into a utility class for manimulating objects.
 import _ from "lodash";
+import { SurveyQuestion } from "./SurveyQuestion.js";
 
 export const convertKeysCamelCaseToUnderscore = (obj) => {
   return _.mapKeys(obj, function (value, key) {
@@ -23,6 +23,10 @@ export const setAllPropertiesEmpty = (obj) => {
   });
 };
 
+export const setUndefinedPropertiesNull = (obj) => {
+  return _.mapValues(obj, (value) => (value == undefined ? null : value));
+};
+
 export const convertAnswersAryToObj = (answersAry) => {
   const result = answersAry.reduce((acc, current) => {
     // eslint-disable-next-line no-undef
@@ -37,7 +41,7 @@ export const convertAnswersAryToObj = (answersAry) => {
       ) {
         return key;
       } else {
-        return `${key}_${object.treatmentId}_${object.position}`;
+        return `${key}_${object.treatmentId}_${object.sequenceId}`;
       }
     });
     const mappedObj = {
@@ -46,5 +50,10 @@ export const convertAnswersAryToObj = (answersAry) => {
     };
     return mappedObj;
   }, {});
+  return result;
+};
+
+export const injectSurveyQuestionFields = (questions) => {
+  const result = questions.map((v) => SurveyQuestion({ ...v }));
   return result;
 };

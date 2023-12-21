@@ -175,7 +175,7 @@ export class TestDataFactory {
   static createQuestionLaterTitrate() {
     return SurveyQuestion({
       treatmentId: 1,
-      position: 1,
+      sequenceId: 1,
       viewType: ViewType.barchart,
       interaction: InteractionType.titration,
       variableAmount: AmountType.laterAmount,

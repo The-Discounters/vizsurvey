@@ -138,9 +138,8 @@ export const flattenTimestampObj = (timestamps) => {
 };
 
 export const flattenState = (state) => {
-  // turn answer rows into columns with position number as suffix
+  // turn answer rows into columns with sequenceId number as suffix
   const answersAsObj = convertAnswersAryToObj(state.treatments);
-  const treatmentIds = state.treatmentIds.toString().replaceAll(",", "-");
   const timetamps = flattenTimestampObj(state.timestamps);
   const attentionChecks = flattenTreatmentValueAry(
     "attentionCheck",
@@ -152,7 +151,6 @@ export const flattenState = (state) => {
       participantId: state.participantId,
       sessionId: state.sessionId,
       studyId: state.studyId,
-      treatmentId: treatmentIds,
     },
     ...timetamps,
     consentChecked: state.consentChecked,

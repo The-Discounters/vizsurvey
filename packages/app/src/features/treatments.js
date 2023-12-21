@@ -1,4 +1,4 @@
-export const TREATMENTS_DEV_CSV = `treatment_id,position,view_type,interaction,variable_amount,amount_earlier,time_earlier,date_earlier,amount_later,time_later,date_later,max_amount,max_time,horizontal_pixels,vertical_pixels,left_margin_width_in,bottom_margin_height_in,graph_width_in,graph_height_in,width_in,height_in,show_minor_ticks,instruction_gif_prefix,comment
+export const TREATMENTS_DEV_CSV = `treatment_id,sequence_id,view_type,interaction,variable_amount,amount_earlier,time_earlier,date_earlier,amount_later,time_later,date_later,max_amount,max_time,horizontal_pixels,vertical_pixels,left_margin_width_in,bottom_margin_height_in,graph_width_in,graph_height_in,width_in,height_in,show_minor_ticks,instruction_gif_prefix,comment
 1,1,word,none,none,500,2,,1000,5,,,10,,,,,,,4,4,,,Worded with no interaction and Read 2001 example values.
 1,2,word,none,none,50,2,,300,7,,,10,,,,,,,8,8,,,Worded with no interaction and Read 2001 example values.
 1,3,word,none,none,250,2,,1000,3,,,10,,,,,,,8,8,,,Worded with no interaction and Read 2001 example values.
@@ -151,7 +151,7 @@ export const TREATMENTS_DEV_CSV = `treatment_id,position,view_type,interaction,v
 29,instructions,word,none,none,300,,5/7/2023,700,,10/2/2023,1000,,1135,120,,,,,,,,introduction-wordDate,TODO use width and height during regular drawCalendar calls Worded MEL question experiment 3 of date/delay paper.
 `;
 
-export const TREATMENTS_PROD_CSV = `treatment_id,position,view_type,interaction,variable_amount,amount_earlier,time_earlier,date_earlier,amount_later,time_later,date_later,max_amount,max_time,horizontal_pixels,vertical_pixels,left_margin_width_in,bottom_margin_height_in,graph_width_in,graph_height_in,width_in,height_in,show_minor_ticks,instruction_gif_prefix,comment
+export const TREATMENTS_PROD_CSV = `treatment_id,sequence_id,view_type,interaction,variable_amount,amount_earlier,time_earlier,date_earlier,amount_later,time_later,date_later,max_amount,max_time,horizontal_pixels,vertical_pixels,left_margin_width_in,bottom_margin_height_in,graph_width_in,graph_height_in,width_in,height_in,show_minor_ticks,instruction_gif_prefix,comment
 1,random,word,none,none,350,4,,430,13,,430,,,,,,,,,,,,Worded MEL question experiment 1 date/delay paper.
 1,random,word,none,none,490,2,,700,18,,700,,,,,,,,,,,,Worded MEL question experiment 1 date/delay paper.
 1,random,word,none,none,720,6,,1390,24,,1390,,,,,,,,,,,,Worded MEL question experiment 1 date/delay paper.

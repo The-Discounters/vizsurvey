@@ -1,8 +1,10 @@
 import { AmountType } from "./AmountType.js";
 
 export function SurveyQuestion({
+  treatmentQuestionId,
   treatmentId,
-  position,
+  questionId,
+  sequenceId,
   viewType,
   interaction,
   variableAmount,
@@ -32,8 +34,10 @@ export function SurveyQuestion({
   choiceTimeSec,
 }) {
   return {
+    treatmentQuestionId,
     treatmentId,
-    position,
+    questionId,
+    sequenceId,
     viewType,
     interaction,
     variableAmount,

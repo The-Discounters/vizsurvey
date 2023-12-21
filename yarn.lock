@@ -7303,6 +7303,10 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@the-discounters/types@workspace:packages/types"
   dependencies:
+    "@babel/core": "npm:^7.23.6"
+    "@babel/plugin-syntax-import-assertions": "npm:^7.23.3"
+    "@babel/plugin-syntax-import-attributes": "npm:^7.23.3"
+    "@babel/preset-env": "npm:^7.23.6"
     "@the-discounters/test-shared": "npm:*"
     eslint: "npm:^8.15.0"
   languageName: unknown

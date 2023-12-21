@@ -11,6 +11,9 @@ describe("parseCSV test.", () => {
     value = getRandomIntInclusive(3, 3);
     expect(value).toBeGreaterThanOrEqual(3);
     expect(value).toBeLessThanOrEqual(3);
+    value = getRandomIntInclusive(0, 1000000000);
+    expect(value).toBeGreaterThanOrEqual(0);
+    expect(value).toBeLessThanOrEqual(1000000000);
   });
 
   // I used this test to gather some data on what the random generation of treatment id distribution looked like.
