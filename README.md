@@ -33,6 +33,7 @@ admin-credentials-prod.json
 Create a .env.development, .env.production, and .env.test file in packages/app so that the web app can locate settings.
 Modify the settings to the appropriate values.
 
+```
 REACT_APP_ENV=<development or production>
 REACT_APP_VERSION=<product version>
 REACT_APP_S3_BUCKET=<S3 bucket name (getting rid of this for firestore)>
@@ -57,6 +58,7 @@ REACT_APP_IRB_PHONE=<Internal revue board contact phone>
 REACT_APP_HPA_NAME=<Human protection admin contact name>
 REACT_APP_HPA_EMAIL=<Human protection admin contact email>
 REACT_APP_HPA_PHONE=<Human protection admin contact phone>
+```
 
 From https://stackoverflow.com/questions/42458434/how-to-set-build-env-variables-when-running-create-react-app-build-script
 npm start will set REACT_APP_NODE_ENV to development, and so it will automatically use the .env.development file, and npm run build sets REACT_APP_NODE_ENV to production, and so it will automatically use .env.production. Values set in these will override the values in your .env.
