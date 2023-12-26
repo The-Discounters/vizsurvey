@@ -121,7 +121,7 @@ yarn test
 To run the web app create a bash terminal and run
 
 ```console
-cd pacakges/app
+cd packages/app
 yarn run
 ```
 

@@ -31,6 +31,7 @@
     "react-redux": "^7.2.5",
     "react-router-dom": "^6.4.5",
     "react-scripts": "5.0.1",
+    "serve": "^14.2.1",
     "to-csv": "^0.1.1",
     "web-vitals": "^1.1.2"
   },
