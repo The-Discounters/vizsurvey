@@ -15,7 +15,7 @@ import {
   getStatus,
   setQuestionShownTimestamp,
   nextQuestion,
-  answer,
+  answerQuestion,
 } from "../features/questionSlice.js";
 import { dateToState } from "@the-discounters/util";
 import { styles, theme } from "./ScreenHelper.js";
@@ -49,7 +49,7 @@ function MELForm() {
     } else {
       setDisableSubmit(true);
     }
-  }, [choice, qi]);
+  }, [choice, q.treatmentQuestionId, dispatch]);
 
   useEffect(() => {
     const path = navigateFromStatus(status);
@@ -64,17 +64,6 @@ function MELForm() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status]);
 
-  const onClickCallback = (value) => {
-    dispatch(
-      answer({
-        choice: value,
-        choiceTimestamp: dateToState(DateTime.now()),
-      })
-    );
-    setHelperText("");
-    setError(false);
-  };
-
   return (
     <ThemeProvider theme={theme}>
       <Grid container style={styles.root} justifyContent="center">
@@ -88,7 +77,17 @@ function MELForm() {
           dateLater={q.dateLater}
           timeLater={q.timeLater}
           helperText={helperText}
-          onClickCallback={onClickCallback}
+          onClickCallback={(value) => {
+            dispatch(
+              answerQuestion({
+                treatmentQuestionId: q.treatmentQuestionId,
+                choice: value,
+                choiceTimestamp: dateToState(DateTime.now()),
+              })
+            );
+            setHelperText("");
+            setError(false);
+          }}
           choice={choice}
         />
         <Grid item xs={12}>

@@ -9,9 +9,10 @@ import { Button } from "react-bootstrap";
 import { DateTime } from "luxon";
 import {
   getCurrentQuestion,
+  getCurrentChoice,
   getStatus,
   setQuestionShownTimestamp,
-  answer,
+  answerQuestion,
 } from "../features/questionSlice.js";
 import { useD3 } from "../hooks/useD3.js";
 import { AmountType } from "@the-discounters/types";
@@ -201,7 +202,7 @@ export function Calendar() {
           onSubmit={(values, { setSubmitting, resetForm }) => {
             setTimeout(() => {
               dispatch(
-                answer({
+                answerQuestion({
                   choice: AmountType.earlierAmount,
                   choiceTimestamp: dateToState(DateTime.now()),
                 })

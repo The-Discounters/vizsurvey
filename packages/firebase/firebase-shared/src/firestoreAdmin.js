@@ -33,7 +33,7 @@ const fetchTreatmentQuestions = async (db, expPath) => {
   return result;
 };
 
-export const fetchExperiment = async (db, studyId) => {
+export const readExperiment = async (db, studyId) => {
   const expRef = await db.collection("experiments");
   const q = expRef.where("prolificStudyId", "==", studyId);
   const expSnapshot = await q.get();
@@ -50,7 +50,7 @@ export const fetchExperiment = async (db, studyId) => {
   return result;
 };
 
-export const fetchExperiments = async (db) => {
+export const readExperiments = async (db) => {
   const expCol = await db.collection("experiments").get();
   const expAry = [];
   for (let i = 0; i < expCol.size; i++) {
@@ -65,12 +65,7 @@ export const fetchExperiments = async (db) => {
   return expAry;
 };
 
-export const updateParticipantCount = async (
-  db,
-  studyId,
-  newCount,
-  callback
-) => {
+export const updateParticipantCount = async (db, studyId, newCount) => {
   const expRef = await db.collection("experiments");
   const q = expRef.where("prolificStudyId", "==", studyId);
   const expSnapshot = await q.get();
@@ -80,36 +75,10 @@ export const updateParticipantCount = async (
   const expDoc = expSnapshot.docs[0];
   const updateObj = { numParticipantsStarted: newCount };
   const res = await expDoc.ref.update(updateObj);
-  callback(
-    `updated partcipant count for study ${studyId} with result ${JSON.stringify(
-      res
-    )}`
-  );
+  return res.writeTime;
 };
 
-export const writeAnswers = async (
-  db,
-  expPath,
-  participantId,
-  sessionId,
-  answers
-) => {
-  initBatch(db, `${expPath}/answers`);
-  answers.forEach((a) => {
-    const writeData = {
-      participantId: participantId,
-      ...a,
-    };
-    setBatchItem(
-      `${participantId}-${writeData.treatmentQuestionId}`,
-      null,
-      writeData
-    );
-  });
-  // TODO write the audit log entries
-};
-
-export const writeSurveyQuestions = async (
+export const createAnswers = async (
   db,
   expPath,
   participantId,
@@ -133,7 +102,25 @@ export const writeSurveyQuestions = async (
   await commitBatch();
 };
 
-export const writeParticipant = async (db, expPath, participant) => {
+export const updateAnswer = async (
+  db,
+  expPath,
+  participantId,
+  treatmentQuestionId,
+  //sessionId,
+  answer
+) => {
+  const answerPath = `${expPath}/answers/${participantId}-${treatmentQuestionId}`;
+  const answerRef = await db.doc(answerPath);
+  const answerSnapshot = await answerRef.get();
+  if (!answerSnapshot.exists) {
+    return null;
+  }
+  const writeResult = await answerRef.update(answer);
+  return writeResult.writeTime;
+};
+
+export const createParticipant = async (db, expPath, participant) => {
   const ref = await db
     .collection(`${expPath}/participants`)
     .doc(`${participant.participantId}`)

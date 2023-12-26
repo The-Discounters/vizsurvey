@@ -11,16 +11,17 @@ const PROJECT_ID = "vizsurvey-test";
 
 import {
   initFirestore,
-  fetchExperiment,
-  fetchExperiments,
+  readExperiment,
+  readExperiments,
   initBatch,
   setBatchItem,
   commitBatch,
   linkDocs,
   deleteDocs,
-  writeSurveyQuestions,
+  createAnswers,
+  updateAnswer,
   updateParticipantCount,
-  writeParticipant,
+  createParticipant,
 } from "./firestoreAdmin.js";
 
 describe("firestoreAdmin test ", () => {
@@ -305,8 +306,8 @@ describe("firestoreAdmin test ", () => {
     }
   });
 
-  it("Integration test for fetchExperiment.", async () => {
-    const exp = await fetchExperiment(db, "649f3cffea5a1b2817d17d7e");
+  it("Integration test for readExperiment.", async () => {
+    const exp = await readExperiment(db, "649f3cffea5a1b2817d17d7e");
     assert.equal(
       exp.experimentId,
       5,
@@ -314,8 +315,8 @@ describe("firestoreAdmin test ", () => {
     );
   });
 
-  it("Integration test for fetchExperiments.", async () => {
-    const exp = await fetchExperiments(db);
+  it("Integration test for readExperiments.", async () => {
+    const exp = await readExperiments(db);
     assert.equal(
       exp.length,
       8,
@@ -331,18 +332,15 @@ describe("firestoreAdmin test ", () => {
     );
   });
 
-  it("Test for writeSurveyQuestions.", async () => {
+  it("Test for createAnswers.", async () => {
     await assertSucceeds(
-      db
-        .collection("functionsUtil-writeSurveyQuestions-test")
-        .doc()
-        .create({ id: 1 })
+      db.collection("functionsUtil-createAnswers-test").doc().create({ id: 1 })
     );
     let snapshot = await assertSucceeds(
-      db.collection("functionsUtil-writeSurveyQuestions-test").get()
+      db.collection("functionsUtil-createAnswers-test").get()
     );
     const path = snapshot.docs[0].ref.path;
-    await writeSurveyQuestions(db, path, 1, 2, SURVEY_QUESTIONS_JSON);
+    await createAnswers(db, path, 1, 2, SURVEY_QUESTIONS_JSON);
     snapshot = await assertSucceeds(db.collection(`${path}/answers`).get());
     assert.equal(
       snapshot.docs.length,
@@ -356,10 +354,39 @@ describe("firestoreAdmin test ", () => {
     );
   });
 
+  it("Test for updateAnswer.", async () => {
+    await assertSucceeds(
+      db.collection("firestoreAdmin-updateAnswer-test").doc().create({ id: 1 })
+    );
+    let snapshot = await assertSucceeds(
+      db.collection("firestoreAdmin-updateAnswer-test").get()
+    );
+    const path = snapshot.docs[0].ref.path;
+    await assertSucceeds(
+      db
+        .collection(`${path}/answers`)
+        .doc("1-1")
+        .create({ id: 1, key1: "value1", key2: "value2" })
+    );
+    const doc = await assertSucceeds(db.doc(`${path}/answers/1-1`).get());
+    assert.equal(
+      doc.data().key2,
+      "value2",
+      "Did not create test document with right key2 value."
+    );
+    const writeTime = await updateAnswer(db, path, 1, 1, { key1: "newValue1" });
+    assert.notEqual(writeTime, null);
+    const updateDoc = await assertSucceeds(db.doc(`${path}/answers/1-1`).get());
+    assert.equal(
+      updateDoc.data().key1,
+      "newValue1",
+      "Did not create test document with right key2 value."
+    );
+  });
+
   it("Test for updateParticipantCount", async () => {
-    await updateParticipantCount(db, "testbetween", 1, (msg) => {
-      console.log(msg);
-    });
+    const writeTime = await updateParticipantCount(db, "testbetween", 1);
+    assert.notEqual(writeTime, null, "Expected write time to be returned.");
     const expRef = db.collection("experiments");
     const q = expRef.where("prolificStudyId", "==", "testbetween");
     const expSnapshot = await assertSucceeds(q.get());
@@ -371,15 +398,15 @@ describe("firestoreAdmin test ", () => {
     assert.equal(expSnapshot.docs[0].data().numParticipantsStarted, 1);
   });
 
-  it("Test for writeParticipant", async () => {
+  it("Test for createParticipant", async () => {
     await assertSucceeds(
       db
-        .collection("firestoreAdmin-writeParticipant-test")
+        .collection("firestoreAdmin-createParticipant-test")
         .doc()
         .create({ id: 1 })
     );
     let snapshot = await assertSucceeds(
-      db.collection("firestoreAdmin-writeParticipant-test").get()
+      db.collection("firestoreAdmin-createParticipant-test").get()
     );
     const path = snapshot.docs[0].ref.path;
     const data = Participant({
@@ -397,7 +424,7 @@ describe("firestoreAdmin test ", () => {
       feedback: "feedback",
       userAgent: "userAgent",
     });
-    await writeParticipant(db, path, data);
+    await createParticipant(db, path, data);
     snapshot = await assertSucceeds(
       db.collection(`${path}/participants`).get()
     );
@@ -412,15 +439,4 @@ describe("firestoreAdmin test ", () => {
       "Did not write what was expected for the participant."
     );
   });
-
-  // fetchback and test
-  //   const q = expRef.where("prolificStudyId", "==", "testbetween");
-  //   const expSnapshot = await assertSucceeds(q.get());
-  //   assert.equal(
-  //     expSnapshot.docs.length,
-  //     1,
-  //     "Expected to retrieve one experiment"
-  //   );
-  //   assert.equal(expSnapshot.docs[0].data().numParticipantsStarted, 1);
-  // });
 });

@@ -10,21 +10,17 @@ import { initializeApp } from "firebase-admin/app";
 import { getFirestore } from "firebase-admin/firestore";
 import { logger } from "firebase-functions";
 import { onRequest } from "firebase-functions/v2/https";
-import { signupParticipant } from "./functionsUtil.js";
-import {
-  fetchExperiment,
-  updateParticipantCount,
-} from "@the-discounters/firebase-shared";
-import { ProlificSumbissionStatusType } from "@the-discounters/prolific";
+import { signupParticipant, readExperiment } from "./functionsUtil.js";
+import * as shared from "@the-discounters/firebase-shared";
 import { ServerStatusType } from "@the-discounters/types";
-import { StatusError } from "./StatusError.js";
+import { StatusError } from "@the-discounters/types";
 
 initializeApp();
 const db = getFirestore();
 
-export const fetchExpConfig = onRequest(async (request, response) => {
+export const signup = onRequest(async (request, response) => {
   logger.info(
-    `fetchExpConfig prolific_pid=${request.query.prolific_pid},` +
+    `signup prolific_pid=${request.query.prolific_pid},` +
       `study_id=${request.query.study_id},` +
       `session_id=${request.query.session_id}`
   );
@@ -38,7 +34,8 @@ export const fetchExpConfig = onRequest(async (request, response) => {
   try {
     if (!participantId || !studyId) {
       throw new StatusError({
-        msg: "fetchExpConfig Error with request parameters. prolific_pid or study_id not in request.",
+        message:
+          "signup Error with request parameters. prolific_pid or study_id not in request.",
         code: 400,
         reason: ServerStatusType.invalid,
         participantId,
@@ -51,35 +48,28 @@ export const fetchExpConfig = onRequest(async (request, response) => {
     logger.info(
       `...fetching experiment for prolificPid=${participantId}, studyId=${studyId}, sessionId=${sessionId}`
     );
-    const exp = await fetchExperiment(db, studyId);
-    if (!exp) {
-      throw new StatusError({
-        msg: `fetchExpConfig Participant tried to access experiment that was not found.`,
-        code: 400,
-        reason: ServerStatusType.invalid,
-        participantId,
-        studyId,
-        sessionId,
-        request,
-      });
-    }
-    logger.info(
-      `...fetched experiment ${exp.experimentId} for prolificPid=${participantId}, studyId=${studyId}, sessionId=${sessionId}, numParticipantsStarted=${exp.numParticipantsStarted}, numParticipants=${exp.numParticipants}, status=${exp.status}`
+    const exp = await readExperiment(
+      db,
+      studyId,
+      (serverStatus, statusCode, msg) => {
+        if (serverStatus === ServerStatusType.success) {
+          `${msg}, prolificPid = ${participantId}, studyId = ${studyId}, sessionId = ${sessionId}`;
+        } else {
+          throw new StatusError({
+            message: msg,
+            code: statusCode,
+            reason: serverStatus,
+            participantId,
+            studyId,
+            sessionId,
+            request,
+          });
+        }
+      }
     );
     if (exp.numParticipantsStarted === exp.numParticipants) {
       throw new StatusError({
-        msg: `fetchExpConfig participant tried starting survey after the number of participants (${exp.numParticipants}) has been fulfilled`,
-        code: 400,
-        reason: ServerStatusType.ended,
-        participantId,
-        studyId,
-        sessionId,
-        request,
-      });
-    }
-    if (exp.status != ProlificSumbissionStatusType.active) {
-      throw new StatusError({
-        msg: `fetchExpConfig Participant tried to access experiment that is not active (${exp.status})`,
+        message: `signup participant tried starting survey after the number of participants (${exp.numParticipants}) has been fulfilled`,
         code: 400,
         reason: ServerStatusType.ended,
         participantId,
@@ -89,17 +79,21 @@ export const fetchExpConfig = onRequest(async (request, response) => {
       });
     }
     logger.info(
-      `...Calculating participant number for experimentId ${exp.experimentId}, participantId ${participantId}`
+      `...signup Calculating participant number for experimentId ${exp.experimentId}, participantId ${participantId}`
     );
     const newExpCount = exp.numParticipantsStarted + 1;
-    logger.info(
-      `...Assigned participant number ${newExpCount}, experimentId ${exp.experimentId}, participantId ${participantId}`
+    const updateTime = await shared.updateParticipantCount(
+      db,
+      studyId,
+      newExpCount
     );
-    updateParticipantCount(db, studyId, newExpCount, (msg) => {
-      logger.info(msg);
-    });
     logger.info(
-      `...Signing up participant for experimentId ${exp.experimentId}, participantId ${participantId}`
+      `...signup Assigned participant number ${newExpCount}, experimentId ${
+        exp.experimentId
+      }, participantId ${participantId}, on ${updateTime.toDate()}`
+    );
+    logger.info(
+      `...signup Signing up participant for experimentId ${exp.experimentId}, participantId ${participantId}`
     );
     const signupData = await signupParticipant(
       db,
@@ -112,7 +106,7 @@ export const fetchExpConfig = onRequest(async (request, response) => {
           logger.info(msg);
         } else {
           throw new StatusError({
-            msg: msg,
+            message: msg,
             code: 500,
             reason: ServerStatusType.error,
             participantId,
@@ -128,33 +122,133 @@ export const fetchExpConfig = onRequest(async (request, response) => {
       .json({ ...signupData, status: ServerStatusType.success });
   } catch (err) {
     logger.error(
-      `${err.msg}  participantId=${err.participantId}, studyId=${err.studyId}, sessionId=${err.sessionId}`
+      `signup ${err.message}  participantId=${err.participantId}, studyId=${err.studyId}, sessionId=${err.sessionId}`
     );
     response
-      .status(err.httpcode ? err.httpcode : 500)
+      .status(err.code ? err.code : 500)
       .json({ status: err.reason ? err.reason : ServerStatusType.error });
   }
 });
 
-// export const writeAnswers = onRequest(async (request, response) => {
-//   logger.info(
-//       `writeAnswers prolific_pid=${request.query.prolific_pid}, \
-// study_id=${request.query.study_id}, session_id=${request.query.session_id}`);
-//   try {
-//     const prolificPid = request.query.prolific_pid;
-//     const studyId = request.query.study_id;
-//     // const sessionId = request.query.session_id;
+export const updateAnswer = onRequest(async (request, response) => {
+  logger.info(
+    `updateAnswer prolific_pid=${request.body.prolific_pid}, study_id=${request.body.study_id}, session_id=${request.body.session_id}`
+  );
+  try {
+    const participantId = request.body.prolific_pid;
+    const studyId = request.body.study_id;
+    const sessionId = request.body.session_id;
+    const answer = request.body.answer;
+    if (!participantId || !studyId) {
+      throw new StatusError({
+        message:
+          "updateAnswer Error with request parameters. prolific_pid or study_id not in request.",
+        code: 400,
+        reason: ServerStatusType.invalid,
+        participantId,
+        studyId,
+        sessionId,
+        request,
+      });
+    }
+    if (!answer || !answer.treatmentQuestionId) {
+      throw new StatusError({
+        message:
+          "updateAnswer Error with request parameters. answer or answer.treatmentQuestionId not in request.",
+        code: 400,
+        reason: ServerStatusType.invalid,
+        participantId,
+        studyId,
+        sessionId,
+        request,
+      });
+    }
+    const exp = await readExperiment(
+      db,
+      studyId,
+      (serverStatus, statusCode, msg) => {
+        if (serverStatus === ServerStatusType.success) {
+          logger.info(
+            `${msg}, prolificPid = ${participantId}, studyId = ${studyId}, sessionId = ${sessionId}`
+          );
+        } else {
+          throw new StatusError({
+            message: msg,
+            code: statusCode,
+            reason: serverStatus,
+            participantId,
+            studyId,
+            sessionId,
+            request,
+          });
+        }
+      }
+    );
+    const writeTime = await shared.updateAnswer(
+      db,
+      exp.path,
+      participantId,
+      answer.treatmentQuestionId,
+      answer
+    );
+    if (!writeTime) {
+      throw new StatusError({
+        message: `updateAnswer did not update for ${answer.treatmentQuestionId}`,
+        code: 400,
+        reason: ServerStatusType.invalid,
+        participantId,
+        studyId,
+        sessionId,
+        request,
+      });
+    }
+    logger.info(
+      `updateAnswer succesfull participantId=${participantId}, study_id=${studyId}, session_id=${sessionId}, treatmentQuestionId=${
+        answer.treatmentQuestionId
+      } answer update time ${writeTime.toDate()}`
+    );
+    response.status(200).json({ status: ServerStatusType.success });
+  } catch (err) {
+    logger.error(
+      ` updateAnswer ${err.message}  participantId=${err.participantId}, studyId=${err.studyId}, sessionId=${err.sessionId}, treatmentQuestionId=${answer.treatmentQuestionId}`
+    );
+    response
+      .status(err.code ? err.code : 500)
+      .json({ status: err.reason ? err.reason : ServerStatusType.error });
+  }
+});
 
-//     if (!prolificPid || !studyId) {
-//       logger.error(
-//           // eslint-disable-next-line quotes
-//           `writeAnswers Error with request parameters.\
-// prolific_pid or study_id not in request`, request);
-//       throw Error("Error with survey URL.");
-//     }
-//     response.json({result: "Treatment assigned"});
-//   } catch (err) {
-//     logger.error(err);
-//     response.json({error: "There was an error with the server."});
-//   }
-// });
+export const writeState = onRequest(async (request, response) => {
+  logger.info(
+    `writeState prolific_pid=${request.query.prolific_pid},` +
+      `study_id=${request.query.study_id},` +
+      `session_id=${request.query.session_id}`
+  );
+  try {
+    const participantId = request.query.prolific_pid;
+    const studyId = request.query.study_id;
+    const sessionId = request.query.session_id;
+
+    if (!participantId || !studyId) {
+      throw new StatusError({
+        message:
+          "writeState Error with request parameters. prolific_pid or study_id not in request.",
+        code: 400,
+        reason: ServerStatusType.invalid,
+        participantId,
+        studyId,
+        sessionId,
+        request,
+      });
+    }
+    // TODO add code to write state
+    response.status(200).json({ add: "ResponseData" });
+  } catch (err) {
+    logger.error(
+      `writeState ${err.message}  participantId=${err.participantId}, studyId=${err.studyId}, sessionId=${err.sessionId}`
+    );
+    response
+      .status(err.code ? err.code : 500)
+      .json({ status: err.reason ? err.reason : ServerStatusType.error });
+  }
+});

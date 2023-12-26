@@ -4,28 +4,104 @@ import { QuestionEngine } from "./QuestionEngine.js";
 import { StatusType } from "./StatusType.js";
 import { secondsBetween } from "@the-discounters/util";
 import { writeStateAsCSV } from "./FileIOAdapter.js";
-import { ServerStatusType } from "@the-discounters/types";
+import { ServerStatusType, StatusError } from "@the-discounters/types";
 
 const qe = new QuestionEngine();
 
 export const initializeSurvey = createAsyncThunk(
-  "survey/initialize",
+  "questions/initialize",
   async (parameters, thunkAPI) => {
     const result = { ...parameters };
     try {
       const response = await fetch(
-        `${process.env.REACT_APP_SERVER_URL}/fetchExpConfig?prolific_pid=${parameters.participantId}&study_id=${parameters.studyId}&session_id=${parameters.sessionId}&user_agent=${parameters.userAgent}`,
+        `${process.env.REACT_APP_SERVER_URL}/signup?prolific_pid=${parameters.participantId}&study_id=${parameters.studyId}&session_id=${parameters.sessionId}&user_agent=${parameters.userAgent}`,
         {
+          method: "GET",
           headers: { "Content-Type": "application/json" },
+        }
+      );
+      const data = await response.json();
+      if (response.status !== 200 || data.status !== ServerStatusType.success) {
+        throw new StatusError({
+          message: "initializeSurvey server error!",
+          code: response.status,
+          reason: data.status,
+        });
+      }
+      result.questions = data.survey;
+      result.instruction = data.instruction;
+      return result;
+    } catch (err) {
+      return thunkAPI.rejectWithValue({
+        status: err.reason ? err.reason : null,
+        message: err.message,
+      });
+    }
+  }
+);
+
+export const answerQuestion = createAsyncThunk(
+  "questions/answerQuestion",
+  async (answer, thunkAPI) => {
+    try {
+      const state = thunkAPI.getState();
+      const currentQuestion = qe.currentAnswer(state.questions);
+      answer.choiceTimeSec = secondsBetween(
+        currentQuestion.shownTimestamp,
+        answer.choiceTimestamp
+      );
+      const data = {
+        prolific_pid: state.questions.participantId,
+        study_id: state.questions.studyId,
+        session_id: state.questions.sessionId,
+        answer: answer,
+      };
+      const response = await fetch(
+        `${process.env.REACT_APP_SERVER_URL}/updateAnswer`,
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data),
+        }
+      );
+      const result = await response.json();
+      if (
+        response.status !== 200 ||
+        result.status !== ServerStatusType.success
+      ) {
+        throw new StatusError({
+          message: "answerQuestion server error!",
+          code: response.status,
+          reason: result.status,
+        });
+      }
+      return answer;
+    } catch (err) {
+      return thunkAPI.rejectWithValue({
+        status: err.reason ? err.reason : null,
+        message: err.message,
+        answer: answer,
+      });
+    }
+  }
+);
+
+export const writeState = createAsyncThunk(
+  "questions/writeState",
+  async (state, thunkAPI) => {
+    try {
+      const response = await fetch(
+        `${process.env.REACT_APP_SERVER_URL}/writeState?prolific_pid=${state.participantId}&study_id=${state.studyId}&session_id=${state.sessionId}}`,
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify("hello"),
         }
       );
       const data = await response.json();
       if (data.status !== ServerStatusType.success) {
         throw new Error("Server Error signingup participant!");
       }
-      result.questions = data.survey;
-      result.instruction = data.instruction;
-      return result;
     } catch (err) {
       const { rejectWithValue } = thunkAPI;
       return rejectWithValue(err.toString());
@@ -288,7 +364,6 @@ export const questionSlice = createSlice({
     // we define our actions on the slice of global store data here.
     answer(state, action) {
       qe.answerCurrentQuestion(state, action.payload);
-      writeStateAsCSV(state);
     },
     nextQuestion(state) {
       qe.incNextQuestion(state);
@@ -461,7 +536,23 @@ export const questionSlice = createSlice({
         state.status = qe.nextState(state);
       })
       .addCase(initializeSurvey.rejected, (state, action) => {
-        state.error = action.error;
+        state.error = action.payload.status;
+        state.status = StatusType.Error;
+      })
+      .addCase(answerQuestion.pending, (state, action) => {
+        console.log("answerQuestion.pending");
+      })
+      .addCase(answerQuestion.fulfilled, (state, action) => {
+        qe.answerCurrentQuestion(state, action.payload);
+      })
+      .addCase(answerQuestion.rejected, (state, action) => {
+        // if writing the answer to the server failed, continue with asking the questions while retrying to post to the server.
+        if (action.payload.answer) {
+          qe.answerCurrentQuestion(state, action.payload.answer);
+        }
+        // TODO add retry logic.  Maybe store request/failure state for each server write along with the number of retires.
+        // TODO write errors to google analytics
+        state.error = action.payload.status;
         state.status = StatusType.Error;
       });
   },
@@ -526,6 +617,9 @@ export const getCurrentQuestion = (state) => qe.currentAnswer(state.questions);
 
 export const getCurrentChoice = (state) =>
   qe.currentAnswer(state.questions).choice;
+
+export const getCurrentDragAmount = (state) =>
+  qe.currentAnswer(state.questions).dragAmount;
 
 export const getStatus = (state) => state.questions.status;
 

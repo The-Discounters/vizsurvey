@@ -32,3 +32,4 @@ https://firebase.google.com/docs/rules/unit-tests
 https://firebase.google.com/docs/reference/emulator-suite/rules-unit-testing/rules-unit-testing.rulestestenvironment
 https://firebase.google.com/docs/emulator-suite/connect_firestore
 https://firebase.google.com/docs/web/modular-upgrade
+https://firebase.google.com/docs/reference/admin

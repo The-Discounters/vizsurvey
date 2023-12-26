@@ -13,7 +13,7 @@ import {
   getStatus,
   setQuestionShownTimestamp,
   nextQuestion,
-  answer,
+  answerQuestion,
 } from "../features/questionSlice.js";
 import { dateToState } from "@the-discounters/util";
 import { drawBarChart } from "./BarChartComponent.js";
@@ -47,7 +47,7 @@ function BarChart() {
       default:
         setDisableSubmit(true);
     }
-  }, [choice]);
+  }, [choice, q.treatmentQuestionId, dispatch]);
 
   useEffect(() => {
     const path = navigateFromStatus(status);
@@ -61,15 +61,6 @@ function BarChart() {
     navigate(path);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status]);
-
-  const onClickCallback = (value) => {
-    dispatch(
-      answer({
-        choice: value,
-        choiceTimestamp: dateToState(DateTime.now()),
-      })
-    );
-  };
 
   const { totalSVGWidth, totalSVGHeight, totalUCWidth, totalUCHeight } =
     calcScreenValues(
@@ -101,7 +92,15 @@ function BarChart() {
                   timeEarlier: q.timeEarlier,
                   amountLater: q.amountLater,
                   timeLater: q.timeLater,
-                  onClickCallback: onClickCallback,
+                  onClickCallback: (value) => {
+                    dispatch(
+                      answerQuestion({
+                        treatmentQuestionId: q.treatmentQuestionId,
+                        choice: value,
+                        choiceTimestamp: dateToState(DateTime.now()),
+                      })
+                    );
+                  },
                   choice: choice,
                   horizontalPixels: q.horizontalPixels,
                   verticalPixels: q.verticalPixels,

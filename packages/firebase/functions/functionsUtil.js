@@ -1,13 +1,11 @@
 import { group } from "d3";
-import {
-  writeSurveyQuestions,
-  writeParticipant,
-} from "@the-discounters/firebase-shared";
-import { Participant } from "@the-discounters/types";
+import * as shared from "@the-discounters/firebase-shared";
+import { Participant, ServerStatusType } from "@the-discounters/types";
 import {
   setUndefinedPropertiesNull,
   injectSurveyQuestionFields,
 } from "@the-discounters/types";
+import { ProlificSumbissionStatusType } from "@the-discounters/prolific";
 
 export const calcTreatmentIds = (latinSquare, participantCount) => {
   const index = participantCount % latinSquare.length;
@@ -66,6 +64,30 @@ export const orderQuestionsRandom = (questions, treatmentIds) => {
   return result;
 };
 
+export const readExperiment = async (db, studyId, callback) => {
+  const exp = await shared.readExperiment(db, studyId);
+  if (!exp) {
+    callback(
+      ServerStatusType.invalid,
+      400,
+      `...tried to access experiment that was not found`
+    );
+  } else if (exp.status !== ProlificSumbissionStatusType.active) {
+    callback(
+      ServerStatusType.invalid,
+      400,
+      `...tried to access experiment that is not active (${exp.status})`
+    );
+  } else {
+    callback(
+      ServerStatusType.success,
+      200,
+      `...fetched experiment ${exp.experimentId} for studyId=${studyId}, numParticipantsStarted = ${exp.numParticipantsStarted}, numParticipants = ${exp.numParticipants}, status = ${exp.status}`
+    );
+  }
+  return exp;
+};
+
 export const signupParticipant = async (
   db,
   participantId,
@@ -92,8 +114,8 @@ export const signupParticipant = async (
   survey = injectSurveyQuestionFields(survey);
   survey = survey.map((v) => setUndefinedPropertiesNull(v));
   survey = orderQuestions(survey, treatmentIds);
-  await writeSurveyQuestions(db, exp.path, participantId, sessionId, survey);
-  await writeParticipant(
+  await shared.createAnswers(db, exp.path, participantId, sessionId, survey);
+  await shared.createParticipant(
     db,
     exp.path,
     setUndefinedPropertiesNull(Participant({ participantId }))

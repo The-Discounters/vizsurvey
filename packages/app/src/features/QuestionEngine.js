@@ -1,5 +1,4 @@
 import { StatusType } from "./StatusType.js";
-import { secondsBetween } from "@the-discounters/util";
 
 export const TIMESTAMP_FORMAT = "MM/dd/yyyy H:mm:ss:SSS ZZZZ";
 
@@ -79,11 +78,9 @@ export class QuestionEngine {
     const answer = this.currentAnswer(state);
     answer.choice = payload.choice;
     answer.choiceTimestamp = payload.choiceTimestamp;
-    answer.choiceTimeSec = secondsBetween(
-      answer.shownTimestamp,
-      answer.choiceTimestamp
-    );
+    answer.choiceTimeSec = payload.choiceTimeSec;
     answer.dragAmount = payload.dragAmount;
+    return answer;
   }
 
   nextState(state) {

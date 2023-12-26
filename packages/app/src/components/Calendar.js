@@ -6,11 +6,12 @@ import { DateTime } from "luxon";
 import {
   getCurrentQuestion,
   getCurrentChoice,
+  getCurrentDragAmount,
   getCurrentQuestionIndex,
   getStatus,
   setQuestionShownTimestamp,
   nextQuestion,
-  answer,
+  answerQuestion,
 } from "../features/questionSlice.js";
 import { StatusType } from "../features/StatusType.js";
 import { useD3 } from "../hooks/useD3.js";
@@ -31,10 +32,9 @@ export function Calendar() {
   const q = useSelector(getCurrentQuestion);
   const qi = useSelector(getCurrentQuestionIndex);
   const choice = useSelector(getCurrentChoice);
+  const dragAmount = useSelector(getCurrentDragAmount);
   const status = useSelector(getStatus);
   const navigate = useNavigate();
-
-  var dragAmount = null;
 
   const [disableSubmit, setDisableSubmit] = React.useState(true);
 
@@ -53,7 +53,7 @@ export function Calendar() {
       default:
         setDisableSubmit(true);
     }
-  }, [choice]);
+  }, [choice, dragAmount, q.treatmentQuestionId, dispatch]);
 
   useEffect(() => {
     const path = navigateFromStatus(status);
@@ -65,15 +65,6 @@ export function Calendar() {
     }
     navigate(path);
   }, [status, navigate]);
-
-  const onClickCallback = (value) => {
-    dispatch(
-      answer({
-        choice: value,
-        choiceTimestamp: dateToState(DateTime.now()),
-      })
-    );
-  };
 
   const result = (
     <div>
@@ -87,7 +78,16 @@ export function Calendar() {
                 case ViewType.calendarWord:
                   drawCalendar({
                     table: table,
-                    onClickCallback: onClickCallback,
+                    onClickCallback: (value) => {
+                      dispatch(
+                        answerQuestion({
+                          treatmentQuestionId: q.treatmentQuestionId,
+                          choice: value,
+                          choiceTimestamp: dateToState(DateTime.now()),
+                          dragAmount: dragAmount,
+                        })
+                      );
+                    },
                     choice: choice,
                     qDateEarlier: q.dateEarlier,
                     qDateLater: q.dateLater,
@@ -99,7 +99,16 @@ export function Calendar() {
                 case ViewType.calendarWordYear:
                   drawCalendarYear({
                     table: table,
-                    onClickCallback: onClickCallback,
+                    onClickCallback: (value) => {
+                      dispatch(
+                        answerQuestion({
+                          treatmentQuestionId: q.treatmentQuestionId,
+                          choice: value,
+                          choiceTimestamp: dateToState(DateTime.now()),
+                          dragAmount: dragAmount,
+                        })
+                      );
+                    },
                     choice: choice,
                     qDateEarlier: q.dateEarlier,
                     qDateLater: q.dateLater,
@@ -110,7 +119,16 @@ export function Calendar() {
                 case ViewType.calendarWordYearDual:
                   drawCalendarYearDual({
                     table: table,
-                    onClickCallback: onClickCallback,
+                    onClickCallback: (value) => {
+                      dispatch(
+                        answerQuestion({
+                          treatmentQuestionId: q.treatmentQuestionId,
+                          choice: value,
+                          choiceTimestamp: dateToState(DateTime.now()),
+                          dragAmount: dragAmount,
+                        })
+                      );
+                    },
                     choice: choice,
                     qDateEarlier: q.dateEarlier,
                     qDateLater: q.dateLater,
@@ -167,7 +185,8 @@ export function Calendar() {
           onSubmit={(values, { setSubmitting, resetForm }) => {
             setTimeout(() => {
               dispatch(
-                answer({
+                answerQuestion({
+                  treatmentQuestionId: q.treatmentQuestionId,
                   choice: q.variableAmount,
                   choiceTimestamp: dateToState(DateTime.now()),
                   dragAmount: dragAmount.amount,

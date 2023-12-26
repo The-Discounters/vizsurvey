@@ -1,16 +1,16 @@
 import {
   initFirestore,
   initBatch,
-  fetchExperiment,
-  fetchExperiments,
+  readExperiment,
+  readExperiments,
   setBatchItem,
   deleteDocs,
   commitBatch,
   linkDocs,
   updateParticipantCount,
-  writeSurveyQuestions,
-  writeAnswers,
-  writeParticipant,
+  createAnswers,
+  updateAnswer,
+  createParticipant,
 } from "./src/firestoreAdmin.js";
 
 export {
@@ -20,10 +20,10 @@ export {
   deleteDocs,
   commitBatch,
   linkDocs,
-  fetchExperiment,
-  fetchExperiments,
+  readExperiment,
+  readExperiments,
   updateParticipantCount,
-  writeSurveyQuestions,
-  writeAnswers,
-  writeParticipant,
+  createAnswers,
+  updateAnswer,
+  createParticipant,
 };

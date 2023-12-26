@@ -151,8 +151,6 @@ const GenTreatmentId = () => {
 const DevHome = () => {
   const dispatch = useDispatch();
 
-  const status = useSelector(getStatus);
-
   function testLinks() {
     return (
       <div key="testlinks-parent">

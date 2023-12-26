@@ -11,7 +11,7 @@ import {
 } from "./functionsUtil.js";
 import {
   initFirestore,
-  fetchExperiment,
+  readExperiment,
 } from "@the-discounters/firebase-shared";
 import { SURVEY_QUESTIONS_JSON } from "@the-discounters/test-shared";
 import { deleteCollection } from "@the-discounters/firebase-test-shared";
@@ -174,7 +174,7 @@ describe("functionsUtil test ", () => {
   });
 
   it("Test for signupParticipant for within subject study (latin square entries [1, 2, 3]).", async () => {
-    const exp = await fetchExperiment(db, "testwithin");
+    const exp = await readExperiment(db, "testwithin");
     const result = await signupParticipant(
       db,
       "1",
@@ -203,7 +203,7 @@ describe("functionsUtil test ", () => {
   });
 
   it("Test for signupParticipant for between subject study (latin square entries [1], [2], [3]).", async () => {
-    const exp = await fetchExperiment(db, "testbetween");
+    const exp = await readExperiment(db, "testbetween");
     const result = await signupParticipant(
       db,
       "1",

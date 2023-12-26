@@ -11,6 +11,9 @@ import { SurveyQuestion } from "./src/SurveyQuestion.js";
 import { Participant } from "./src/Participant.js";
 import { ScreenAttributes } from "./src/ScreenAttributes.js";
 import { ServerStatusType } from "./src/ServerStatusType.js";
+import { TransactionKey } from "./src/TransactionKey.js";
+import { Answer } from "./src/Answer.js";
+import { StatusError } from "./src/StatusError.js";
 import {
   participantUniqueKey,
   stateUniqueKey,
@@ -18,7 +21,8 @@ import {
   CSVDataFilenameFromKey,
   stateFilename,
   stateFormatFilename,
-} from "./src/QuestionSliceUtil.js";
+  injectKey,
+} from "./src/TypesUtil.js";
 import {
   convertKeysCamelCaseToUnderscore,
   setAllPropertiesEmpty,
@@ -41,6 +45,8 @@ export {
   SurveyQuestion,
   Participant,
   ScreenAttributes,
+  TransactionKey,
+  Answer,
   convertKeysCamelCaseToUnderscore,
   convertKeysUnderscoreToCamelCase,
   setAllPropertiesEmpty,
@@ -53,4 +59,6 @@ export {
   stateFilename,
   stateFormatFilename,
   injectSurveyQuestionFields,
+  injectKey,
+  StatusError,
 };

@@ -25,6 +25,7 @@
                 "<node_internals>/**"
             ],
             "type": "node",
+            "outputCapture": "std",
             "env": {
                 "GOOGLE_APPLICATION_CREDENTIALS": "/Users/pete/vizsurvey/admin-credentials-dev.json",
                 "FIRESTORE_EMULATOR_HOST": "127.0.0.1:8080",

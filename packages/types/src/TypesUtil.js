@@ -21,3 +21,7 @@ export const stateFilename = (dataObj) => {
 export const stateFormatFilename = (dataObj) => {
   return `state-format-${stateUniqueKey(dataObj)}.json`;
 };
+
+export const injectKey = (key, data) => {
+  return { ...key, ...data };
+};
