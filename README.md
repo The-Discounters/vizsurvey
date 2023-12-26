@@ -45,7 +45,7 @@ REACT_APP_FULLSCREEN=enabled=<enabled or empty>
 REACT_APP_PAYMENT_AMOUT=<payment amount including currency symbol and I needed a slash before symbol i.e. \$3>
 REACT_APP_PROLIFIC_CODE=<prolific code>
 REACT_APP_RESEARCH_TITLE=Choices About Money
-REACT_APP_RESARCHER_NAMES=<researcher names that show up on consent form>
+REACT_APP_RESEARCHER_NAMES=<researcher names that show up on consent form>
 REACT_APP_CONTACT_NAME=<consent contact name>
 REACT_APP_CONTACT_EMAIL=<consent contact email>
 REACT_APP_CONTACT_PHONE=<consent contact phone>
