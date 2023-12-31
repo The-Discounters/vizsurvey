@@ -11,6 +11,7 @@ import {
   createAnswers,
   updateAnswer,
   createParticipant,
+  updateParticipant,
 } from "./src/firestoreAdmin.js";
 
 export {
@@ -26,4 +27,5 @@ export {
   createAnswers,
   updateAnswer,
   createParticipant,
+  updateParticipant,
 };

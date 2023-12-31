@@ -127,6 +127,23 @@ export const createParticipant = async (db, expPath, participant) => {
     .create(participant);
 };
 
+export const updateParticipant = async (
+  db,
+  expPath,
+  participantId,
+  //sessionId,
+  updateData
+) => {
+  const participantPath = `${expPath}/participants/${participantId}`;
+  const participantRef = await db.doc(participantPath);
+  const participantSnapshot = await participantRef.get();
+  if (!participantSnapshot.exists) {
+    return null;
+  }
+  const writeResult = await participantRef.update(updateData);
+  return writeResult.writeTime;
+};
+
 export const initBatch = (db, colPath) => {
   colRef = db.collection(colPath);
   batch = db.batch();

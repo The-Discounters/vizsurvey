@@ -1,7 +1,9 @@
 import { group } from "d3";
 import * as shared from "@the-discounters/firebase-shared";
-import { Participant, ServerStatusType } from "@the-discounters/types";
 import {
+  Participant,
+  ServerStatusType,
+  StatusError,
   setUndefinedPropertiesNull,
   injectSurveyQuestionFields,
 } from "@the-discounters/types";
@@ -64,28 +66,25 @@ export const orderQuestionsRandom = (questions, treatmentIds) => {
   return result;
 };
 
-export const readExperiment = async (db, studyId, callback) => {
-  const exp = await shared.readExperiment(db, studyId);
+export const validateExperiment = (exp) => {
   if (!exp) {
-    callback(
-      ServerStatusType.invalid,
-      400,
-      `...tried to access experiment that was not found`
-    );
+    throw new StatusError({
+      message: "tried to access experiment that was not found",
+      code: 400,
+      reason: ServerStatusType.invalid,
+    });
   } else if (exp.status !== ProlificSumbissionStatusType.active) {
-    callback(
-      ServerStatusType.invalid,
-      400,
-      `...tried to access experiment that is not active (${exp.status})`
-    );
-  } else {
-    callback(
-      ServerStatusType.success,
-      200,
-      `...fetched experiment ${exp.experimentId} for studyId=${studyId}, numParticipantsStarted = ${exp.numParticipantsStarted}, numParticipants = ${exp.numParticipants}, status = ${exp.status}`
-    );
+    throw new StatusError({
+      message: `tried to access experiment that is not active (${exp.status})`,
+      code: 400,
+      reason: ServerStatusType.invalid,
+    });
   }
   return exp;
+};
+
+export const readExperiment = async (db, studyId) => {
+  return await shared.readExperiment(db, studyId);
 };
 
 export const signupParticipant = async (

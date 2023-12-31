@@ -89,8 +89,8 @@ function postsurvey(expects) {
               timestamps: {
                 consentShownTimestamp: 500,
                 consentCompletedTimestamp: 1000,
-                introductionShownTimestamp: 1500,
-                introductionCompletedTimestamp: 2000,
+                MCLInstructionShownTimestamp: 1500,
+                MCLInstructionCompleted: 2000,
                 demographicShownTimestamp: 2000,
                 demographicCompletedTimestamp: 4000,
                 instructionsShownTimestamp: 4000,
@@ -418,7 +418,7 @@ describe("vizsurvey", () => {
   it("word date", () => {
     visitTreatment(7);
   });
-/*
+  /*
   it("calendar word single month", () => {
     //visitTreatment(5, 1280, 720);
     //cy.tick(4000);

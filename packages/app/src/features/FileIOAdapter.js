@@ -110,16 +110,16 @@ export const flattenTimestampObj = (timestamps) => {
   result = {
     ...result,
     ...flattenTreatmentValueAry(
-      "introductionShownTimestamp",
-      timestamps.introductionShownTimestamp
+      "MCLInstructionShownTimestamp",
+      timestamps.MCLInstructionShownTimestamp
     ),
     ...flattenTreatmentValueAry(
-      "introductionCompletedTimestamp",
-      timestamps.introductionCompletedTimestamp
+      "MCLInstructionCompleted",
+      timestamps.MCLInstructionCompleted
     ),
     ...flattenTreatmentValueAry(
-      "introductionTimeSec",
-      timestamps.introductionTimeSec
+      "MCLInstructionTimeSec",
+      timestamps.MCLInstructionTimeSec
     ),
     ...flattenTreatmentValueAry(
       "attentionCheckShownTimestamp",

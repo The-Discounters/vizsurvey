@@ -12,6 +12,14 @@ export const Participant = ({
   timezone,
   feedback,
   userAgent,
+  consentShownTimestamp,
+  consentCompletedTimestamp,
+  consentTimeSec,
+  instructionsShownTimestamp,
+  instructionsCompletedTimestamp,
+  instructionsTimeSec,
+  MCLInstructionShownTimestamp,
+  MCLInstructionCompletedTimestamp,
 }) =>
   Object.freeze({
     participantId,
@@ -27,4 +35,12 @@ export const Participant = ({
     timezone,
     feedback,
     userAgent,
+    consentShownTimestamp,
+    consentCompletedTimestamp,
+    consentTimeSec,
+    instructionsShownTimestamp,
+    instructionsCompletedTimestamp,
+    instructionsTimeSec,
+    MCLInstructionShownTimestamp,
+    MCLInstructionCompletedTimestamp,
   });

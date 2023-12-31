@@ -1,10 +1,25 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { SystemZone } from "luxon";
+import { secondsBetween } from "@the-discounters/util";
+import { ServerStatusType } from "@the-discounters/types";
+import { writeStateAsCSV } from "./FileIOAdapter.js";
 import { QuestionEngine } from "./QuestionEngine.js";
 import { StatusType } from "./StatusType.js";
-import { secondsBetween } from "@the-discounters/util";
-import { writeStateAsCSV } from "./FileIOAdapter.js";
-import { ServerStatusType, StatusError } from "@the-discounters/types";
+import {
+  signupParticipant,
+  updateAnswer,
+  updateConsentShown,
+  updateConsentCompleted,
+  updateInstructionsShown,
+  updateInstructionsCompleted,
+  updateMCLInstructionsShown,
+  updateMCLInstructionsCompleted,
+  updateDemographic,
+  updateExperienceSurvey,
+  updateFinancialLitSurvey,
+  updatePurposeSurvey,
+  updateDebrief,
+} from "./serviceAPI.js";
 
 const qe = new QuestionEngine();
 
@@ -13,21 +28,12 @@ export const initializeSurvey = createAsyncThunk(
   async (parameters, thunkAPI) => {
     const result = { ...parameters };
     try {
-      const response = await fetch(
-        `${process.env.REACT_APP_SERVER_URL}/signup?prolific_pid=${parameters.participantId}&study_id=${parameters.studyId}&session_id=${parameters.sessionId}&user_agent=${parameters.userAgent}`,
-        {
-          method: "GET",
-          headers: { "Content-Type": "application/json" },
-        }
+      const data = await signupParticipant(
+        parameters.participantId,
+        parameters.studyId,
+        parameters.sessionId,
+        parameters.userAgent
       );
-      const data = await response.json();
-      if (response.status !== 200 || data.status !== ServerStatusType.success) {
-        throw new StatusError({
-          message: "initializeSurvey server error!",
-          code: response.status,
-          reason: data.status,
-        });
-      }
       result.questions = data.survey;
       result.instruction = data.instruction;
       return result;
@@ -50,31 +56,12 @@ export const answerQuestion = createAsyncThunk(
         currentQuestion.shownTimestamp,
         answer.choiceTimestamp
       );
-      const data = {
-        prolific_pid: state.questions.participantId,
-        study_id: state.questions.studyId,
-        session_id: state.questions.sessionId,
-        answer: answer,
-      };
-      const response = await fetch(
-        `${process.env.REACT_APP_SERVER_URL}/updateAnswer`,
-        {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(data),
-        }
+      await updateAnswer(
+        state.questions.participantId,
+        state.questions.studyId,
+        state.questions.sessionId,
+        answer
       );
-      const result = await response.json();
-      if (
-        response.status !== 200 ||
-        result.status !== ServerStatusType.success
-      ) {
-        throw new StatusError({
-          message: "answerQuestion server error!",
-          code: response.status,
-          reason: result.status,
-        });
-      }
       return answer;
     } catch (err) {
       return thunkAPI.rejectWithValue({
@@ -86,25 +73,172 @@ export const answerQuestion = createAsyncThunk(
   }
 );
 
-export const writeState = createAsyncThunk(
-  "questions/writeState",
-  async (state, thunkAPI) => {
+export const consentShown = createAsyncThunk(
+  "questions/consentShown",
+  async (timestamp, thunkAPI) => {
     try {
-      const response = await fetch(
-        `${process.env.REACT_APP_SERVER_URL}/writeState?prolific_pid=${state.participantId}&study_id=${state.studyId}&session_id=${state.sessionId}}`,
-        {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify("hello"),
-        }
+      const state = thunkAPI.getState();
+      await updateConsentShown(
+        state.questions.participantId,
+        state.questions.studyId,
+        state.questions.sessionId,
+        timestamp
       );
-      const data = await response.json();
-      if (data.status !== ServerStatusType.success) {
-        throw new Error("Server Error signingup participant!");
-      }
+      return timestamp;
     } catch (err) {
-      const { rejectWithValue } = thunkAPI;
-      return rejectWithValue(err.toString());
+      return thunkAPI.rejectWithValue({
+        status: err.reason ? err.reason : null,
+        message: err.message,
+        consentShownTimestamp: timestamp,
+      });
+    }
+  }
+);
+
+export const consentCompleted = createAsyncThunk(
+  "questions/consentCompleted",
+  async (timestamp, thunkAPI) => {
+    const state = thunkAPI.getState();
+    const payload = {
+      consentChecked: true,
+      consentCompletedTimestamp: timestamp,
+      consentTimeSec: secondsBetween(
+        state.questions.timestamps.consentShownTimestamp,
+        timestamp
+      ),
+      timezone: SystemZone.instance.name,
+    };
+    try {
+      await updateConsentCompleted(
+        state.questions.participantId,
+        state.questions.studyId,
+        state.questions.sessionId,
+        payload
+      );
+      return payload;
+    } catch (err) {
+      return thunkAPI.rejectWithValue({
+        status: err.reason ? err.reason : null,
+        message: err.message,
+        data: payload,
+      });
+    }
+  }
+);
+
+export const instructionsShown = createAsyncThunk(
+  "questions/instructionsShown",
+  async (timestamp, thunkAPI) => {
+    try {
+      const state = thunkAPI.getState();
+      await updateInstructionsShown(
+        state.questions.participantId,
+        state.questions.studyId,
+        state.questions.sessionId,
+        timestamp
+      );
+      return timestamp;
+    } catch (err) {
+      return thunkAPI.rejectWithValue({
+        status: err.reason ? err.reason : null,
+        message: err.message,
+        instructionsShownTimestamp: timestamp,
+      });
+    }
+  }
+);
+
+export const instructionsCompleted = createAsyncThunk(
+  "questions/instructionsCompleted",
+  async (timestamp, thunkAPI) => {
+    const state = thunkAPI.getState();
+    const payload = {
+      instructionsCompletedTimestamp: timestamp,
+      instructionsTimeSec: secondsBetween(
+        state.questions.timestamps.instructionsCompletedTimestamp,
+        timestamp
+      ),
+    };
+    try {
+      await updateInstructionsCompleted(
+        state.questions.participantId,
+        state.questions.studyId,
+        state.questions.sessionId,
+        payload
+      );
+      return payload;
+    } catch (err) {
+      return thunkAPI.rejectWithValue({
+        status: err.reason ? err.reason : null,
+        message: err.message,
+        data: payload,
+      });
+    }
+  }
+);
+
+export const MCLInstructionsShown = createAsyncThunk(
+  "questions/MCLInstructionsShown",
+  async (timestamp, thunkAPI) => {
+    const state = thunkAPI.getState();
+    const payload = {
+      treatmentId: qe.currentAnswer(state.questions).treatmentId,
+      value: timestamp,
+    };
+    try {
+      await updateMCLInstructionsShown(
+        state.questions.participantId,
+        state.questions.studyId,
+        state.questions.sessionId,
+        [...state.questions.timestamps.MCLInstructionShownTimestamp, payload]
+      );
+      return payload;
+    } catch (err) {
+      return thunkAPI.rejectWithValue({
+        status: err.reason ? err.reason : null,
+        message: err.message,
+        payload: payload,
+      });
+    }
+  }
+);
+
+export const MCLInstructionsCompleted = createAsyncThunk(
+  "questions/MCLInstructionsShown",
+  async (timestamp, thunkAPI) => {
+    const state = thunkAPI.getState();
+    const currentTreatmentId = qe.currentAnswer(state).treatmentId;
+    const shownTimestamp =
+      state.questions.timestamps.MCLInstructionShownTimestamp.find(
+        (cv) => cv.treatmentId === currentTreatmentId
+      ).value;
+    const payload = {
+      timestamp: {
+        treatmentId: qe.currentAnswer(state.questions).treatmentId,
+        value: timestamp,
+      },
+      time: {
+        treatmentId: qe.currentAnswer(state).treatmentId,
+        value: secondsBetween(shownTimestamp, timestamp),
+      },
+    };
+    try {
+      await updateMCLInstructionsCompleted(
+        state.questions.participantId,
+        state.questions.studyId,
+        state.questions.sessionId,
+        [
+          ...state.questions.timestamps.MCLInstructionCompletedTimestamp,
+          payload,
+        ]
+      );
+      return payload;
+    } catch (err) {
+      return thunkAPI.rejectWithValue({
+        status: err.reason ? err.reason : null,
+        message: err.message,
+        payload: payload,
+      });
     }
   }
 );
@@ -157,9 +291,9 @@ export const questionSlice = createSlice({
       demographicShownTimestamp: null,
       demographicCompletedTimestamp: null,
       demographicTimeSec: null,
-      introductionShownTimestamp: [], // TODO rename this ot MCLInstructionShownTimestamp
-      introductionCompletedTimestamp: [], // TODO rename this ot MCLInstructionConpletedTimestamp
-      introductionTimeSec: [], // TODO rename this ot MCLIntroductionTimeSec
+      MCLInstructionShownTimestamp: [], // TODO rename this ot MCLInstructionShownTimestamp
+      MCLInstructionCompleted: [], // TODO rename this ot MCLInstructionConpletedTimestamp
+      MCLInstructionTimeSec: [], // TODO rename this ot MCLIntroductionTimeSec
       instructionsShownTimestamp: null,
       instructionsCompletedTimestamp: null,
       instructionsTimeSec: null,
@@ -286,23 +420,6 @@ export const questionSlice = createSlice({
       writeStateAsCSV(state);
       state.status = qe.nextState(state);
     },
-    consentShown(state, action) {
-      state.timestamps.consentShownTimestamp = action.payload;
-      writeStateAsCSV(state);
-    },
-    consentCompleted(state, action) {
-      //TODO we should refactor all these timestamp set methods into QuestionEngine.
-      //One reason is we won't be calling nexStatus from the slice and in QuestionEngine (we call it in at lesat two methods there)
-      state.consentChecked = true;
-      state.timestamps.consentCompletedTimestamp = action.payload;
-      state.timestamps.consentTimeSec = secondsBetween(
-        state.timestamps.consentShownTimestamp,
-        state.timestamps.consentCompletedTimestamp
-      );
-      state.timezone = SystemZone.instance.name;
-      writeStateAsCSV(state);
-      state.status = qe.nextState(state);
-    },
     demographicShown(state, action) {
       state.timestamps.demographicShownTimestamp = action.payload;
     },
@@ -311,39 +428,6 @@ export const questionSlice = createSlice({
       state.timestamps.demographicTimeSec = secondsBetween(
         state.timestamps.demographicShownTimestamp,
         state.timestamps.demographicCompletedTimestamp
-      );
-      writeStateAsCSV(state);
-      state.status = qe.nextState(state);
-    },
-    MCLInstructionsShown(state, action) {
-      state.timestamps.introductionShownTimestamp.push({
-        treatmentId: qe.currentAnswer(state).treatmentId,
-        value: action.payload,
-      });
-    },
-    MCLInstructionsCompleted(state, action) {
-      state.timestamps.introductionCompletedTimestamp.push({
-        treatmentId: qe.currentAnswer(state).treatmentId,
-        value: action.payload,
-      });
-      const shownTimestamp = state.timestamps.introductionShownTimestamp.find(
-        (cv) => cv.treatmentId === qe.currentAnswer(state).treatmentId
-      ).timestamp;
-      state.timestamps.introductionTimeSec.push({
-        treatmentId: qe.currentAnswer(state).treatmentId,
-        value: secondsBetween(shownTimestamp, action.payload),
-      });
-      writeStateAsCSV(state);
-      state.status = qe.nextState(state);
-    },
-    instructionsShown(state, action) {
-      state.timestamps.instructionsShownTimestamp = action.payload;
-    },
-    instructionsCompleted(state, action) {
-      state.timestamps.instructionsCompletedTimestamp = action.payload;
-      state.timestamps.instructionsTimeSec = secondsBetween(
-        state.timestamps.instructionsShownTimestamp,
-        state.timestamps.instructionsCompletedTimestamp
       );
       writeStateAsCSV(state);
       state.status = qe.nextState(state);
@@ -362,9 +446,6 @@ export const questionSlice = createSlice({
       });
     },
     // we define our actions on the slice of global store data here.
-    answer(state, action) {
-      qe.answerCurrentQuestion(state, action.payload);
-    },
     nextQuestion(state) {
       qe.incNextQuestion(state);
     },
@@ -478,9 +559,9 @@ export const questionSlice = createSlice({
         demographicShownTimestamp: null,
         demographicCompletedTimestamp: null,
         demographicTimeSec: null,
-        introductionShownTimestamp: [],
-        introductionCompletedTimestamp: [],
-        introductionTimeSec: [],
+        MCLInstructionShownTimestamp: [],
+        MCLInstructionCompleted: [],
+        MCLInstructionTimeSec: [],
         instructionsShownTimestamp: null,
         instructionsCompletedTimestamp: null,
         instructionsTimeSec: null,
@@ -539,9 +620,7 @@ export const questionSlice = createSlice({
         state.error = action.payload.status;
         state.status = StatusType.Error;
       })
-      .addCase(answerQuestion.pending, (state, action) => {
-        console.log("answerQuestion.pending");
-      })
+      .addCase(answerQuestion.pending, (state, action) => {})
       .addCase(answerQuestion.fulfilled, (state, action) => {
         qe.answerCurrentQuestion(state, action.payload);
       })
@@ -550,10 +629,93 @@ export const questionSlice = createSlice({
         if (action.payload.answer) {
           qe.answerCurrentQuestion(state, action.payload.answer);
         }
-        // TODO add retry logic.  Maybe store request/failure state for each server write along with the number of retires.
         // TODO write errors to google analytics
-        state.error = action.payload.status;
-        state.status = StatusType.Error;
+      })
+      .addCase(consentShown.pending, (state, action) => {})
+      .addCase(consentShown.fulfilled, (state, action) => {
+        state.timestamps.consentShownTimestamp = action.payload;
+      })
+      .addCase(consentShown.rejected, (state, action) => {
+        // if writing the answer to the server failed, continue with asking the questions while retrying to post to the server.
+        if (action.payload.consentShown) {
+          state.timestamps.consentShownTimestamp = action.payload.consentShown;
+        }
+        // TODO write errors to google analytics
+      })
+      .addCase(consentCompleted.pending, (state, action) => {})
+      .addCase(consentCompleted.fulfilled, (state, action) => {
+        state.consentChecked = action.payload.consentChecked;
+        state.timestamps.consentCompletedTimestamp =
+          action.payload.consentCompletedTimestamp;
+        state.timestamps.consentTimeSec = action.payload.consentTimeSec;
+        state.timezone = action.payload.timezone;
+        state.status = qe.nextState(state);
+      })
+      .addCase(consentCompleted.rejected, (state, action) => {
+        // if writing the answer to the server failed, continue with asking the questions while retrying to post to the server.
+        if (action.payload) {
+          state.consentChecked = action.payload.consentChecked;
+          state.timestamps.consentCompletedTimestamp =
+            action.payload.consentCompletedTimestamp;
+          state.timestamps.consentTimeSec = action.payload.consentTimeSec;
+          state.timezone = action.payload.timezone;
+        }
+        state.status = qe.nextState(state);
+        // TODO write errors to google analytics
+      })
+      .addCase(instructionsShown.pending, (state, action) => {})
+      .addCase(instructionsShown.fulfilled, (state, action) => {
+        state.timestamps.instructionsShownTimestamp = action.payload;
+      })
+      .addCase(instructionsShown.rejected, (state, action) => {
+        // if writing the answer to the server failed, continue with asking the questions while retrying to post to the server.
+        if (action.payload.consentShown) {
+          state.timestamps.instructionsShownTimestamp = action.payload;
+        }
+      })
+      .addCase(instructionsCompleted.pending, (state, action) => {})
+      .addCase(instructionsCompleted.fulfilled, (state, action) => {
+        state.timestamps.instructionsCompletedTimestamp = action.payload;
+        state.timestamps.instructionsTimeSec = secondsBetween(
+          state.timestamps.instructionsShownTimestamp,
+          state.timestamps.instructionsCompletedTimestamp
+        );
+        state.status = qe.nextState(state);
+      })
+      .addCase(instructionsCompleted.rejected, (state, action) => {
+        // if writing the answer to the server failed, continue with asking the questions while retrying to post to the server.
+        if (action.payload) {
+          state.timestamps.instructionsCompletedTimestamp = action.payload;
+          state.timestamps.instructionsTimeSec = secondsBetween(
+            state.timestamps.instructionsShownTimestamp,
+            state.timestamps.instructionsCompletedTimestamp
+          );
+        }
+        state.status = qe.nextState(state);
+        // TODO write errors to google analytics
+      })
+      .addCase(MCLInstructionsShown.pending, (state, action) => {})
+      .addCase(MCLInstructionsShown.fulfilled, (state, action) => {
+        state.timestamps.MCLInstructionShownTimestamp.push(action.payload);
+      })
+      .addCase(MCLInstructionsShown.rejected, (state, action) => {
+        // if writing the answer to the server failed, continue with asking the questions while retrying to post to the server.
+        if (action.payload) {
+          state.timestamps.MCLInstructionShownTimestamp.push(action.payload);
+        }
+      })
+      .addCase(MCLInstructionsCompleted.pending, (state, action) => {})
+      .addCase(MCLInstructionsCompleted.fulfilled, (state, action) => {
+        state.timestamps.MCLInstructionCompletedTimestamp.push(
+          action.payload.timestamp
+        );
+      })
+      .addCase(MCLInstructionsCompleted.rejected, (state, action) => {
+        if (action.payload) {
+          state.timestamps.MCLInstructionCompletedTimestamp.push(
+            action.payload
+          );
+        }
       });
   },
 });
@@ -633,8 +795,6 @@ export const {
   answer,
   previousQuestion,
   nextQuestion,
-  consentShown,
-  consentCompleted,
   demographicShown,
   demographicCompleted,
   setCountryOfResidence,
@@ -653,11 +813,7 @@ export const {
   initPurposeSurveyQuestion,
   setPurposeSurveyQuestion,
   setAttentionCheck,
-  instructionsShown,
   setFeedback,
-  instructionsCompleted,
-  MCLInstructionsShown,
-  MCLInstructionsCompleted,
   attentionCheckShown,
   experienceSurveyQuestionsShown,
   experienceSurveyQuestionsCompleted,
