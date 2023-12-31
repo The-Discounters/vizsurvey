@@ -52,7 +52,7 @@ export function Consent() {
       <React.Fragment>
         <Typography paragraph>
           <b>Investigator: </b>
-          {process.env.REACT_APP_RESARCHER_NAMES}
+          {process.env.REACT_APP_RESEARCHER_NAMES}
         </Typography>
         <Typography paragraph>
           <b>Contact Information: </b> {process.env.REACT_APP_CONTACT_NAME}{" "}

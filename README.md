@@ -33,6 +33,7 @@ admin-credentials-prod.json
 Create a .env.development, .env.production, and .env.test file in packages/app so that the web app can locate settings.
 Modify the settings to the appropriate values.
 
+```
 REACT_APP_ENV=<development or production>
 REACT_APP_VERSION=<product version>
 REACT_APP_S3_BUCKET=<S3 bucket name (getting rid of this for firestore)>
@@ -44,19 +45,20 @@ REACT_APP_FULLSCREEN=enabled=<enabled or empty>
 REACT_APP_PAYMENT_AMOUT=<payment amount including currency symbol and I needed a slash before symbol i.e. \$3>
 REACT_APP_PROLIFIC_CODE=<prolific code>
 REACT_APP_RESEARCH_TITLE=Choices About Money
-REACT_APP_RESARCHER_NAMES=<researcher names that show up on consent form>
+REACT_APP_RESEARCHER_NAMES=<researcher names that show up on consent form>
 REACT_APP_CONTACT_NAME=<consent contact name>
 REACT_APP_CONTACT_EMAIL=<consent contact email>
 REACT_APP_CONTACT_PHONE=<consent contact phone>
 REACT_APP_SPONSOR_NAME=<consent sponsor name>
 REACT_APP_SPONSOR_EMAIL=<consent sponsor email>
 REACT_APP_SPONSOR_PHONE=<consent sponsor phone>
-REACT_APP_IRB_NAME=<Internal revue board contact name>
-REACT_APP_IRB_EMAIL=<Internal revue board contact email>
-REACT_APP_IRB_PHONE=<Internal revue board contact phone>
+REACT_APP_IRB_NAME=<Institutional Review Board (IRB) contact name>
+REACT_APP_IRB_EMAIL=<IRB contact email>
+REACT_APP_IRB_PHONE=<IRB contact phone>
 REACT_APP_HPA_NAME=<Human protection admin contact name>
 REACT_APP_HPA_EMAIL=<Human protection admin contact email>
 REACT_APP_HPA_PHONE=<Human protection admin contact phone>
+```
 
 From https://stackoverflow.com/questions/42458434/how-to-set-build-env-variables-when-running-create-react-app-build-script
 npm start will set REACT_APP_NODE_ENV to development, and so it will automatically use the .env.development file, and npm run build sets REACT_APP_NODE_ENV to production, and so it will automatically use .env.production. Values set in these will override the values in your .env.
@@ -121,7 +123,7 @@ yarn test
 To run the web app create a bash terminal and run
 
 ```console
-cd pacakges/app
+cd packages/app
 yarn run
 ```
 
