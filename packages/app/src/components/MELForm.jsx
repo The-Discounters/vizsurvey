@@ -15,7 +15,7 @@ import {
   getStatus,
   setQuestionShownTimestamp,
   nextQuestion,
-  answerQuestion,
+  answer,
 } from "../features/questionSlice.js";
 import { dateToState } from "@the-discounters/util";
 import { styles, theme } from "./ScreenHelper.js";
@@ -79,8 +79,7 @@ function MELForm() {
           helperText={helperText}
           onClickCallback={(value) => {
             dispatch(
-              answerQuestion({
-                treatmentQuestionId: q.treatmentQuestionId,
+              answer({
                 choice: value,
                 choiceTimestamp: dateToState(DateTime.now()),
               })

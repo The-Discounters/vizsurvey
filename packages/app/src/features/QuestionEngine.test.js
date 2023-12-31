@@ -63,7 +63,7 @@ describe("QuestionEngine tests", () => {
 
   test("answerCurrentQuestion for non titration single treatment question.", () => {
     const state = {
-      treatments: [createQuestionNoTitrate(1, 1)],
+      questions: [createQuestionNoTitrate(1, 1)],
       currentAnswerIdx: 0,
       status: StatusType.Survey,
     };
@@ -73,14 +73,14 @@ describe("QuestionEngine tests", () => {
       choiceTimestamp: dateToState(DateTime.now()),
     });
     expect(state.currentAnswerIdx).toBe(0);
-    expect(state.treatments).not.toBeUndefined();
-    expect(state.treatments[0].choice).toBe(AmountType.earlierAmount);
+    expect(state.questions).not.toBeUndefined();
+    expect(state.questions[0].choice).toBe(AmountType.earlierAmount);
     expect(state.status).toBe(StatusType.Survey);
   });
 
   test("answerCurrentQuestion for non titration multiple treatment questions.", () => {
     const state = {
-      treatments: [
+      questions: [
         createQuestionNoTitrate(1, 1),
         create2ndQuestionNoTitrate(1, 2),
       ],
@@ -93,32 +93,31 @@ describe("QuestionEngine tests", () => {
       choiceTimestamp: dateToState(DateTime.now()),
     });
     expect(state.currentAnswerIdx).toBe(0);
-    expect(state.treatments).not.toBeUndefined();
-    expect(state.treatments[0].choice).toBe(AmountType.earlierAmount);
+    expect(state.questions).not.toBeUndefined();
+    expect(state.questions[0].choice).toBe(AmountType.earlierAmount);
     expect(state.status).toBe(StatusType.Survey);
   });
 
   test("incNextQuestion for two questions single treatment.", () => {
     const state = {
-      treatments: [
+      questions: [
         createQuestionNoTitrate(1, 1),
         create2ndQuestionNoTitrate(1, 2),
       ],
       currentAnswerIdx: 0,
       status: StatusType.Survey,
-      treatmentIds: [1],
     };
     const qe = new QuestionEngine();
     qe.incNextQuestion(state);
     expect(state.currentAnswerIdx).toBe(1);
-    expect(state.treatments).not.toBeUndefined();
-    expect(state.treatments[1].choice).toBe(AmountType.none);
+    expect(state.questions).not.toBeUndefined();
+    expect(state.questions[1].choice).toBe(AmountType.none);
     expect(state.status).toBe(StatusType.Survey);
   });
 
   test("incNextQuestion for two questions two treatments.", () => {
     const state = {
-      treatments: [
+      questions: [
         createQuestionNoTitrate(1, 1),
         create2ndQuestionNoTitrate(1, 2),
         createQuestionNoTitrate(2, 1),
@@ -126,7 +125,6 @@ describe("QuestionEngine tests", () => {
       ],
       currentAnswerIdx: 0,
       status: StatusType.Survey,
-      treatmentIds: [1, 2],
     };
     const qe = new QuestionEngine();
     qe.incNextQuestion(state);
@@ -149,14 +147,13 @@ describe("QuestionEngine tests", () => {
 
   test("incNextQuestion for three questions single treatment should increment question index and enter attention state then experiene survey.", () => {
     const state = {
-      treatments: [
+      questions: [
         createQuestionNoTitrate(1, 1),
         create2ndQuestionNoTitrate(1, 2),
         create2ndQuestionNoTitrate(1, 3),
       ],
       currentAnswerIdx: 0,
       status: StatusType.Survey,
-      treatmentIds: [1],
     };
     const qe = new QuestionEngine();
     qe.incNextQuestion(state);

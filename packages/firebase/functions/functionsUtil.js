@@ -1,7 +1,6 @@
 import { group } from "d3";
 import * as shared from "@the-discounters/firebase-shared";
 import {
-  Participant,
   ServerStatusType,
   StatusError,
   setUndefinedPropertiesNull,
@@ -113,11 +112,10 @@ export const signupParticipant = async (
   survey = injectSurveyQuestionFields(survey);
   survey = survey.map((v) => setUndefinedPropertiesNull(v));
   survey = orderQuestions(survey, treatmentIds);
-  await shared.createAnswers(db, exp.path, participantId, sessionId, survey);
   await shared.createParticipant(
     db,
     exp.path,
-    setUndefinedPropertiesNull(Participant({ participantId }))
+    setUndefinedPropertiesNull({ participantId })
   );
   callback(
     false,

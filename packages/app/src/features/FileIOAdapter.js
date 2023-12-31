@@ -114,8 +114,8 @@ export const flattenTimestampObj = (timestamps) => {
       timestamps.MCLInstructionShownTimestamp
     ),
     ...flattenTreatmentValueAry(
-      "MCLInstructionCompleted",
-      timestamps.MCLInstructionCompleted
+      "MCLInstructionCompletedTimestamp",
+      timestamps.MCLInstructionCompletedTimestamp
     ),
     ...flattenTreatmentValueAry(
       "MCLInstructionTimeSec",
@@ -139,7 +139,7 @@ export const flattenTimestampObj = (timestamps) => {
 
 export const flattenState = (state) => {
   // turn answer rows into columns with sequenceId number as suffix
-  const answersAsObj = convertAnswersAryToObj(state.treatments);
+  const answersAsObj = convertAnswersAryToObj(state.questions);
   const timetamps = flattenTimestampObj(state.timestamps);
   const attentionChecks = flattenTreatmentValueAry(
     "attentionCheck",

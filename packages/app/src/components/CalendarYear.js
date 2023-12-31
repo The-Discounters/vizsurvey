@@ -12,7 +12,7 @@ import {
   getCurrentChoice,
   getStatus,
   setQuestionShownTimestamp,
-  answerQuestion,
+  answer,
 } from "../features/questionSlice.js";
 import { useD3 } from "../hooks/useD3.js";
 import { AmountType } from "@the-discounters/types";
@@ -202,7 +202,7 @@ export function Calendar() {
           onSubmit={(values, { setSubmitting, resetForm }) => {
             setTimeout(() => {
               dispatch(
-                answerQuestion({
+                answer({
                   choice: AmountType.earlierAmount,
                   choiceTimestamp: dateToState(DateTime.now()),
                 })

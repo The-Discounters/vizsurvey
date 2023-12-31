@@ -1,25 +1,10 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { SystemZone } from "luxon";
 import { secondsBetween } from "@the-discounters/util";
-import { ServerStatusType } from "@the-discounters/types";
-import { writeStateAsCSV } from "./FileIOAdapter.js";
 import { QuestionEngine } from "./QuestionEngine.js";
 import { StatusType } from "./StatusType.js";
-import {
-  signupParticipant,
-  updateAnswer,
-  updateConsentShown,
-  updateConsentCompleted,
-  updateInstructionsShown,
-  updateInstructionsCompleted,
-  updateMCLInstructionsShown,
-  updateMCLInstructionsCompleted,
-  updateDemographic,
-  updateExperienceSurvey,
-  updateFinancialLitSurvey,
-  updatePurposeSurvey,
-  updateDebrief,
-} from "./serviceAPI.js";
+import { signupParticipant } from "./serviceAPI.js";
+import packageFile from "../../package.json";
 
 const qe = new QuestionEngine();
 
@@ -46,286 +31,88 @@ export const initializeSurvey = createAsyncThunk(
   }
 );
 
-export const answerQuestion = createAsyncThunk(
-  "questions/answerQuestion",
-  async (answer, thunkAPI) => {
-    try {
-      const state = thunkAPI.getState();
-      const currentQuestion = qe.currentAnswer(state.questions);
-      answer.choiceTimeSec = secondsBetween(
-        currentQuestion.shownTimestamp,
-        answer.choiceTimestamp
-      );
-      await updateAnswer(
-        state.questions.participantId,
-        state.questions.studyId,
-        state.questions.sessionId,
-        answer
-      );
-      return answer;
-    } catch (err) {
-      return thunkAPI.rejectWithValue({
-        status: err.reason ? err.reason : null,
-        message: err.message,
-        answer: answer,
-      });
-    }
-  }
-);
+const initialState = {
+  appVersion: packageFile.version,
+  participantId: null,
+  serverSequenceId: null,
+  sessionId: null,
+  studyId: null,
+  experienceSurvey: {},
+  financialLitSurvey: {},
+  purposeSurvey: {},
+  screenAttributes: {
+    // screen properties
+    screenAvailHeight: null,
+    screenAvailWidth: null,
+    screenColorDepth: null,
+    screenWidth: null,
+    screenHeight: null,
+    screenOrientationAngle: null,
+    screenOrientationType: null,
+    screenPixelDepth: null,
+    // window properties
+    windowDevicePixelRatio: null,
+    windowInnerHeight: null,
+    windowInnerWidth: null,
+    windowOuterHeight: null,
+    windowOuterWidth: null,
+    windowScreenLeft: null,
+    windowScreenTop: null,
+  },
+  countryOfResidence: "",
+  vizFamiliarity: "",
+  age: "",
+  gender: "",
+  selfDescribeGender: "",
+  profession: "",
+  employment: "",
+  selfDescribeEmployment: "",
+  consentChecked: null,
+  timezone: null,
+  timestamps: {
+    consentShownTimestamp: null,
+    consentCompletedTimestamp: null,
+    consentTimeSec: null,
+    demographicShownTimestamp: null,
+    demographicCompletedTimestamp: null,
+    demographicTimeSec: null,
+    MCLInstructionShownTimestamp: [],
+    MCLInstructionCompletedTimestamp: [],
+    MCLInstructionTimeSec: [],
+    instructionsShownTimestamp: null,
+    instructionsCompletedTimestamp: null,
+    instructionsTimeSec: null,
+    attentionCheckShownTimestamp: [],
+    attentionCheckCompletedTimestamp: [],
+    attentionCheckTimeSec: [],
+    experienceSurveyQuestionsShownTimestamp: null,
+    experienceSurveyQuestionsCompletedTimestamp: null,
+    experienceSurveyTimeSec: null,
+    financialLitSurveyQuestionsShownTimestamp: null,
+    financialLitSurveyQuestionsCompletedTimestamp: null,
+    financialLitSurveyTimeSec: null,
+    purposeSurveyAwareQuestionsShownTimestamp: null,
+    purposeSurveyAwareQuestionsCompletedTimestamp: null,
+    purposeSurveyAwareTimeSec: null,
+    purposeSurveyWorthQuestionsShownTimestamp: null,
+    purposeSurveyWorthQuestionsCompletedTimestamp: null,
+    purposeSurveyWorthTimeSec: null,
+    debriefShownTimestamp: null,
+    debriefCompletedTimestamp: null,
+    debriefTimeSec: null,
+  },
+  attentionCheck: [],
+  feedback: "",
+  instructionTreatment: [],
+  currentAnswerIdx: 0,
+  status: StatusType.Unitialized,
+  error: null,
+  userAgent: null,
+};
 
-export const consentShown = createAsyncThunk(
-  "questions/consentShown",
-  async (timestamp, thunkAPI) => {
-    try {
-      const state = thunkAPI.getState();
-      await updateConsentShown(
-        state.questions.participantId,
-        state.questions.studyId,
-        state.questions.sessionId,
-        timestamp
-      );
-      return timestamp;
-    } catch (err) {
-      return thunkAPI.rejectWithValue({
-        status: err.reason ? err.reason : null,
-        message: err.message,
-        consentShownTimestamp: timestamp,
-      });
-    }
-  }
-);
-
-export const consentCompleted = createAsyncThunk(
-  "questions/consentCompleted",
-  async (timestamp, thunkAPI) => {
-    const state = thunkAPI.getState();
-    const payload = {
-      consentChecked: true,
-      consentCompletedTimestamp: timestamp,
-      consentTimeSec: secondsBetween(
-        state.questions.timestamps.consentShownTimestamp,
-        timestamp
-      ),
-      timezone: SystemZone.instance.name,
-    };
-    try {
-      await updateConsentCompleted(
-        state.questions.participantId,
-        state.questions.studyId,
-        state.questions.sessionId,
-        payload
-      );
-      return payload;
-    } catch (err) {
-      return thunkAPI.rejectWithValue({
-        status: err.reason ? err.reason : null,
-        message: err.message,
-        data: payload,
-      });
-    }
-  }
-);
-
-export const instructionsShown = createAsyncThunk(
-  "questions/instructionsShown",
-  async (timestamp, thunkAPI) => {
-    try {
-      const state = thunkAPI.getState();
-      await updateInstructionsShown(
-        state.questions.participantId,
-        state.questions.studyId,
-        state.questions.sessionId,
-        timestamp
-      );
-      return timestamp;
-    } catch (err) {
-      return thunkAPI.rejectWithValue({
-        status: err.reason ? err.reason : null,
-        message: err.message,
-        instructionsShownTimestamp: timestamp,
-      });
-    }
-  }
-);
-
-export const instructionsCompleted = createAsyncThunk(
-  "questions/instructionsCompleted",
-  async (timestamp, thunkAPI) => {
-    const state = thunkAPI.getState();
-    const payload = {
-      instructionsCompletedTimestamp: timestamp,
-      instructionsTimeSec: secondsBetween(
-        state.questions.timestamps.instructionsCompletedTimestamp,
-        timestamp
-      ),
-    };
-    try {
-      await updateInstructionsCompleted(
-        state.questions.participantId,
-        state.questions.studyId,
-        state.questions.sessionId,
-        payload
-      );
-      return payload;
-    } catch (err) {
-      return thunkAPI.rejectWithValue({
-        status: err.reason ? err.reason : null,
-        message: err.message,
-        data: payload,
-      });
-    }
-  }
-);
-
-export const MCLInstructionsShown = createAsyncThunk(
-  "questions/MCLInstructionsShown",
-  async (timestamp, thunkAPI) => {
-    const state = thunkAPI.getState();
-    const payload = {
-      treatmentId: qe.currentAnswer(state.questions).treatmentId,
-      value: timestamp,
-    };
-    try {
-      await updateMCLInstructionsShown(
-        state.questions.participantId,
-        state.questions.studyId,
-        state.questions.sessionId,
-        [...state.questions.timestamps.MCLInstructionShownTimestamp, payload]
-      );
-      return payload;
-    } catch (err) {
-      return thunkAPI.rejectWithValue({
-        status: err.reason ? err.reason : null,
-        message: err.message,
-        payload: payload,
-      });
-    }
-  }
-);
-
-export const MCLInstructionsCompleted = createAsyncThunk(
-  "questions/MCLInstructionsShown",
-  async (timestamp, thunkAPI) => {
-    const state = thunkAPI.getState();
-    const currentTreatmentId = qe.currentAnswer(state).treatmentId;
-    const shownTimestamp =
-      state.questions.timestamps.MCLInstructionShownTimestamp.find(
-        (cv) => cv.treatmentId === currentTreatmentId
-      ).value;
-    const payload = {
-      timestamp: {
-        treatmentId: qe.currentAnswer(state.questions).treatmentId,
-        value: timestamp,
-      },
-      time: {
-        treatmentId: qe.currentAnswer(state).treatmentId,
-        value: secondsBetween(shownTimestamp, timestamp),
-      },
-    };
-    try {
-      await updateMCLInstructionsCompleted(
-        state.questions.participantId,
-        state.questions.studyId,
-        state.questions.sessionId,
-        [
-          ...state.questions.timestamps.MCLInstructionCompletedTimestamp,
-          payload,
-        ]
-      );
-      return payload;
-    } catch (err) {
-      return thunkAPI.rejectWithValue({
-        status: err.reason ? err.reason : null,
-        message: err.message,
-        payload: payload,
-      });
-    }
-  }
-);
-
-// Define the initial state of the store for this slicer.
 export const questionSlice = createSlice({
   name: "questions", // I believe the global state is partitioned by the name value thus the terminology "slice"
-  initialState: {
-    treatmentIds: [],
-    participantId: null,
-    serverSequenceId: null,
-    sessionId: null,
-    studyId: null,
-    experienceSurvey: {},
-    financialLitSurvey: {},
-    purposeSurvey: {},
-    screenAttributes: {
-      // screen properties
-      screenAvailHeight: null,
-      screenAvailWidth: null,
-      screenColorDepth: null,
-      screenWidth: null,
-      screenHeight: null,
-      screenOrientationAngle: null,
-      screenOrientationType: null,
-      screenPixelDepth: null,
-      // window properties
-      windowDevicePixelRatio: null,
-      windowInnerHeight: null,
-      windowInnerWidth: null,
-      windowOuterHeight: null,
-      windowOuterWidth: null,
-      windowScreenLeft: null,
-      windowScreenTop: null,
-    },
-    countryOfResidence: "",
-    vizFamiliarity: "",
-    age: "",
-    gender: "",
-    selfDescribeGender: "",
-    profession: "",
-    employment: "",
-    selfDescribeEmployment: "",
-    consentChecked: null,
-    timezone: null,
-    timestamps: {
-      consentShownTimestamp: null,
-      consentCompletedTimestamp: null,
-      consentTimeSec: null,
-      demographicShownTimestamp: null,
-      demographicCompletedTimestamp: null,
-      demographicTimeSec: null,
-      MCLInstructionShownTimestamp: [], // TODO rename this ot MCLInstructionShownTimestamp
-      MCLInstructionCompleted: [], // TODO rename this ot MCLInstructionConpletedTimestamp
-      MCLInstructionTimeSec: [], // TODO rename this ot MCLIntroductionTimeSec
-      instructionsShownTimestamp: null,
-      instructionsCompletedTimestamp: null,
-      instructionsTimeSec: null,
-      attentionCheckShownTimestamp: [],
-      attentionCheckCompletedTimestamp: [],
-      attentionCheckTimeSec: [],
-      experienceSurveyQuestionsShownTimestamp: null,
-      experienceSurveyQuestionsCompletedTimestamp: null,
-      experienceSurveyTimeSec: null,
-      financialLitSurveyQuestionsShownTimestamp: null,
-      financialLitSurveyQuestionsCompletedTimestamp: null,
-      financialLitSurveyTimeSec: null,
-      purposeSurveyAwareQuestionsShownTimestamp: null,
-      purposeSurveyAwareQuestionsCompletedTimestamp: null,
-      purposeSurveyAwareTimeSec: null,
-      purposeSurveyWorthQuestionsShownTimestamp: null,
-      purposeSurveyWorthQuestionsCompletedTimestamp: null,
-      purposeSurveyWorthTimeSec: null,
-      debriefShownTimestamp: null,
-      debriefCompletedTimestamp: null,
-      debriefTimeSec: null,
-    },
-    attentionCheck: [],
-    feedback: "",
-    treatments: [],
-    instructionTreatment: [],
-    answers: [],
-    currentAnswerIdx: 0,
-    status: StatusType.Unitialized,
-    error: null,
-    userAgent: null,
-  }, // the initial state of our global data (under name slice)
+  initialState: initialState, // the initial state of our global data (under name slice)
   reducers: {
     setWindowAttributes(state, action) {
       state.screenAttributes.screenAvailHeight =
@@ -417,7 +204,21 @@ export const questionSlice = createSlice({
         treatmentId: qe.currentAnswer(state).treatmentId,
         value: secondsBetween(shownTimestamp, action.payload.timestamp),
       });
-      writeStateAsCSV(state);
+      state.status = qe.nextState(state);
+    },
+    consentShown(state, action) {
+      state.timestamps.consentShownTimestamp = action.payload;
+    },
+    consentCompleted(state, action) {
+      //TODO we should refactor all these timestamp set methods into QuestionEngine.
+      //One reason is we won't be calling nexStatus from the slice and in QuestionEngine (we call it in at lesat two methods there)
+      state.consentChecked = true;
+      state.timestamps.consentCompletedTimestamp = action.payload;
+      state.timestamps.consentTimeSec = secondsBetween(
+        state.timestamps.consentShownTimestamp,
+        state.timestamps.consentCompletedTimestamp
+      );
+      state.timezone = SystemZone.instance.name;
       state.status = qe.nextState(state);
     },
     demographicShown(state, action) {
@@ -429,7 +230,37 @@ export const questionSlice = createSlice({
         state.timestamps.demographicShownTimestamp,
         state.timestamps.demographicCompletedTimestamp
       );
-      writeStateAsCSV(state);
+      state.status = qe.nextState(state);
+    },
+    MCLInstructionsShown(state, action) {
+      state.timestamps.MCLInstructionShownTimestamp.push({
+        treatmentId: qe.currentAnswer(state).treatmentId,
+        value: action.payload,
+      });
+    },
+    MCLInstructionsCompleted(state, action) {
+      state.timestamps.MCLInstructionCompletedTimestamp.push({
+        treatmentId: qe.currentAnswer(state).treatmentId,
+        value: action.payload,
+      });
+      const shownTimestamp = state.timestamps.MCLInstructionShownTimestamp.find(
+        (cv) => cv.treatmentId === qe.currentAnswer(state).treatmentId
+      ).timestamp;
+      state.timestamps.MCLInstructionTimeSec.push({
+        treatmentId: qe.currentAnswer(state).treatmentId,
+        value: secondsBetween(shownTimestamp, action.payload),
+      });
+      state.status = qe.nextState(state);
+    },
+    instructionsShown(state, action) {
+      state.timestamps.instructionsShownTimestamp = action.payload;
+    },
+    instructionsCompleted(state, action) {
+      state.timestamps.instructionsCompletedTimestamp = action.payload;
+      state.timestamps.instructionsTimeSec = secondsBetween(
+        state.timestamps.instructionsShownTimestamp,
+        state.timestamps.instructionsCompletedTimestamp
+      );
       state.status = qe.nextState(state);
     },
     setFeedback(state, action) {
@@ -445,6 +276,9 @@ export const questionSlice = createSlice({
         value: action.payload,
       });
     },
+    answer(state, action) {
+      qe.answerCurrentQuestion(state, action.payload);
+    },
     // we define our actions on the slice of global store data here.
     nextQuestion(state) {
       qe.incNextQuestion(state);
@@ -459,7 +293,6 @@ export const questionSlice = createSlice({
         state.timestamps.experienceSurveyQuestionsShownTimestamp,
         state.timestamps.experienceSurveyQuestionsCompletedTimestamp
       );
-      writeStateAsCSV(state);
       state.status = qe.nextState(state);
     },
     financialLitSurveyQuestionsShown(state, action) {
@@ -473,7 +306,6 @@ export const questionSlice = createSlice({
         state.timestamps.financialLitSurveyQuestionsShownTimestamp,
         state.timestamps.financialLitSurveyQuestionsCompletedTimestamp
       );
-      writeStateAsCSV(state);
       state.status = qe.nextState(state);
     },
     purposeSurveyQuestionsShown(state, action) {
@@ -501,7 +333,6 @@ export const questionSlice = createSlice({
           state.timestamps.purposeSurveyWorthQuestionsCompletedTimestamp
         );
       }
-      writeStateAsCSV(state);
       state.status = qe.nextState(state);
     },
     debriefShownTimestamp(state, action) {
@@ -513,86 +344,10 @@ export const questionSlice = createSlice({
         state.timestamps.debriefShownTimestamp,
         state.timestamps.debriefCompletedTimestamp
       );
-      writeStateAsCSV(state);
       state.status = qe.nextState(state);
     },
     clearState(state) {
-      state.participantId = null;
-      state.serverSequenceId = null;
-      state.sessionId = null;
-      state.studyId = null;
-      state.experienceSurvey = {};
-      state.financialLitSurvey = {};
-      state.purposeSurvey = {};
-      state.screenAttributes = {
-        // screen properties
-        screenAvailHeight: null,
-        screenAvailWidth: null,
-        screenColorDepth: null,
-        screenWidth: null,
-        screenHeight: null,
-        screenOrientationAngle: null,
-        screenOrientationType: null,
-        screenPixelDepth: null,
-        // window properties
-        windowDevicePixelRatio: null,
-        windowInnerHeight: null,
-        windowInnerWidth: null,
-        windowOuterHeight: null,
-        windowOuterWidth: null,
-        windowScreenLeft: null,
-        windowScreenTop: null,
-      };
-      state.countryOfResidence = "";
-      state.vizFamiliarity = "";
-      state.age = "";
-      state.gender = "";
-      state.selfDescribeGender = "";
-      state.profession = "";
-      state.employment = "";
-      state.selfDescribeEmployment = "";
-      state.timezone = null;
-      state.timestamps = {
-        consentShownTimestamp: null,
-        consentCompletedTimestamp: null,
-        consentTimeSec: null,
-        demographicShownTimestamp: null,
-        demographicCompletedTimestamp: null,
-        demographicTimeSec: null,
-        MCLInstructionShownTimestamp: [],
-        MCLInstructionCompleted: [],
-        MCLInstructionTimeSec: [],
-        instructionsShownTimestamp: null,
-        instructionsCompletedTimestamp: null,
-        instructionsTimeSec: null,
-        attentionCheckShownTimestamp: [],
-        attentionCheckCompletedTimestamp: [],
-        attentionCheckTimeSec: [],
-        experienceSurveyQuestionsShownTimestamp: null,
-        experienceSurveyQuestionsCompletedTimestamp: null,
-        experienceSurveyTimeSec: null,
-        financialLitSurveyQuestionsShownTimestamp: null,
-        financialLitSurveyQuestionsCompletedTimestamp: null,
-        financialLitSurveyTimeSec: null,
-        purposeSurveyAwareQuestionsShownTimestamp: null,
-        purposeSurveyAwareQuestionsCompletedTimestamp: null,
-        purposeSurveyAwareTimeSec: null,
-        purposeSurveyWorthQuestionsShownTimestamp: null,
-        purposeSurveyWorthQuestionsCompletedTimestamp: null,
-        purposeSurveyWorthTimeSec: null,
-        debriefShownTimestamp: null,
-        debriefCompletedTimestamp: null,
-        debriefTimeSec: null,
-      };
-      state.attentionCheck = [];
-      state.consentChecked = false;
-      state.feedback = "";
-      state.treatments = [];
-      state.instructionTreatment = null;
-      state.currentAnswerIdx = 0;
-      state.status = StatusType.Unitialized;
-      state.error = null;
-      state.userAgent = null;
+      state = initialState;
     },
     nextStatus(state) {
       state.status = qe.nextState(state);
@@ -611,7 +366,6 @@ export const questionSlice = createSlice({
         state.userAgent = action.payload.userAgent;
         state.serverSequenceId = action.payload.serverSequenceId;
         state.questions = action.payload.questions;
-        state.treatments = action.payload.questions;
         state.instructionTreatment = action.payload.instruction;
 
         state.status = qe.nextState(state);
@@ -619,103 +373,6 @@ export const questionSlice = createSlice({
       .addCase(initializeSurvey.rejected, (state, action) => {
         state.error = action.payload.status;
         state.status = StatusType.Error;
-      })
-      .addCase(answerQuestion.pending, (state, action) => {})
-      .addCase(answerQuestion.fulfilled, (state, action) => {
-        qe.answerCurrentQuestion(state, action.payload);
-      })
-      .addCase(answerQuestion.rejected, (state, action) => {
-        // if writing the answer to the server failed, continue with asking the questions while retrying to post to the server.
-        if (action.payload.answer) {
-          qe.answerCurrentQuestion(state, action.payload.answer);
-        }
-        // TODO write errors to google analytics
-      })
-      .addCase(consentShown.pending, (state, action) => {})
-      .addCase(consentShown.fulfilled, (state, action) => {
-        state.timestamps.consentShownTimestamp = action.payload;
-      })
-      .addCase(consentShown.rejected, (state, action) => {
-        // if writing the answer to the server failed, continue with asking the questions while retrying to post to the server.
-        if (action.payload.consentShown) {
-          state.timestamps.consentShownTimestamp = action.payload.consentShown;
-        }
-        // TODO write errors to google analytics
-      })
-      .addCase(consentCompleted.pending, (state, action) => {})
-      .addCase(consentCompleted.fulfilled, (state, action) => {
-        state.consentChecked = action.payload.consentChecked;
-        state.timestamps.consentCompletedTimestamp =
-          action.payload.consentCompletedTimestamp;
-        state.timestamps.consentTimeSec = action.payload.consentTimeSec;
-        state.timezone = action.payload.timezone;
-        state.status = qe.nextState(state);
-      })
-      .addCase(consentCompleted.rejected, (state, action) => {
-        // if writing the answer to the server failed, continue with asking the questions while retrying to post to the server.
-        if (action.payload) {
-          state.consentChecked = action.payload.consentChecked;
-          state.timestamps.consentCompletedTimestamp =
-            action.payload.consentCompletedTimestamp;
-          state.timestamps.consentTimeSec = action.payload.consentTimeSec;
-          state.timezone = action.payload.timezone;
-        }
-        state.status = qe.nextState(state);
-        // TODO write errors to google analytics
-      })
-      .addCase(instructionsShown.pending, (state, action) => {})
-      .addCase(instructionsShown.fulfilled, (state, action) => {
-        state.timestamps.instructionsShownTimestamp = action.payload;
-      })
-      .addCase(instructionsShown.rejected, (state, action) => {
-        // if writing the answer to the server failed, continue with asking the questions while retrying to post to the server.
-        if (action.payload.consentShown) {
-          state.timestamps.instructionsShownTimestamp = action.payload;
-        }
-      })
-      .addCase(instructionsCompleted.pending, (state, action) => {})
-      .addCase(instructionsCompleted.fulfilled, (state, action) => {
-        state.timestamps.instructionsCompletedTimestamp = action.payload;
-        state.timestamps.instructionsTimeSec = secondsBetween(
-          state.timestamps.instructionsShownTimestamp,
-          state.timestamps.instructionsCompletedTimestamp
-        );
-        state.status = qe.nextState(state);
-      })
-      .addCase(instructionsCompleted.rejected, (state, action) => {
-        // if writing the answer to the server failed, continue with asking the questions while retrying to post to the server.
-        if (action.payload) {
-          state.timestamps.instructionsCompletedTimestamp = action.payload;
-          state.timestamps.instructionsTimeSec = secondsBetween(
-            state.timestamps.instructionsShownTimestamp,
-            state.timestamps.instructionsCompletedTimestamp
-          );
-        }
-        state.status = qe.nextState(state);
-        // TODO write errors to google analytics
-      })
-      .addCase(MCLInstructionsShown.pending, (state, action) => {})
-      .addCase(MCLInstructionsShown.fulfilled, (state, action) => {
-        state.timestamps.MCLInstructionShownTimestamp.push(action.payload);
-      })
-      .addCase(MCLInstructionsShown.rejected, (state, action) => {
-        // if writing the answer to the server failed, continue with asking the questions while retrying to post to the server.
-        if (action.payload) {
-          state.timestamps.MCLInstructionShownTimestamp.push(action.payload);
-        }
-      })
-      .addCase(MCLInstructionsCompleted.pending, (state, action) => {})
-      .addCase(MCLInstructionsCompleted.fulfilled, (state, action) => {
-        state.timestamps.MCLInstructionCompletedTimestamp.push(
-          action.payload.timestamp
-        );
-      })
-      .addCase(MCLInstructionsCompleted.rejected, (state, action) => {
-        if (action.payload) {
-          state.timestamps.MCLInstructionCompletedTimestamp.push(
-            action.payload
-          );
-        }
       });
   },
 });
@@ -795,6 +452,8 @@ export const {
   answer,
   previousQuestion,
   nextQuestion,
+  consentShown,
+  consentCompleted,
   demographicShown,
   demographicCompleted,
   setCountryOfResidence,
@@ -813,7 +472,11 @@ export const {
   initPurposeSurveyQuestion,
   setPurposeSurveyQuestion,
   setAttentionCheck,
+  instructionsShown,
   setFeedback,
+  instructionsCompleted,
+  MCLInstructionsShown,
+  MCLInstructionsCompleted,
   attentionCheckShown,
   experienceSurveyQuestionsShown,
   experienceSurveyQuestionsCompleted,

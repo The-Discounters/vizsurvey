@@ -187,7 +187,7 @@ describe("FileIOAdapter tests", () => {
         demographicCompletedTimestamp: "2023-01-17T18:16:43.539+00:00",
         demographicTimeSec: 1,
         MCLInstructionShownTimestamp: [],
-        MCLInstructionCompleted: [],
+        MCLInstructionCompletedTimestamp: [],
         MCLInstructionTimeSec: [],
         instructionsShownTimestamp: null,
         instructionsCompletedTimestamp: null,
@@ -213,7 +213,7 @@ describe("FileIOAdapter tests", () => {
       },
       attentionCheck: ["agree", "agree"],
       feedback: "",
-      treatments: [
+      questions: [
         createQuestionNoTitrate(1, 1),
         create2ndQuestionNoTitrate(1, 2),
         createQuestionNoTitrate(2, 1),
@@ -221,7 +221,6 @@ describe("FileIOAdapter tests", () => {
       ],
       instructionTreatment: null,
       currentAnswerIdx: 0,
-      treatmentIds: [1, 2],
       status: "status",
       error: null,
       userAgent: null,

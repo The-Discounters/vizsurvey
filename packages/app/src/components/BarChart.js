@@ -13,7 +13,7 @@ import {
   getStatus,
   setQuestionShownTimestamp,
   nextQuestion,
-  answerQuestion,
+  answer,
 } from "../features/questionSlice.js";
 import { dateToState } from "@the-discounters/util";
 import { drawBarChart } from "./BarChartComponent.js";
@@ -94,8 +94,7 @@ function BarChart() {
                   timeLater: q.timeLater,
                   onClickCallback: (value) => {
                     dispatch(
-                      answerQuestion({
-                        treatmentQuestionId: q.treatmentQuestionId,
+                      answer({
                         choice: value,
                         choiceTimestamp: dateToState(DateTime.now()),
                       })

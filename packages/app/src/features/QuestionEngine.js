@@ -1,4 +1,5 @@
 import { StatusType } from "./StatusType.js";
+import { secondsBetween } from "@the-discounters/util";
 
 export const TIMESTAMP_FORMAT = "MM/dd/yyyy H:mm:ss:SSS ZZZZ";
 
@@ -8,11 +9,11 @@ export class QuestionEngine {
   }
 
   isLastQuestion(state) {
-    return state.currentAnswerIdx === state.treatments.length - 1;
+    return state.currentAnswerIdx === state.questions.length - 1;
   }
 
   isLastTreatmentQuestion(state) {
-    if (state.currentAnswerIdx === state.treatments.length - 1) {
+    if (state.currentAnswerIdx === state.questions.length - 1) {
       return true;
     }
     return (
@@ -22,14 +23,14 @@ export class QuestionEngine {
   }
 
   currentAnswer(state) {
-    return state.treatments[state.currentAnswerIdx];
+    return state.questions[state.currentAnswerIdx];
   }
 
   nextAnswer(state) {
-    if (state.currentAnswerIdx === state.treatments.length - 1) {
+    if (state.currentAnswerIdx === state.questions.length - 1) {
       return null;
     } else {
-      return state.treatments[state.currentAnswerIdx + 1];
+      return state.questions[state.currentAnswerIdx + 1];
     }
   }
 
@@ -78,9 +79,11 @@ export class QuestionEngine {
     const answer = this.currentAnswer(state);
     answer.choice = payload.choice;
     answer.choiceTimestamp = payload.choiceTimestamp;
-    answer.choiceTimeSec = payload.choiceTimeSec;
+    answer.choiceTimeSec = secondsBetween(
+      answer.shownTimestamp,
+      answer.choiceTimestamp
+    );
     answer.dragAmount = payload.dragAmount;
-    return answer;
   }
 
   nextState(state) {

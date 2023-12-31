@@ -11,7 +11,7 @@ import {
   getStatus,
   setQuestionShownTimestamp,
   nextQuestion,
-  answerQuestion,
+  answer,
 } from "../features/questionSlice.js";
 import { StatusType } from "../features/StatusType.js";
 import { useD3 } from "../hooks/useD3.js";
@@ -80,11 +80,9 @@ export function Calendar() {
                     table: table,
                     onClickCallback: (value) => {
                       dispatch(
-                        answerQuestion({
-                          treatmentQuestionId: q.treatmentQuestionId,
+                        answer({
                           choice: value,
                           choiceTimestamp: dateToState(DateTime.now()),
-                          dragAmount: dragAmount,
                         })
                       );
                     },
@@ -101,11 +99,9 @@ export function Calendar() {
                     table: table,
                     onClickCallback: (value) => {
                       dispatch(
-                        answerQuestion({
-                          treatmentQuestionId: q.treatmentQuestionId,
+                        answer({
                           choice: value,
                           choiceTimestamp: dateToState(DateTime.now()),
-                          dragAmount: dragAmount,
                         })
                       );
                     },
@@ -121,11 +117,9 @@ export function Calendar() {
                     table: table,
                     onClickCallback: (value) => {
                       dispatch(
-                        answerQuestion({
-                          treatmentQuestionId: q.treatmentQuestionId,
+                        answer({
                           choice: value,
                           choiceTimestamp: dateToState(DateTime.now()),
-                          dragAmount: dragAmount,
                         })
                       );
                     },
@@ -185,8 +179,7 @@ export function Calendar() {
           onSubmit={(values, { setSubmitting, resetForm }) => {
             setTimeout(() => {
               dispatch(
-                answerQuestion({
-                  treatmentQuestionId: q.treatmentQuestionId,
+                answer({
                   choice: q.variableAmount,
                   choiceTimestamp: dateToState(DateTime.now()),
                   dragAmount: dragAmount.amount,
