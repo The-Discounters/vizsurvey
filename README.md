@@ -1,3 +1,17 @@
+# TODO
+
+1. Write the retry logic working in the ServiceAPI.
+2. Get the server sequence to be in a transaction and write the unit test to test that we get uniquely assigned sequences for requests at the same time.
+3. Implement the logic to check if we should overwrite state based on the state.status and the number of questions answered. Check the browswer timestamp and if we appear to have a later entry before in time, write a warning.
+4. Append redux state for all updates to the audit collection.
+5. Write the CLI code to do the CSV file extract.
+6. Figure out what to do with the CLI monitor. Maybe turn that into a simple web page?
+7. Fix the extended bar chart max time experiment parameter.
+8. Write browswer errors and warning to google analytics. Maybe write the same for functions?
+9. Write rules to lock down reading data from non CLI account.
+10. Get everything deployed to stating env and working.
+11. Deploy and configure production.
+
 # What is VizSurvey
 
 We created VizSurvey out of a need to have a tool with survey questions with an accompanying visualization that could be data driven for our masters thesis reasearch. We originally investigated using survey monkey and other online survey tools; however, they lacked the ability to embed visualizations and we could't find any with a REST API that would allow the visualizations to be driven off the survey questions, so we wrote VizSurvey.
