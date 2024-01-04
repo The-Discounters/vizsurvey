@@ -1,7 +1,7 @@
 export class StatusError extends Error {
   constructor({
     message,
-    code,
+    httpstatus,
     reason,
     participantId,
     studyId,
@@ -10,7 +10,7 @@ export class StatusError extends Error {
   }) {
     super(message);
     this._reason = reason;
-    this._code = code;
+    this._httpstatus = httpstatus;
     this._message = message;
     this._participantId = participantId;
     this._studyId = studyId;
@@ -26,8 +26,8 @@ export class StatusError extends Error {
     return this._message;
   }
 
-  get code() {
-    return this._code;
+  get httpstatus() {
+    return this._httpstatus;
   }
 
   get participantId() {

@@ -18,7 +18,7 @@ import {
   commitBatch,
   linkDocs,
   deleteDocs,
-  readExperiments,
+  readExperimentsAndQuestions,
 } from "@the-discounters/firebase-shared";
 import {
   typeExperimentObj,
@@ -350,7 +350,7 @@ const importWithoutParent = (db, collection, data) => {
 };
 
 const importWithParent = async (db, collection, data, linkFields) => {
-  const experiments = await readExperiments(db);
+  const experiments = await readExperimentsAndQuestions(db);
   for (const exp of experiments) {
     const dataToWrite = data.filter(
       (v) => v[linkFields.rightField] === exp[linkFields.leftField]

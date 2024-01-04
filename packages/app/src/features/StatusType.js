@@ -17,3 +17,5 @@ export const StatusType = {
 };
 
 Object.freeze(StatusType);
+
+export const isBeforeStatus = (status) => {};

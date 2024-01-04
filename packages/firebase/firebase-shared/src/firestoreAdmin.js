@@ -1,3 +1,4 @@
+import { DateTime } from "luxon";
 import { initializeApp } from "firebase-admin/app";
 import { cert } from "firebase-admin/app";
 import { getFirestore } from "firebase-admin/firestore";
@@ -16,7 +17,7 @@ export const initFirestore = (projectId, databaseURL, adminCred) => {
   return { app: app, db: db };
 };
 
-const fetchTreatmentQuestions = async (db, expPath) => {
+const readTreatmentQuestions = async (db, expPath) => {
   const result = [];
   const tqds = await db.collection(`${expPath}/treatmentQuestions`).get();
   for (let j = 0; j < tqds.size; j++) {
@@ -33,7 +34,27 @@ const fetchTreatmentQuestions = async (db, expPath) => {
   return result;
 };
 
-export const readExperiment = async (db, studyId) => {
+export const readExperimentDocXaction = async (db, transaction, studyId) => {
+  const expRef = await db.collection("experiments");
+  const q = expRef.where("prolificStudyId", "==", studyId);
+  const expSnapshot = await transaction.get(q);
+  if (expSnapshot.docs.length != 1) {
+    return null;
+  }
+  return expSnapshot.docs[0];
+};
+
+export const readExperimentDoc = async (db, studyId) => {
+  const expRef = await db.collection("experiments");
+  const q = expRef.where("prolificStudyId", "==", studyId);
+  const expSnapshot = await q.get(q);
+  if (expSnapshot.docs.length != 1) {
+    return null;
+  }
+  return expSnapshot.docs[0];
+};
+
+export const readExperimentAndQuestions = async (db, studyId) => {
   const expRef = await db.collection("experiments");
   const q = expRef.where("prolificStudyId", "==", studyId);
   const expSnapshot = await q.get();
@@ -41,7 +62,7 @@ export const readExperiment = async (db, studyId) => {
     return null;
   }
   const expDoc = expSnapshot.docs[0];
-  const tqs = await fetchTreatmentQuestions(db, expDoc.ref.path);
+  const tqs = await readTreatmentQuestions(db, expDoc.ref.path);
   const result = {
     path: expDoc.ref.path, // TODO do I really need this field in the object?
     ...expDoc.data(),
@@ -50,12 +71,12 @@ export const readExperiment = async (db, studyId) => {
   return result;
 };
 
-export const readExperiments = async (db) => {
+export const readExperimentsAndQuestions = async (db) => {
   const expCol = await db.collection("experiments").get();
   const expAry = [];
   for (let i = 0; i < expCol.size; i++) {
     const expDoc = expCol.docs[i];
-    const tqs = await fetchTreatmentQuestions(db, expDoc.ref.path);
+    const tqs = await readTreatmentQuestions(db, expDoc.ref.path);
     expAry.push({
       path: expDoc.ref.path, // TODO do I really need this field in the object?
       ...expDoc.data(),
@@ -63,19 +84,6 @@ export const readExperiments = async (db) => {
     });
   }
   return expAry;
-};
-
-export const updateParticipantCount = async (db, studyId, newCount) => {
-  const expRef = await db.collection("experiments");
-  const q = expRef.where("prolificStudyId", "==", studyId);
-  const expSnapshot = await q.get();
-  if (expSnapshot.docs.length != 1) {
-    return null;
-  }
-  const expDoc = expSnapshot.docs[0];
-  const updateObj = { numParticipantsStarted: newCount };
-  const res = await expDoc.ref.update(updateObj);
-  return res.writeTime;
 };
 
 export const createAnswers = async (
@@ -118,6 +126,19 @@ export const updateAnswer = async (
   }
   const writeResult = await answerRef.update(answer);
   return writeResult.writeTime;
+};
+
+export const createAuditLogEntry = async (
+  db,
+  expPath,
+  participantId,
+  timestamp,
+  state
+) => {
+  const ref = await db
+    .collection(`${expPath}/audit`)
+    .doc(`${participantId}-${timestamp.valueOf()}`)
+    .create(state);
 };
 
 export const createParticipant = async (db, expPath, participant) => {

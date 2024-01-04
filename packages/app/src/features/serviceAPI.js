@@ -13,7 +13,7 @@ const putRequest = async (data, URLSubdirectory) => {
   if (response.status !== 200 || result.status !== ServerStatusType.success) {
     throw new StatusError({
       message: `Server error when putting data to ${URL}!`,
-      code: response.status,
+      httpstatus: response.status,
       reason: result.status,
     });
   }
@@ -31,7 +31,7 @@ const getRequest = async (URLSubdirectory, parameters) => {
   if (response.status !== 200 || data.status !== ServerStatusType.success) {
     throw new StatusError({
       message: "initializeSurvey server error!",
-      code: response.status,
+      httpstatus: response.status,
       reason: data.status,
     });
   }

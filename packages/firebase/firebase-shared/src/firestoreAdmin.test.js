@@ -11,8 +11,8 @@ const PROJECT_ID = "vizsurvey-test";
 
 import {
   initFirestore,
-  readExperiment,
-  readExperiments,
+  readExperimentAndQuestions,
+  readExperimentsAndQuestions,
   initBatch,
   setBatchItem,
   commitBatch,
@@ -20,8 +20,8 @@ import {
   deleteDocs,
   createAnswers,
   updateAnswer,
-  updateParticipantCount,
   createParticipant,
+  readExperimentDocXaction,
 } from "./firestoreAdmin.js";
 
 describe("firestoreAdmin test ", () => {
@@ -306,8 +306,11 @@ describe("firestoreAdmin test ", () => {
     }
   });
 
-  it("Integration test for readExperiment.", async () => {
-    const exp = await readExperiment(db, "649f3cffea5a1b2817d17d7e");
+  it("Integration test for readExperimentAndQuestions.", async () => {
+    const exp = await readExperimentAndQuestions(
+      db,
+      "649f3cffea5a1b2817d17d7e"
+    );
     assert.equal(
       exp.experimentId,
       5,
@@ -315,8 +318,8 @@ describe("firestoreAdmin test ", () => {
     );
   });
 
-  it("Integration test for readExperiments.", async () => {
-    const exp = await readExperiments(db);
+  it("Integration test for readExperimentsAndQuestions.", async () => {
+    const exp = await readExperimentsAndQuestions(db);
     assert.equal(
       exp.length,
       8,
@@ -384,20 +387,6 @@ describe("firestoreAdmin test ", () => {
     );
   });
 
-  it("Test for updateParticipantCount", async () => {
-    const writeTime = await updateParticipantCount(db, "testbetween", 1);
-    assert.notEqual(writeTime, null, "Expected write time to be returned.");
-    const expRef = db.collection("experiments");
-    const q = expRef.where("prolificStudyId", "==", "testbetween");
-    const expSnapshot = await assertSucceeds(q.get());
-    assert.equal(
-      expSnapshot.docs.length,
-      1,
-      "Expected to retrieve one experiment"
-    );
-    assert.equal(expSnapshot.docs[0].data().numParticipantsStarted, 1);
-  });
-
   it("Test for createParticipant", async () => {
     await assertSucceeds(
       db
@@ -437,6 +426,22 @@ describe("firestoreAdmin test ", () => {
       snapshot.docs[0].data().participantId,
       1,
       "Did not write what was expected for the participant."
+    );
+  });
+
+  it("Test for readExperimentDocXaction", async () => {
+    const experimentId = await db.runTransaction(async (transaction) => {
+      const expDoc = await readExperimentDocXaction(
+        db,
+        transaction,
+        "649f3cffea5a1b2817d17d7e"
+      );
+      return expDoc.data().experimentId;
+    });
+    assert.equal(
+      experimentId,
+      5,
+      "experiment experimentId=5 not loaded correctly."
     );
   });
 });

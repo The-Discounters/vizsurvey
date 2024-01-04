@@ -1,5 +1,8 @@
 import { group } from "d3";
-import * as shared from "@the-discounters/firebase-shared";
+import {
+  createParticipant,
+  readExperimentDocXaction,
+} from "@the-discounters/firebase-shared";
 import {
   ServerStatusType,
   StatusError,
@@ -7,6 +10,10 @@ import {
   injectSurveyQuestionFields,
 } from "@the-discounters/types";
 import { ProlificSumbissionStatusType } from "@the-discounters/prolific";
+
+export const isStateLater = (state) => {
+  if (state.status )
+}
 
 export const calcTreatmentIds = (latinSquare, participantCount) => {
   const index = participantCount % latinSquare.length;
@@ -69,21 +76,43 @@ export const validateExperiment = (exp) => {
   if (!exp) {
     throw new StatusError({
       message: "tried to access experiment that was not found",
-      code: 400,
+      httpstatus: 400,
       reason: ServerStatusType.invalid,
     });
   } else if (exp.status !== ProlificSumbissionStatusType.active) {
     throw new StatusError({
       message: `tried to access experiment that is not active (${exp.status})`,
-      code: 400,
+      httpstatus: 400,
       reason: ServerStatusType.invalid,
     });
   }
   return exp;
 };
 
-export const readExperiment = async (db, studyId) => {
-  return await shared.readExperiment(db, studyId);
+export const assignParticipantSequenceNumberXaction = async (db, studyId) => {
+  const result = await db.runTransaction(async (transaction) => {
+    const expDoc = await readExperimentDocXaction(db, transaction, studyId);
+    validateExperiment(expDoc.data());
+    if (
+      expDoc.data().numParticipantsStarted === expDoc.data().numParticipants
+    ) {
+      throw new StatusError({
+        message: `participant tried starting survey after the number of participants (${
+          expDoc.data().numParticipants
+        }) has been fulfilled`,
+        httpstatus: 400,
+        reason: ServerStatusType.ended,
+      });
+    }
+    const newCount = expDoc.data().numParticipantsStarted + 1;
+    const updateObj = { numParticipantsStarted: newCount };
+    await transaction.update(expDoc.ref, updateObj);
+    return {
+      experimentId: expDoc.data().experimentId,
+      sequenceNumber: newCount,
+    };
+  });
+  return result;
 };
 
 export const signupParticipant = async (
@@ -91,12 +120,13 @@ export const signupParticipant = async (
   participantId,
   studyId,
   sessionId,
+  participantSequence,
   exp,
   callback
 ) => {
   const treatmentIds = calcTreatmentIds(
     JSON.parse(exp.latinSquare),
-    exp.numParticipantsStarted
+    participantSequence
   );
   callback(
     false,
@@ -112,10 +142,10 @@ export const signupParticipant = async (
   survey = injectSurveyQuestionFields(survey);
   survey = survey.map((v) => setUndefinedPropertiesNull(v));
   survey = orderQuestions(survey, treatmentIds);
-  await shared.createParticipant(
+  await createParticipant(
     db,
     exp.path,
-    setUndefinedPropertiesNull({ participantId })
+    setUndefinedPropertiesNull({ participantId, participantSequence })
   );
   callback(
     false,

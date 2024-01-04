@@ -1,16 +1,18 @@
 # TODO
 
 1. Write the retry logic working in the ServiceAPI.
-2. Get the server sequence to be in a transaction and write the unit test to test that we get uniquely assigned sequences for requests at the same time.
+2. ~~Get the server sequence to be in a transaction and write the unit test to test that we get uniquely assigned sequences for requests at the same time.~~
 3. Implement the logic to check if we should overwrite state based on the state.status and the number of questions answered. Check the browswer timestamp and if we appear to have a later entry before in time, write a warning.
-4. Append redux state for all updates to the audit collection.
-5. Write the CLI code to do the CSV file extract.
-6. Figure out what to do with the CLI monitor. Maybe turn that into a simple web page?
-7. Fix the extended bar chart max time experiment parameter.
-8. Write browswer errors and warning to google analytics. Maybe write the same for functions?
-9. Write rules to lock down reading data from non CLI account.
-10. Get everything deployed to stating env and working.
-11. Deploy and configure production.
+   ~~4. Append redux state for all updates to the audit collection.~~
+4. Write the CLI code to do the CSV file extract.
+5. Figure out what to do with the CLI monitor. Maybe turn that into a simple web page?
+6. Fix the extended bar chart max time experiment parameter.
+7. Write browswer errors and warning to google analytics. Maybe write the same for functions?
+8. Write firestore rules to lock down reading data from non CLI account.
+9. Get everything deployed to stating env and working.
+10. Deploy and configure production.
+11. Create a test experiment that is active for unit tests.
+12. Get emulator firestore database to reset between unit tests.
 
 # What is VizSurvey
 

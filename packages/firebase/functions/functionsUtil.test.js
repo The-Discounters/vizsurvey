@@ -8,10 +8,13 @@ import {
   orderQuestions,
   orderQuestionsRandom,
   signupParticipant,
+  validateExperiment,
+  assignParticipantSequenceNumberXaction,
 } from "./functionsUtil.js";
 import {
   initFirestore,
-  readExperiment,
+  readExperimentAndQuestions,
+  readExperimentDoc,
 } from "@the-discounters/firebase-shared";
 import { SURVEY_QUESTIONS_JSON } from "@the-discounters/test-shared";
 import { deleteCollection } from "@the-discounters/firebase-test-shared";
@@ -38,6 +41,29 @@ const resetExperiments = async (db) => {
     await deleteCollection(db, `${docSnapshot.ref.path}/participants`);
   }
 };
+
+// This function with the corresponding test was created to validate without a transaction, the code would generate duplicate sequence ids.
+// const assignParticipantSequenceNumber = async (db, studyId) => {
+//   const expDoc = await readExperimentDoc(db, studyId);
+//   validateExperiment(expDoc.data());
+//   if (expDoc.data().numParticipantsStarted === expDoc.data().numParticipants) {
+//     throw new StatusError({
+//       message: `participant tried starting survey after the number of participants (${
+//         expDoc.data().numParticipants
+//       }) has been fulfilled`,
+//       httpstatus: 400,
+//       reason: ServerStatusType.ended,
+//     });
+//   }
+//   const newCount = expDoc.data().numParticipantsStarted + 1;
+//   const updateObj = { numParticipantsStarted: newCount };
+//   const res = await expDoc.ref.update(updateObj);
+//   return {
+//     experimentId: expDoc.data().experimentId,
+//     sequenceNumber: newCount,
+//     updateTime: res.writeTime,
+//   };
+// };
 
 describe("functionsUtil test ", () => {
   let app, db;
@@ -174,12 +200,13 @@ describe("functionsUtil test ", () => {
   });
 
   it("Test for signupParticipant for within subject study (latin square entries [1, 2, 3]).", async () => {
-    const exp = await readExperiment(db, "testwithin");
+    const exp = await readExperimentAndQuestions(db, "testwithin");
     const result = await signupParticipant(
       db,
       "1",
       "2",
       "3",
+      1,
       exp,
       (isError, msg) => {
         assert.equal(
@@ -203,12 +230,13 @@ describe("functionsUtil test ", () => {
   });
 
   it("Test for signupParticipant for between subject study (latin square entries [1], [2], [3]).", async () => {
-    const exp = await readExperiment(db, "testbetween");
+    const exp = await readExperimentAndQuestions(db, "testbetween");
     const result = await signupParticipant(
       db,
       "1",
       "2",
       "3",
+      1,
       exp,
       (isError, msg) => {
         assert.equal(
@@ -230,4 +258,145 @@ describe("functionsUtil test ", () => {
       "Wrong number of instruction questions returned."
     );
   });
+
+  it("Test for assignParticipantSequenceNumberXaction.", async () => {
+    const expRef = db.collection("experiments");
+    const q = expRef.where("prolificStudyId", "==", "testbetween");
+    const expSnapshot = await assertSucceeds(q.get());
+    assert.equal(
+      expSnapshot.docs.length,
+      1,
+      "Expected to retrieve one experiment"
+    );
+    assert.notEqual(expSnapshot.docs[0].data().numParticipantsStarted, null);
+    const beforeNumParticipantsStarted =
+      expSnapshot.docs[0].data().numParticipantsStarted;
+    const { experimentId, sequenceNumber } =
+      await assignParticipantSequenceNumberXaction(db, "testbetween");
+    assert.equal(
+      sequenceNumber,
+      beforeNumParticipantsStarted + 1,
+      "Participant sequence number did not increment by 1."
+    );
+    assert.equal(experimentId, 6, "Didn't return expected experiment id.");
+  });
+
+  it("Test for assignParticipantSequenceNumberXaction race condition.", async () => {
+    return new Promise(function (resolve, reject) {
+      const expRef = db.collection("experiments");
+      const q = expRef.where("prolificStudyId", "==", "testbetween");
+      assertSucceeds(q.get()).then((expSnapshot) => {
+        assert.equal(
+          expSnapshot.docs.length,
+          1,
+          "Expected to retrieve one experiment"
+        );
+        assert.notEqual(
+          expSnapshot.docs[0].data().numParticipantsStarted,
+          null
+        );
+        const beforeNumParticipantsStarted =
+          expSnapshot.docs[0].data().numParticipantsStarted;
+        const NO_REQUESTS = 20;
+        const results = [];
+        for (let i = 0; i < NO_REQUESTS; i++) {
+          assignParticipantSequenceNumberXaction(db, "testbetween").then(
+            (result) => {
+              results.push(result);
+              if (results.length === 1) {
+                console.log("First result returned");
+              }
+              if (results.length === NO_REQUESTS) {
+                console.log(`All results returned.`);
+                const sorted = results.sort((a, b) =>
+                  a.sequenceNumber < b.sequenceNumber
+                    ? -1
+                    : a.sequenceNumber > b.sequenceNumber
+                    ? 1
+                    : 0
+                );
+                for (let k = 0; k < sorted.length; k++) {
+                  if (
+                    sorted[k].sequenceNumber !==
+                    beforeNumParticipantsStarted + 1 + k
+                  ) {
+                    reject(
+                      `Entry ${k} with value ${
+                        sorted[k].sequenceNumber
+                      } is not expected next in the sequence.  Starting value was ${beforeNumParticipantsStarted} and returned values are ${sorted.map(
+                        (v) => v.sequenceNumber
+                      )}}`
+                    );
+                  }
+                }
+                resolve();
+              }
+            }
+          );
+          if (i === NO_REQUESTS - 1) {
+            console.log("All requests initiated");
+          }
+        }
+      });
+    });
+  }).timeout(40000);
+
+  // This test was created to validate that without a transaction, the code for assigning a sequence id would return duplicate values.
+  // it("Test for assignParticipantSequenceNumberWithoutTransaction race condition.", async () => {
+  //   return new Promise(function (resolve, reject) {
+  //     const expRef = db.collection("experiments");
+  //     const q = expRef.where("prolificStudyId", "==", "testbetween");
+  //     assertSucceeds(q.get()).then((expSnapshot) => {
+  //       assert.equal(
+  //         expSnapshot.docs.length,
+  //         1,
+  //         "Expected to retrieve one experiment"
+  //       );
+  //       assert.notEqual(
+  //         expSnapshot.docs[0].data().numParticipantsStarted,
+  //         null
+  //       );
+  //       const beforeNumParticipantsStarted =
+  //         expSnapshot.docs[0].data().numParticipantsStarted;
+  //       const NO_REQUESTS = 10;
+  //       const results = [];
+  //       for (let i = 0; i < NO_REQUESTS; i++) {
+  //         assignParticipantSequenceNumber(db, "testbetween").then((result) => {
+  //           results.push(result);
+  //           if (results.length === 1) {
+  //             console.log("First result returned");
+  //           }
+  //           if (results.length === NO_REQUESTS) {
+  //             console.log(`All results returned.`);
+  //             const sorted = results.sort((a, b) =>
+  //               a.sequenceNumber < b.sequenceNumber
+  //                 ? -1
+  //                 : a.sequenceNumber > b.sequenceNumber
+  //                 ? 1
+  //                 : 0
+  //             );
+  //             for (let k = 0; k < sorted.length; k++) {
+  //               if (
+  //                 sorted[k].sequenceNumber !==
+  //                 beforeNumParticipantsStarted + 1 + k
+  //               ) {
+  //                 reject(
+  //                   `Entry ${k} with value ${
+  //                     sorted[k].sequenceNumber
+  //                   } is not expected next in the sequence.  Starting value was ${beforeNumParticipantsStarted} and returned values are ${sorted.map(
+  //                     (v) => v.sequenceNumber
+  //                   )}}`
+  //                 );
+  //               }
+  //             }
+  //             resolve();
+  //           }
+  //         });
+  //         if (i === NO_REQUESTS - 1) {
+  //           console.log("All requests initiated");
+  //         }
+  //       }
+  //     });
+  //   });
+  // }).timeout(40000);
 });
