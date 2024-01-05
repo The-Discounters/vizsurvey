@@ -12,8 +12,8 @@ import {
 import { ProlificSumbissionStatusType } from "@the-discounters/prolific";
 
 export const isStateLater = (state) => {
-  if (state.status )
-}
+  throw new Error("Not implemented yet!");
+};
 
 export const calcTreatmentIds = (latinSquare, participantCount) => {
   const index = participantCount % latinSquare.length;

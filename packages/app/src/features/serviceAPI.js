@@ -2,8 +2,7 @@ import { ServerStatusType, StatusError } from "@the-discounters/types";
 import { dateToState } from "@the-discounters/util";
 import { DateTime } from "luxon";
 
-const putRequest = async (data, URLSubdirectory) => {
-  const URL = `${process.env.REACT_APP_SERVER_URL}/${URLSubdirectory}`;
+export const putRequest = async (URL, data) => {
   const response = await fetch(URL, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
@@ -19,18 +18,15 @@ const putRequest = async (data, URLSubdirectory) => {
   }
 };
 
-const getRequest = async (URLSubdirectory, parameters) => {
-  const response = await fetch(
-    `${process.env.REACT_APP_SERVER_URL}/${URLSubdirectory}?${parameters}`,
-    {
-      method: "GET",
-      headers: { "Content-Type": "application/json" },
-    }
-  );
+export const getRequest = async (URL, parameters) => {
+  const response = await fetch(`${URL}?${parameters}`, {
+    method: "GET",
+    headers: { "Content-Type": "application/json" },
+  });
   const data = await response.json();
   if (response.status !== 200 || data.status !== ServerStatusType.success) {
     throw new StatusError({
-      message: "initializeSurvey server error!",
+      message: `Server error when putting data to ${URL}!`,
       httpstatus: response.status,
       reason: data.status,
     });
@@ -39,19 +35,26 @@ const getRequest = async (URLSubdirectory, parameters) => {
 };
 
 export const signupParticipant = async (
+  URLRoot,
   participantId,
   studyId,
   sessionId,
   userAgentString
 ) => {
   const data = await getRequest(
-    "signup",
+    `${URLRoot}/signup`,
     `prolific_pid=${participantId}&study_id=${studyId}&session_id=${sessionId}&user_agent=${userAgentString}`
   );
   return data;
 };
 
-export const updateState = async (participantId, studyId, sessionId, state) => {
+export const updateState = async (
+  URLRoot,
+  participantId,
+  studyId,
+  sessionId,
+  state
+) => {
   const augmentedState = state.browserTimestamp
     ? state
     : {
@@ -64,5 +67,5 @@ export const updateState = async (participantId, studyId, sessionId, state) => {
     session_id: sessionId,
     state: augmentedState,
   };
-  await putRequest(data, "updateState");
+  await putRequest(`${URLRoot}/updateState`, data);
 };

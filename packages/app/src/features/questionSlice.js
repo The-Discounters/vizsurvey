@@ -14,6 +14,7 @@ export const initializeSurvey = createAsyncThunk(
     const result = { ...parameters };
     try {
       const data = await signupParticipant(
+        process.env.REACT_APP_SERVER_URL,
         parameters.participantId,
         parameters.studyId,
         parameters.sessionId,
