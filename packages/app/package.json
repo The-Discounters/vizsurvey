@@ -86,6 +86,7 @@
     "jest-watch-typeahead": "^2.2.2",
     "lerna": "^7.4.2",
     "nock": "^13.4.0",
+    "node-fetch": "^3.3.2",
     "nuxt3": "latest",
     "prettier": "^2.3.2",
     "redux-immutable-state-invariant": "^2.1.0",

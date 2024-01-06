@@ -34,9 +34,6 @@ module.exports = {
       ["@babel/plugin-proposal-class-properties", { loose: true }],
       ["@babel/plugin-syntax-import-assertions", { loose: true }],
     ],
-    loaderOptions: {
-      /* ... */
-    },
     loaderOptions: (babelLoaderOptions, { env, paths }) => {
       /* ... */
       return babelLoaderOptions;
