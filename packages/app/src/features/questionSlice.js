@@ -41,25 +41,6 @@ const initialState = {
   experienceSurvey: {},
   financialLitSurvey: {},
   purposeSurvey: {},
-  screenAttributes: {
-    // screen properties
-    screenAvailHeight: null,
-    screenAvailWidth: null,
-    screenColorDepth: null,
-    screenWidth: null,
-    screenHeight: null,
-    screenOrientationAngle: null,
-    screenOrientationType: null,
-    screenPixelDepth: null,
-    // window properties
-    windowDevicePixelRatio: null,
-    windowInnerHeight: null,
-    windowInnerWidth: null,
-    windowOuterHeight: null,
-    windowOuterWidth: null,
-    windowScreenLeft: null,
-    windowScreenTop: null,
-  },
   countryOfResidence: "",
   vizFamiliarity: "",
   age: "",
@@ -115,32 +96,6 @@ export const questionSlice = createSlice({
   name: "questions", // I believe the global state is partitioned by the name value thus the terminology "slice"
   initialState: initialState, // the initial state of our global data (under name slice)
   reducers: {
-    setWindowAttributes(state, action) {
-      state.screenAttributes.screenAvailHeight =
-        action.payload.screen.availHeight;
-      state.screenAttributes.screenAvailWidth =
-        action.payload.screen.availWidth;
-      state.screenAttributes.screenColorDepth =
-        action.payload.screen.colorDepth;
-      state.screenAttributes.screenWidth = action.payload.screen.width;
-      state.screenAttributes.screenHeight = action.payload.screen.height;
-      state.screenAttributes.screenOrientationAngle =
-        action.payload.screen.orientation.angle;
-      state.screenAttributes.screenOrientationType =
-        action.payload.screen.orientation.type;
-      state.screenAttributes.screenPixelDepth =
-        action.payload.screen.pixelDepth;
-      state.screenAttributes.windowDevicePixelRatio =
-        action.payload.window.devicePixelRatio;
-      state.screenAttributes.windowInnerHeight =
-        action.payload.windowInnerHeight;
-      state.screenAttributes.windowInnerWidth = action.payload.windowInnerWidth;
-      state.screenAttributes.windowOuterHeight =
-        action.payload.windowOuterHeight;
-      state.screenAttributes.windowOuterWidth = action.payload.windowOuterWidth;
-      state.screenAttributes.windowScreenLeft = action.payload.windowScreenLeft;
-      state.screenAttributes.windowScreenTop = action.payload.windowScreenTop;
-    },
     setCountryOfResidence(state, action) {
       state.countryOfResidence = action.payload;
     },

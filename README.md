@@ -1,6 +1,6 @@
 # TODO
 
-1. Write the retry logic working in the ServiceAPI.
+1. ~~Write the retry logic working in the ServiceAPI.~~
 2. ~~Get the server sequence to be in a transaction and write the unit test to test that we get uniquely assigned sequences for requests at the same time.~~
 3. Implement the logic to check if we should overwrite state based on the state.status and the number of questions answered. Check the browswer timestamp and if we appear to have a later entry before in time, write a warning.
    ~~4. Append redux state for all updates to the audit collection.~~
@@ -52,11 +52,8 @@ Modify the settings to the appropriate values.
 ```
 REACT_APP_ENV=<development or production>
 REACT_APP_VERSION=<product version>
-REACT_APP_S3_BUCKET=<S3 bucket name (getting rid of this for firestore)>
-REACT_APP_REGION=<region (getting rid of this for firestore)>
 REACT_APP_accessKeyId=<S3 access id (getting rid of this for firestore)>
 REACT_APP_secretAccessKey=<secret access key (getting rid of this for firestore)>
-REACT_APP_AWS_ENABLED=<true for enabled blank otherwise. (getting rid of this for firestore since the function emulator can run locally)>
 REACT_APP_FULLSCREEN=enabled=<enabled or empty>
 REACT_APP_PAYMENT_AMOUT=<payment amount including currency symbol and I needed a slash before symbol i.e. \$3>
 REACT_APP_PROLIFIC_CODE=<prolific code>

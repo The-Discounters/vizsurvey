@@ -83,6 +83,7 @@ export function Calendar() {
                         answer({
                           choice: value,
                           choiceTimestamp: dateToState(DateTime.now()),
+                          window: window,
                         })
                       );
                     },
@@ -102,6 +103,7 @@ export function Calendar() {
                         answer({
                           choice: value,
                           choiceTimestamp: dateToState(DateTime.now()),
+                          window: window,
                         })
                       );
                     },
@@ -120,6 +122,7 @@ export function Calendar() {
                         answer({
                           choice: value,
                           choiceTimestamp: dateToState(DateTime.now()),
+                          window: window,
                         })
                       );
                     },
@@ -183,6 +186,7 @@ export function Calendar() {
                   choice: q.variableAmount,
                   choiceTimestamp: dateToState(DateTime.now()),
                   dragAmount: dragAmount.amount,
+                  window: window,
                 })
               );
               setSubmitting(false);

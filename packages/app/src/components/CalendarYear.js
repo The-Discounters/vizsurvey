@@ -205,6 +205,7 @@ export function Calendar() {
                 answer({
                   choice: AmountType.earlierAmount,
                   choiceTimestamp: dateToState(DateTime.now()),
+                  window: window,
                 })
               );
               setSubmitting(false);

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { DateTime } from "luxon";
 import { useNavigate } from "react-router-dom";
 import {
@@ -61,12 +61,16 @@ export function Consent() {
 
   const countryOfResidence = useSelector(getCountryOfResidence);
   const vizFamiliarity = useSelector(getVizFamiliarity);
-  const age = useSelector(getAge);
+  const [age, setAgeState] = useState(useSelector(getAge));
   const gender = useSelector(getGender);
-  const selfDescribeGender = useSelector(getSelfDescribeGender);
-  const profession = useSelector(getProfession);
+  const [selfDescribeGender, setSelfDescribeGenderState] = useState(
+    useSelector(getSelfDescribeGender)
+  );
+  const [profession, setProfessionState] = useState(useSelector(getProfession));
   const employment = useSelector(getEmployment);
-  const selfDescribeEmployment = useSelector(getSelfDescribeEmployment);
+  const [selfDescribeEmployment, setSelfDescribeEmploymentState] = useState(
+    useSelector(getSelfDescribeEmployment)
+  );
   const status = useSelector(getStatus);
 
   const navigate = useNavigate();
@@ -95,7 +99,7 @@ export function Consent() {
         "refuse-answer",
       ].includes(gender)
     ) {
-      setSelfDescribeGender("");
+      setSelfDescribeGenderState("");
       setDisableSelfDescribe(true);
     }
     if (employment === "self-describe") {
@@ -105,7 +109,7 @@ export function Consent() {
         employment
       )
     ) {
-      setSelfDescribeEmployment("");
+      setSelfDescribeEmploymentState("");
       setDisableSelfDescribeEmployment(true);
     }
   }, [gender, selfDescribeGender, employment, selfDescribeEmployment]);
@@ -231,7 +235,7 @@ export function Consent() {
               type="number"
               id="Age"
               value={age}
-              onChange={(event) => {
+              onBlur={(event) => {
                 if (
                   event.target.value.length !== 0 &&
                   +event.target.value <= 0
@@ -241,13 +245,26 @@ export function Consent() {
                   dispatch(setAge(event.target.value));
                 }
               }}
+              onChange={(event) => {
+                if (
+                  event.target.value.length !== 0 &&
+                  +event.target.value <= 0
+                ) {
+                  event.target.value = age;
+                } else {
+                  setAgeState(event.target.value);
+                }
+              }}
             />
           </Grid>
           <Grid item xs={3}>
             <TextField
               value={profession}
-              onChange={(event) => {
+              onBlur={(event) => {
                 dispatch(setProfession(event.target.value));
+              }}
+              onChange={(event) => {
+                setProfessionState(event.target.value);
               }}
               className={classes.formControl}
               label="Current Profession"
@@ -291,6 +308,9 @@ export function Consent() {
             <TextField
               value={selfDescribeGender}
               onChange={(event) => {
+                setSelfDescribeGenderState(event.target.value);
+              }}
+              onBlur={(event) => {
                 dispatch(setSelfDescribeGender(event.target.value));
               }}
               className={classes.formControl}
@@ -333,8 +353,11 @@ export function Consent() {
           <Grid item xs={3}>
             <TextField
               value={selfDescribeEmployment}
-              onChange={(event) => {
+              onBlur={(event) => {
                 dispatch(setSelfDescribeEmployment(event.target.value));
+              }}
+              onChange={(event) => {
+                setSelfDescribeEmploymentState(event.target.value);
               }}
               className={classes.formControl}
               label="Describe Employment"

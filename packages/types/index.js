@@ -7,9 +7,9 @@ import { Question } from "./src/Question.js";
 import { Treatment } from "./src/Treatment.js";
 import { TreatmentQuestion } from "./src/TreatmentQuestion.js";
 import { SurveyQuestion } from "./src/SurveyQuestion.js";
-
 import { Participant } from "./src/Participant.js";
 import { ScreenAttributes } from "./src/ScreenAttributes.js";
+import { WindowAttributes } from "./src/WindowAttributes.js";
 import { ServerStatusType } from "./src/ServerStatusType.js";
 import { TransactionKey } from "./src/TransactionKey.js";
 import { Answer } from "./src/Answer.js";
@@ -45,6 +45,7 @@ export {
   SurveyQuestion,
   Participant,
   ScreenAttributes,
+  WindowAttributes,
   TransactionKey,
   Answer,
   convertKeysCamelCaseToUnderscore,

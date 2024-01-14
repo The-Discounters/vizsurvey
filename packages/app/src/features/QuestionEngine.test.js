@@ -11,6 +11,7 @@ import { dateToState } from "@the-discounters/util";
 import {
   createQuestionNoTitrate,
   create2ndQuestionNoTitrate,
+  mockGlobalWindow,
 } from "@the-discounters/test-shared";
 
 describe("QuestionEngine tests", () => {
@@ -71,6 +72,7 @@ describe("QuestionEngine tests", () => {
     qe.answerCurrentQuestion(state, {
       choice: AmountType.earlierAmount,
       choiceTimestamp: dateToState(DateTime.now()),
+      window: mockGlobalWindow,
     });
     expect(state.currentAnswerIdx).toBe(0);
     expect(state.questions).not.toBeUndefined();
@@ -91,6 +93,7 @@ describe("QuestionEngine tests", () => {
     qe.answerCurrentQuestion(state, {
       choice: AmountType.earlierAmount,
       choiceTimestamp: dateToState(DateTime.now()),
+      window: mockGlobalWindow,
     });
     expect(state.currentAnswerIdx).toBe(0);
     expect(state.questions).not.toBeUndefined();

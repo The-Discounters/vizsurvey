@@ -82,6 +82,7 @@ function MELForm() {
               answer({
                 choice: value,
                 choiceTimestamp: dateToState(DateTime.now()),
+                window: window,
               })
             );
             setHelperText("");

@@ -1,5 +1,6 @@
 import { StatusType } from "./StatusType.js";
 import { secondsBetween } from "@the-discounters/util";
+import { ScreenAttributes, WindowAttributes } from "@the-discounters/types";
 
 export const TIMESTAMP_FORMAT = "MM/dd/yyyy H:mm:ss:SSS ZZZZ";
 
@@ -50,16 +51,6 @@ export class QuestionEngine {
   setCurrentAnswerShown(state, date) {
     const ca = this.currentAnswer(state);
     ca.shownTimestamp = date;
-    if (this.isFirstQuestion(state)) {
-      state.screenAttributes.screenAvailHeight = window.availHeight;
-      state.screenAttributes.screenAvailWidth = window.availWidth;
-      state.screenAttributes.windowInnerHeight = window.innerHeight;
-      state.screenAttributes.windowInnerWidth = window.innerWidth;
-      state.screenAttributes.windowOuterHeight = window.outerHeight;
-      state.screenAttributes.windowOuterWidth = window.outerWidth;
-      state.screenAttributes.windowScreenLeft = window.screenLeft;
-      state.screenAttributes.windowScreenTop = window.screenTop;
-    }
   }
 
   incNextQuestion(state) {
@@ -84,6 +75,8 @@ export class QuestionEngine {
       answer.choiceTimestamp
     );
     answer.dragAmount = payload.dragAmount;
+    answer.screenAttributes = ScreenAttributes(payload.window.screen);
+    answer.windowAttributes = WindowAttributes(payload.window);
   }
 
   nextState(state) {
