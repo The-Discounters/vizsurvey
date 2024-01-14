@@ -42,11 +42,11 @@ packages/test/public
 *.swp
 
 # cypress
-cypress/fixtures
-cypress/plugins
-cypress/screenshots
-cypress/videos
-cypress/downloads
+packages/app/cypress/fixtures
+packages/app/cypress/plugins
+packages/app/cypress/screenshots
+packages/app/cypress/videos
+packages/app/cypress/downloads
 doc/~$MCL questions.xlsx
 
 #amplify-do-not-edit-begin
