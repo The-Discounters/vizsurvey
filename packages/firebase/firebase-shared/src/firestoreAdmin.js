@@ -34,6 +34,16 @@ const readTreatmentQuestions = async (db, expPath) => {
   return result;
 };
 
+export const readParticipants = async (db, expPath) => {
+  const result = [];
+  const participantsCol = await db.collection(`${expPath}/participants`).get();
+  for (let j = 0; j < participantsCol.size; j++) {
+    const participant = participantsCol.docs[j];
+    result.push(participant.data());
+  }
+  return result;
+};
+
 export const readExperimentDocXaction = async (db, transaction, studyId) => {
   const expRef = await db.collection("experiments");
   const q = expRef.where("prolificStudyId", "==", studyId);
@@ -52,6 +62,14 @@ export const readExperimentDoc = async (db, studyId) => {
     return null;
   }
   return expSnapshot.docs[0];
+};
+
+export const readExperiment = async (db, studyId) => {
+  const expDoc = await readExperimentDoc(db, studyId);
+  return {
+    path: expDoc.ref.path, // TODO do I really need this field in the object?
+    ...expDoc.data(),
+  };
 };
 
 export const readExperimentAndQuestions = async (db, studyId) => {

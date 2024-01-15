@@ -1,4 +1,3 @@
-import AWS from "aws-sdk";
 import {
   stateFilename,
   setAllPropertiesEmpty,
@@ -8,58 +7,10 @@ import {
   convertAnswersAryToObj,
 } from "@the-discounters/types";
 import { convertToCSV } from "@the-discounters/util";
-
-const S3_BUCKET = process.env.REACT_APP_S3_BUCKET;
-const REGION = process.env.REACT_APP_REGION;
-
-AWS.config.update({
-  accessKeyId: process.env.REACT_APP_accessKeyId,
-  secretAccessKey: process.env.REACT_APP_secretAccessKey,
-});
-
-const myBucket = new AWS.S3({
-  params: { Bucket: S3_BUCKET },
-  region: REGION,
-});
-
-const uploadFileOffline = (name, data) => {
-  const requestOptions = {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ name: name, data: data }),
-  };
-  fetch("http://localhost:3001/test", requestOptions)
-    .then((response) => response.json())
-    .then((data) => console.log(data));
-};
-
-const uploadFile = (name, data) => {
-  const params = {
-    ACL: "private",
-    Body: data,
-    Bucket: S3_BUCKET,
-    Key: name,
-  };
-
-  myBucket
-    .putObject(params)
-    .on("httpUploadProgress", (evt) => {
-      console.log(Math.round((evt.loaded / evt.total) * 100));
-    })
-    .send((err) => {
-      if (err) console.log(err);
-    });
-};
-
-export const writeFile = async (filename, strData) => {
-  if (process.env.REACT_APP_AWS_ENABLED) {
-    console.log("AWS ENABLED");
-    uploadFile(filename, strData);
-  } else {
-    console.log("AWS DISABLED");
-    uploadFileOffline(filename, strData);
-  }
-};
+import {
+  readExperiment,
+  readParticipants,
+} from "@the-discounters/firebase-shared";
 
 /**
  * Converts array timestamp properties like
@@ -165,7 +116,6 @@ export const flattenState = (state) => {
     selfDescribeEmployment: state.selfDescribeEmployment,
     timezone: state.timezone,
     userAgent: state.userAgent,
-    ...state.screenAttributes,
     ...answersAsObj,
     attentionCheck: attentionChecks,
     ...state.experienceSurvey,
@@ -176,15 +126,22 @@ export const flattenState = (state) => {
   return flattenedState;
 };
 
-export const writeStateAsCSV = (state) => {
-  // TODO remove this before going to production maybe
-  writeFile(stateFilename(state), JSON.stringify(state));
-  const flattenedState = flattenState(state);
-  const allKeysState = JSON.stringify(setAllPropertiesEmpty(flattenedState));
-  writeFile(stateFormatFilename(state), allKeysState);
-  // change capital letter in camel case to _ with lower case letter to make the column headers easier to read when importing to excel
-  const underscoreKeys = convertKeysCamelCaseToUnderscore(flattenedState);
-  const filename = CSVDataFilename(state);
-  const CSVData = convertToCSV(underscoreKeys);
-  writeFile(filename, CSVData);
+export const exportParticipantsToJSON = async (db, studyId) => {
+  const exp = await readExperiment(db, studyId);
+  const participants = await readParticipants(db, exp.path);
+  return JSON.stringify({ ...exp, participants: participants });
+};
+
+export const exportParticipantToCSV = (participant, includeHeader) => {
+  const flattened = flattenState(participant);
+  const underscore = convertKeysCamelCaseToUnderscore(flattened);
+  return convertToCSV(underscore, includeHeader);
+};
+
+export const exportParticipantsToCSV = async (db, studyId) => {
+  const exp = await readExperiment(db, studyId);
+  const participants = await readParticipants(db, exp.path);
+  return participants.reduce(
+    (acc, cv, i) => acc + participantToCSV(cv, underscore, i === 0) + "\n"
+  );
 };

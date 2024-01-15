@@ -11,6 +11,6 @@ export const parseJSON = (JSONString) => {
   return JSON.parse(JSONString);
 };
 
-export const convertToCSV = (data) => {
-  return csv(data);
+export const convertToCSV = (data, headers = true) => {
+  return csv(data, { headers: headers });
 };

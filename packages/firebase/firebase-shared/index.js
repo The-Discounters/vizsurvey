@@ -3,6 +3,7 @@ import {
   initBatch,
   readExperimentDocXaction,
   readExperimentDoc,
+  readExperiment,
   readExperimentAndQuestions,
   readExperimentsAndQuestions,
   setBatchItem,
@@ -14,6 +15,7 @@ import {
   createParticipant,
   updateParticipant,
   createAuditLogEntry,
+  readParticipants,
 } from "./src/firestoreAdmin.js";
 
 export {
@@ -25,6 +27,7 @@ export {
   linkDocs,
   readExperimentDocXaction,
   readExperimentDoc,
+  readExperiment,
   readExperimentAndQuestions,
   readExperimentsAndQuestions,
   createAnswers,
@@ -32,4 +35,5 @@ export {
   createParticipant,
   updateParticipant,
   createAuditLogEntry,
+  readParticipants,
 };

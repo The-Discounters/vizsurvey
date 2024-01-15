@@ -13,6 +13,7 @@ import {
   initFirestore,
   readExperimentAndQuestions,
   readExperimentsAndQuestions,
+  readExperiment,
   initBatch,
   setBatchItem,
   commitBatch,
@@ -22,6 +23,7 @@ import {
   updateAnswer,
   createParticipant,
   readExperimentDocXaction,
+  readParticipants,
 } from "./firestoreAdmin.js";
 
 describe("firestoreAdmin test ", () => {
@@ -318,6 +320,15 @@ describe("firestoreAdmin test ", () => {
     );
   });
 
+  it("Integration test for readExperiment.", async () => {
+    const exp = await readExperiment(db, "649f3cffea5a1b2817d17d7e");
+    assert.equal(
+      exp.experimentId,
+      5,
+      "experiment experimentId=5 not loaded correctly."
+    );
+  });
+
   it("Integration test for readExperimentsAndQuestions.", async () => {
     const exp = await readExperimentsAndQuestions(db);
     assert.equal(
@@ -443,5 +454,16 @@ describe("firestoreAdmin test ", () => {
       5,
       "experiment experimentId=5 not loaded correctly."
     );
+  });
+
+  it("Test for readParticipants", async () => {
+    const exp = await readExperimentAndQuestions(db, "testbetween");
+    assert.notEqual(
+      exp,
+      null,
+      "Did not retrieve an experiment for testbetween id."
+    );
+    const result = await readParticipants(db, exp.path);
+    assert.notEqual(result.length, 0, "No participants retrieved.");
   });
 });

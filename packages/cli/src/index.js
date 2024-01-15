@@ -8,9 +8,6 @@ import { DateTime } from "luxon";
 import readline from "readline";
 import isValid from "is-valid-path";
 import { parseCSV } from "@the-discounters/util";
-import { appendSepToPath, isCSVExt, directoryOrFileExists } from "./files.js";
-import { updateStats, createStat, clearStats } from "./stats.js";
-import { drawStatus } from "./monitorUtil.js";
 import {
   initFirestore,
   initBatch,
@@ -20,6 +17,10 @@ import {
   deleteDocs,
   readExperimentsAndQuestions,
 } from "@the-discounters/firebase-shared";
+import { convertKeysUnderscoreToCamelCase } from "@the-discounters/types";
+import { isCSVExt, directoryOrFileExists, writeFile } from "./files.js";
+import { updateStats, createStat, clearStats } from "./stats.js";
+import { drawStatus } from "./monitorUtil.js";
 import {
   typeExperimentObj,
   typeQuestionObj,
@@ -29,7 +30,7 @@ import {
   parseFileToObj,
   parseLookupText,
 } from "./importUtil.js";
-import { convertKeysUnderscoreToCamelCase } from "@the-discounters/types";
+import { exportParticipantsToJSON } from "./FileIOAdapter.js";
 
 const validateInt = (value, dummyPrevious) => {
   const parsedValue = parseInt(value, 10);
@@ -98,52 +99,97 @@ program
     }
   });
 
+const ExportTypes = {
+  configuration: "configuration",
+  data: "data",
+  audit: "audit",
+};
+Object.freeze(ExportTypes);
+
+const validateExportType = (value) => {
+  const result = ExportTypes[value];
+  if (!result) {
+    throw new InvalidArgumentError(
+      `Export type ${value} is not a valid value.`
+    );
+  }
+  return result;
+};
+
+const FileTypes = {
+  json: "json",
+  csv: "csv",
+};
+Object.freeze(FileTypes);
+
+const validateFileType = (value) => {
+  const result = FileTypes[value];
+  if (!result) {
+    throw new InvalidArgumentError(`File type ${value} is not json or csv.`);
+  }
+  return result;
+};
+
+const exportData = async (db, format, studyId, filename) => {
+  switch (format) {
+    case FileTypes.json:
+      const jsonString = await exportParticipantsToJSON(db, studyId);
+      writeFile(filename, jsonString);
+      break;
+    case FileTypes.csv:
+      throw new Error("CSV export type not implemented yet!");
+    default:
+      break;
+  }
+};
+
 program
-  .command("download")
-  .description("Downloads files from the S3 bucket.")
-  .argument("<directory>", "directory to store the files in.")
+  .command("export")
+  .description("Exports data from firestore to a CSV file.")
+  .argument("<filename>", "the filename to export the data to.")
   .option(
     "-l, --laterthan <date>",
     "the date to filter out files that are are equal to or later than",
     validateDate
   )
-  .action((source, options) => {
+  .option(
+    "-e, --experiment <experiment id>",
+    "the experiment id to export.  If non is provided all experiments are exported."
+  )
+  .option(
+    "-t, --type <definitions, data, audit>",
+    "they data to export; configuration for experiment configuration, data for exeperiment data, audit for audit data.",
+    validateExportType
+  )
+  .option(
+    "-f, --format <json or csv>",
+    "the format of the export file.",
+    validateFileType
+  )
+  .action((filename, options) => {
     try {
-      console.log(`Downloading files from S3 bucket...`);
-      listFiles().then((response) => {
-        const files = response.Contents.filter((file) => {
-          if (
-            options.laterthan &&
-            DateTime.fromJSDate(file.LastModified) < options.laterthan
-          ) {
-            console.log(
-              `...skipping ${file.Key} since the date is before ${options.laterthan}`
-            );
-            return false;
-          } else {
-            return true;
-          }
-        });
-        files.forEach((file) => {
-          console.log(
-            `...downloading file ${file.Key} created on date ${file.LastModified}`
-          );
-          const data = downloadFile(file, (error) => {
-            console.log(chalk.red(error));
-          }).then((data) => {
-            const fullPath = `${appendSepToPath(source)}${file.Key}`;
-            console.log(`...writing file ${file.Key}`);
-            fs.writeFile(fullPath, data, (err) => {
-              if (err) {
-                console.log(
-                  chalk.red(`error writing file ${param.file.Key}`, err)
-                );
-                throw err;
-              }
-            });
-          });
-        });
-      });
+      if (options.experiment === "all") {
+        throw new Error("Experiment option all not implemented yet!");
+      }
+      console.log(
+        `Exporting data for ${
+          options.experiment
+            ? "experiment " + options.experiment
+            : "all experiments"
+        } of type ${options.type} in format ${
+          options.format
+        } to file ${filename} ...`
+      );
+      const { db } = initializeDB();
+      switch (options.type) {
+        case ExportTypes.configuration:
+          throw new Error("Not implemented yet!");
+        case ExportTypes.data:
+          exportData(db, options.format, options.experiment, filename);
+          break;
+        case ExportTypes.audit:
+          throw new Error("Not implemented yet!");
+      }
     } catch (err) {
       console.log(chalk.red(err));
       throw err;

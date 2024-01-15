@@ -1,14 +1,18 @@
-//import AWS from "aws-sdk";
-import { DateTime } from "luxon";
-import { InteractionType, ViewType, AmountType } from "@the-discounters/types";
-import { SurveyQuestion } from "@the-discounters/types";
-import { convertToCSV } from "@the-discounters/util";
-import { flattenTreatmentValueAry, flattenState } from "./FileIOAdapter.js";
-import { setAllPropertiesEmpty } from "@the-discounters/types";
+import { ViewType, setAllPropertiesEmpty } from "@the-discounters/types";
+import { initFirestore } from "@the-discounters/firebase-shared";
+import {
+  flattenTreatmentValueAry,
+  flattenState,
+  exportParticipantsToJSON,
+} from "./FileIOAdapter.js";
 import {
   createQuestionNoTitrate,
   create2ndQuestionNoTitrate,
 } from "@the-discounters/test-shared";
+
+import ADMIN_CREDS from "../../../admin-credentials-dev.json" assert { type: "json" };
+// this needs to match the value that is passed to firebase emulators:start --project=
+const PROJECT_ID = "vizsurvey-test";
 
 describe("Enum tests", () => {
   const result = ViewType["barchart"];
@@ -41,7 +45,6 @@ describe("Regular express test", () => {
     "purpose-survey-1-2-1671914717290.csv",
   ];
   const result = [];
-  //const re = /answer-timestamps-\d+-\d+-\d+\.csv/;
   const re = new RegExp("answer-timestamps-\\d+-\\d+-\\d+\\.csv");
   files.forEach((file) => {
     if (re.test(file)) {
@@ -51,94 +54,8 @@ describe("Regular express test", () => {
   expect(result.length).toBe(2);
 });
 
-describe("FileIOAdapter tests", () => {
-  test("Validate answer CSV fields are written correctly.", async () => {
-    const answer1 = SurveyQuestion({
-      treatmentId: 4,
-      sequenceId: 5,
-      viewType: ViewType.word,
-      interaction: InteractionType.none,
-      variableAmount: AmountType.earlierAmount,
-      amountEarlier: 6,
-      timeEarlier: 7,
-      dateEarlier: DateTime.fromFormat("1/1/2001", "M/d/yyyy", {
-        zone: "utc",
-      }).toISO(),
-      amountLater: 8,
-      timeLater: 9,
-      dateLater: DateTime.fromFormat("1/2/2001", "M/d/yyyy", {
-        zone: "utc",
-      }).toISO(),
-      maxAmount: 10,
-      maxTime: 11,
-      verticalPixels: 12,
-      horizontalPixels: 13,
-      leftMarginWidthIn: 14,
-      bottomMarginHeightIn: 15,
-      graphWidthIn: 16,
-      graphHeightIn: 17,
-      widthIn: 18,
-      heightIn: 19,
-      choice: AmountType.earlierAmount,
-      showMinorTicks: false,
-      shownTimestamp: DateTime.fromFormat("1/3/2001", "M/d/yyyy", {
-        zone: "utc",
-      }).toISO(),
-      choiceTimestamp: DateTime.fromFormat("1/4/2001", "M/d/yyyy", {
-        zone: "utc",
-      }).toISO(),
-      choiceTimeSec: 1,
-      instructionGifPrefix: "gif-prefix",
-      comment: "comment",
-      dragAmount: 1,
-    });
-    const answer2 = SurveyQuestion({
-      treatmentId: 25,
-      sequenceId: 26,
-      viewType: ViewType.barchart,
-      interaction: InteractionType.drag,
-      variableAmount: AmountType.earlierAmount,
-      amountEarlier: 27,
-      timeEarlier: 28,
-      dateEarlier: DateTime.utc(2001, 1, 2, 1, 1, 1, 1, {
-        zone: "utc",
-      }).toISO(),
-      amountLater: 29,
-      timeLater: 30,
-      dateLater: DateTime.utc(2001, 1, 2, 2, 1, 1, 1, {
-        zone: "utc",
-      }).toISO(),
-      maxAmount: 31,
-      maxTime: 32,
-      verticalPixels: 33,
-      horizontalPixels: 34,
-      leftMarginWidthIn: 35,
-      bottomMarginHeightIn: 36,
-      graphWidthIn: 37,
-      graphHeightIn: 38,
-      widthIn: 39,
-      heightIn: 40,
-      choice: AmountType.laterAmount,
-      showMinorTicks: false,
-      shownTimestamp: DateTime.utc(2001, 1, 2, 3, 1, 1, 1, {
-        zone: "utc",
-      }).toISO(),
-      choiceTimestamp: DateTime.utc(2001, 1, 2, 4, 1, 1, 1, {
-        zone: "utc",
-      }).toISO(),
-      choiceTimeSec: 1,
-      instructionGifPrefix: "gif-prefix",
-      comment: "comment",
-      dragAmount: 1,
-    });
-    const answers = [answer1, answer2];
-    const result = convertToCSV(answers);
-    expect(result).toBe(
-      `treatmentQuestionId,treatmentId,questionId,sequenceId,viewType,interaction,variableAmount,amountEarlier,timeEarlier,dateEarlier,amountLater,timeLater,dateLater,maxAmount,maxTime,verticalPixels,horizontalPixels,leftMarginWidthIn,bottomMarginHeightIn,graphWidthIn,graphHeightIn,widthIn,heightIn,showMinorTicks,instructionGifPrefix,comment,shownTimestamp,dragAmount,choice,choiceTimestamp,choiceTimeSec\n,4,,5,word,none,earlierAmount,6,7,2001-01-01T00:00:00.000Z,8,9,2001-01-02T00:00:00.000Z,10,11,12,13,14,15,16,17,18,19,false,gif-prefix,comment,2001-01-03T00:00:00.000Z,1,earlierAmount,2001-01-04T00:00:00.000Z,1\r\n,25,,26,barchart,drag,earlierAmount,27,28,2001-01-02T01:01:01.001Z,29,30,2001-01-02T02:01:01.001Z,31,32,33,34,35,36,37,38,39,40,false,gif-prefix,comment,2001-01-02T03:01:01.001Z,1,laterAmount,2001-01-02T04:01:01.001Z,1\r\n`
-    );
-  });
-
-  test("flattenState one treatment.", () => {
+describe("FileIOAdapter non firestore integration tests", () => {
+  test("flattenState two treatments two questions each.", () => {
     const state = {
       participantId: 2,
       sessionId: 3,
@@ -146,29 +63,6 @@ describe("FileIOAdapter tests", () => {
       experienceSurvey: {},
       financialLitSurvey: {},
       purposeSurvey: {},
-      screenAttributes: {
-        // screen properties
-        screenAvailHeight: null,
-        screenAvailWidth: null,
-        // eslint-disable-next-line no-restricted-globals
-        screenColorDepth: screen.colorDepth,
-        // eslint-disable-next-line no-restricted-globals
-        screenWidth: screen.width,
-        // eslint-disable-next-line no-restricted-globals
-        screenHeight: screen.height,
-        screenOrientationAngle: "100",
-        screenOrientationType: "type",
-        // eslint-disable-next-line no-restricted-globals
-        screenPixelDepth: screen.pixelDepth,
-        // window properties
-        windowDevicePixelRatio: window.devicePixelRatio,
-        windowInnerHeight: null,
-        windowInnerWidth: null,
-        windowOuterHeight: null,
-        windowOuterWidth: null,
-        windowScreenLeft: null,
-        windowScreenTop: null,
-      },
       countryOfResidence: "",
       vizFamiliarity: "",
       age: "",
@@ -242,26 +136,26 @@ describe("FileIOAdapter tests", () => {
       timestamps_2: "timestamp2",
     });
   });
+});
 
-  // This test uses the write only creds to try and read from the bucket.  I need to figure out how to check
-  // for the AccessDenied error that was retruned.
-  // describe("S3 bucket write only credentials should not be allowed to read.", () => {
-  //   AWS.config.update({
-  //     accessKeyId: process.env.REACT_APP_accessKeyId,
-  //     secretAccessKey: process.env.REACT_APP_secretAccessKey,
-  //   });
+describe("FileIOAdapter firestore integration tests", () => {
+  let app, db;
 
-  //   const myBucket = new AWS.S3({
-  //     params: { Bucket: "vizsurvey-data-test" },
-  //     region: "us-east-2",
-  //   });
+  beforeAll(() => {
+    const result = initFirestore(
+      PROJECT_ID,
+      "https://vizsurvey-test.firebaseio.com/",
+      ADMIN_CREDS
+    );
+    app = result.app;
+    db = result.db;
+  });
 
-  //   myBucket
-  //     .listObjectsV2({ Bucket: "vizsurvey-data-test" })
-  //     .promise()
-  //     .then((response) => {
-  //       const files = response.Contents;
-  //       expect(files.length);
-  //     });
-  // });
+  test("exportParticipantsToJSON test", async () => {
+    const json = await exportParticipantsToJSON(db, "testbetween");
+    expect(json).not.toBeNull();
+    const parsed = JSON.parse(json);
+    expect(parsed).not.toBeNull();
+    expect(parsed.prolificStudyId).toBe("testbetween");
+  });
 });

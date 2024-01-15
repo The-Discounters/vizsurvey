@@ -71,7 +71,7 @@ amplifytools.xcconfig
 #amplify-do-not-edit-end
 
 #test data folders
-/cli/S3-downloaded
+/temp
 
 # yarn with zero installs
 .yarn/*
