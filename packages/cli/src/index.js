@@ -33,6 +33,8 @@ import {
 import {
   exportParticipantsToJSON,
   exportAuditToJSON,
+  exportParticipantsToCSV,
+  exportAuditToCSV,
 } from "./FileIOAdapter.js";
 
 const validateInt = (value, dummyPrevious) => {
@@ -134,42 +136,45 @@ const validateFileType = (value) => {
 };
 
 const exportData = async (db, format, studyId, filename) => {
+  let fileData;
   switch (format) {
     case FileTypes.json:
-      const jsonString = await exportParticipantsToJSON(db, studyId);
-      writeFile(filename, jsonString);
+      fileData = await exportParticipantsToJSON(db, studyId);
       break;
     case FileTypes.csv:
-      throw new Error("CSV export type not implemented yet!");
+      fileData = await exportParticipantsToCSV(db, studyId);
     default:
       break;
   }
+  writeFile(filename, fileData);
 };
 
 const exportAudit = async (db, format, studyId, filename) => {
+  let fileData;
   switch (format) {
     case FileTypes.json:
-      const jsonString = await exportAuditToJSON(db, studyId);
-      writeFile(filename, jsonString);
+      fileData = await exportAuditToJSON(db, studyId);
       break;
     case FileTypes.csv:
-      throw new Error("CSV export type not implemented yet!");
+      fileData = await exportAuditToCSV(db, studyId);
     default:
       break;
   }
+  writeFile(filename, fileData);
 };
 
 const exportConfig = async (db, format, studyId, filename) => {
+  let fileData;
   switch (format) {
     case FileTypes.json:
-      //const jsonString = await exportParticipantsToJSON(db, studyId);
-      writeFile(filename, jsonString);
+      //fileData = await exportParticipantsToJSON(db, studyId);
       break;
     case FileTypes.csv:
       throw new Error("CSV export type not implemented yet!");
     default:
       break;
   }
+  writeFile(filename, fileData);
 };
 
 program

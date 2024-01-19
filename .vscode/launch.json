@@ -273,12 +273,46 @@
             }             
         },
         {
+            "name": "Debug CLI export data to CSV",
+            "type": "node",
+            "request": "launch",
+            "runtimeExecutable": "/Users/pete/.nvm/versions/node/v18.17.0/bin/node",
+            "program": "${workspaceFolder}/packages/cli/src/index.js",
+            "args": ["export", "../../temp/data.csv", "-e", "testbetween", "-t", "data", "-f", "csv"],
+            "cwd": "${workspaceRoot}/packages/cli",
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen",
+            "env": {
+                "GOOGLE_APPLICATION_CREDENTIALS": "/Users/pete/vizsurvey/admin-credentials-dev.json",
+                "FIRESTORE_EMULATOR_HOST": "127.0.0.1:8080",
+                "FIRESTORE_PROJECT_ID": "vizsurvey-test",
+                "FIRESTORE_DATABASE_URL": "https://vizsurvey-test.firebaseio.com/"
+            }             
+        },
+        {
             "name": "Debug CLI export audit to JSON",
             "type": "node",
             "request": "launch",
             "runtimeExecutable": "/Users/pete/.nvm/versions/node/v18.17.0/bin/node",
             "program": "${workspaceFolder}/packages/cli/src/index.js",
             "args": ["export", "../../temp/audit.json", "-e", "testbetween", "-t", "audit", "-f", "json"],
+            "cwd": "${workspaceRoot}/packages/cli",
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen",
+            "env": {
+                "GOOGLE_APPLICATION_CREDENTIALS": "/Users/pete/vizsurvey/admin-credentials-dev.json",
+                "FIRESTORE_EMULATOR_HOST": "127.0.0.1:8080",
+                "FIRESTORE_PROJECT_ID": "vizsurvey-test",
+                "FIRESTORE_DATABASE_URL": "https://vizsurvey-test.firebaseio.com/"
+            }             
+        },
+        {
+            "name": "Debug CLI export audit to CSV",
+            "type": "node",
+            "request": "launch",
+            "runtimeExecutable": "/Users/pete/.nvm/versions/node/v18.17.0/bin/node",
+            "program": "${workspaceFolder}/packages/cli/src/index.js",
+            "args": ["export", "../../temp/audit.csv", "-e", "testbetween", "-t", "audit", "-f", "csv"],
             "cwd": "${workspaceRoot}/packages/cli",
             "console": "integratedTerminal",
             "internalConsoleOptions": "neverOpen",

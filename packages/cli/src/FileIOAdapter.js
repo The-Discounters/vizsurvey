@@ -135,21 +135,46 @@ export const exportAuditToJSON = async (db, studyId) => {
   return JSON.stringify({ ...experiment, audit });
 };
 
+export const exportAuditToCSV = async (db, studyId) => {
+  console.log("...exporting audit to CSV.");
+  const { experiment, audit } = await exportAudit(db, studyId);
+  const array = [];
+  audit.forEach((cv) => {
+    console.log(`...exporting audit ${cv.participantId}.`);
+    const flattened = flattenState(cv);
+    const underscore = convertKeysCamelCaseToUnderscore(flattened);
+    array.push(underscore);
+  });
+  console.log("...converting audit to CSV.");
+  return convertToCSV(array, true);
+};
+
 export const exportConfigToJSON = async (db, studyId) => {
   const exp = await readExperiment(db, studyId);
   //const participants = await readParticipants(db, exp.path);
   //return JSON.stringify({ ...exp, participants: participants });
 };
 
-export const convertParticipantToCSV = (participant, includeHeader) => {
+export const participantToCSV = (participant, includeHeader) => {
   const flattened = flattenState(participant);
   const underscore = convertKeysCamelCaseToUnderscore(flattened);
   return convertToCSV(underscore, includeHeader);
 };
 
 export const exportParticipantsToCSV = async (db, studyId) => {
+  console.log("...exporting participants to CSV.");
   const { experiment, participants } = await exportParticipants(db, studyId);
-  return participants.reduce(
-    (acc, cv, i) => acc + participantToCSV(cv, underscore, i === 0) + "\n"
-  );
+  const array = [];
+  participants.forEach((cv) => {
+    console.log(`...exporting participant ${cv.participantId}.`);
+    const combined = {
+      ...experiment,
+      ...cv,
+    };
+    const flattened = flattenState(combined);
+    const underscore = convertKeysCamelCaseToUnderscore(flattened);
+    array.push(underscore);
+  });
+  console.log("...converting participants to CSV.");
+  return convertToCSV(array, true);
 };
