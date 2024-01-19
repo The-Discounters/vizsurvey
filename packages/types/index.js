@@ -27,9 +27,9 @@ import {
   convertKeysCamelCaseToUnderscore,
   setAllPropertiesEmpty,
   setUndefinedPropertiesNull,
-  convertAnswersAryToObj,
   convertKeysUnderscoreToCamelCase,
   injectSurveyQuestionFields,
+  flattenArrayToObject,
 } from "./src/ObjectUtil.js";
 
 export {
@@ -52,7 +52,6 @@ export {
   convertKeysUnderscoreToCamelCase,
   setAllPropertiesEmpty,
   setUndefinedPropertiesNull,
-  convertAnswersAryToObj,
   participantUniqueKey,
   stateUniqueKey,
   CSVDataFilename,
@@ -60,6 +59,7 @@ export {
   stateFilename,
   stateFormatFilename,
   injectSurveyQuestionFields,
+  flattenArrayToObject,
   injectKey,
   StatusError,
 };

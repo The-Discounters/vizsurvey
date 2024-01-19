@@ -82,7 +82,13 @@
             "cwd": "${workspaceRoot}/packages/app",
             "protocol": "inspector",
             "console": "integratedTerminal",
-            "internalConsoleOptions": "neverOpen"
+            "internalConsoleOptions": "neverOpen",
+            "env": {
+                "GOOGLE_APPLICATION_CREDENTIALS": "/Users/pete/vizsurvey/admin-credentials-dev.json",
+                "FIRESTORE_EMULATOR_HOST": "127.0.0.1:8080",
+                "FIRESTORE_PROJECT_ID": "vizsurvey-test",
+                "FIRESTORE_DATABASE_URL": "https://vizsurvey-test.firebaseio.com/"
+            } 
         },
         {
             "name": "Jest Debug opened file cli",
@@ -92,7 +98,23 @@
             "cwd": "${workspaceRoot}/packages/cli",
             "protocol": "inspector",
             "console": "integratedTerminal",
-            "internalConsoleOptions": "neverOpen"
+            "internalConsoleOptions": "neverOpen",
+            "env": {
+                "GOOGLE_APPLICATION_CREDENTIALS": "/Users/pete/vizsurvey/admin-credentials-dev.json",
+                "FIRESTORE_EMULATOR_HOST": "127.0.0.1:8080",
+                "FIRESTORE_PROJECT_ID": "vizsurvey-test",
+                "FIRESTORE_DATABASE_URL": "https://vizsurvey-test.firebaseio.com/"
+            } 
+        },
+        {
+            "name": "Jest Debug opened file types",
+            "type": "node",
+            "request": "launch",
+            "args": ["--experimental-vm-modules", "../../node_modules/jest/bin/jest.js", "--watchAll -- --silent=false"],
+            "cwd": "${workspaceRoot}/packages/types",
+            "protocol": "inspector",
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen",
         },
         {
             "name": "Jest single run all tests",
@@ -234,12 +256,29 @@
             }             
         },
         {
-            "name": "Debug CLI export data",
+            "name": "Debug CLI export data to JSON",
             "type": "node",
             "request": "launch",
             "runtimeExecutable": "/Users/pete/.nvm/versions/node/v18.17.0/bin/node",
             "program": "${workspaceFolder}/packages/cli/src/index.js",
             "args": ["export", "../../temp/data.json", "-e", "testbetween", "-t", "data", "-f", "json"],
+            "cwd": "${workspaceRoot}/packages/cli",
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen",
+            "env": {
+                "GOOGLE_APPLICATION_CREDENTIALS": "/Users/pete/vizsurvey/admin-credentials-dev.json",
+                "FIRESTORE_EMULATOR_HOST": "127.0.0.1:8080",
+                "FIRESTORE_PROJECT_ID": "vizsurvey-test",
+                "FIRESTORE_DATABASE_URL": "https://vizsurvey-test.firebaseio.com/"
+            }             
+        },
+        {
+            "name": "Debug CLI export audit to JSON",
+            "type": "node",
+            "request": "launch",
+            "runtimeExecutable": "/Users/pete/.nvm/versions/node/v18.17.0/bin/node",
+            "program": "${workspaceFolder}/packages/cli/src/index.js",
+            "args": ["export", "../../temp/audit.json", "-e", "testbetween", "-t", "audit", "-f", "json"],
             "cwd": "${workspaceRoot}/packages/cli",
             "console": "integratedTerminal",
             "internalConsoleOptions": "neverOpen",

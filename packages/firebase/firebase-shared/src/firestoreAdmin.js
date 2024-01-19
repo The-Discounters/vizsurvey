@@ -1,4 +1,3 @@
-import { DateTime } from "luxon";
 import { initializeApp } from "firebase-admin/app";
 import { cert } from "firebase-admin/app";
 import { getFirestore } from "firebase-admin/firestore";
@@ -34,14 +33,21 @@ const readTreatmentQuestions = async (db, expPath) => {
   return result;
 };
 
-export const readParticipants = async (db, expPath) => {
+const readCollection = async (db, path) => {
   const result = [];
-  const participantsCol = await db.collection(`${expPath}/participants`).get();
-  for (let j = 0; j < participantsCol.size; j++) {
-    const participant = participantsCol.docs[j];
-    result.push(participant.data());
-  }
+  const col = await db.collection(path).get();
+  col.forEach((doc) => {
+    result.push(doc.data());
+  });
   return result;
+};
+
+export const readParticipants = async (db, expPath) => {
+  return readCollection(db, `${expPath}/participants`);
+};
+
+export const readAudit = async (db, expPath) => {
+  return readCollection(db, `${expPath}/audit`);
 };
 
 export const readExperimentDocXaction = async (db, transaction, studyId) => {

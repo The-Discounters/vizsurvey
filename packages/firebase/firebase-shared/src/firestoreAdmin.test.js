@@ -24,6 +24,7 @@ import {
   createParticipant,
   readExperimentDocXaction,
   readParticipants,
+  readAudit,
 } from "./firestoreAdmin.js";
 
 describe("firestoreAdmin test ", () => {
@@ -465,5 +466,16 @@ describe("firestoreAdmin test ", () => {
     );
     const result = await readParticipants(db, exp.path);
     assert.notEqual(result.length, 0, "No participants retrieved.");
+  });
+
+  it("Test for readAudit", async () => {
+    const exp = await readExperimentAndQuestions(db, "testbetween");
+    assert.notEqual(
+      exp,
+      null,
+      "Did not retrieve an experiment for testbetween id."
+    );
+    const result = await readAudit(db, exp.path);
+    assert.notEqual(result.length, 0, "No audit entries retrieved.");
   });
 });

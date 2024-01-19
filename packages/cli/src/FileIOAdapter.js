@@ -1,146 +1,154 @@
+import _ from "lodash";
 import {
-  stateFilename,
-  setAllPropertiesEmpty,
-  stateFormatFilename,
   convertKeysCamelCaseToUnderscore,
-  CSVDataFilename,
-  convertAnswersAryToObj,
+  flattenArrayToObject,
 } from "@the-discounters/types";
 import { convertToCSV } from "@the-discounters/util";
 import {
   readExperiment,
   readParticipants,
+  readAudit,
 } from "@the-discounters/firebase-shared";
 
-/**
- * Converts array timestamp properties like
- * instructionsShownTimestamp: [{treatmentId: 1, value: <value1>},{treatmentId: 2, value: <value2>}]
- * to
- * {instructionsShownTimestamp_1: <value1>, instructionsShownTimestamp_2: >value2>}
- * TODO does this need to be exported?  How do I unit test without exporting.
- * @param {*} timestamps
- */
-export const flattenTreatmentValueAry = (propertyName, timestamps) => {
-  return timestamps.reduce((acc, cv) => {
-    const key = `${propertyName}_${cv.treatmentId}`;
-    acc[key] = cv.value;
-    return acc;
-  }, {});
-};
-
-export const flattenTimestampObj = (timestamps) => {
-  let result = {
-    consentShownTimestamp: timestamps.consentShownTimestamp,
-    consentCompletedTimestamp: timestamps.consentCompletedTimestamp,
-    consentTimeSec: timestamps.consentTimeSec,
-    demographicShownTimestamp: timestamps.demographicShownTimestamp,
-    demographicCompletedTimestamp: timestamps.demographicCompletedTimestamp,
-    demographicTimeSec: timestamps.demographicTimeSec,
-    instructionsShownTimestamp: timestamps.instructionsShownTimestamp,
-    instructionsCompletedTimestamp: timestamps.instructionsCompletedTimestamp,
-    instructionsTimeSec: timestamps.instructionsTimeSec,
-    experienceSurveyQuestionsShownTimestamp:
-      timestamps.experienceSurveyQuestionsShownTimestamp,
-    experienceSurveyQuestionsCompletedTimestamp:
-      timestamps.experienceSurveyQuestionsCompletedTimestamp,
-    experienceSurveyTimeSec: timestamps.experienceSurveyTimeSec,
-    financialLitSurveyQuestionsShownTimestamp:
-      timestamps.financialLitSurveyQuestionsShownTimestamp,
-    financialLitSurveyQuestionsCompletedTimestamp:
-      timestamps.financialLitSurveyQuestionsCompletedTimestamp,
-    financialLitSurveyTimeSec: timestamps.financialLitSurveyTimeSec,
-    purposeSurveyQuestionsShownTimestamp:
-      timestamps.purposeSurveyQuestionsShownTimestamp,
-    purposeSurveyQuestionsCompletedTimestamp:
-      timestamps.purposeSurveyQuestionsCompletedTimestamp,
-    purposeSurveyTimeSec: timestamps.purposeSurveyTimeSec,
-    debriefShownTimestamp: timestamps.debriefShownTimestamp,
-    debriefCompletedTimestamp: timestamps.debriefCompletedTimestamp,
-    debriefTimeSec: timestamps.debriefTimeSec,
-  };
-  result = {
-    ...result,
-    ...flattenTreatmentValueAry(
-      "MCLInstructionShownTimestamp",
-      timestamps.MCLInstructionShownTimestamp
-    ),
-    ...flattenTreatmentValueAry(
-      "MCLInstructionCompletedTimestamp",
-      timestamps.MCLInstructionCompletedTimestamp
-    ),
-    ...flattenTreatmentValueAry(
-      "MCLInstructionTimeSec",
-      timestamps.MCLInstructionTimeSec
-    ),
-    ...flattenTreatmentValueAry(
-      "attentionCheckShownTimestamp",
-      timestamps.attentionCheckShownTimestamp
-    ),
-    ...flattenTreatmentValueAry(
-      "attentionCheckCompletedTimestamp",
-      timestamps.attentionCheckCompletedTimestamp
-    ),
-    ...flattenTreatmentValueAry(
-      "attentionCheckTimeSec",
-      timestamps.attentionCheckTimeSec
-    ),
-  };
+export const flattenState = (obj) => {
+  let result = {};
+  Object.keys(obj).forEach((key) => {
+    const value = obj[key];
+    let flattened = {};
+    switch (key) {
+      case "timestamps":
+        flattened = { ...value };
+        delete flattened.MCLInstructionCompletedTimestamp;
+        let flattenedAry = value.MCLInstructionCompletedTimestamp.reduce(
+          (acc, c) => {
+            acc[`MCLInstructionCompletedTimestamp_${c.treatmentId}`] = c.value;
+            return acc;
+          },
+          {}
+        );
+        flattened = {
+          ...flattened,
+          ...flattenedAry,
+        };
+        delete flattened.MCLInstructionShownTimestamp;
+        flattenedAry = value.MCLInstructionShownTimestamp.reduce((acc, c) => {
+          acc[`MCLInstructionShownTimestamp_${c.treatmentId}`] = c.value;
+          return acc;
+        }, {});
+        flattened = {
+          ...flattened,
+          ...flattenedAry,
+        };
+        delete flattened.MCLInstructionTimeSec;
+        flattenedAry = value.MCLInstructionTimeSec.reduce((acc, c) => {
+          acc[`MCLInstructionTimeSec_${c.treatmentId}`] = c.value;
+          return acc;
+        }, {});
+        flattened = {
+          ...flattened,
+          ...flattenedAry,
+        };
+        delete flattened.attentionCheckShownTimestamp;
+        flattenedAry = value.attentionCheckShownTimestamp.reduce((acc, c) => {
+          acc[`attentionCheckShownTimestamp_${c.treatmentId}`] = c.value;
+          return acc;
+        }, {});
+        flattened = {
+          ...flattened,
+          ...flattenedAry,
+        };
+        delete flattened.attentionCheckCompletedTimestamp;
+        flattenedAry = value.attentionCheckCompletedTimestamp.reduce(
+          (acc, c) => {
+            acc[`attentionCheckCompletedTimestamp_${c.treatmentId}`] = c.value;
+            return acc;
+          },
+          {}
+        );
+        flattened = {
+          ...flattened,
+          ...flattenedAry,
+        };
+        delete flattened.attentionCheckTimeSec;
+        flattenedAry = value.attentionCheckTimeSec.reduce((acc, c) => {
+          acc[`attentionCheckTimeSec_${c.treatmentId}`] = c.value;
+          return acc;
+        }, {});
+        flattened = {
+          ...flattened,
+          ...flattenedAry,
+        };
+        break;
+      case "questions":
+        value.forEach((v) => {
+          delete v.screenAttributes;
+          delete v.windowAttributes;
+        });
+        flattened = flattenArrayToObject(value, (key, value, obj) => {
+          return key === "participantId" ||
+            key === "sessionId" ||
+            key === "studyId"
+            ? key
+            : `${key}_${obj.treatmentId}_${
+                obj.sequenceId ? obj.sequenceId : ""
+              }`;
+        });
+        break;
+      case "financialLitSurvey":
+      case "purposeSurvey":
+      case "experienceSurvey":
+        flattened = value;
+        break;
+      case "instructionTreatment":
+        // not sure what to do with this
+        break;
+      default:
+        flattened[key] = value;
+    }
+    result = {
+      ...result,
+      ...flattened,
+    };
+  });
   return result;
 };
 
-export const flattenState = (state) => {
-  // turn answer rows into columns with sequenceId number as suffix
-  const answersAsObj = convertAnswersAryToObj(state.questions);
-  const timetamps = flattenTimestampObj(state.timestamps);
-  const attentionChecks = flattenTreatmentValueAry(
-    "attentionCheck",
-    state.attentionCheck
-  );
-
-  const flattenedState = {
-    ...{
-      participantId: state.participantId,
-      sessionId: state.sessionId,
-      studyId: state.studyId,
-    },
-    ...timetamps,
-    consentChecked: state.consentChecked,
-    // demographic
-    countryOfResidence: state.countryOfResidence,
-    vizFamiliarity: state.vizFamiliarity,
-    age: state.age,
-    gender: state.gender,
-    selfDescribeGender: state.selfDescribeGender,
-    profession: state.profession,
-    employment: state.employment,
-    selfDescribeEmployment: state.selfDescribeEmployment,
-    timezone: state.timezone,
-    userAgent: state.userAgent,
-    ...answersAsObj,
-    attentionCheck: attentionChecks,
-    ...state.experienceSurvey,
-    ...state.financialLitSurvey,
-    ...state.purposeSurvey,
-    feedback: state.feedback,
-  };
-  return flattenedState;
+const exportParticipants = async (db, studyId) => {
+  const experiment = await readExperiment(db, studyId);
+  const participants = await readParticipants(db, experiment.path);
+  return { experiment, participants };
 };
 
 export const exportParticipantsToJSON = async (db, studyId) => {
-  const exp = await readExperiment(db, studyId);
-  const participants = await readParticipants(db, exp.path);
-  return JSON.stringify({ ...exp, participants: participants });
+  const { experiment, participants } = await exportParticipants(db, studyId);
+  return JSON.stringify({ ...experiment, participants: participants });
 };
 
-export const exportParticipantToCSV = (participant, includeHeader) => {
+const exportAudit = async (db, studyId) => {
+  const experiment = await readExperiment(db, studyId);
+  const audit = await readAudit(db, experiment.path);
+  return { experiment, audit };
+};
+
+export const exportAuditToJSON = async (db, studyId) => {
+  const { experiment, audit } = await exportAudit(db, studyId);
+  return JSON.stringify({ ...experiment, audit });
+};
+
+export const exportConfigToJSON = async (db, studyId) => {
+  const exp = await readExperiment(db, studyId);
+  //const participants = await readParticipants(db, exp.path);
+  //return JSON.stringify({ ...exp, participants: participants });
+};
+
+export const convertParticipantToCSV = (participant, includeHeader) => {
   const flattened = flattenState(participant);
   const underscore = convertKeysCamelCaseToUnderscore(flattened);
   return convertToCSV(underscore, includeHeader);
 };
 
 export const exportParticipantsToCSV = async (db, studyId) => {
-  const exp = await readExperiment(db, studyId);
-  const participants = await readParticipants(db, exp.path);
+  const { experiment, participants } = await exportParticipants(db, studyId);
   return participants.reduce(
     (acc, cv, i) => acc + participantToCSV(cv, underscore, i === 0) + "\n"
   );

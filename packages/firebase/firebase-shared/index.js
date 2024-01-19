@@ -16,6 +16,7 @@ import {
   updateParticipant,
   createAuditLogEntry,
   readParticipants,
+  readAudit,
 } from "./src/firestoreAdmin.js";
 
 export {
@@ -36,4 +37,5 @@ export {
   updateParticipant,
   createAuditLogEntry,
   readParticipants,
+  readAudit,
 };

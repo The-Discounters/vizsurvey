@@ -19,33 +19,7 @@ describe("ObjectUtil test.", () => {
     expect(result.property__five).toBe("value5");
   });
 
-  test("convertAnswersAryToObj with all properties populated.", async () => {
-    const input = [
-      {
-        participantId: 1,
-        sessionId: 2,
-        treatmentId: 1,
-        sequenceId: 1,
-        data: "data1",
-      },
-      {
-        participantId: 1,
-        sessionId: 2,
-        treatmentId: 2,
-        sequenceId: 1,
-        data: "data2",
-      },
-    ];
-    const result = obj.convertAnswersAryToObj(input);
-    expect(result.participantId).toBe(1);
-    expect(result.sessionId).toBe(2);
-    expect(result.treatmentId_1_1).toBe(1);
-    expect(result.treatmentId_2_1).toBe(2);
-    expect(result.data_1_1).toBe("data1");
-    expect(result.data_2_1).toBe("data2");
-  });
-
-  test("convertAnswersAryToObj with undefined and null properties.", async () => {
+  test("flattenArrayToObject with data undefined and null.", async () => {
     const input = [
       {
         participantId: 1,
@@ -62,7 +36,14 @@ describe("ObjectUtil test.", () => {
         data: null,
       },
     ];
-    const result = obj.convertAnswersAryToObj(input);
+    const result = obj.flattenArrayToObject(input, (key, value, o) => {
+      if (key === "participantId" || key === "sessionId" || key === "studyId") {
+        return key;
+      } else {
+        return `${key}_${o.treatmentId}_${o.sequenceId}`;
+      }
+    });
+
     expect(result.participantId).toBe(1);
     expect(result.sessionId).toBe(2);
     expect(result.treatmentId_1_1).toBe(1);

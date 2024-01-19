@@ -27,26 +27,15 @@ export const setUndefinedPropertiesNull = (obj) => {
   return _.mapValues(obj, (value) => (value == undefined ? null : value));
 };
 
-export const convertAnswersAryToObj = (answersAry) => {
-  const result = answersAry.reduce((acc, current) => {
+export const flattenArrayToObject = (array, keyFunc) => {
+  const result = array.reduce((acc, current) => {
     // eslint-disable-next-line no-undef
-    const answerObj = _.mapKeys(current, (value, key, object) => {
-      if (
-        key === "participant_id" ||
-        key === "participantId" ||
-        key === "session_id" ||
-        key === "sessionId" ||
-        key === "study_id" ||
-        key === "studyId"
-      ) {
-        return key;
-      } else {
-        return `${key}_${object.treatmentId}_${object.sequenceId}`;
-      }
+    const obj = _.mapKeys(current, (value, key, object) => {
+      return keyFunc(key, value, object);
     });
     const mappedObj = {
       ...acc,
-      ...answerObj,
+      ...obj,
     };
     return mappedObj;
   }, {});

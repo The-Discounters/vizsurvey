@@ -30,7 +30,10 @@ import {
   parseFileToObj,
   parseLookupText,
 } from "./importUtil.js";
-import { exportParticipantsToJSON } from "./FileIOAdapter.js";
+import {
+  exportParticipantsToJSON,
+  exportAuditToJSON,
+} from "./FileIOAdapter.js";
 
 const validateInt = (value, dummyPrevious) => {
   const parsedValue = parseInt(value, 10);
@@ -143,6 +146,32 @@ const exportData = async (db, format, studyId, filename) => {
   }
 };
 
+const exportAudit = async (db, format, studyId, filename) => {
+  switch (format) {
+    case FileTypes.json:
+      const jsonString = await exportAuditToJSON(db, studyId);
+      writeFile(filename, jsonString);
+      break;
+    case FileTypes.csv:
+      throw new Error("CSV export type not implemented yet!");
+    default:
+      break;
+  }
+};
+
+const exportConfig = async (db, format, studyId, filename) => {
+  switch (format) {
+    case FileTypes.json:
+      //const jsonString = await exportParticipantsToJSON(db, studyId);
+      writeFile(filename, jsonString);
+      break;
+    case FileTypes.csv:
+      throw new Error("CSV export type not implemented yet!");
+    default:
+      break;
+  }
+};
+
 program
   .command("export")
   .description("Exports data from firestore to a CSV file.")
@@ -188,7 +217,7 @@ program
           exportData(db, options.format, options.experiment, filename);
           break;
         case ExportTypes.audit:
-          throw new Error("Not implemented yet!");
+          exportAudit(db, options.format, options.experiment, filename);
       }
     } catch (err) {
       console.log(chalk.red(err));
