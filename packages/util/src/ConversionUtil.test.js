@@ -1,4 +1,9 @@
-import { dateToState, stateToDate, stringToDate } from "./ConversionUtil";
+import {
+  dateToState,
+  stateToDate,
+  stringToDate,
+  ISODateStringWithNanoSec,
+} from "./ConversionUtil";
 import { DateTime } from "luxon";
 
 describe("ConversionUtil test.", () => {
@@ -48,8 +53,16 @@ describe("ConversionUtil test.", () => {
     expect(stateToDate(undefined)).toBeNull();
     expect(stateToDate(undefined)).toBeNull();
   });
+
   test("Test what does luxon DateTime.fromFormat return on invalid date.", async () => {
     const result = DateTime.fromFormat("abc", "MM/dd/yyyy");
     expect(result.invalidReason).toBeTruthy();
+  });
+
+  test("Test ISODateStringWithNanoSec.", async () => {
+    const stringValue = "1974-11-08T00:00:00.000-05:00";
+    const dateValue = DateTime.fromISO(stringValue);
+    const result = ISODateStringWithNanoSec(dateValue.toJSDate(), 100000000);
+    expect(result).toBe("1974-11-08T00:00:00.100000000-05:00");
   });
 });

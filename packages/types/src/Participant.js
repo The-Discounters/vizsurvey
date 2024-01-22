@@ -18,8 +18,8 @@ export const Participant = ({
   instructionsShownTimestamp,
   instructionsCompletedTimestamp,
   instructionsTimeSec,
-  MCLInstructionShownTimestamp,
-  MCLInstructionCompletedTimestamp,
+  choiceInstructionShownTimestamp,
+  choiceInstructionCompletedTimestamp,
 }) =>
   Object.freeze({
     participantId,
@@ -41,6 +41,6 @@ export const Participant = ({
     instructionsShownTimestamp,
     instructionsCompletedTimestamp,
     instructionsTimeSec,
-    MCLInstructionShownTimestamp,
-    MCLInstructionCompletedTimestamp,
+    choiceInstructionShownTimestamp,
+    choiceInstructionCompletedTimestamp,
   });

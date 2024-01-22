@@ -89,8 +89,8 @@ function postsurvey(expects) {
               timestamps: {
                 consentShownTimestamp: 500,
                 consentCompletedTimestamp: 1000,
-                MCLInstructionShownTimestamp: 1500,
-                MCLInstructionCompletedTimestamp: 2000,
+                choiceInstructionShownTimestamp: 1500,
+                choiceInstructionCompletedTimestamp: 2000,
                 demographicShownTimestamp: 2000,
                 demographicCompletedTimestamp: 4000,
                 instructionsShownTimestamp: 4000,

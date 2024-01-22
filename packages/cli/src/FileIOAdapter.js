@@ -3,12 +3,25 @@ import {
   convertKeysCamelCaseToUnderscore,
   flattenArrayToObject,
 } from "@the-discounters/types";
-import { convertToCSV } from "@the-discounters/util";
+import { convertToCSV, ISODateStringWithNanoSec } from "@the-discounters/util";
 import {
   readExperiment,
   readParticipants,
   readAudit,
 } from "@the-discounters/firebase-shared";
+
+/**
+ * Converts array objects with treatmentId and value  properties like
+ * [{treatmentId: 1, value: <value1>},{treatmentId: 2, value: <value2>}]
+ * to {<propertyName>_1: <value1>, <propertyName>_2: >value2>}
+ */
+export const flattenTreatmentValueAry = (propertyName, array) => {
+  return array.reduce((acc, cv) => {
+    const key = `${propertyName}_${cv.treatmentId}`;
+    acc[key] = cv.value;
+    return acc;
+  }, {});
+};
 
 export const flattenState = (obj) => {
   let result = {};
@@ -18,65 +31,53 @@ export const flattenState = (obj) => {
     switch (key) {
       case "timestamps":
         flattened = { ...value };
-        delete flattened.MCLInstructionCompletedTimestamp;
-        let flattenedAry = value.MCLInstructionCompletedTimestamp.reduce(
-          (acc, c) => {
-            acc[`MCLInstructionCompletedTimestamp_${c.treatmentId}`] = c.value;
-            return acc;
-          },
-          {}
-        );
+        delete flattened.choiceInstructionCompletedTimestamp;
         flattened = {
           ...flattened,
-          ...flattenedAry,
+          ...flattenTreatmentValueAry(
+            "choiceInstructionCompletedTimestamp",
+            value.choiceInstructionCompletedTimestamp
+          ),
         };
-        delete flattened.MCLInstructionShownTimestamp;
-        flattenedAry = value.MCLInstructionShownTimestamp.reduce((acc, c) => {
-          acc[`MCLInstructionShownTimestamp_${c.treatmentId}`] = c.value;
-          return acc;
-        }, {});
+        delete flattened.choiceInstructionShownTimestamp;
         flattened = {
           ...flattened,
-          ...flattenedAry,
+          ...flattenTreatmentValueAry(
+            "choiceInstructionShownTimestamp",
+            value.choiceInstructionShownTimestamp
+          ),
         };
-        delete flattened.MCLInstructionTimeSec;
-        flattenedAry = value.MCLInstructionTimeSec.reduce((acc, c) => {
-          acc[`MCLInstructionTimeSec_${c.treatmentId}`] = c.value;
-          return acc;
-        }, {});
+        delete flattened.choiceInstructionTimeSec;
         flattened = {
           ...flattened,
-          ...flattenedAry,
+          ...flattenTreatmentValueAry(
+            "choiceInstructionTimeSec",
+            value.choiceInstructionTimeSec
+          ),
         };
         delete flattened.attentionCheckShownTimestamp;
-        flattenedAry = value.attentionCheckShownTimestamp.reduce((acc, c) => {
-          acc[`attentionCheckShownTimestamp_${c.treatmentId}`] = c.value;
-          return acc;
-        }, {});
         flattened = {
           ...flattened,
-          ...flattenedAry,
+          ...flattenTreatmentValueAry(
+            "attentionCheckShownTimestamp",
+            value.attentionCheckShownTimestamp
+          ),
         };
         delete flattened.attentionCheckCompletedTimestamp;
-        flattenedAry = value.attentionCheckCompletedTimestamp.reduce(
-          (acc, c) => {
-            acc[`attentionCheckCompletedTimestamp_${c.treatmentId}`] = c.value;
-            return acc;
-          },
-          {}
-        );
         flattened = {
           ...flattened,
-          ...flattenedAry,
+          ...flattenTreatmentValueAry(
+            "attentionCheckCompletedTimestamp",
+            value.attentionCheckCompletedTimestamp
+          ),
         };
         delete flattened.attentionCheckTimeSec;
-        flattenedAry = value.attentionCheckTimeSec.reduce((acc, c) => {
-          acc[`attentionCheckTimeSec_${c.treatmentId}`] = c.value;
-          return acc;
-        }, {});
         flattened = {
           ...flattened,
-          ...flattenedAry,
+          ...flattenTreatmentValueAry(
+            "attentionCheckTimeSec",
+            value.attentionCheckTimeSec
+          ),
         };
         break;
       case "questions":
@@ -100,7 +101,13 @@ export const flattenState = (obj) => {
         flattened = value;
         break;
       case "instructionTreatment":
-        // not sure what to do with this
+        // TODO not sure what to do with this
+        break;
+      case "serverTimestamp":
+        flattened[key] = ISODateStringWithNanoSec(
+          value.toDate(),
+          value.nanoseconds
+        );
         break;
       default:
         flattened[key] = value;

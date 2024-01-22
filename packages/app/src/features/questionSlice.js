@@ -58,9 +58,9 @@ const initialState = {
     demographicShownTimestamp: null,
     demographicCompletedTimestamp: null,
     demographicTimeSec: null,
-    MCLInstructionShownTimestamp: [],
-    MCLInstructionCompletedTimestamp: [],
-    MCLInstructionTimeSec: [],
+    choiceInstructionShownTimestamp: [],
+    choiceInstructionCompletedTimestamp: [],
+    choiceInstructionTimeSec: [],
     instructionsShownTimestamp: null,
     instructionsCompletedTimestamp: null,
     instructionsTimeSec: null,
@@ -189,20 +189,21 @@ export const questionSlice = createSlice({
       state.status = qe.nextState(state);
     },
     MCLInstructionsShown(state, action) {
-      state.timestamps.MCLInstructionShownTimestamp.push({
+      state.timestamps.choiceInstructionShownTimestamp.push({
         treatmentId: qe.currentAnswer(state).treatmentId,
         value: action.payload,
       });
     },
     MCLInstructionsCompleted(state, action) {
-      state.timestamps.MCLInstructionCompletedTimestamp.push({
+      state.timestamps.choiceInstructionCompletedTimestamp.push({
         treatmentId: qe.currentAnswer(state).treatmentId,
         value: action.payload,
       });
-      const shownTimestamp = state.timestamps.MCLInstructionShownTimestamp.find(
-        (cv) => cv.treatmentId === qe.currentAnswer(state).treatmentId
-      ).timestamp;
-      state.timestamps.MCLInstructionTimeSec.push({
+      const shownTimestamp =
+        state.timestamps.choiceInstructionShownTimestamp.find(
+          (cv) => cv.treatmentId === qe.currentAnswer(state).treatmentId
+        ).timestamp;
+      state.timestamps.choiceInstructionTimeSec.push({
         treatmentId: qe.currentAnswer(state).treatmentId,
         value: secondsBetween(shownTimestamp, action.payload),
       });

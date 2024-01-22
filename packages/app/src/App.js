@@ -13,7 +13,7 @@ import { Container } from "@material-ui/core";
 import chalk from "chalk";
 import "./App.css";
 import { navigateFromStatus } from "./components/Navigate.js";
-import MCLInstructions from "./components/MCLInstructions.jsx";
+import ChoiceInstructions from "./components/ChoiceInstructions.jsx";
 import Demographic from "./components/Demographic.jsx";
 import Instructions from "./components/Instructions.jsx";
 import Survey from "./components/Survey.jsx";
@@ -76,7 +76,10 @@ const App = () => {
               <Route path="start" element={<GenTreatmentId />} />
               <Route path={"consent"} element={<Consent />} />
               <Route path={"demographic"} element={<Demographic />} />
-              <Route path={"mclinstructions"} element={<MCLInstructions />} />
+              <Route
+                path={"choiceinstructions"}
+                element={<ChoiceInstructions />}
+              />
               <Route path={"instruction"} element={<Instructions />} />
               <Route path={"survey"} element={<Survey />} />
               <Route

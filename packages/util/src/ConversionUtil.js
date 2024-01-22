@@ -26,3 +26,11 @@ export const secondsBetween = (before, after) => {
     ? stateToDate(after).diff(stateToDate(before), ["seconds"]).seconds
     : "";
 };
+
+export const ISODateStringWithNanoSec = (date, nanosec) => {
+  const dateStr = DateTime.fromJSDate(date).toISO(); // produces '2017-04-22T20:47:05.335-04:00'
+  // and we want format yyyy-mm-dd hh:mm:ss.fffffffff, where ffffffffff indicates nanoseconds.
+  const regex = /\.[\d]+/;
+  const result = dateStr.replace(regex, `.${nanosec}`);
+  return result;
+};

@@ -117,6 +117,16 @@
             "internalConsoleOptions": "neverOpen",
         },
         {
+            "name": "Jest Debug opened file util",
+            "type": "node",
+            "request": "launch",
+            "args": ["--experimental-vm-modules", "../../node_modules/jest/bin/jest.js", "--watchAll -- --silent=false"],
+            "cwd": "${workspaceRoot}/packages/util",
+            "protocol": "inspector",
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen",
+        },
+        {
             "name": "Jest single run all tests",
             "type": "node",
             "request": "launch",

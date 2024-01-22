@@ -4,7 +4,7 @@
 2. ~~Get the server sequence to be in a transaction and write the unit test to test that we get uniquely assigned sequences for requests at the same time.~~
 3. Implement the logic to check if we should overwrite state based on the state.status and the number of questions answered. Check the browswer timestamp and if we appear to have a later entry before in time, write a warning.
    ~~4. Append redux state for all updates to the audit collection.~~
-4. Write the CLI code to do the CSV file extract.
+4. ~~Write the CLI code to do the CSV file extract for data and audit.~~
 5. Figure out what to do with the CLI monitor. Maybe turn that into a simple web page?
 6. Fix the extended bar chart max time experiment parameter.
 7. Write browswer errors and warning to google analytics. Maybe write the same for functions?
@@ -13,6 +13,9 @@
 10. Deploy and configure production.
 11. Create a test experiment that is active for unit tests.
 12. Get emulator firestore database to reset between unit tests.
+13. Write automated test for CSV extracts.
+14. Make data writes to google function queued.
+15. Write the CLI code to extract experiment configurations.
 
 # What is VizSurvey
 

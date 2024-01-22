@@ -30,7 +30,7 @@ import { StatusType } from "../features/StatusType.js";
 import { drawCalendar } from "./CalendarHelper.js";
 import { drawCalendarYear } from "./CalendarYearHelper.js";
 
-const MCLInstructions = () => {
+const ChoiceInstructions = () => {
   const dispatch = useDispatch();
   const treatment = useSelector(fetchCurrentTreatment);
   const instructionTreatment = useSelector(getInstructionTreatment);
@@ -410,4 +410,4 @@ const MCLInstructions = () => {
   );
 };
 
-export default MCLInstructions;
+export default ChoiceInstructions;

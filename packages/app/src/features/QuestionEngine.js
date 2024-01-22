@@ -96,14 +96,14 @@ export class QuestionEngine {
       case StatusType.Consent:
         return StatusType.Instructions;
       case StatusType.Instructions:
-        return StatusType.MCLInstructions;
-      case StatusType.MCLInstructions:
+        return StatusType.ChoiceInstructions;
+      case StatusType.ChoiceInstructions:
         return StatusType.Survey;
       case StatusType.Survey:
         if (onLastQuestion) {
           return StatusType.ExperienceQuestionaire;
         } else if (onLastTreatmentQuestion) {
-          return StatusType.MCLInstructions;
+          return StatusType.ChoiceInstructions;
         } else {
           return StatusType.Survey;
         }
