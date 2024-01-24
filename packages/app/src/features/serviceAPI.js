@@ -2,7 +2,11 @@ import { ServerStatusType, StatusError } from "@the-discounters/types";
 import { dateToState } from "@the-discounters/util";
 import { DateTime } from "luxon";
 
-export const putRequest = async (URL, data, numRetries = 3) => {
+const updateStateStack = [];
+let processingRequests = false;
+let requestSequence = 0;
+
+export const putRequest = async (URL, body, numRetries = 3) => {
   const response = await fetch(URL, {
     method: "PUT",
     headers: {
@@ -11,13 +15,13 @@ export const putRequest = async (URL, data, numRetries = 3) => {
       "access-control-request-method": "PUT",
       "Content-Type": "application/json",
     },
-    body: JSON.stringify(data),
+    body: body,
   });
   const result = await response.json();
   if (response.status !== 200 || result.status !== ServerStatusType.success) {
     if (numRetries > 1 && response.status >= 500 && response.status <= 599) {
       numRetries--;
-      await putRequest(URL, data, numRetries);
+      await putRequest(URL, body, numRetries);
     } else {
       throw new StatusError({
         message: `Server error when putting data to ${URL}!`,
@@ -63,6 +67,23 @@ export const signupParticipant = async (
   return data;
 };
 
+export const processesStateUpdateQueue = async (URLRoot) => {
+  processingRequests = true;
+  const data = updateStateStack.shift();
+  const JSONData = JSON.parse(data);
+  console.log(`${JSONData.state.requestSequence} - 2. sending update.`);
+  putRequest(`${URLRoot}/updateState`, data).then((serverStatus) => {
+    console.log(
+      `${serverStatus.requestSequence} - 3. server recorded with status ${serverStatus.status}.`
+    );
+    if (updateStateStack.length !== 0) {
+      processesStateUpdateQueue(URLRoot);
+    } else {
+      processingRequests = false;
+    }
+  });
+};
+
 export const updateState = async (
   URLRoot,
   participantId,
@@ -75,6 +96,7 @@ export const updateState = async (
     : {
         ...state,
         browserTimestamp: dateToState(DateTime.now()),
+        requestSequence: requestSequence++,
       };
   const data = {
     prolific_pid: participantId,
@@ -82,5 +104,9 @@ export const updateState = async (
     session_id: sessionId,
     state: augmentedState,
   };
-  await putRequest(`${URLRoot}/updateState`, data);
+  console.log(`${data.state.requestSequence} - 1. pushing data.`);
+  updateStateStack.push(JSON.stringify(data));
+  if (!processingRequests) {
+    processesStateUpdateQueue(URLRoot);
+  }
 };

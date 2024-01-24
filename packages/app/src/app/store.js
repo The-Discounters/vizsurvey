@@ -5,7 +5,7 @@ import { StatusType } from "../features/StatusType.js";
 
 export const saveStateAsync = async (state) => {
   try {
-    await updateState(
+    updateState(
       process.env.REACT_APP_SERVER_URL,
       state.participantId,
       state.studyId,

@@ -123,9 +123,11 @@ export const updateState = onRequest(async (request, response) => {
     `updateState prolific_pid=${request.body.prolific_pid}, study_id=${request.body.study_id}, session_id=${request.body.session_id}`
   );
   const { participantId, studyId, sessionId } = parseKeyFromBody(request);
+  let requestSequence;
   try {
     validateKeyValues({ participantId, studyId, sessionId });
     let state = request.body.state;
+    requestSequence = state.requestSequence;
     if (!state) {
       throw new StatusError({
         message: "Error with request parameters. payload not in request.",
@@ -137,10 +139,10 @@ export const updateState = onRequest(async (request, response) => {
       await readExperimentAndQuestions(db, studyId)
     );
     logger.info(
-      `updateState fetched experiment ${exp.experimentId} for studyId=${studyId}, numParticipantsStarted = ${exp.numParticipantsStarted}, numParticipants = ${exp.numParticipants}, status = ${exp.status}, prolificPid = ${participantId}, sessionId = ${sessionId}`
+      `updateState requestSequence=${requestSequence} fetched experiment ${exp.experimentId} for studyId=${studyId}, numParticipantsStarted = ${exp.numParticipantsStarted}, numParticipants = ${exp.numParticipants}, status = ${exp.status}, prolificPid = ${participantId}, sessionId = ${sessionId}`
     );
     state = { ...state, serverTimestamp: Timestamp.now() };
-    // 3. Implement the logic to check if we should overwrite state based on the state.status and the number of questions answered. Check the browswer timestamp and if we appear to have a later entry before in time, write a warning.
+    // TOD Implement the logic to check if we should overwrite state based on the state.status and the number of questions answered. Check the browswer timestamp and if we appear to have a later entry before in time, write a warning.
     const writeTime = await updateParticipant(
       db,
       exp.path,
@@ -155,7 +157,7 @@ export const updateState = onRequest(async (request, response) => {
       });
     }
     logger.info(
-      `updateState succesfull participantId=${participantId}, study_id=${studyId}, session_id=${sessionId} update time ${writeTime.toDate()}`
+      `updateState succesfull requestSequence=${requestSequence}, participantId=${participantId}, study_id=${studyId}, session_id=${sessionId} update time ${writeTime.toDate()}`
     );
     await createAuditLogEntry(
       db,
@@ -164,10 +166,13 @@ export const updateState = onRequest(async (request, response) => {
       state.serverTimestamp,
       state
     );
-    response.status(200).json({ status: ServerStatusType.success });
+    response.status(200).json({
+      status: ServerStatusType.success,
+      requestSequence: requestSequence,
+    });
   } catch (err) {
     logger.error(
-      `updateState ${err.message}, httpstatus=${err.httpstatus} participantId=${participantId}, studyId=${studyId}, sessionId=${sessionId}`
+      `updateState requestSequence=${requestSequence}, ${err.message}, httpstatus=${err.httpstatus} participantId=${participantId}, studyId=${studyId}, sessionId=${sessionId}`
     );
     response
       .status(err.httpstatus ? err.httpstatus : 500)

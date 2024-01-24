@@ -59,7 +59,8 @@ export function Calendar() {
     const path = navigateFromStatus(status);
     if (
       status !== StatusType.Survey &&
-      process.env.REACT_APP_FULLSCREEN === "enabled"
+      process.env.REACT_APP_FULLSCREEN === "enabled" &&
+      document.fullscreenElement
     ) {
       document.exitFullscreen();
     }
