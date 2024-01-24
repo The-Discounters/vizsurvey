@@ -9,13 +9,16 @@ import { Button } from "react-bootstrap";
 import { DateTime } from "luxon";
 import {
   getCurrentQuestion,
-  getCurrentChoice,
   getStatus,
   setQuestionShownTimestamp,
   answer,
 } from "../features/questionSlice.js";
 import { useD3 } from "../hooks/useD3.js";
-import { AmountType } from "@the-discounters/types";
+import {
+  AmountType,
+  WindowAttributes,
+  ScreenAttributes,
+} from "@the-discounters/types";
 import { StatusType } from "../features/StatusType.js";
 import { InteractionType } from "@the-discounters/types";
 import { drawCalendar } from "./CalendarHelper.js";
@@ -205,7 +208,8 @@ export function Calendar() {
                 answer({
                   choice: AmountType.earlierAmount,
                   choiceTimestamp: dateToState(DateTime.now()),
-                  window: window,
+                  window: WindowAttributes(window),
+                  screen: ScreenAttributes(window.screen),
                 })
               );
               setSubmitting(false);

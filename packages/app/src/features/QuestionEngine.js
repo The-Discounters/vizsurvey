@@ -1,6 +1,5 @@
 import { StatusType } from "./StatusType.js";
 import { secondsBetween } from "@the-discounters/util";
-import { ScreenAttributes, WindowAttributes } from "@the-discounters/types";
 
 export const TIMESTAMP_FORMAT = "MM/dd/yyyy H:mm:ss:SSS ZZZZ";
 
@@ -75,8 +74,8 @@ export class QuestionEngine {
       answer.choiceTimestamp
     );
     answer.dragAmount = payload.dragAmount;
-    answer.screenAttributes = ScreenAttributes(payload.window.screen);
-    answer.windowAttributes = WindowAttributes(payload.window);
+    answer.screenAttributes = payload.screen;
+    answer.windowAttributes = payload.window;
   }
 
   nextState(state) {

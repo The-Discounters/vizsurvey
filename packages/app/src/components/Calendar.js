@@ -15,7 +15,11 @@ import {
 } from "../features/questionSlice.js";
 import { StatusType } from "../features/StatusType.js";
 import { useD3 } from "../hooks/useD3.js";
-import { AmountType } from "@the-discounters/types";
+import {
+  AmountType,
+  WindowAttributes,
+  ScreenAttributes,
+} from "@the-discounters/types";
 import { InteractionType } from "@the-discounters/types";
 import { drawCalendar } from "./CalendarHelper.js";
 import { drawCalendarYear } from "./CalendarYearHelper.js";
@@ -84,7 +88,8 @@ export function Calendar() {
                         answer({
                           choice: value,
                           choiceTimestamp: dateToState(DateTime.now()),
-                          window: window,
+                          window: WindowAttributes(window),
+                          screen: ScreenAttributes(window.screen),
                         })
                       );
                     },
@@ -104,7 +109,8 @@ export function Calendar() {
                         answer({
                           choice: value,
                           choiceTimestamp: dateToState(DateTime.now()),
-                          window: window,
+                          window: WindowAttributes(window),
+                          screen: ScreenAttributes(window.screen),
                         })
                       );
                     },
@@ -123,7 +129,8 @@ export function Calendar() {
                         answer({
                           choice: value,
                           choiceTimestamp: dateToState(DateTime.now()),
-                          window: window,
+                          window: WindowAttributes(window),
+                          screen: ScreenAttributes(window.screen),
                         })
                       );
                     },
@@ -187,7 +194,8 @@ export function Calendar() {
                   choice: q.variableAmount,
                   choiceTimestamp: dateToState(DateTime.now()),
                   dragAmount: dragAmount.amount,
-                  window: window,
+                  window: WindowAttributes(window),
+                  screen: ScreenAttributes(window.screen),
                 })
               );
               setSubmitting(false);

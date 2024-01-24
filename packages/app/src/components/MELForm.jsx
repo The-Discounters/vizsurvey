@@ -5,9 +5,12 @@ import { DateTime } from "luxon";
 import { Button, Box, ThemeProvider } from "@mui/material";
 import Grid from "@mui/material/Unstable_Grid2";
 
+import {
+  AmountType,
+  WindowAttributes,
+  ScreenAttributes,
+} from "@the-discounters/types";
 import { MELSelectionForm } from "./MELSelectionForm.jsx";
-
-import { AmountType } from "@the-discounters/types";
 import {
   getCurrentQuestion,
   getCurrentChoice,
@@ -83,7 +86,8 @@ function MELForm() {
               answer({
                 choice: value,
                 choiceTimestamp: dateToState(DateTime.now()),
-                window: window,
+                window: WindowAttributes(window),
+                screen: ScreenAttributes(window.screen),
               })
             );
             setHelperText("");

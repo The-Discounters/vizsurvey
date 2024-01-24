@@ -5,7 +5,11 @@ import { DateTime } from "luxon";
 import { ThemeProvider, Box, Button } from "@mui/material";
 import { Grid } from "@material-ui/core";
 import { useD3 } from "../hooks/useD3.js";
-import { AmountType } from "@the-discounters/types";
+import {
+  AmountType,
+  WindowAttributes,
+  ScreenAttributes,
+} from "@the-discounters/types";
 import {
   getCurrentQuestion,
   getCurrentChoice,
@@ -98,7 +102,8 @@ function BarChart() {
                       answer({
                         choice: value,
                         choiceTimestamp: dateToState(DateTime.now()),
-                        window: window,
+                        window: WindowAttributes(window),
+                        screen: ScreenAttributes(window.screen),
                       })
                     );
                   },
