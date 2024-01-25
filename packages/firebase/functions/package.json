@@ -4,14 +4,15 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "lint": "eslint .",
+    "lint": "eslint",
     "emulator:start": "echo \"Be sure to run source ../../../setenv.sh so that firebase SDK can find admin creds for live tests.  Set FIRESTORE_EMULATOR_HOST if using the emulator!\" && firebase emulators:start --project=vizsurvey-test --inspect-functions --import ../import",
     "emulator:dstart": "echo \"Be sure to run source ../../../setenv.sh so that firebase SDK can find admin creds for live tests.  Set FIRESTORE_EMULATOR_HOST if using the emulator!\" && firebase emulators:start --project=vizsurvey-test --inspect-functions --import ../import",
     "shell": "firebase functions:shell",
     "start": "npm run shell",
     "deploy": "firebase deploy --only functions",
     "test": "mocha './**/*.test.js' --timeout 5s",
-    "logs": "firebase functions:log"
+    "logs": "firebase functions:log",
+    "build": "bash ./deploy-cloud-functions.sh pre-deploy"
   },
   "engines": {
     "node": "18"
