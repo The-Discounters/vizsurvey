@@ -20,8 +20,7 @@ import {
   createAuditLogEntry,
   readExperimentAndQuestions,
 } from "@the-discounters/firebase-shared";
-import { ServerStatusType } from "@the-discounters/types";
-import { StatusError } from "@the-discounters/types";
+import { ServerStatusType, StatusError } from "@the-discounters/types";
 
 initializeApp();
 const db = getFirestore();
