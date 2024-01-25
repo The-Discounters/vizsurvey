@@ -21,11 +21,7 @@
         "firebase-debug.log",
         "firebase-debug.*.log"
       ],
-      "predeploy": [
-        "npm --prefix \"$RESOURCE_DIR\" run lint",
-        "bash ./functions/deploy-cloud-functions.sh pre-deploy"
-      ],
-      "postdeploy": ["bash ./functions/deploy-cloud-functions.sh post-deploy"]
+      "predeploy": ["npm --prefix \"$RESOURCE_DIR\" run lint"]
     }
   ]
 }

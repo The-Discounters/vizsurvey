@@ -26,6 +26,7 @@ packages/test/public
 
 # production
 /build
+/packages/firebase/functions/temp
 
 # misc
 .DS_Store
