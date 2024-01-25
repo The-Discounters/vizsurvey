@@ -163,6 +163,7 @@ export const updateState = onRequest(async (request, response) => {
       db,
       exp.path,
       participantId,
+      requestSequence,
       state.serverTimestamp,
       state
     );

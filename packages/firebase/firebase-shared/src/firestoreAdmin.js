@@ -156,12 +156,13 @@ export const createAuditLogEntry = async (
   db,
   expPath,
   participantId,
+  requestSequence,
   timestamp,
   state
 ) => {
   const ref = await db
     .collection(`${expPath}/audit`)
-    .doc(`${participantId}-${timestamp.valueOf()}`)
+    .doc(`${participantId}-${requestSequence}-${timestamp.valueOf()}`)
     .create(state);
 };
 
