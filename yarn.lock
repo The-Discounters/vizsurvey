@@ -7006,8 +7006,6 @@ __metadata:
     eslint-config-google: "npm:^0.14.0"
     firebase: "npm:^10.6.0"
     firebase-admin: "npm:^11.8.0"
-    firebase-functions: "npm:^4.4.1"
-    firebase-functions-test: "npm:^3.1.0"
     jest: "npm:^29.7.0"
     mocha: "npm:^10.2.0"
   languageName: unknown
@@ -7023,8 +7021,6 @@ __metadata:
     eslint-config-google: "npm:^0.14.0"
     firebase: "npm:^10.6.0"
     firebase-admin: "npm:^11.8.0"
-    firebase-functions: "npm:^4.4.1"
-    firebase-functions-test: "npm:^3.1.0"
     jest: "npm:^29.7.0"
     mocha: "npm:^10.2.0"
   languageName: unknown
@@ -7037,6 +7033,7 @@ __metadata:
     "@the-discounters/firebase-shared": "npm:*"
     "@the-discounters/firebase-test-shared": "npm:*"
     "@the-discounters/test-shared": "npm:*"
+    "@the-discounters/types": "npm:*"
     d3: "npm:^7.8.5"
     eslint: "npm:^8.15.0"
     eslint-config-google: "npm:^0.14.0"
