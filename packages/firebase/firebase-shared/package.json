@@ -14,7 +14,7 @@
     "test:watch": "mocha './src/**/*.test.js' --watch --parallel --timeout 5s",
     "emulator:start": "echo \"Be sure to run source ../../../setenv.sh so that firebase SDK can find admin creds for live tests.  Set FIRESTORE_EMULATOR_HOST if using the emulator!\" && firebase emulators:start --project=vizsurvey-test --inspect-functions --import ../import",
     "emulator:dstart": "echo \"Be sure to run source ../../../setenv.sh so that firebase SDK can find admin creds for live tests.  Set FIRESTORE_EMULATOR_HOST if using the emulator!\" && firebase emulators:start --project=vizsurvey-test --inspect-functions --import ../import",
-    "export:int": "rm -r ../import/* && gsutil -m cp -r \"gs://${0}\" ../import"
+    "download:int": "rm -r ../import/* && gsutil -m cp -r \"gs://${0}\" ../import"
   },
   "dependencies": {
     "firebase": "^10.6.0",
