@@ -9,11 +9,11 @@
     "emulator:dstart": "echo \"Be sure to run source ../../../setenv.sh so that firebase SDK can find admin creds for live tests.  Set FIRESTORE_EMULATOR_HOST if using the emulator!\" && firebase emulators:start --project=vizsurvey-test --inspect-functions --import ../import",
     "shell": "firebase functions:shell",
     "start": "npm run shell",
-    "build": "webpack --mode=development",
+    "build-dev": "webpack --mode development",
+    "build-prod": "webpack --mode production",
     "deploy": "firebase deploy --only functions",
     "test": "mocha './**/*.test.js' --timeout 5s",
-    "logs": "firebase functions:log",
-    "build": "bash ./deploy-cloud-functions.sh pre-deploy"
+    "logs": "firebase functions:log"
   },
   "engines": {
     "node": "18"

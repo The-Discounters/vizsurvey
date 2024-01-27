@@ -17,7 +17,7 @@
     "download:int": "rm -r ../import/* && gsutil -m cp -r \"gs://${0}\" ../import"
   },
   "dependencies": {
-    "firebase": "^10.6.0",
+    "firebase": "^10.7.2",
     "firebase-admin": "^11.8.0"
   },
   "devDependencies": {

@@ -14,7 +14,7 @@
     "test:watch": "mocha './src/**/*.test.js' --watch --parallel --timeout 5s"
   },
   "dependencies": {
-    "firebase": "^10.6.0",
+    "firebase": "^10.7.2",
     "firebase-admin": "^11.8.0"
   },
   "devDependencies": {
