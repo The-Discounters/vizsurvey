@@ -8,14 +8,10 @@ import {
   participantToCSV,
   exportParticipantsToCSV,
 } from "./FileIOAdapter.js";
-import {
-  createQuestionNoTitrate,
-  create2ndQuestionNoTitrate,
-} from "@the-discounters/test-shared";
-
-import ADMIN_CREDS from "../../../admin-credentials-dev.json" assert { type: "json" };
+// TODO can we fix this import so that it comes from an env var?
+import ADMIN_CREDS from "../../firebase/functions/admin-credentials-dev.json" assert { type: "json" };
 // this needs to match the value that is passed to firebase emulators:start --project=
-const PROJECT_ID = "vizsurvey-test";
+const PROJECT_ID = "vizsurvey-staging";
 
 const state = {
   appVersion: "1.1",
@@ -628,7 +624,7 @@ describe("FileIOAdapter firestore integration tests", () => {
   beforeAll(() => {
     const result = initFirestore(
       PROJECT_ID,
-      "https://vizsurvey-test.firebaseio.com/",
+      "https://vizsurvey-staging.firebaseio.com/",
       ADMIN_CREDS
     );
     app = result.app;

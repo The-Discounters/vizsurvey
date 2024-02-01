@@ -2,7 +2,7 @@ import nock from "nock";
 import { ServerStatusType } from "@the-discounters/types";
 import { putRequest, getRequest } from "./serviceAPI.js";
 
-const URLROOT = "http://127.0.0.1:5001/vizsurvey-test/us-central1";
+const URLROOT = "http://127.0.0.1:5001/vizsurvey-staging/us-central1";
 const PARMATERS = "prolific_pid=1&study_id=2&session_id=3&user_agent=agent";
 
 describe("serviceAPI tests", () => {

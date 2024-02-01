@@ -1,6 +1,7 @@
 {
   "projects": {
-    "dev": "vizsurvey-test"
+    "staging": "vizsurvey-staging",
+    "prod": "vizsurvey"
   },
   "targets": {},
   "etags": {}

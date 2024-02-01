@@ -12,13 +12,13 @@
     "start": "yarn run shell",
     "test": "mocha './src/**/*.test.js' --timeout 5s",
     "test:watch": "mocha './src/**/*.test.js' --watch --parallel --timeout 5s",
-    "emulator:start": "echo \"Be sure to run source ../../../setenv.sh so that firebase SDK can find admin creds for live tests.  Set FIRESTORE_EMULATOR_HOST if using the emulator!\" && firebase emulators:start --project=vizsurvey-test --inspect-functions --import ../import",
-    "emulator:dstart": "echo \"Be sure to run source ../../../setenv.sh so that firebase SDK can find admin creds for live tests.  Set FIRESTORE_EMULATOR_HOST if using the emulator!\" && firebase emulators:start --project=vizsurvey-test --inspect-functions --import ../import",
+    "emulator:start": "echo \"Be sure to run source ../../../setenv.sh so that firebase SDK can find admin creds for live tests.  Set FIRESTORE_EMULATOR_HOST if using the emulator!\" && firebase emulators:start --project=vizsurvey-staging --inspect-functions --import ../import",
+    "emulator:dstart": "echo \"Be sure to run source ../../../setenv.sh so that firebase SDK can find admin creds for live tests.  Set FIRESTORE_EMULATOR_HOST if using the emulator!\" && firebase emulators:start --project=vizsurvey-staging --inspect-functions --import ../import",
     "download:int": "rm -r ../import/* && gsutil -m cp -r \"gs://${0}\" ../import"
   },
   "dependencies": {
-    "firebase": "^10.6.0",
-    "firebase-admin": "^11.8.0"
+    "firebase": "^10.7.2",
+    "firebase-admin": "^12.0.0"
   },
   "devDependencies": {
     "@firebase/rules-unit-testing": "^3.0.1",

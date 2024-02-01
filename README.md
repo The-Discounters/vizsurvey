@@ -39,7 +39,12 @@ We looked at code from https://supp-exp-en.netlify.app/ for examples of how to s
 
 ### Create your instance in firestore for staging and production
 
-TBD flush out instructions here.
+Create an new project in firebase console.
+Create a new app in the project above.
+Navigate to the Project Settings->Service Account tab
+Click on Generate new private key button. A JSON file will be generated and downloaded.
+Copy the file to the packages/firebase/functions folder. Keep it secret and be sure to add it to .gitignore file so you don't check it in by accident.
+I think I created the firestore database. I chose to create the rules in test mode which has open access rules for 30 days so that I could get the deployment working. The firestore database was created in datastore mode, which is backward compatible with Firebase real time database. Since we don't have to maintain backward compatiblity, go into the console and switch to native mode. Then you can access the database from the firestore console (otherwise you have to access it from the google cloud console since datastore mode databases can only be accessed from that tool).
 
 ### Download firestore credentials files
 
@@ -50,13 +55,14 @@ admin-credentials-prod.json
 
 ### Create .env file
 
-Create a .env.development, .env.production, and .env.test file in packages/app so that the web app can locate settings.
+.env, .env.local, .env.dev, .env.prod, .env.staging where .env overrides other .env files.
+
+Create a .env.dev, .env.prod, and .env.test file in packages/app so that the web app can locate settings.
 Modify the settings to the appropriate values.
 
 ```
 REACT_APP_ENV=<development or production>
 REACT_APP_VERSION=<product version>
-REACT_APP_accessKeyId=<S3 access id (getting rid of this for firestore)>
 REACT_APP_secretAccessKey=<secret access key (getting rid of this for firestore)>
 REACT_APP_FULLSCREEN=enabled=<enabled or empty>
 REACT_APP_PAYMENT_AMOUT=<payment amount including currency symbol and I needed a slash before symbol i.e. \$3>

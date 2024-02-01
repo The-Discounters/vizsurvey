@@ -2,12 +2,16 @@
 
 # creds
 *admin-credentials-dev.json
+*admin-credentials-staging.json
+.env.test.local
+.env.test
 .env
 .env.local
 .env.development
-.env.test.local
+.env.dev
 .env.production
-.env.test
+.env.prod
+.env.staging
 discounters.development.json
 discounters.production.json
 /setenvprod.sh
