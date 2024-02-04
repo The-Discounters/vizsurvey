@@ -77,7 +77,7 @@ export const drawCalendarYearDual = ({
   qAmountEarlier,
   qAmountLater,
 }) => {
-  let selection = { d: -1, a: -1 };
+  //let selection = { d: -1, a: -1 };
   const date = new Date(qDateEarlier);
   const dateLater = new Date(qDateLater);
   const year = [];

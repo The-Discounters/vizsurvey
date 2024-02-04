@@ -6937,16 +6937,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@the-discounters/firebase-shared@file:./temp/the-discounters-firebase-shared-1.0.0.tgz::locator=%40the-discounters%2Ffunctions%40workspace%3Apackages%2Ffirebase%2Ffunctions":
-  version: 1.0.0
-  resolution: "@the-discounters/firebase-shared@file:./temp/the-discounters-firebase-shared-1.0.0.tgz#./temp/the-discounters-firebase-shared-1.0.0.tgz::hash=29d2fe&locator=%40the-discounters%2Ffunctions%40workspace%3Apackages%2Ffirebase%2Ffunctions"
-  dependencies:
-    firebase: "npm:^10.7.2"
-    firebase-admin: "npm:^12.0.0"
-  checksum: fe077383c79899671189e6400c6a9228ba187053cd1ca5d378525dd35754caf5f69b2c602e5e936e3f099f427cbe9b3372599705443cf3b8882aa0f45d3ff065
-  languageName: node
-  linkType: hard
-
 "@the-discounters/firebase-shared@npm:*, @the-discounters/firebase-shared@workspace:packages/firebase/firebase-shared":
   version: 0.0.0-use.local
   resolution: "@the-discounters/firebase-shared@workspace:packages/firebase/firebase-shared"
@@ -6982,23 +6972,24 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@the-discounters/functions@workspace:packages/firebase/functions"
   dependencies:
-    "@the-discounters/firebase-shared": "file:./temp/the-discounters-firebase-shared-1.0.0.tgz"
-    "@the-discounters/prolific": "file:./temp/the-discounters-prolific-1.0.0.tgz"
-    "@the-discounters/types": "file:./temp/the-discounters-types-1.0.0.tgz"
+    "@the-discounters/firebase-shared": "npm:*"
+    "@the-discounters/firebase-test-shared": "npm:*"
+    "@the-discounters/prolific": "workspace:^"
+    "@the-discounters/test-shared": "npm:*"
+    "@the-discounters/types": "workspace:^"
     d3: "npm:^7.8.5"
+    eslint: "npm:^8.15.0"
+    eslint-config-google: "npm:^0.14.0"
+    eslint-plugin-import: "npm:^2.22.0"
     firebase-admin: "npm:^12.0.0"
     firebase-functions: "npm:^4.6.0"
+    firebase-functions-test: "npm:^3.1.0"
+    jest: "npm:^29.7.0"
+    mocha: "npm:^10.2.0"
   languageName: unknown
   linkType: soft
 
-"@the-discounters/prolific@file:./temp/the-discounters-prolific-1.0.0.tgz::locator=%40the-discounters%2Ffunctions%40workspace%3Apackages%2Ffirebase%2Ffunctions":
-  version: 1.0.0
-  resolution: "@the-discounters/prolific@file:./temp/the-discounters-prolific-1.0.0.tgz#./temp/the-discounters-prolific-1.0.0.tgz::hash=067199&locator=%40the-discounters%2Ffunctions%40workspace%3Apackages%2Ffirebase%2Ffunctions"
-  checksum: 281ce36d6b5571f49fff6943655d68cb514295b4d3b58ecb3b7dc2e9e9866aefa018a0730463136644ab1ed636252875ed8876bae7e58c00c84c4c08bef243f5
-  languageName: node
-  linkType: hard
-
-"@the-discounters/prolific@workspace:packages/prolific":
+"@the-discounters/prolific@workspace:^, @the-discounters/prolific@workspace:packages/prolific":
   version: 0.0.0-use.local
   resolution: "@the-discounters/prolific@workspace:packages/prolific"
   dependencies:
@@ -7023,14 +7014,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@the-discounters/types@file:./temp/the-discounters-types-1.0.0.tgz::locator=%40the-discounters%2Ffunctions%40workspace%3Apackages%2Ffirebase%2Ffunctions":
-  version: 1.0.0
-  resolution: "@the-discounters/types@file:./temp/the-discounters-types-1.0.0.tgz#./temp/the-discounters-types-1.0.0.tgz::hash=133e2a&locator=%40the-discounters%2Ffunctions%40workspace%3Apackages%2Ffirebase%2Ffunctions"
-  checksum: 9bf57f69968b7fef7a6cfc9272defddb403f0228dba6260908008205d107c7fa4145cfc8010bbaea9afc9ac5806dc8f5d9eeaf151fb97292beefeae04dbfc127
-  languageName: node
-  linkType: hard
-
-"@the-discounters/types@npm:*, @the-discounters/types@workspace:packages/types":
+"@the-discounters/types@npm:*, @the-discounters/types@workspace:^, @the-discounters/types@workspace:packages/types":
   version: 0.0.0-use.local
   resolution: "@the-discounters/types@workspace:packages/types"
   dependencies:
@@ -7091,6 +7075,7 @@ __metadata:
     eslint-plugin-prettier: "npm:^4.0.0"
     eslint-plugin-react: "npm:^7.25.1"
     eslint-plugin-react-hooks: "npm:^4.6.0"
+    firebase: "npm:^10.7.2"
     flow-bin: "npm:^0.158.0"
     formik: "npm:^2.2.9"
     gh-pages: "npm:^3.2.3"
@@ -7489,6 +7474,13 @@ __metadata:
   dependencies:
     "@types/node": "npm:*"
   checksum: c582b8420586f3b9550f7e34992cb32be300bc953636f3b087ed9c180ce7ea5c2e4b35090be2d57f0d3168cc3ca1074932907caa2afe09f4e9c84cf5c0daefa8
+  languageName: node
+  linkType: hard
+
+"@types/lodash@npm:^4.14.104":
+  version: 4.14.202
+  resolution: "@types/lodash@npm:4.14.202"
+  checksum: 6064d43c8f454170841bd67c8266cc9069d9e570a72ca63f06bceb484cb4a3ee60c9c1f305c1b9e3a87826049fd41124b8ef265c4dd08b00f6766609c7fe9973
   languageName: node
   linkType: hard
 
@@ -14479,7 +14471,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-import@npm:^2.25.3":
+"eslint-plugin-import@npm:^2.22.0, eslint-plugin-import@npm:^2.25.3":
   version: 2.29.1
   resolution: "eslint-plugin-import@npm:2.29.1"
   dependencies:
@@ -15535,6 +15527,21 @@ __metadata:
     "@google-cloud/storage":
       optional: true
   checksum: 70e619250d1156b168da29312416932f91812a795b5807575b520d51d840d7dcfc1697799f761b63f084a9c284c616c0b6deadcdb1e3d208dd8dbc0a9a1853e2
+  languageName: node
+  linkType: hard
+
+"firebase-functions-test@npm:^3.1.0":
+  version: 3.1.1
+  resolution: "firebase-functions-test@npm:3.1.1"
+  dependencies:
+    "@types/lodash": "npm:^4.14.104"
+    lodash: "npm:^4.17.5"
+    ts-deepmerge: "npm:^2.0.1"
+  peerDependencies:
+    firebase-admin: ^8.0.0 || ^9.0.0 || ^10.0.0 || ^11.0.0 || ^12.0.0
+    firebase-functions: ">=4.3.0"
+    jest: ">=28.0.0"
+  checksum: 6e9a3eb5cf4e18c85f2f5d991174c8c713a862824e50de9a90e7b6e53b379f28d8a9ad2d3e79e7ba577bc9fae13b58bbfcc686b9f0ce74081614abdf21b5c213
   languageName: node
   linkType: hard
 
@@ -20782,7 +20789,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lodash@npm:^4.17.11, lodash@npm:^4.17.14, lodash@npm:^4.17.15, lodash@npm:^4.17.19, lodash@npm:^4.17.20, lodash@npm:^4.17.21, lodash@npm:^4.17.3, lodash@npm:^4.7.0":
+"lodash@npm:^4.17.11, lodash@npm:^4.17.14, lodash@npm:^4.17.15, lodash@npm:^4.17.19, lodash@npm:^4.17.20, lodash@npm:^4.17.21, lodash@npm:^4.17.3, lodash@npm:^4.17.5, lodash@npm:^4.7.0":
   version: 4.17.21
   resolution: "lodash@npm:4.17.21"
   checksum: d8cbea072bb08655bb4c989da418994b073a608dffa608b09ac04b43a791b12aeae7cd7ad919aa4c925f33b48490b5cfe6c1f71d827956071dae2e7bb3a6b74c
@@ -29152,6 +29159,13 @@ __metadata:
   version: 1.0.1
   resolution: "tryer@npm:1.0.1"
   checksum: 19070409a0009dc26127636cc14d2415e9cf8b1dc07b29694e57ea8bb5ea1bded012c0e792f6235b46e31189a7b866841668b3850867ff7eac1a6b55332c960d
+  languageName: node
+  linkType: hard
+
+"ts-deepmerge@npm:^2.0.1":
+  version: 2.0.7
+  resolution: "ts-deepmerge@npm:2.0.7"
+  checksum: c41d71031021f07f1e5bd8ab3c5e752e826f69dae76bfca599a69aaafa3b51877f4897e184437a25ba49d66966d50f8a586cce296f16b8adcdbe91a4e0badfc7
   languageName: node
   linkType: hard
 

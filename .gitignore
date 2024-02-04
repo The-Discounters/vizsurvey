@@ -3,6 +3,8 @@
 # creds
 *admin-credentials-dev.json
 *admin-credentials-staging.json
+web-credentials-staging.json
+web-credentials-production.json
 .env.test.local
 .env.test
 .env

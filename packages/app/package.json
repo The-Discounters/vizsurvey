@@ -21,6 +21,7 @@
     "cypress-real-events": "^1.7.1",
     "d3": "^7.8.5",
     "env-cmd": "^10.1.0",
+    "firebase": "^10.7.2",
     "formik": "^2.2.9",
     "immer": "^8.0.1",
     "lodash": "^4.17.21",
@@ -93,14 +94,6 @@
     "webpack": "^4.44.2",
     "webpack-cli": "^4.8.0",
     "webpack-dev-server": "^3.11.1"
-  },
-  "jest": {
-    "moduleNameMapper": {
-      "d3": "<rootDir>/../../node_modules/d3/dist/d3.min.js"
-    },
-    "transformIgnorePatterns": [
-      "/dist/.+\\.js"
-    ]
   },
   "packageManager": "yarn@4.0.1"
 }

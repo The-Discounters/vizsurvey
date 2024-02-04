@@ -15,3 +15,5 @@ https://firebase.google.com/docs/projects/multiprojects - Document on configurin
 https://cloud.google.com/functions/docs/writing/specifying-dependencies-nodejs - Google Cloud document on specifying dependencies.
 https://cloud.google.com/functions/docs/configuring/env-var - Google cloud document on specifying environment variables.
 https://github.com/hedgepigdaniel/webpack-cloud-functions/ - possible webpack refactor for deploying.
+https://medium.com/@mailtoankitgupta/firebase-functions-with-babel-typescript-fdf04306aec7 - recent post on setting up babel for firebase function deploy.
+https://firebase.google.com/docs/web/module-bundling - google docs on using module bunders.

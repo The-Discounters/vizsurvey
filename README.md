@@ -17,6 +17,7 @@
 13. Make data writes to google function queued.
 14. Write the CLI code to extract experiment configurations.
 15. Write CLI code to validate participant data (check that all the window and screen values match across questions, as well as other checks.)
+16. Fix the cors setting to be valid in the functions index.js
 
 # What is VizSurvey
 

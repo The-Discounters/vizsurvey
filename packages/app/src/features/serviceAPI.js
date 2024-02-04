@@ -1,10 +1,33 @@
 import { ServerStatusType, StatusError } from "@the-discounters/types";
 import { dateToState } from "@the-discounters/util";
 import { DateTime } from "luxon";
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
 
 const updateStateStack = [];
 let processingRequests = false;
 let requestSequence = 0;
+let app;
+export let analytics;
+
+export const initFirestore = ({
+  apiKey,
+  authDomain,
+  projectId,
+  messagingSenderId,
+  appId,
+  measurementId,
+}) => {
+  app = initializeApp({
+    apiKey: apiKey,
+    authDomain: authDomain,
+    projectId: projectId,
+    messagingSenderId: messagingSenderId,
+    appId: appId,
+    measurementId: measurementId,
+  });
+  analytics = getAnalytics(app);
+};
 
 export const putRequest = async (URL, body, numRetries = 3) => {
   const response = await fetch(URL, {
@@ -62,7 +85,7 @@ export const signupParticipant = async (
   userAgentString
 ) => {
   const data = await getRequest(
-    `${URLRoot}/signup?prolific_pid=${participantId}&study_id=${studyId}&session_id=${sessionId}&user_agent=${userAgentString}`
+    `${URLRoot}/signup?key=${app.options.apiKey}&prolific_pid=${participantId}&study_id=${studyId}&session_id=${sessionId}&user_agent=${userAgentString}`
   );
   return data;
 };

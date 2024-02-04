@@ -3,7 +3,7 @@ import { SystemZone } from "luxon";
 import { secondsBetween } from "@the-discounters/util";
 import { QuestionEngine } from "./QuestionEngine.js";
 import { StatusType } from "./StatusType.js";
-import { signupParticipant } from "./serviceAPI.js";
+import { initFirestore, signupParticipant } from "./serviceAPI.js";
 import packageFile from "../../package.json";
 
 const qe = new QuestionEngine();
@@ -13,8 +13,16 @@ export const initializeSurvey = createAsyncThunk(
   async (parameters, thunkAPI) => {
     const result = { ...parameters };
     try {
+      initFirestore({
+        apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
+        authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
+        projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
+        messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
+        appId: process.env.REACT_APP_FIREBASE_APP_ID,
+        measurementId: process.env.REACT_APP_FIREBASE_MEASUREMENT_ID,
+      });
       const data = await signupParticipant(
-        process.env.REACT_APP_SERVER_URL,
+        process.env.REACT_APP_FIREBASE_SERVER_URL,
         parameters.participantId,
         parameters.studyId,
         parameters.sessionId,

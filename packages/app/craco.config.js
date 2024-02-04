@@ -39,4 +39,16 @@ module.exports = {
       return babelLoaderOptions;
     },
   },
+  jest: {
+    configure: {
+      globals: {
+        CONFIG: true,
+      },
+      moduleNameMapper: {
+        d3: "<rootDir>/../../node_modules/d3/dist/d3.min.js",
+      },
+      transformIgnorePatterns: ["/dist/.+\\.js"],
+      setupFiles: ["./setupTests.js"],
+    },
+  },
 };
