@@ -54,73 +54,76 @@ const validateKeyValues = ({ participantId, studyId, sessionId }) => {
 };
 
 // TODO fix cors value.  Shutting off for now.
-export const signup = onRequest({ cors: true }, async (request, response) => {
-  logger.info(
-    `signup prolific_pid=${request.query.prolific_pid}, study_id=${request.query.study_id}, session_id=${request.query.session_id}`
-  );
-  const { participantId, studyId, sessionId } = parseKeyFromQuery(request);
-  const userAgent = request.query.user_agent;
-  try {
-    validateKeyValues({ participantId, studyId, sessionId });
-    // TODO put this in a transaction
+export const signup = onRequest(
+  { cors: ["http://localhost:3000"] },
+  async (request, response) => {
     logger.info(
-      `signup fetching experiment for prolificPid=${participantId}, studyId=${studyId}, sessionId=${sessionId}`
+      `signup prolific_pid=${request.query.prolific_pid}, study_id=${request.query.study_id}, session_id=${request.query.session_id}`
     );
-    const { experimentId, sequenceNumber } =
-      await assignParticipantSequenceNumberXaction(db, studyId);
-    logger.info(
-      `signup Assigned participant number ${sequenceNumber}, experimentId ${experimentId}, participantId ${participantId}.`
-    );
-    logger.info(
-      `signup reading back experiment for prolificPid=${participantId}, studyId=${studyId}, sessionId=${sessionId}`
-    );
-    const exp = validateExperiment(
-      await readExperimentAndQuestions(db, studyId)
-    );
-    // It's possible other participants signed up and the count increased so we can't check equal to
-    if (exp.numParticipantsStarted < sequenceNumber) {
-      logger.warning(
-        `signup read back experiment with numParticipantsStarted ${exp.numParticipantsStarted} which is less than the value ${sequenceNumber} when it should be equal to or greater than.`
+    const { participantId, studyId, sessionId } = parseKeyFromQuery(request);
+    const userAgent = request.query.user_agent;
+    try {
+      validateKeyValues({ participantId, studyId, sessionId });
+      // TODO put this in a transaction
+      logger.info(
+        `signup fetching experiment for prolificPid=${participantId}, studyId=${studyId}, sessionId=${sessionId}`
       );
-    }
-    logger.info(
-      `signup Signing up participant for experimentId ${exp.experimentId}, participantId ${participantId}, server assigned sequence ${sequenceNumber}`
-    );
-    const signupData = await signupParticipant(
-      db,
-      participantId,
-      studyId,
-      sessionId,
-      sequenceNumber,
-      exp,
-      (isError, msg) => {
-        if (!isError) {
-          logger.info(msg);
-        } else {
-          throw new StatusError({
-            message: msg,
-            httpstatus: 500,
-            reason: ServerStatusType.error,
-          });
-        }
+      const { experimentId, sequenceNumber } =
+        await assignParticipantSequenceNumberXaction(db, studyId);
+      logger.info(
+        `signup Assigned participant number ${sequenceNumber}, experimentId ${experimentId}, participantId ${participantId}.`
+      );
+      logger.info(
+        `signup reading back experiment for prolificPid=${participantId}, studyId=${studyId}, sessionId=${sessionId}`
+      );
+      const exp = validateExperiment(
+        await readExperimentAndQuestions(db, studyId)
+      );
+      // It's possible other participants signed up and the count increased so we can't check equal to
+      if (exp.numParticipantsStarted < sequenceNumber) {
+        logger.warning(
+          `signup read back experiment with numParticipantsStarted ${exp.numParticipantsStarted} which is less than the value ${sequenceNumber} when it should be equal to or greater than.`
+        );
       }
-    );
-    response
-      .status(200)
-      .json({ ...signupData, status: ServerStatusType.success });
-  } catch (err) {
-    logger.error(
-      `signup ${err.message} participantId=${participantId}, studyId=${studyId}, sessionId=${sessionId}`
-    );
-    response
-      .status(err.httpstatus ? err.httpstatus : 500)
-      .json({ status: err.reason ? err.reason : ServerStatusType.error });
+      logger.info(
+        `signup Signing up participant for experimentId ${exp.experimentId}, participantId ${participantId}, server assigned sequence ${sequenceNumber}`
+      );
+      const signupData = await signupParticipant(
+        db,
+        participantId,
+        studyId,
+        sessionId,
+        sequenceNumber,
+        exp,
+        (isError, msg) => {
+          if (!isError) {
+            logger.info(msg);
+          } else {
+            throw new StatusError({
+              message: msg,
+              httpstatus: 500,
+              reason: ServerStatusType.error,
+            });
+          }
+        }
+      );
+      response
+        .status(200)
+        .json({ ...signupData, status: ServerStatusType.success });
+    } catch (err) {
+      logger.error(
+        `signup ${err.message} participantId=${participantId}, studyId=${studyId}, sessionId=${sessionId}`
+      );
+      response
+        .status(err.httpstatus ? err.httpstatus : 500)
+        .json({ status: err.reason ? err.reason : ServerStatusType.error });
+    }
   }
-});
+);
 
 // TODO fix cors value.  Shutting off for now.
 export const updateState = onRequest(
-  { cors: true },
+  { cors: ["http://localhost:3000"] },
   async (request, response) => {
     logger.info(
       `updateState prolific_pid=${request.body.prolific_pid}, study_id=${request.body.study_id}, session_id=${request.body.session_id}`

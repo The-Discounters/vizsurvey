@@ -17,3 +17,7 @@ https://cloud.google.com/functions/docs/configuring/env-var - Google cloud docum
 https://github.com/hedgepigdaniel/webpack-cloud-functions/ - possible webpack refactor for deploying.
 https://medium.com/@mailtoankitgupta/firebase-functions-with-babel-typescript-fdf04306aec7 - recent post on setting up babel for firebase function deploy.
 https://firebase.google.com/docs/web/module-bundling - google docs on using module bunders.
+https://firebase.google.com/docs/projects/api-keys - Great document that explains firebase API keys. Basically they identify an application and are OK to embed in the app.
+https://firebase.google.com/docs/rules/manage-deploy - Document that explains how to configure firebase security rules.
+https://firebase.google.com/docs/web/setup - Goes over how to setup firebase in your javascript application (client side setup).
+https://github.com/firebase/functions-samples - Firebase sample projects.
