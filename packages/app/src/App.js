@@ -8,7 +8,6 @@ import {
   Routes,
   Link,
 } from "react-router-dom";
-import { Typography } from "@mui/material";
 import { Container } from "@material-ui/core";
 import chalk from "chalk";
 import "./App.css";
@@ -21,6 +20,7 @@ import PostSurveyExperience from "./components/PostSurveyExperience.jsx";
 import PostSurveyFinancialLit from "./components/PostSurveyFinancialLit.jsx";
 import PostSurveySenseOfPurpose from "./components/PostSurveySenseOfPurpose.jsx";
 import Debrief from "./components/Debrief.jsx";
+import Spiner from "./components/Spinner.js";
 import InvalidSurveyLink from "./components/InvalidSurveyLink.jsx";
 import {
   getStatus,
@@ -144,11 +144,7 @@ const GenTreatmentId = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status]);
 
-  return (
-    <React.Fragment>
-      <Typography paragraph>The application is initializing.</Typography>
-    </React.Fragment>
-  );
+  return <Spiner text="The application is initializing." />;
 };
 
 const DevHome = () => {

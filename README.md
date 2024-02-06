@@ -9,15 +9,14 @@
    ~~6. Fix the extended bar chart max time experiment parameter.~~
 6. Write browswer errors and warning to google analytics. Maybe write the same for functions?
 7. Write firestore rules to lock down reading data from non CLI account.
-8. Get everything deployed to stating env and working.
+8. ~~Get everything deployed to stating env and working.~~
 9. Deploy and configure production.
-10. Create a test experiment that is active for unit tests.
+10. ~~Create a test experiment that is active for unit tests. => Using testbetween entry.~~
 11. Get emulator firestore database to reset between unit tests.
-12. Write automated test for CSV extracts.
-13. Make data writes to google function queued.
-14. Write the CLI code to extract experiment configurations.
-15. Write CLI code to validate participant data (check that all the window and screen values match across questions, as well as other checks.)
-16. Fix the cors setting to be valid in the functions index.js
+12. Write automated test for CSV extracts. 13.~~Make data writes to google function queued.~~
+13. Write the CLI code to extract experiment configurations.
+14. Write CLI code to validate participant data (check that all the window and screen values match across questions, as well as other checks.)
+15. Fix the cors setting to be valid in the functions index.js
 
 # What is VizSurvey
 
