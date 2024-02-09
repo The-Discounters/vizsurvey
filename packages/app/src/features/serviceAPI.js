@@ -18,9 +18,6 @@ export const subscribe = (_callback) => {
 const setProcessingRequest = (value) => {
   if (processingRequests !== value) {
     processingRequests = value;
-    console.log(
-      `update state pool ${processingRequests ? "filled" : "drained"}`
-    );
     callback(processingRequests);
   }
 };

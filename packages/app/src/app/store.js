@@ -4,7 +4,6 @@ import { updateState } from "../features/serviceAPI.js";
 import { StatusType } from "../features/StatusType.js";
 
 export const saveStateAsync = async (state) => {
-  console.log("saveStateAsync");
   try {
     updateState(
       process.env.REACT_APP_FIREBASE_SERVER_URL,
