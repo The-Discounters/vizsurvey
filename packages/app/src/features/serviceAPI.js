@@ -21,7 +21,7 @@ const setProcessingRequest = (value) => {
     console.log(
       `update state pool ${processingRequests ? "filled" : "drained"}`
     );
-    callback(processingRequests ? "true" : "false");
+    callback(processingRequests);
   }
 };
 

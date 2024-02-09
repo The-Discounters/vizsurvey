@@ -72,7 +72,7 @@ const Debrief = () => {
         return "*** SHOULD NOT SEE THIS TEXT ***";
     }
   };
-  if (processingRequests === "true") {
+  if (processingRequests) {
     return <Spinner text="Your answers are being saved..." />;
   } else {
     return (

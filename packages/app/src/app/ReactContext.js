@@ -4,7 +4,7 @@ import { subscribe } from "../features/serviceAPI.js";
 export const Context = React.createContext();
 
 export const ServiceAPIProvider = ({ children }) => {
-  const [state, updateState] = React.useState("false");
+  const [state, updateState] = React.useState(false);
 
   // Subscribe to API
   React.useEffect(() => {
