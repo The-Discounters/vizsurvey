@@ -4,19 +4,24 @@
 2. ~~Get the server sequence to be in a transaction and write the unit test to test that we get uniquely assigned sequences for requests at the same time.~~
 3. Implement the logic to check if we should overwrite state based on the state.status and the number of questions answered. Check the browswer timestamp and if we appear to have a later entry before in time, write a warning.
    ~~4. Append redux state for all updates to the audit collection.~~
-4. ~~Write the CLI code to do the CSV file extract for data and audit.~~
-5. Figure out what to do with the CLI monitor. Maybe turn that into a simple web page?
+4. ~~Fix the bug with many calls to updateState due to the survey making reducer calls for each question added.~~
+5. ~~Write the CLI code to do the CSV file extract for data and audit.~~
+6. Figure out what to do with the CLI monitor. Maybe turn that into a simple web page?
    ~~6. Fix the extended bar chart max time experiment parameter.~~
-6. Write browswer errors and warning to google analytics. Maybe write the same for functions?
-7. Write firestore rules to lock down reading data from non CLI account.
-8. ~~Get everything deployed to stating env and working.~~
-9. Deploy and configure production.
-10. ~~Create a test experiment that is active for unit tests. => Using testbetween entry.~~
-11. Get emulator firestore database to reset between unit tests.
-12. Write automated test for CSV extracts. 13.~~Make data writes to google function queued.~~
-13. Write the CLI code to extract experiment configurations.
-14. Write CLI code to validate participant data (check that all the window and screen values match across questions, as well as other checks.)
-15. Fix the cors setting to be valid in the functions index.js
+7. Write browswer errors and warning to google analytics. Maybe write the same for functions?
+8. Write firestore rules to lock down reading data from non CLI account.
+9. ~~Get everything deployed to stating env and working.~~
+10. Deploy and configure production.
+11. ~~Create a test experiment that is active for unit tests. => Using testbetween entry.~~
+12. Get emulator firestore database to reset between unit tests.
+13. Write automated test for CSV extracts.
+14. ~~Make data writes to google function queued.~~
+15. Write the CLI code to extract experiment configurations.
+16. Write CLI code to validate participant data (check that all the window and screen values match across questions, as well as other checks.)
+17. Fix the cors setting to be valid in the functions index.js once I know the production values.
+18. Fix the headers in putRequest (see TODO)
+19. ~~Add spinner to the consent page for when singup is executing and the debrief page so that the user can't close the browser window before data is written beacuse they think the survey is over.~~
+20. Do we want to allow simulatenous writes and put code in the function so that it doesn't overwrite the participant entry if the sequence number is less than?
 
 # What is VizSurvey
 

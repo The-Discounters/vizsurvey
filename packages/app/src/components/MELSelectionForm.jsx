@@ -91,7 +91,7 @@ export function MELSelectionForm(props) {
       <form className={classes.qArea}>
         <FormControl
           sx={{ ...formControl }}
-          required={false}
+          required={"false"}
           error={props.error}
         >
           <p className={classes.qTitle}>

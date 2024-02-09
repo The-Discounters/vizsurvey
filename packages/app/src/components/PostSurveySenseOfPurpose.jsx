@@ -56,12 +56,6 @@ export function PostSurvey(props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status]);
 
-  if (dispatchPageShown) {
-    dispatch(purposeSurveyQuestionsShown(dateToState(DateTime.now())));
-    window.scrollTo(0, 0);
-    setDispatchPageShown(false);
-  }
-
   const shownQuestions = props.content.questions.filter(({ question }) => {
     if (question.disabled === true) {
       return false;
@@ -70,12 +64,20 @@ export function PostSurvey(props) {
     }
   });
 
-  let qList = [];
-  shownQuestions.forEach((q) => {
-    dispatch(initPurposeSurveyQuestion(q.question.textShort));
-    const value = answers[q.question.textShort];
-    qList.push(value);
-  });
+  if (dispatchPageShown) {
+    dispatch(purposeSurveyQuestionsShown(dateToState(DateTime.now())));
+    // maps the question array into an object where short text is the key to initialize the redux global state
+    const questionObj = shownQuestions.reduce((acc, q) => {
+      acc[q.question.textShort] = "";
+      return acc;
+    }, {});
+    dispatch(initPurposeSurveyQuestion(questionObj));
+    window.scrollTo(0, 0);
+    setDispatchPageShown(false);
+  }
+
+  // creates an array of answers to questions to use to check checked for each radio button
+  let qList = shownQuestions.map((q) => answers[q.question.textShort]);
 
   const pageNumber = status === StatusType.PurposeAwareQuestionaire ? 3 : 4;
 

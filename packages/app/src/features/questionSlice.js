@@ -90,6 +90,7 @@ const initialState = {
     debriefShownTimestamp: null,
     debriefCompletedTimestamp: null,
     debriefTimeSec: null,
+    finishedShownTimestamp: null,
   },
   attentionCheck: [],
   feedback: "",
@@ -129,25 +130,21 @@ export const questionSlice = createSlice({
       state.selfDescribeEmployment = action.payload;
     },
     initExperienceSurveyQuestion(state, action) {
-      if (state.experienceSurvey[action.payload] === undefined) {
-        state.experienceSurvey[action.payload] = "";
-      }
+      state.experienceSurvey = action.payload;
     },
     setExperienceSurveyQuestion(state, action) {
       state.experienceSurvey[action.payload.key] = action.payload.value;
     },
     initFinancialLitSurveyQuestion(state, action) {
-      if (state.financialLitSurvey[action.payload] === undefined) {
-        state.financialLitSurvey[action.payload] = "";
-      }
+      state.financialLitSurvey = action.payload;
     },
     setFinancialLitSurveyQuestion(state, action) {
       state.financialLitSurvey[action.payload.key] = action.payload.value;
     },
     initPurposeSurveyQuestion(state, action) {
-      if (state.purposeSurvey[action.payload] === undefined) {
-        state.purposeSurvey[action.payload] = "";
-      }
+      const combined = { ...state.purposeSurvey, ...action.payload };
+      state.purposeSurvey = combined;
+      // state.purposeSurvey = action.payload;
     },
     setPurposeSurveyQuestion(state, action) {
       state.purposeSurvey[action.payload.key] = action.payload.value;
@@ -311,6 +308,9 @@ export const questionSlice = createSlice({
       );
       state.status = qe.nextState(state);
     },
+    finishedShownTimestamp(state, action) {
+      state.timestamps.finishedShownTimestamp = action.payload;
+    },
     clearState(state) {
       state = initialState;
     },
@@ -451,6 +451,7 @@ export const {
   purposeSurveyQuestionsCompleted,
   debriefShownTimestamp,
   debriefCompleted,
+  finishedShownTimestamp,
   clearState,
   nextStatus,
   setUserAgent,

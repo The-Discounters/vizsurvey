@@ -20,7 +20,8 @@ import PostSurveyExperience from "./components/PostSurveyExperience.jsx";
 import PostSurveyFinancialLit from "./components/PostSurveyFinancialLit.jsx";
 import PostSurveySenseOfPurpose from "./components/PostSurveySenseOfPurpose.jsx";
 import Debrief from "./components/Debrief.jsx";
-import Spiner from "./components/Spinner.js";
+import Finished from "./components/Finished.jsx";
+import Spinner from "./components/Spinner.js";
 import InvalidSurveyLink from "./components/InvalidSurveyLink.jsx";
 import {
   getStatus,
@@ -107,6 +108,7 @@ const App = () => {
                 }
               />
               <Route path={"debrief"} element={<Debrief />} />
+              <Route path={"finished"} element={<Finished />} />
               <Route path={"invalidlink"} element={<InvalidSurveyLink />} />
               <Route path="*" element={<InvalidSurveyLink />} />
             </Routes>
@@ -144,7 +146,7 @@ const GenTreatmentId = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status]);
 
-  return <Spiner text="The application is initializing." />;
+  return <Spinner text="The application is initializing..." />;
 };
 
 const DevHome = () => {

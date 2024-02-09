@@ -5,10 +5,25 @@ import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 
 const updateStateStack = [];
+let callback;
 let processingRequests = false;
 let requestSequence = 0;
 let app;
 export let analytics;
+
+export const subscribe = (_callback) => {
+  callback = _callback;
+};
+
+const setProcessingRequest = (value) => {
+  if (processingRequests !== value) {
+    processingRequests = value;
+    console.log(
+      `update state pool ${processingRequests ? "filled" : "drained"}`
+    );
+    callback(processingRequests ? "true" : "false");
+  }
+};
 
 export const initFirestore = ({
   apiKey,
@@ -91,18 +106,13 @@ export const signupParticipant = async (
 };
 
 export const processesStateUpdateQueue = async (URLRoot) => {
-  processingRequests = true;
+  setProcessingRequest(true);
   const data = updateStateStack.shift();
-  const JSONData = JSON.parse(data);
-  console.log(`${JSONData.state.requestSequence} - 2. sending update.`);
   putRequest(`${URLRoot}/updateState`, data).then((serverStatus) => {
-    console.log(
-      `${serverStatus.requestSequence} - 3. server recorded with status ${serverStatus.status}.`
-    );
     if (updateStateStack.length !== 0) {
       processesStateUpdateQueue(URLRoot);
     } else {
-      processingRequests = false;
+      setProcessingRequest(false);
     }
   });
 };
@@ -127,7 +137,6 @@ export const updateState = async (
     session_id: sessionId,
     state: augmentedState,
   };
-  console.log(`${data.state.requestSequence} - 1. pushing data.`);
   updateStateStack.push(JSON.stringify(data));
   if (!processingRequests) {
     processesStateUpdateQueue(URLRoot);

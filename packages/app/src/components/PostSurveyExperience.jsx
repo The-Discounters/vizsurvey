@@ -57,15 +57,19 @@ export function PostSurvey() {
     }
   });
 
-  let qList = [];
-  surveys.questions.forEach((q) => {
-    dispatch(initExperienceSurveyQuestion(q.question.textShort));
-    const value = answers[q.question.textShort];
-    qList.push(value);
-  });
+  // creates an array of answers to questions to use to check checked for each radio button
+  let qList = surveys.questions.map((q) => answers[q.question.textShort]);
 
   useEffect(() => {
     dispatch(experienceSurveyQuestionsShown(dateToState(DateTime.now())));
+    // maps the question array into an object where short text is the key to initialize the redux global state
+    const questionObj = surveys.questions.reduce((acc, q) => {
+      acc[q.question.textShort] = "";
+      return acc;
+    }, {});
+    // combine the objects so that we have an empty field for questions that weren't answered.
+    const initObj = { ...questionObj, ...answers };
+    dispatch(initExperienceSurveyQuestion(initObj));
     window.scrollTo(0, 0);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

@@ -29,7 +29,7 @@ export const navigateFromStatus = (status) => {
     case StatusType.Debrief:
       return "/debrief";
     case StatusType.Finished:
-      return null;
+      return "/finished";
     case StatusType.Error:
       return "/invalidlink";
     default:

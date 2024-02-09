@@ -3,6 +3,7 @@ import ReactDOM from "react-dom";
 import { enableAllPlugins } from "immer";
 import { Provider } from "react-redux";
 import { store } from "./app/store.js";
+import { ServiceAPIProvider } from "./app/ReactContext.js";
 import "./index.css";
 import App from "./App.js";
 import reportWebVitals from "./reportWebVitals.js";
@@ -12,7 +13,9 @@ enableAllPlugins();
 ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
-      <App />
+      <ServiceAPIProvider>
+        <App />
+      </ServiceAPIProvider>
     </Provider>
   </React.StrictMode>,
   document.getElementById("root")
