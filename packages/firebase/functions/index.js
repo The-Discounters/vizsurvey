@@ -19,6 +19,7 @@ import {
   updateParticipant,
   createAuditLogEntry,
   readExperimentAndQuestions,
+  readParticipant,
 } from "@the-discounters/firebase-shared";
 import { ServerStatusType, StatusError } from "@the-discounters/types";
 
@@ -148,23 +149,29 @@ export const updateState = onRequest(
         `updateState requestSequence=${requestSequence} fetched experiment ${exp.experimentId} for studyId=${studyId}, numParticipantsStarted = ${exp.numParticipantsStarted}, numParticipants = ${exp.numParticipants}, status = ${exp.status}, prolificPid = ${participantId}, sessionId = ${sessionId}`
       );
       state = { ...state, serverTimestamp: Timestamp.now() };
-      // TOD Implement the logic to check if we should overwrite state based on the state.status and the number of questions answered. Check the browswer timestamp and if we appear to have a later entry before in time, write a warning.
-      const writeTime = await updateParticipant(
+      const lastParticipantEntry = await readParticipant(
         db,
         exp.path,
-        participantId,
-        state
+        participantId
       );
-      if (!writeTime) {
-        throw new StatusError({
-          message: "did not update.",
-          httpstatus: 400,
-          reason: ServerStatusType.invalid,
-        });
+      if (state.requestSequence > lastParticipantEntry.requestSequence) {
+        const writeTime = await updateParticipant(
+          db,
+          exp.path,
+          participantId,
+          state
+        );
+        if (!writeTime) {
+          throw new StatusError({
+            message: "did not update.",
+            httpstatus: 400,
+            reason: ServerStatusType.invalid,
+          });
+        }
+        logger.info(
+          `updateState succesfull requestSequence=${requestSequence}, participantId=${participantId}, study_id=${studyId}, session_id=${sessionId} update time ${writeTime.toDate()}`
+        );
       }
-      logger.info(
-        `updateState succesfull requestSequence=${requestSequence}, participantId=${participantId}, study_id=${studyId}, session_id=${sessionId} update time ${writeTime.toDate()}`
-      );
       await createAuditLogEntry(
         db,
         exp.path,
