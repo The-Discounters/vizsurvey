@@ -5,7 +5,7 @@ import { StatusType } from "../features/StatusType.js";
 
 export const saveStateAsync = async (state) => {
   try {
-    updateState(
+    await updateState(
       process.env.REACT_APP_FIREBASE_SERVER_URL,
       state.participantId,
       state.studyId,

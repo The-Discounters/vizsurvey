@@ -4,9 +4,8 @@ import { DateTime } from "luxon";
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 
-const updateStateStack = [];
 let callback;
-let processingRequests = false;
+let activePutRequestCount = 0;
 let requestSequence = 0;
 let app;
 export let analytics;
@@ -15,10 +14,18 @@ export const subscribe = (_callback) => {
   callback = _callback;
 };
 
-const setProcessingRequest = (value) => {
-  if (processingRequests !== value) {
-    processingRequests = value;
-    callback(processingRequests);
+const incActivePutRequestCount = () => {
+  activePutRequestCount++;
+  if (activePutRequestCount === 1) {
+    callback(true);
+  }
+};
+
+const decActivePutRequestCount = () => {
+  activePutRequestCount--;
+  console.assert(activePutRequestCount >= 0);
+  if (activePutRequestCount === 0) {
+    callback(false);
   }
 };
 
@@ -42,6 +49,7 @@ export const initFirestore = ({
 };
 
 export const putRequest = async (URL, body, numRetries = 3) => {
+  incActivePutRequestCount();
   const response = await fetch(URL, {
     method: "PUT",
     headers: {
@@ -53,6 +61,7 @@ export const putRequest = async (URL, body, numRetries = 3) => {
     body: body,
   });
   const result = await response.json();
+  decActivePutRequestCount();
   if (response.status !== 200 || result.status !== ServerStatusType.success) {
     if (numRetries > 1 && response.status >= 500 && response.status <= 599) {
       numRetries--;
@@ -102,18 +111,6 @@ export const signupParticipant = async (
   return data;
 };
 
-export const processesStateUpdateQueue = async (URLRoot) => {
-  setProcessingRequest(true);
-  const data = updateStateStack.shift();
-  putRequest(`${URLRoot}/updateState`, data).then((serverStatus) => {
-    if (updateStateStack.length !== 0) {
-      processesStateUpdateQueue(URLRoot);
-    } else {
-      setProcessingRequest(false);
-    }
-  });
-};
-
 export const updateState = async (
   URLRoot,
   participantId,
@@ -121,12 +118,16 @@ export const updateState = async (
   sessionId,
   state
 ) => {
+  requestSequence++;
+  console.log(`updateState start request ${requestSequence}.`);
   const augmentedState = state.browserTimestamp
-    ? state
+    ? {
+        ...state,
+        requestSequence: requestSequence,
+      }
     : {
         ...state,
-        browserTimestamp: dateToState(DateTime.now()),
-        requestSequence: requestSequence++,
+        requestSequence: requestSequence,
       };
   const data = {
     prolific_pid: participantId,
@@ -134,8 +135,9 @@ export const updateState = async (
     session_id: sessionId,
     state: augmentedState,
   };
-  updateStateStack.push(JSON.stringify(data));
-  if (!processingRequests) {
-    processesStateUpdateQueue(URLRoot);
-  }
+  putRequest(`${URLRoot}/updateState`, JSON.stringify(data)).then(
+    (response) => {
+      console.log(`updateState ended request ${response.requestSequence}.`);
+    }
+  );
 };
