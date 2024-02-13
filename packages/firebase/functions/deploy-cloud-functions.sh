@@ -17,8 +17,9 @@ if [ "$1" = "pre-deploy" ]; then
   npm pack --workspace @the-discounters/util --pack-destination ./temp
   npm pkg set 'dependencies.@the-discounters/util'='file:./temp/the-discounters-util-1.0.0.tgz'
   COMMIT_ID=$(git rev-parse --verify HEAD)
-  sed -i "" "/^GIT_COMMIT_HASH=/s/=.*/=\"$COMMIT_ID\"/" .env.dev
   sed -i "" "/^GIT_COMMIT_HASH=/s/=.*/=\"$COMMIT_ID\"/" .env.local
+  sed -i "" "/^GIT_COMMIT_HASH=/s/=.*/=\"$COMMIT_ID\"/" .env.dev
+  sed -i "" "/^GIT_COMMIT_HASH=/s/=.*/=\"$COMMIT_ID\"/" .env.staging
   sed -i "" "/^GIT_COMMIT_HASH=/s/=.*/=\"$COMMIT_ID\"/" .env.prod
   echo "Cloud Functions pre-deploy script: Done!"
   exit
