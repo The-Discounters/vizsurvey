@@ -124,10 +124,12 @@ export const updateState = async (
     ? {
         ...state,
         requestSequence: requestSequence,
+        browserTimestamp: state.browserTimestamp,
       }
     : {
         ...state,
         requestSequence: requestSequence,
+        browserTimestamp: dateToState(DateTime.now()),
       };
   const data = {
     prolific_pid: participantId,

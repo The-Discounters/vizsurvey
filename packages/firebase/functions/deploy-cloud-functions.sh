@@ -14,6 +14,8 @@ if [ "$1" = "pre-deploy" ]; then
   echo "Compressing prolific into tgz file in ./temp".
   npm pack --workspace @the-discounters/prolific --pack-destination ./temp
   npm pkg set 'dependencies.@the-discounters/prolific'='file:./temp/the-discounters-prolific-1.0.0.tgz'
+  npm pack --workspace @the-discounters/util --pack-destination ./temp
+  npm pkg set 'dependencies.@the-discounters/util'='file:./temp/the-discounters-util-1.0.0.tgz'
   echo "Cloud Functions pre-deploy script: Done!"
   exit
 elif [ "$1" = "post-deploy" ]; then
@@ -22,6 +24,7 @@ elif [ "$1" = "post-deploy" ]; then
   npm pkg set 'dependencies.@the-discounters/firebase-shared'='*'
   npm pkg set 'dependencies.@the-discounters/types'='workspace:^'
   npm pkg set 'dependencies.@the-discounters/prolific'='workspace:^'
+  npm pkg set 'dependencies.@the-discounters/util'='workspace:^'
   echo "Cloud Functions post-deploy script: Done!"
   exit
 else

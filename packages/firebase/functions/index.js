@@ -10,18 +10,20 @@ import { initializeApp } from "firebase-admin/app";
 import { getFirestore, Timestamp } from "firebase-admin/firestore";
 import { logger } from "firebase-functions";
 import { onRequest } from "firebase-functions/v2/https";
-import {
-  signupParticipant,
-  validateExperiment,
-  assignParticipantSequenceNumberXaction,
-} from "./functionsUtil.js";
+import { stateToDate } from "@the-discounters/util";
+import { ServerStatusType, StatusError } from "@the-discounters/types";
 import {
   readParticipant,
   updateParticipant,
   createAuditLogEntry,
   readExperimentAndQuestions,
 } from "@the-discounters/firebase-shared";
-import { ServerStatusType, StatusError } from "@the-discounters/types";
+import {
+  signupParticipant,
+  validateExperiment,
+  assignParticipantSequenceNumberXaction,
+} from "./functionsUtil.js";
+import pkgJSON from "./package.json" assert { type: "json" };
 
 initializeApp();
 const db = getFirestore();
@@ -148,6 +150,9 @@ export const updateState = onRequest(
         `updateState requestSequence=${requestSequence} fetched experiment ${exp.experimentId} for studyId=${studyId}, numParticipantsStarted = ${exp.numParticipantsStarted}, numParticipants = ${exp.numParticipants}, status = ${exp.status}, prolificPid = ${participantId}, sessionId = ${sessionId}`
       );
       state = { ...state, serverTimestamp: Timestamp.now() };
+      state.browserTimestamp = state.browserTimestamp
+        ? Timestamp.fromDate(stateToDate(state.browserTimestamp).toJSDate())
+        : state.browserTimestamp;
 
       const lastParticipantEntry = await readParticipant(
         db,
@@ -198,6 +203,25 @@ export const updateState = onRequest(
       logger.error(
         `updateState requestSequence=${requestSequence}, ${err.message}, httpstatus=${err.httpstatus} participantId=${participantId}, studyId=${studyId}, sessionId=${sessionId}`
       );
+      response
+        .status(err.httpstatus ? err.httpstatus : 500)
+        .json({ status: err.reason ? err.reason : ServerStatusType.error });
+    }
+  }
+);
+
+// TODO fix cors value.  Shutting off for now.
+export const version = onRequest(
+  { cors: ["http://localhost:3000"] },
+  async (request, response) => {
+    logger.info(`version ${pkgJSON.version}`);
+    try {
+      response.status(200).json({
+        version: pkgJSON.version,
+        commitId: `${process.env.GIT_COMMIT_HASH}`,
+      });
+    } catch (err) {
+      logger.error(`version ${err.message}, httpstatus=${err.httpstatus}`);
       response
         .status(err.httpstatus ? err.httpstatus : 500)
         .json({ status: err.reason ? err.reason : ServerStatusType.error });
