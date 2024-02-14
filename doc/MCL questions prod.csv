@@ -1,4 +1,4 @@
-﻿treatment_id,position,view_type,interaction,variable_amount,amount_earlier,time_earlier,date_earlier,amount_later,time_later,date_later,max_amount,max_time,horizontal_pixels,vertical_pixels,left_margin_width_in,bottom_margin_height_in,graph_width_in,graph_height_in,width_in,height_in,show_minor_ticks,instruction_gif_prefix,comment
+﻿treatment_id,sequence_id,view_type,interaction,variable_amount,amount_earlier,time_earlier,date_earlier,amount_later,time_later,date_later,max_amount,max_time,horizontal_pixels,vertical_pixels,left_margin_width_in,bottom_margin_height_in,graph_width_in,graph_height_in,width_in,height_in,show_minor_ticks,instruction_gif_prefix,comment
 1,1,word,none,none,350,4,,430,13,,430,,,,,,,,,,,,Worded MEL question experiment 1 date/delay paper.
 1,2,word,none,none,490,2,,700,18,,700,,,,,,,,,,,,Worded MEL question experiment 1 date/delay paper.
 1,3,word,none,none,720,6,,1390,24,,1390,,,,,,,,,,,,Worded MEL question experiment 1 date/delay paper.

@@ -1,0 +1,26 @@
+export const ScreenAttributes = ({
+  availHeight,
+  availWidth,
+  availLeft,
+  availTop,
+  colorDepth,
+  width,
+  height,
+  orientationAngle,
+  orientationType,
+  pixelDepth,
+  isExtended,
+}) =>
+  Object.freeze({
+    availHeight,
+    availWidth,
+    availLeft,
+    availTop,
+    colorDepth,
+    width,
+    height,
+    orientationAngle,
+    orientationType,
+    pixelDepth,
+    isExtended,
+  });

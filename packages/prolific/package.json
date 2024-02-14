@@ -1,0 +1,11 @@
+{
+  "name": "@the-discounters/prolific",
+  "version": "1.0.0",
+  "description": "Webhooks for connecting to prolific.",
+  "main": "index.js",
+  "type": "module",
+  "devDependencies": {
+    "eslint": "^8.15.0"
+  },
+  "private": true
+}
