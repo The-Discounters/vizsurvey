@@ -1,7 +1,7 @@
 {
   "projects": {
     "staging": "vizsurvey-staging",
-    "prod": "vizsurvey"
+    "prod": "vizsurvey-production"
   },
   "targets": {},
   "etags": {}

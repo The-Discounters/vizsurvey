@@ -2,7 +2,7 @@
 
 1. ~~Write the retry logic working in the ServiceAPI.~~
 2. ~~Get the server sequence to be in a transaction and write the unit test to test that we get uniquely assigned sequences for requests at the same time.~~
-3. Implement the logic to check if we should overwrite state based on the state.status and the number of questions answered. Check the browswer timestamp and if we appear to have a later entry before in time, write a warning.
+3. ~~Implement the logic to check if we should overwrite state based on the sequence number of the request. If the current state (under participant) is larger or equal to the state coming in, don't overwrite it and write a warning to the logs.~~
    ~~4. Append redux state for all updates to the audit collection.~~
 4. ~~Fix the bug with many calls to updateState due to the survey making reducer calls for each question added.~~
 5. ~~Write the CLI code to do the CSV file extract for data and audit.~~
@@ -21,7 +21,6 @@
 17. Fix the cors setting to be valid in the functions index.js once I know the production values.
 18. Fix the headers in putRequest (see TODO)
 19. ~~Add spinner to the consent page for when singup is executing and the debrief page so that the user can't close the browser window before data is written beacuse they think the survey is over.~~
-20. Do we want to allow simulatenous writes and put code in the function so that it doesn't overwrite the participant entry if the sequence number is less than?
 
 # What is VizSurvey
 
@@ -44,11 +43,12 @@ We looked at code from https://supp-exp-en.netlify.app/ for examples of how to s
 
 ### Create your instance in firestore for staging and production
 
-Create an new project in firebase console.
-Create a new app in the project above and copy the values out of the firebaseConfig code shown to the staging or production .env file.
-I think I created the firestore database. I chose to create the rules in test mode which has open access rules for 30 days so that I could get the deployment working. The firestore database was created in datastore mode, which is backward compatible with Firebase real time database. Since we don't have to maintain backward compatiblity, go into the console and switch to native mode. Then you can access the database from the firestore console (otherwise you have to access it from the google cloud console since datastore mode databases can only be accessed from that tool).
-Open a terminal session and run `source ./setenv<environment>.sh` i.e. setenvstaging.sh where <environment> is the environment you want to load data into.
-Then `cd scripts` and `./refresh.sh`
+1. Create an new project in firebase console.
+2. Navigate to Project Settings->Service accounts tab. Click on Generate new private key. Confirm and the admin credentials json file will download to you downloads folder. I renamed mine to something shorter (i.e. admin-credentials-production.json). Copy the file to the packages/firebase/functions folder. This file contains your admin credentials which have access to all firebase services (like superuser) so keep it somewhere safe.
+3. Create a new app in the project above and copy the values out of the firebaseConfig code shown to the staging or production .env file depending on what environment they are for (i.e. .env.prod for production).
+4. Create the firestore database. I chose to create the rules in test mode which has open access rules for 30 days so that I could get the deployment working. The firestore database was created in datastore mode, which is backward compatible with Firebase real time database. Since we don't have to maintain backward compatiblity, go into the console and switch to native mode. Then you can access the database from the firestore console (otherwise you have to access it from the google cloud console since datastore mode databases can only be accessed from that tool).
+5. Open a terminal session and run `source ./setenv<environment>.sh` i.e. setenvstaging.sh where <environment> is the environment you want to load data into. Then `cd scripts` and `./refresh.sh`.
+6.
 
 ### Download firestore credentials files
 

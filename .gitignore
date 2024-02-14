@@ -1,8 +1,7 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # creds
-*admin-credentials-dev.json
-*admin-credentials-staging.json
+*admin-credentials-*.json
 web-credentials-staging.json
 web-credentials-production.json
 .env.staging
