@@ -160,7 +160,7 @@ cd packages/app
 yarn run
 ```
 
-A browswer should launch and then go to [http://localhost:3000/dev] and you will see a list of predefined
+A browswer should launch and then go to [https://localhost:3000/dev] and you will see a list of predefined
 experiments you can launch into on the app.
 
 If you want to re-import the data, go to the emulator and click the "Clear all data" button. Then
@@ -188,7 +188,7 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 ## Available Scripts
 
 Runs the app in the development mode.\
-Open [http://localhost:3000/dev] to view it in the browser.
+Open [https://localhost:3000/dev] to view it in the browser.
 
 The page will reload if you make edits.\
 You will also see any lint errors in the console.
@@ -203,7 +203,7 @@ cd into the test folder and also run `yarn start` in a separate terminal if you 
 ### `yarn build; serve -s build`
 
 Runs the app in production mode.\
-http://localhost:3000/start?participant_id=1&treatment_id=1&session_id=1 where you can edit the treatment_id value to load the treatment you want to test.
+https://localhost:3000/start?participant_id=1&study_id=testbetween&session_id=1.
 
 ### `yarn build`
 
@@ -229,17 +229,13 @@ You don’t have to ever use `eject`. The curated feature set is suitable for sm
 
 Below are the production urls for each treatment.
 
-https://release.d2ptxb5fbsc082.amplifyapp.com/start?participant_id=1&treatment_id=1&session_id=4&study_id=5
-https://release.d2ptxb5fbsc082.amplifyapp.com/start?participant_id=1&treatment_id=2&session_id=4&study_id=5
-https://release.d2ptxb5fbsc082.amplifyapp.com/start?participant_id=1&treatment_id=3&session_id=4&study_id=5
-
-For a random treatment don't pass the treatment_id in the url.
-https://release.d2ptxb5fbsc082.amplifyapp.com/start?participant_id=1&session_id=2&study_id=3
+https://release.d2ptxb5fbsc082.amplifyapp.com/start?participant_id=1&session_id=4&study_id=5
+https://release.d2ptxb5fbsc082.amplifyapp.com/start?participant_id=1&session_id=4&study_id=5
+https://release.d2ptxb5fbsc082.amplifyapp.com/start?participant_id=1&session_id=4&study_id=5
 
 ### Local URL
 
-http://localhost:3000?treatment_id=3&participant_id=1&session_id=3 will take you to the treatment survey.
-http://localhost:3000/dev?participant_id=1&session_id=3 will take you to the list of treatments.
+https://localhost:3000?participant_id=1&session_id=3&study_id=betweensubject will take you to the treatment survey.
 
 ### `yarn cypress-open`
 

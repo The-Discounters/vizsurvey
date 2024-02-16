@@ -58,7 +58,7 @@ const validateKeyValues = ({ participantId, studyId, sessionId }) => {
 
 // TODO fix cors value.  Shutting off for now.
 export const signup = onRequest(
-  { cors: ["http://localhost:3000"] },
+  { cors: ["https://localhost:3000"] },
   async (request, response) => {
     logger.info(
       `signup prolific_pid=${request.query.prolific_pid}, study_id=${request.query.study_id}, session_id=${request.query.session_id}`
@@ -125,7 +125,7 @@ export const signup = onRequest(
 
 // TODO fix cors value.  Shutting off for now.
 export const updateState = onRequest(
-  { cors: ["http://localhost:3000"] },
+  { cors: ["https://localhost:3000"] },
   async (request, response) => {
     logger.info(
       `updateState prolific_pid=${request.body.prolific_pid}, study_id=${request.body.study_id}, session_id=${request.body.session_id}`
@@ -212,7 +212,7 @@ export const updateState = onRequest(
 
 // TODO fix cors value.  Shutting off for now.
 export const version = onRequest(
-  { cors: ["http://localhost:3000"] },
+  { cors: ["https://localhost:3000"] },
   async (request, response) => {
     logger.info(`version ${pkgJSON.version}`);
     try {
