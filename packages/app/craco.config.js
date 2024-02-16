@@ -5,6 +5,11 @@ const packages = [];
 packages.push(path.join(__dirname, "../components"));
 
 module.exports = {
+  devServer: {
+    open: ["https://localhost:3000/dev"],
+    port: 3000,
+    https: true,
+  },
   webpack: {
     configure: (webpackConfig, arg) => {
       const { isFound, match } = getLoader(

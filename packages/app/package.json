@@ -37,8 +37,8 @@
     "web-vitals": "^1.1.2"
   },
   "scripts": {
-    "start": "craco start",
-    "start:prod": "env-cmd -f .env.production craco start",
+    "start": "craco start --verbose",
+    "start:prod": "NODE_ENV=production craco start --verbose",
     "build": "craco build",
     "test": "craco test",
     "kill": "kill -9 $(ps | grep -e 'node\\|npm' | sed -e 's/^\\([0-9]*\\).*/\\1/')",
