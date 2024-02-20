@@ -4,12 +4,12 @@ import { useSelector, useDispatch } from "react-redux";
 import { DateTime } from "luxon";
 import { Button, Box, ThemeProvider } from "@mui/material";
 import Grid from "@mui/material/Unstable_Grid2";
-
 import {
   AmountType,
   WindowAttributes,
   ScreenAttributes,
 } from "@the-discounters/types";
+import { useKeyDown } from "../hooks/useKeydown.js";
 import { MELSelectionForm } from "./MELSelectionForm.jsx";
 import {
   getCurrentQuestion,
@@ -38,7 +38,7 @@ function MELForm() {
   const [error, setError] = React.useState(false);
   const [helperText, setHelperText] = React.useState("");
 
-  const handleKeydownEvent = (event) => {
+  const handleKeyDownEvent = (event) => {
     switch (event.code) {
       case "Enter":
         if (
@@ -47,7 +47,7 @@ function MELForm() {
         ) {
           setError(true);
           setHelperText(
-            "You must choose one of the options below.  Press the left arrow key to select the earlier amount and the right arrow key to select the later amount."
+            "Press the left arrow key to select the earlier amount and the right arrow key to select the later amount."
           );
         } else {
           setHelperText("");
@@ -58,7 +58,7 @@ function MELForm() {
       case "ArrowLeft":
         dispatch(
           answer({
-            choice: choice,
+            choice: AmountType.earlierAmount,
             choiceTimestamp: dateToState(DateTime.now()),
             window: WindowAttributes(window),
             screen: ScreenAttributes(window.screen),
@@ -68,7 +68,7 @@ function MELForm() {
       case "ArrowRight":
         dispatch(
           answer({
-            choice: choice,
+            choice: AmountType.laterAmount,
             choiceTimestamp: dateToState(DateTime.now()),
             window: WindowAttributes(window),
             screen: ScreenAttributes(window.screen),
@@ -81,13 +81,12 @@ function MELForm() {
     }
   };
 
-  useEffect(() => {
-    document.addEventListener("keydown", handleKeydownEvent);
-    return () => {
-      document.removeEventListener("keydown", handleKeydownEvent);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  useKeyDown(
+    (event) => {
+      handleKeyDownEvent(event);
+    },
+    ["Enter", "ArrowLeft", "ArrowRight"]
+  );
 
   useEffect(() => {
     dispatch(setQuestionShownTimestamp(dateToState(DateTime.now())));
@@ -122,18 +121,32 @@ function MELForm() {
   return (
     <ThemeProvider theme={theme}>
       <Grid container style={styles.root} justifyContent="center">
-        <MELSelectionForm
-          textShort={q.textShort}
-          error={error}
-          amountEarlier={q.amountEarlier}
-          dateEarlier={q.dateEarlier}
-          timeEarlier={q.timeEarlier}
-          amountLater={q.amountLater}
-          dateLater={q.dateLater}
-          timeLater={q.timeLater}
-          helperText={helperText}
-          choice={choice}
-        />
+        <Grid item xs={12}>
+          <MELSelectionForm
+            textShort={"MELRadioGroup"}
+            amountEarlier={q.amountEarlier}
+            timeEarlier={q.timeEarlier}
+            dateEarlier={q.dateEarlier}
+            amountLater={q.amountLater}
+            timeLater={q.timeLater}
+            dateLater={q.dateLater}
+            error={error}
+            helperText={helperText}
+            choice={choice}
+            onClickCallback={(value) => {
+              let errorMsg;
+              if (value === AmountType.earlierAmount) {
+                errorMsg =
+                  "To choose the earlier amount use the left arrow key.";
+              } else if (value === AmountType.laterAmount) {
+                errorMsg =
+                  "To choose the later amount use the right arrow key.";
+              }
+              setHelperText(errorMsg);
+              setError(true);
+            }}
+          />
+        </Grid>
         <Grid item xs={12}>
           <hr
             style={{
@@ -151,23 +164,19 @@ function MELForm() {
               disableRipple
               disableFocusRipple
               style={styles.button}
-              onClick={() => {
-                if (
-                  choice !== AmountType.earlierAmount &&
-                  choice !== AmountType.laterAmount
-                ) {
-                  setError(true);
-                  setHelperText("Please choose one of the options below.");
-                } else {
-                  setError(false);
-                  setHelperText("");
-                  dispatch(nextQuestion());
-                }
-              }}
               disabled={disableSubmit}
+              onClick={() => {
+                setError(true);
+                setHelperText(
+                  `Press the Enter key to accept your selection of ${
+                    choice === AmountType.earlierAmount
+                      ? "earlier amount"
+                      : "later amount"
+                  } and start the survey.`
+                );
+              }}
             >
-              {" "}
-              Next{" "}
+              Press Enter to advance to the next question
             </Button>
           </Box>
         </Grid>

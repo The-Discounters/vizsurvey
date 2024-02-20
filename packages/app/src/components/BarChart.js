@@ -11,6 +11,7 @@ import {
 } from "@the-discounters/types";
 import { dateToState } from "@the-discounters/util";
 import { StatusType } from "../features/StatusType.js";
+import { useKeyDown } from "../hooks/useKeydown.js";
 import {
   getCurrentQuestion,
   getCurrentChoice,
@@ -20,7 +21,6 @@ import {
   nextQuestion,
   answer,
 } from "../features/questionSlice.js";
-import { useKeyDown } from "../hooks/useKeydown.js";
 import { BarChartComponent } from "./BarChartComponent.js";
 import { styles, theme } from "./ScreenHelper.js";
 import { navigateFromStatus } from "./Navigate.js";
@@ -48,7 +48,7 @@ function BarChart() {
         ) {
           setError(true);
           setHelperText(
-            "You must choose one of the options below.  Press the left arrow key to select the earlier amount and the right arrow key to select the later amount."
+            "Press the left arrow key to select the earlier amount and the right arrow key to select the later amount."
           );
         } else {
           setHelperText("");
@@ -124,8 +124,6 @@ function BarChart() {
       <Grid container style={styles.root} justifyContent="center">
         <Grid item xs={12}>
           <BarChartComponent
-            error={error}
-            helperText={helperText}
             maxTime={q.maxTime}
             maxAmount={q.maxAmount}
             interaction={q.interaction}
@@ -134,7 +132,6 @@ function BarChart() {
             timeEarlier={q.timeEarlier}
             amountLater={q.amountLater}
             timeLater={q.timeLater}
-            choice={choice}
             horizontalPixels={q.horizontalPixels}
             verticalPixels={q.verticalPixels}
             leftMarginWidthIn={q.leftMarginWidthIn}
@@ -142,6 +139,9 @@ function BarChart() {
             bottomMarginHeightIn={q.bottomMarginHeightIn}
             graphHeightIn={q.graphHeightIn}
             showMinorTicks={q.showMinorTicks}
+            error={error}
+            helperText={helperText}
+            choice={choice}
             onClickCallback={(value) => {
               let errorMsg;
               if (value === AmountType.earlierAmount) {

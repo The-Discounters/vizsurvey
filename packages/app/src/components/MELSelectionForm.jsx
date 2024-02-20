@@ -43,9 +43,9 @@ export function MELSelectionForm(props) {
         borderColor: "#ffffff",
         color: "black",
         paddingRight: "10px",
-        "&:hover": {
-          backgroundColor: "lightblue",
-        },
+        // "&:hover": {
+        //   backgroundColor: "lightblue",
+        // },
       };
       return result;
     }, {});
@@ -58,9 +58,9 @@ export function MELSelectionForm(props) {
         borderColor: "#000000",
         color: "black",
         paddingRight: "10px",
-        "&:hover": {
-          backgroundColor: "lightblue",
-        },
+        // "&:hover": {
+        //   backgroundColor: "lightblue",
+        // },
       };
       return result;
     }, {});
@@ -83,7 +83,6 @@ export function MELSelectionForm(props) {
   }
 
   resetUseStyles();
-
   const classes = useStyles();
 
   return (
@@ -118,9 +117,9 @@ export function MELSelectionForm(props) {
                 props.textShort + "-row-radio-buttons-group-label"
               }
               name={"question-radio-buttons-group"}
-              // onChange={(event) => {
-              //   props.onClickCallback(event.target.value);
-              // }}
+              onClick={(event) => {
+                props.onClickCallback(event.target.value);
+              }}
               value={props.choice}
             >
               {[

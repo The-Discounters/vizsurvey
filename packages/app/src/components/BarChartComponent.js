@@ -224,7 +224,6 @@ const drawBarChart = ({
         interaction === InteractionType.none
       ) {
         onClickCallback(d.target.__data__.barType);
-        choice = d.target.__data__.barType;
       }
     });
 

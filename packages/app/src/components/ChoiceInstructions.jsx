@@ -68,7 +68,7 @@ const ChoiceInstructions = () => {
         ) {
           setError(true);
           setHelperText(
-            "You must choose one of the options below.  Press the left arrow key to select the earlier amount and the right arrow key to select the later amount."
+            "Press the left arrow key to select the earlier amount and the right arrow key to select the later amount."
           );
         } else {
           setHelperText("");
@@ -288,7 +288,7 @@ const ChoiceInstructions = () => {
       case ViewType.word:
         return (
           <MELSelectionForm
-            textShort={"textShort"}
+            textShort={"MELRadioGroup"}
             error={error}
             amountEarlier={instructionTreatment.amountEarlier}
             timeEarlier={instructionTreatment.timeEarlier}
@@ -298,6 +298,18 @@ const ChoiceInstructions = () => {
             dateLater={instructionTreatment.dateLater}
             helperText={helperText}
             choice={choice}
+            onClickCallback={(value) => {
+              let errorMsg;
+              if (value === AmountType.earlierAmount) {
+                errorMsg =
+                  "To choose the earlier amount use the left arrow key.";
+              } else if (value === AmountType.laterAmount) {
+                errorMsg =
+                  "To choose the later amount use the right arrow key.";
+              }
+              setHelperText(errorMsg);
+              setError(true);
+            }}
           />
         );
       case ViewType.barchart:
@@ -325,10 +337,10 @@ const ChoiceInstructions = () => {
               let errorMsg;
               if (value === AmountType.earlierAmount) {
                 errorMsg =
-                  "To choose the earlier amount, use the left arrow key.";
+                  "To choose the earlier amount use the left arrow key.";
               } else if (value === AmountType.laterAmount) {
                 errorMsg =
-                  "To choose the later amount, use the right arrow key.";
+                  "To choose the later amount use the right arrow key.";
               }
               setHelperText(errorMsg);
               setError(true);
