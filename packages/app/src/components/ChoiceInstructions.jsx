@@ -10,6 +10,7 @@ import {
 import { useSelector, useDispatch } from "react-redux";
 import { DateTime } from "luxon";
 import { useD3 } from "../hooks/useD3.js";
+import { useKeyDown } from "../hooks/useKeydown.js";
 import "../App.css";
 import { ViewType } from "@the-discounters/types";
 import { navigateFromStatus } from "./Navigate.js";
@@ -25,7 +26,7 @@ import { dateToState } from "@the-discounters/util";
 import { styles, theme, calcScreenValues } from "./ScreenHelper.js";
 import { AmountType } from "@the-discounters/types";
 import { MELSelectionForm } from "./MELSelectionForm.jsx";
-import { drawBarChart } from "./BarChartComponent.js";
+import { BarChartComponent } from "./BarChartComponent.js";
 import { StatusType } from "../features/StatusType.js";
 import { drawCalendar } from "./CalendarHelper.js";
 import { drawCalendarYear } from "./CalendarYearHelper.js";
@@ -43,36 +44,64 @@ const ChoiceInstructions = () => {
   const [showNextPrevious, setShowNextPrevious] = useState(false);
   const status = useSelector(getStatus);
 
-  const { totalSVGWidth, totalSVGHeight, totalUCWidth, totalUCHeight } =
-    calcScreenValues(
-      instructionTreatment.horizontalPixels,
-      instructionTreatment.verticalPixels,
-      instructionTreatment.leftMarginWidthIn,
-      instructionTreatment.graphWidthIn,
-      instructionTreatment.bottomMarginHeightIn,
-      instructionTreatment.graphHeightIn
-    );
+  const { totalSVGWidth, totalSVGHeight } = calcScreenValues(
+    instructionTreatment.horizontalPixels,
+    instructionTreatment.verticalPixels,
+    instructionTreatment.leftMarginWidthIn,
+    instructionTreatment.graphWidthIn,
+    instructionTreatment.bottomMarginHeightIn,
+    instructionTreatment.graphHeightIn
+  );
 
   useEffect(() => {
     dispatch(MCLInstructionsShown(dateToState(DateTime.now())));
-    setChoice("");
     if (!treatment) navigate("/invalidlink");
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  useEffect(() => {
-    const nextButtonContentHeight =
-      document.querySelector("#buttonNext").scrollHeight;
-    const nextButtonHintArrow = document.querySelector("#nextButtonHintArrow");
-    if (nextButtonHintArrow)
-      nextButtonHintArrow.height = nextButtonContentHeight;
-  }, [showNextPrevious]);
+  function handleKeyDownEvent(event) {
+    switch (event.code) {
+      case "Enter":
+        if (
+          choice !== AmountType.earlierAmount &&
+          choice !== AmountType.laterAmount
+        ) {
+          setError(true);
+          setHelperText(
+            "You must choose one of the options below.  Press the left arrow key to select the earlier amount and the right arrow key to select the later amount."
+          );
+        } else {
+          setHelperText("");
+          setError(false);
+          dispatch(MCLInstructionsCompleted(dateToState(DateTime.now())));
+        }
+        break;
+      case "ArrowLeft":
+        setChoice(AmountType.earlierAmount);
+        setShowNextPrevious(true);
+        break;
+      case "ArrowRight":
+        setChoice(AmountType.laterAmount);
+        setShowNextPrevious(true);
+        break;
+      default:
+    }
+  }
+
+  useKeyDown(
+    (event) => {
+      handleKeyDownEvent(event);
+    },
+    ["Enter", "ArrowLeft", "ArrowRight"]
+  );
 
   useEffect(() => {
     if (
       choice === AmountType.earlierAmount ||
       choice === AmountType.laterAmount
     ) {
+      setError(false);
+      setHelperText("");
       setDisableSubmit(false);
     } else {
       setDisableSubmit(true);
@@ -80,7 +109,6 @@ const ChoiceInstructions = () => {
   }, [choice]);
 
   useEffect(() => {
-    setChoice("");
     const path = navigateFromStatus(status);
     if (
       status === StatusType.Survey &&
@@ -92,13 +120,6 @@ const ChoiceInstructions = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status]);
 
-  const onClickCallback = (value) => {
-    setChoice(value);
-    setShowNextPrevious(true);
-    setHelperText("");
-    setError(false);
-  };
-
   /**
    * @returns The name of the animated gif filename to show in the instructions page.
    */
@@ -108,52 +129,7 @@ const ChoiceInstructions = () => {
     return `${instructionTreatment.instructionGifPrefix}-${randAmountType}.gif`;
   };
 
-  /**
-   * Draws the barchart using SVG
-   */
-  const DrawBarChart = () => {
-    return (
-      <svg
-        width={totalSVGWidth}
-        height={totalSVGHeight}
-        viewBox={`0 0 ${totalUCWidth} ${totalUCHeight}`}
-        ref={useD3(
-          (svg) => {
-            drawBarChart({
-              svg: svg,
-              maxTime: instructionTreatment.maxTime,
-              maxAmount: instructionTreatment.maxAmount,
-              interaction: instructionTreatment.interaction,
-              variableAmount: instructionTreatment.variableAmount,
-              amountEarlier: instructionTreatment.amountEarlier,
-              timeEarlier: instructionTreatment.timeEarlier,
-              amountLater: instructionTreatment.amountLater,
-              timeLater: instructionTreatment.timeLater,
-              onClickCallback: onClickCallback,
-              choice: choice,
-              horizontalPixels: instructionTreatment.horizontalPixels,
-              verticalPixels: instructionTreatment.verticalPixels,
-              leftMarginWidthIn: instructionTreatment.leftMarginWidthIn,
-              graphWidthIn: instructionTreatment.graphWidthIn,
-              bottomMarginHeightIn: instructionTreatment.bottomMarginHeightIn,
-              graphHeightIn: instructionTreatment.graphHeightIn,
-              showMinorTicks: instructionTreatment.showMinorTicks,
-            });
-          },
-          [choice]
-        )}
-      ></svg>
-    );
-  };
-
-  const instructions = (
-    description,
-    clickDesc,
-    gifAltText,
-    tryLeftDesc,
-    tryRightDesc,
-    tryAction
-  ) => {
+  const instructions = (description, gifAltText, tryLeftDesc, tryRightDesc) => {
     return (
       <React.Fragment>
         <Typography paragraph>
@@ -172,8 +148,33 @@ const ChoiceInstructions = () => {
         </Typography>
         <Typography paragraph>
           The amount and delay time for each option will be represented as{" "}
-          {description}. You will make your choice by clicking on one of the{" "}
-          {clickDesc}.
+          {description}. You will make your choice by using keys on your
+          keyboard (not your mouse). Press the left arrow key{" "}
+          <img
+            src="leftarrow.png"
+            alt="left arrow keyboard key"
+            width="40px"
+            height="40px"
+          ></img>{" "}
+          to choose the earlier amount or the right arrow key{" "}
+          <img
+            src="rightarrow.png"
+            alt="right arrow keyboard key"
+            width="40px"
+            height="40px"
+          ></img>{" "}
+          to choose the later amount then press the enter key{" "}
+          <img
+            src="enterkey.png"
+            alt="enter keyboard key"
+            width="75px"
+            height="40px"
+          ></img>{" "}
+          to accept your choice and advance to the next question. You must make
+          a selection to proceed onto the next question. You can not make your
+          money choice selection using a mouse and must use the left or right
+          arrow keys and the enter key. You can use a mouse to answer the
+          additional survey questions after the money choice questions.
         </Typography>
         <Typography paragraph>
           <img
@@ -187,8 +188,8 @@ const ChoiceInstructions = () => {
           <b>Try it out below: </b>
           In the example below, the {tryLeftDesc} represents the choice of
           receiving $300 two months from now and the {tryRightDesc} receiving
-          $700 seven months from now. Select one of the options by {tryAction}{" "}
-          for your choice.
+          $700 seven months from now. Select the earlier amount by pressing the
+          left arrow key and later amount by pressing the right arrow key.
         </Typography>
       </React.Fragment>
     );
@@ -199,49 +200,39 @@ const ChoiceInstructions = () => {
       case ViewType.word:
         return instructions(
           "a radio button",
-          "buttons",
           "Radio button example",
           "button on the left",
-          "button on the right",
-          "clicking the button"
+          "button on the right"
         );
       case ViewType.barchart:
         return instructions(
           "a bar chart",
-          "bars",
           "Bar chart button example",
           "bar on the left",
-          "bar on the right",
-          "clicking the bar"
+          "bar on the right"
         );
       case ViewType.calendarBar:
         return instructions(
           "calendar bar chart",
-          "bars",
           "Radio button example",
           "button on the left",
-          "button on the right",
-          "clicking the button"
+          "button on the right"
         );
       case ViewType.calendarWord:
       case ViewType.calendarWordYear:
       case ViewType.calendarWordYearDual:
         return instructions(
           "a calendar space",
-          "spaces",
           "Calendar word chart example",
           "space on the earlier day",
-          "space on the later day",
-          "clicking the day"
+          "space on the later day"
         );
       case ViewType.calendarIcon:
         return instructions(
           "calendar icon chart",
-          "icon charts",
           "Calendar icon chart example",
           "icon chart on the earlier day",
-          "icon chart on the later day",
-          "clicking the icon chart"
+          "icon chart on the later day"
         );
       default:
         return <React.Fragment>{navigate("/invalidlink")}</React.Fragment>;
@@ -261,7 +252,6 @@ const ChoiceInstructions = () => {
               qDateLater: instructionTreatment.dateLater,
               qAmountEarlier: instructionTreatment.amountEarlier,
               qAmountLater: instructionTreatment.amountLater,
-              onClickCallback: onClickCallback,
               choice: choice,
             });
           },
@@ -284,7 +274,6 @@ const ChoiceInstructions = () => {
               qDateLater: instructionTreatment.dateLater,
               qAmountEarlier: instructionTreatment.amountEarlier,
               qAmountLater: instructionTreatment.amountLater,
-              onClickCallback: onClickCallback,
               choice: choice,
             });
           },
@@ -308,12 +297,44 @@ const ChoiceInstructions = () => {
             timeLater={instructionTreatment.timeLater}
             dateLater={instructionTreatment.dateLater}
             helperText={helperText}
-            onClickCallback={onClickCallback}
             choice={choice}
           />
         );
       case ViewType.barchart:
-        return <DrawBarChart />;
+        return (
+          <BarChartComponent
+            error={error}
+            helperText={helperText}
+            maxTime={instructionTreatment.maxTime}
+            maxAmount={instructionTreatment.maxAmount}
+            interaction={instructionTreatment.interaction}
+            variableAmount={instructionTreatment.variableAmount}
+            amountEarlier={instructionTreatment.amountEarlier}
+            timeEarlier={instructionTreatment.timeEarlier}
+            amountLater={instructionTreatment.amountLater}
+            timeLater={instructionTreatment.timeLater}
+            choice={choice}
+            horizontalPixels={instructionTreatment.horizontalPixels}
+            verticalPixels={instructionTreatment.verticalPixels}
+            leftMarginWidthIn={instructionTreatment.leftMarginWidthIn}
+            graphWidthIn={instructionTreatment.graphWidthIn}
+            bottomMarginHeightIn={instructionTreatment.bottomMarginHeightIn}
+            graphHeightIn={instructionTreatment.graphHeightIn}
+            showMinorTicks={instructionTreatment.showMinorTicks}
+            onClickCallback={(value) => {
+              let errorMsg;
+              if (value === AmountType.earlierAmount) {
+                errorMsg =
+                  "To choose the earlier amount, use the left arrow key.";
+              } else if (value === AmountType.laterAmount) {
+                errorMsg =
+                  "To choose the later amount, use the right arrow key.";
+              }
+              setHelperText(errorMsg);
+              setError(true);
+            }}
+          />
+        );
       case ViewType.calendarBar:
         return "";
       case ViewType.calendarWord:
@@ -354,9 +375,9 @@ const ChoiceInstructions = () => {
               />
               <Typography paragraph></Typography>
               <Typography paragraph>
-                Once you have made your selection, the Next button will be
-                enabled to allow you to advance to the next question. You must
-                make a selection to proceed onto the next question.
+                Once you have made your selection, press the enter key to accept
+                it and advance to the next question. You must make a selection
+                to proceed onto the next question.
               </Typography>
             </>
           )}
@@ -369,15 +390,6 @@ const ChoiceInstructions = () => {
         </Grid>
         <Grid item xs={12}>
           <Box display="flex" justifyContent="center" alignItems="center">
-            {showNextPrevious && (
-              <img
-                id="nextButtonHintArrow"
-                width="auto"
-                src="arrow.png"
-                alt="Click next button after making selection."
-              ></img>
-            )}
-
             <Button
               variant="contained"
               color="secondary"
@@ -386,22 +398,18 @@ const ChoiceInstructions = () => {
               disableFocusRipple
               style={styles.button}
               onClick={() => {
-                if (
-                  choice !== AmountType.earlierAmount &&
-                  choice !== AmountType.laterAmount
-                ) {
-                  setError(true);
-                  setHelperText("You must choose one of the options below.");
-                } else {
-                  dispatch(
-                    MCLInstructionsCompleted(dateToState(DateTime.now()))
-                  );
-                }
+                setError(true);
+                setHelperText(
+                  `Press the Enter key to accept your selection of ${
+                    choice === AmountType.earlierAmount
+                      ? "earlier amount"
+                      : "later amount"
+                  } and start the survey.`
+                );
               }}
               disabled={disableSubmit}
             >
-              {" "}
-              Start{" "}
+              Press Enter to start the survey
             </Button>
           </Box>
         </Grid>

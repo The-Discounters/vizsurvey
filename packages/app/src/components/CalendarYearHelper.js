@@ -3,7 +3,6 @@ import { drawCalendar } from "./CalendarHelper.js";
 
 export const drawCalendarYear = ({
   table,
-  onClickCallback,
   choice,
   qDateEarlier,
   qDateLater,
@@ -63,7 +62,6 @@ export const drawCalendarYear = ({
         table01.style("width", "125px").style("height", "125px");
         drawCalendar({
           table: table01,
-          onClickCallback: onClickCallback,
           choice: choice,
           qDateEarlier: qDateEarlier,
           qDateLater: qDateLater,

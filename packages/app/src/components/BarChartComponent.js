@@ -1,4 +1,6 @@
-import * as d3 from "d3";
+import React from "react";
+import { FormControl, FormHelperText } from "@mui/material";
+import { useD3 } from "../hooks/useD3.js";
 import {
   axisBottom,
   axisLeft,
@@ -12,7 +14,7 @@ import { InteractionType } from "@the-discounters/types";
 import { AmountType } from "@the-discounters/types";
 import { calcScreenValues } from "./ScreenHelper.js";
 
-export const drawBarChart = ({
+const drawBarChart = ({
   svg,
   maxTime,
   maxAmount,
@@ -22,7 +24,6 @@ export const drawBarChart = ({
   timeEarlier,
   amountLater,
   timeLater,
-  onClickCallback,
   choice,
   horizontalPixels,
   verticalPixels,
@@ -31,6 +32,7 @@ export const drawBarChart = ({
   bottomMarginHeightIn,
   graphHeightIn,
   showMinorTicks,
+  onClickCallback,
 }) => {
   const {
     totalUCWidth,
@@ -208,14 +210,14 @@ export const drawBarChart = ({
     .attr("transform", `translate(${leftOffSetUC / 2},${bottomOffSetUC / 2})`)
     .attr("width", barWidth)
     .attr("height", (d) => y(0) - y(d.amount))
-    .on("mouseover", function () {
-      d3.select(this).attr("fill", "lightblue");
-    })
-    .on("mouseout", function () {
-      d3.select(this).attr("fill", (d) => {
-        return d.barType === choice ? "lightblue" : "steelblue";
-      });
-    })
+    // .on("mouseover", function () {
+    //   d3.select(this).attr("fill", "lightblue");
+    // })
+    // .on("mouseout", function () {
+    //   d3.select(this).attr("fill", (d) => {
+    //     return d.barType === choice ? "lightblue" : "steelblue";
+    //   });
+    // })
     .on("click", function (d) {
       if (
         interaction === InteractionType.titration ||
@@ -280,4 +282,51 @@ export const drawBarChart = ({
     }
   });
   dragHandler(chart.selectAll(".bar"));
+};
+
+export const BarChartComponent = (props) => {
+  const { totalSVGWidth, totalSVGHeight, totalUCWidth, totalUCHeight } =
+    calcScreenValues(
+      props.horizontalPixels,
+      props.verticalPixels,
+      props.leftMarginWidthIn,
+      props.graphWidthIn,
+      props.bottomMarginHeightIn,
+      props.graphHeightIn
+    );
+  return (
+    <FormControl required={false} error={props.error}>
+      <FormHelperText>{props.helperText}</FormHelperText>
+      <svg
+        width={totalSVGWidth}
+        height={totalSVGHeight}
+        viewBox={`0 0 ${totalUCWidth} ${totalUCHeight}`}
+        ref={useD3(
+          (svg) => {
+            drawBarChart({
+              svg: svg,
+              maxTime: props.maxTime,
+              maxAmount: props.maxAmount,
+              interaction: props.interaction,
+              variableAmount: props.variableAmount,
+              amountEarlier: props.amountEarlier,
+              timeEarlier: props.timeEarlier,
+              amountLater: props.amountLater,
+              timeLater: props.timeLater,
+              choice: props.choice,
+              horizontalPixels: props.horizontalPixels,
+              verticalPixels: props.verticalPixels,
+              leftMarginWidthIn: props.leftMarginWidthIn,
+              graphWidthIn: props.graphWidthIn,
+              bottomMarginHeightIn: props.bottomMarginHeightIn,
+              graphHeightIn: props.graphHeightIn,
+              showMinorTicks: props.showMinorTicks,
+              onClickCallback: props.onClickCallback,
+            });
+          },
+          [props.choice]
+        )}
+      ></svg>
+    </FormControl>
+  );
 };

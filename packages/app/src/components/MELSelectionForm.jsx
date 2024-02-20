@@ -91,7 +91,7 @@ export function MELSelectionForm(props) {
       <form className={classes.qArea}>
         <FormControl
           sx={{ ...formControl }}
-          required={"false"}
+          required={false}
           error={props.error}
         >
           <p className={classes.qTitle}>
@@ -118,9 +118,9 @@ export function MELSelectionForm(props) {
                 props.textShort + "-row-radio-buttons-group-label"
               }
               name={"question-radio-buttons-group"}
-              onChange={(event) => {
-                props.onClickCallback(event.target.value);
-              }}
+              // onChange={(event) => {
+              //   props.onClickCallback(event.target.value);
+              // }}
               value={props.choice}
             >
               {[
