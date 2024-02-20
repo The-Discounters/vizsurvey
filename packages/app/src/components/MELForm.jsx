@@ -38,6 +38,57 @@ function MELForm() {
   const [error, setError] = React.useState(false);
   const [helperText, setHelperText] = React.useState("");
 
+  const handleKeydownEvent = (event) => {
+    switch (event.code) {
+      case "Enter":
+        if (
+          choice !== AmountType.earlierAmount &&
+          choice !== AmountType.laterAmount
+        ) {
+          setError(true);
+          setHelperText(
+            "You must choose one of the options below.  Press the left arrow key to select the earlier amount and the right arrow key to select the later amount."
+          );
+        } else {
+          setHelperText("");
+          setError(false);
+          dispatch(nextQuestion());
+        }
+        break;
+      case "ArrowLeft":
+        dispatch(
+          answer({
+            choice: choice,
+            choiceTimestamp: dateToState(DateTime.now()),
+            window: WindowAttributes(window),
+            screen: ScreenAttributes(window.screen),
+          })
+        );
+        break;
+      case "ArrowRight":
+        dispatch(
+          answer({
+            choice: choice,
+            choiceTimestamp: dateToState(DateTime.now()),
+            window: WindowAttributes(window),
+            screen: ScreenAttributes(window.screen),
+          })
+        );
+        setHelperText("");
+        setError(false);
+        break;
+      default:
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("keydown", handleKeydownEvent);
+    return () => {
+      document.removeEventListener("keydown", handleKeydownEvent);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   useEffect(() => {
     dispatch(setQuestionShownTimestamp(dateToState(DateTime.now())));
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -81,18 +132,6 @@ function MELForm() {
           dateLater={q.dateLater}
           timeLater={q.timeLater}
           helperText={helperText}
-          onClickCallback={(value) => {
-            dispatch(
-              answer({
-                choice: value,
-                choiceTimestamp: dateToState(DateTime.now()),
-                window: WindowAttributes(window),
-                screen: ScreenAttributes(window.screen),
-              })
-            );
-            setHelperText("");
-            setError(false);
-          }}
           choice={choice}
         />
         <Grid item xs={12}>

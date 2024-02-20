@@ -6,7 +6,6 @@ export const dayNames = ["S", "M", "T", "W", "T", "F", "S"];
 
 export const drawCalendar = ({
   table,
-  onClickCallback,
   choice,
   qDateEarlier,
   qDateLater,
@@ -116,47 +115,47 @@ export const drawCalendar = ({
       })
       .style("width", boxLength + "px")
       .style("height", boxLength + "px")
-      .on("click", (d) => {
-        if (isNaN(d.target.__data__)) {
-          if (
-            d.target.__data__.k === "earlierAmount" &&
-            choice !== AmountType.earlierAmount
-          ) {
-            body
-              .selectAll("#laterAmount")
-              .style("background-color", "steelblue");
-          } else if (
-            d.target.__data__.k !== "earlierAmount" &&
-            choice !== AmountType.laterAmount
-          ) {
-            body
-              .selectAll("#earlierAmount")
-              .style("background-color", "steelblue");
-          }
-          select(this).style("background-color", "lightblue");
-          if (d.target.__data__.k === "earlierAmount") {
-            onClickCallback(AmountType.earlierAmount);
-          } else {
-            onClickCallback(AmountType.laterAmount);
-          }
-        }
-      })
-      .on("mouseover", function (d) {
-        if (isNaN(d.target.__data__)) {
-          select(this).style("background-color", "lightblue");
-        }
-      })
-      .on("mouseout", function (d) {
-        if (
-          isNaN(d.target.__data__) &&
-          ((d.target.__data__.k === "earlierAmount" &&
-            choice !== AmountType.earlierAmount) ||
-            (d.target.__data__.k !== "earlierAmount" &&
-              choice !== AmountType.laterAmount))
-        ) {
-          select(this).style("background-color", "steelblue");
-        }
-      })
+      // .on("click", (d) => {
+      //   if (isNaN(d.target.__data__)) {
+      //     if (
+      //       d.target.__data__.k === "earlierAmount" &&
+      //       choice !== AmountType.earlierAmount
+      //     ) {
+      //       body
+      //         .selectAll("#laterAmount")
+      //         .style("background-color", "steelblue");
+      //     } else if (
+      //       d.target.__data__.k !== "earlierAmount" &&
+      //       choice !== AmountType.laterAmount
+      //     ) {
+      //       body
+      //         .selectAll("#earlierAmount")
+      //         .style("background-color", "steelblue");
+      //     }
+      //     select(this).style("background-color", "lightblue");
+      //     if (d.target.__data__.k === "earlierAmount") {
+      //       onClickCallback(AmountType.earlierAmount);
+      //     } else {
+      //       onClickCallback(AmountType.laterAmount);
+      //     }
+      //   }
+      // })
+      // .on("mouseover", function (d) {
+      //   if (isNaN(d.target.__data__)) {
+      //     select(this).style("background-color", "lightblue");
+      //   }
+      // })
+      // .on("mouseout", function (d) {
+      //   if (
+      //     isNaN(d.target.__data__) &&
+      //     ((d.target.__data__.k === "earlierAmount" &&
+      //       choice !== AmountType.earlierAmount) ||
+      //       (d.target.__data__.k !== "earlierAmount" &&
+      //         choice !== AmountType.laterAmount))
+      //   ) {
+      //     select(this).style("background-color", "steelblue");
+      //   }
+      // })
       .each(function (d) {
         function drawDay(td, d) {
           if (isNaN(d)) td.style("background-color", "steelblue");

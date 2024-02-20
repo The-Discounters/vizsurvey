@@ -119,7 +119,6 @@ export const updateState = async (
   state
 ) => {
   requestSequence++;
-  console.log(`updateState start request ${requestSequence}.`);
   const augmentedState = state.browserTimestamp
     ? {
         ...state,
@@ -137,9 +136,5 @@ export const updateState = async (
     session_id: sessionId,
     state: augmentedState,
   };
-  putRequest(`${URLRoot}/updateState`, JSON.stringify(data)).then(
-    (response) => {
-      console.log(`updateState ended request ${response.requestSequence}.`);
-    }
-  );
+  putRequest(`${URLRoot}/updateState`, JSON.stringify(data));
 };

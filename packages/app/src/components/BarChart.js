@@ -4,12 +4,13 @@ import { useSelector, useDispatch } from "react-redux";
 import { DateTime } from "luxon";
 import { ThemeProvider, Box, Button } from "@mui/material";
 import { Grid } from "@material-ui/core";
-import { useD3 } from "../hooks/useD3.js";
 import {
   AmountType,
   WindowAttributes,
   ScreenAttributes,
 } from "@the-discounters/types";
+import { dateToState } from "@the-discounters/util";
+import { StatusType } from "../features/StatusType.js";
 import {
   getCurrentQuestion,
   getCurrentChoice,
@@ -19,21 +20,72 @@ import {
   nextQuestion,
   answer,
 } from "../features/questionSlice.js";
-import { dateToState } from "@the-discounters/util";
-import { drawBarChart } from "./BarChartComponent.js";
-import { styles, theme, calcScreenValues } from "./ScreenHelper.js";
+import { useKeyDown } from "../hooks/useKeydown.js";
+import { BarChartComponent } from "./BarChartComponent.js";
+import { styles, theme } from "./ScreenHelper.js";
 import { navigateFromStatus } from "./Navigate.js";
-import { StatusType } from "../features/StatusType.js";
 
 function BarChart() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  const [error, setError] = React.useState(false);
+  const [helperText, setHelperText] = React.useState("");
 
   const q = useSelector(getCurrentQuestion);
   const qi = useSelector(getCurrentQuestionIndex);
   const status = useSelector(getStatus);
   const choice = useSelector(getCurrentChoice);
   const [disableSubmit, setDisableSubmit] = useState(true);
+
+  // TODO could this be refactored into a common place for BarChart and MELSelectionForm
+  function handleKeyDownEvent(event) {
+    switch (event.code) {
+      case "Enter":
+        if (
+          choice !== AmountType.earlierAmount &&
+          choice !== AmountType.laterAmount
+        ) {
+          setError(true);
+          setHelperText(
+            "You must choose one of the options below.  Press the left arrow key to select the earlier amount and the right arrow key to select the later amount."
+          );
+        } else {
+          setHelperText("");
+          setError(false);
+          dispatch(nextQuestion());
+        }
+        break;
+      case "ArrowLeft":
+        dispatch(
+          answer({
+            choice: AmountType.earlierAmount,
+            choiceTimestamp: dateToState(DateTime.now()),
+            window: WindowAttributes(window),
+            screen: ScreenAttributes(window.screen),
+          })
+        );
+        break;
+      case "ArrowRight":
+        dispatch(
+          answer({
+            choice: AmountType.laterAmount,
+            choiceTimestamp: dateToState(DateTime.now()),
+            window: WindowAttributes(window),
+            screen: ScreenAttributes(window.screen),
+          })
+        );
+        break;
+      default:
+    }
+  }
+
+  useKeyDown(
+    (event) => {
+      handleKeyDownEvent(event);
+    },
+    ["Enter", "ArrowLeft", "ArrowRight"]
+  );
 
   useEffect(() => {
     dispatch(setQuestionShownTimestamp(dateToState(DateTime.now())));
@@ -43,15 +95,15 @@ function BarChart() {
   useEffect(() => {
     switch (choice) {
       case AmountType.earlierAmount:
-        setDisableSubmit(false);
-        break;
       case AmountType.laterAmount:
+        setError(false);
+        setHelperText("");
         setDisableSubmit(false);
         break;
       default:
         setDisableSubmit(true);
     }
-  }, [choice, q.treatmentQuestionId, dispatch]);
+  }, [choice, q.treatmentQuestionId]);
 
   useEffect(() => {
     const path = navigateFromStatus(status);
@@ -67,59 +119,42 @@ function BarChart() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status]);
 
-  const { totalSVGWidth, totalSVGHeight, totalUCWidth, totalUCHeight } =
-    calcScreenValues(
-      q.horizontalPixels,
-      q.verticalPixels,
-      q.leftMarginWidthIn,
-      q.graphWidthIn,
-      q.bottomMarginHeightIn,
-      q.graphHeightIn
-    );
-
   return (
     <ThemeProvider theme={theme}>
       <Grid container style={styles.root} justifyContent="center">
         <Grid item xs={12}>
-          <svg
-            width={totalSVGWidth}
-            height={totalSVGHeight}
-            viewBox={`0 0 ${totalUCWidth} ${totalUCHeight}`}
-            ref={useD3(
-              (svg) => {
-                drawBarChart({
-                  svg: svg,
-                  maxTime: q.maxTime,
-                  maxAmount: q.maxAmount,
-                  interaction: q.interaction,
-                  variableAmount: q.variableAmount,
-                  amountEarlier: q.amountEarlier,
-                  timeEarlier: q.timeEarlier,
-                  amountLater: q.amountLater,
-                  timeLater: q.timeLater,
-                  onClickCallback: (value) => {
-                    dispatch(
-                      answer({
-                        choice: value,
-                        choiceTimestamp: dateToState(DateTime.now()),
-                        window: WindowAttributes(window),
-                        screen: ScreenAttributes(window.screen),
-                      })
-                    );
-                  },
-                  choice: choice,
-                  horizontalPixels: q.horizontalPixels,
-                  verticalPixels: q.verticalPixels,
-                  leftMarginWidthIn: q.leftMarginWidthIn,
-                  graphWidthIn: q.graphWidthIn,
-                  bottomMarginHeightIn: q.bottomMarginHeightIn,
-                  graphHeightIn: q.graphHeightIn,
-                  showMinorTicks: q.showMinorTicks,
-                });
-              },
-              [q]
-            )}
-          ></svg>
+          <BarChartComponent
+            error={error}
+            helperText={helperText}
+            maxTime={q.maxTime}
+            maxAmount={q.maxAmount}
+            interaction={q.interaction}
+            variableAmount={q.variableAmount}
+            amountEarlier={q.amountEarlier}
+            timeEarlier={q.timeEarlier}
+            amountLater={q.amountLater}
+            timeLater={q.timeLater}
+            choice={choice}
+            horizontalPixels={q.horizontalPixels}
+            verticalPixels={q.verticalPixels}
+            leftMarginWidthIn={q.leftMarginWidthIn}
+            graphWidthIn={q.graphWidthIn}
+            bottomMarginHeightIn={q.bottomMarginHeightIn}
+            graphHeightIn={q.graphHeightIn}
+            showMinorTicks={q.showMinorTicks}
+            onClickCallback={(value) => {
+              let errorMsg;
+              if (value === AmountType.earlierAmount) {
+                errorMsg =
+                  "To choose the earlier amount use the left arrow key.";
+              } else if (value === AmountType.laterAmount) {
+                errorMsg =
+                  "To choose the later amount use the right arrow key.";
+              }
+              setHelperText(errorMsg);
+              setError(true);
+            }}
+          />
         </Grid>
         <Grid item xs={12}>
           <hr
@@ -138,13 +173,19 @@ function BarChart() {
               disableRipple
               disableFocusRipple
               style={styles.button}
-              onClick={() => {
-                dispatch(nextQuestion());
-              }}
               disabled={disableSubmit}
+              onClick={() => {
+                setError(true);
+                setHelperText(
+                  `Press the Enter key to accept your selection of ${
+                    choice === AmountType.earlierAmount
+                      ? "earlier amount"
+                      : "later amount"
+                  } and start the survey.`
+                );
+              }}
             >
-              {" "}
-              Next{" "}
+              Press Enter to advance to the next question
             </Button>
           </Box>
         </Grid>
