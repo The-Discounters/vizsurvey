@@ -21,25 +21,22 @@ import {
   nextQuestion,
   answer,
 } from "../features/questionSlice.js";
-import { BarChartComponent } from "./BarChartComponent.js";
+import { MELBarChartComponent } from "./MELBarChartComponent.js";
 import { styles, theme } from "./ScreenHelper.js";
 import { navigateFromStatus } from "./Navigate.js";
 
 function BarChart() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
-  const [error, setError] = React.useState(false);
-  const [helperText, setHelperText] = React.useState("");
-
+  const [error, setError] = useState(false);
+  const [helperText, setHelperText] = useState("");
   const q = useSelector(getCurrentQuestion);
   const qi = useSelector(getCurrentQuestionIndex);
   const status = useSelector(getStatus);
   const choice = useSelector(getCurrentChoice);
   const [disableSubmit, setDisableSubmit] = useState(true);
 
-  // TODO could this be refactored into a common place for BarChart and MELSelectionForm
-  function handleKeyDownEvent(event) {
+  const handleKeyDownEvent = (event) => {
     switch (event.code) {
       case "Enter":
         if (
@@ -57,6 +54,8 @@ function BarChart() {
         }
         break;
       case "ArrowLeft":
+        setHelperText("");
+        setError(false);
         dispatch(
           answer({
             choice: AmountType.earlierAmount,
@@ -75,10 +74,12 @@ function BarChart() {
             screen: ScreenAttributes(window.screen),
           })
         );
+        setHelperText("");
+        setError(false);
         break;
       default:
     }
-  }
+  };
 
   useKeyDown(
     (event) => {
@@ -93,15 +94,15 @@ function BarChart() {
   }, [qi]);
 
   useEffect(() => {
-    switch (choice) {
-      case AmountType.earlierAmount:
-      case AmountType.laterAmount:
-        setError(false);
-        setHelperText("");
-        setDisableSubmit(false);
-        break;
-      default:
-        setDisableSubmit(true);
+    if (
+      choice === AmountType.earlierAmount ||
+      choice === AmountType.laterAmount
+    ) {
+      setError(false);
+      setHelperText("");
+      setDisableSubmit(false);
+    } else {
+      setDisableSubmit(true);
     }
   }, [choice, q.treatmentQuestionId]);
 
@@ -123,7 +124,7 @@ function BarChart() {
     <ThemeProvider theme={theme}>
       <Grid container style={styles.root} justifyContent="center">
         <Grid item xs={12}>
-          <BarChartComponent
+          <MELBarChartComponent
             maxTime={q.maxTime}
             maxAmount={q.maxAmount}
             interaction={q.interaction}

@@ -13,7 +13,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { AmountType } from "@the-discounters/types";
 import { formControl } from "./ScreenHelper.js";
 
-export function MELSelectionForm(props) {
+export function MELWordComponent(props) {
   const todayText = (sooner_time) =>
     sooner_time === 0 ? "today" : `in ${sooner_time} months`;
 
@@ -161,4 +161,4 @@ export function MELSelectionForm(props) {
   );
 }
 
-export default MELSelectionForm;
+export default MELWordComponent;

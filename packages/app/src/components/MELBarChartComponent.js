@@ -283,7 +283,7 @@ const drawBarChart = ({
   dragHandler(chart.selectAll(".bar"));
 };
 
-export const BarChartComponent = (props) => {
+export const MELBarChartComponent = (props) => {
   const { totalSVGWidth, totalSVGHeight, totalUCWidth, totalUCHeight } =
     calcScreenValues(
       props.horizontalPixels,

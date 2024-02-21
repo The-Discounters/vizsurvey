@@ -1,16 +1,17 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { DateTime } from "luxon";
-import { Button, Box, ThemeProvider } from "@mui/material";
-import Grid from "@mui/material/Unstable_Grid2";
+import { ThemeProvider, Box, Button } from "@mui/material";
+import { Grid } from "@material-ui/core";
 import {
   AmountType,
   WindowAttributes,
   ScreenAttributes,
 } from "@the-discounters/types";
+import { dateToState } from "@the-discounters/util";
+import { StatusType } from "../features/StatusType.js";
 import { useKeyDown } from "../hooks/useKeydown.js";
-import { MELSelectionForm } from "./MELSelectionForm.jsx";
 import {
   getCurrentQuestion,
   getCurrentChoice,
@@ -20,23 +21,21 @@ import {
   nextQuestion,
   answer,
 } from "../features/questionSlice.js";
-import { dateToState } from "@the-discounters/util";
+import { MELWordComponent } from "./MELWordComponent.js";
 import { styles, theme } from "./ScreenHelper.js";
 import { navigateFromStatus } from "./Navigate.js";
-import { StatusType } from "../features/StatusType.js";
 
 function MELForm() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  let q = useSelector(getCurrentQuestion);
+  const [error, setError] = useState(false);
+  const [helperText, setHelperText] = useState("");
+  const q = useSelector(getCurrentQuestion);
   const qi = useSelector(getCurrentQuestionIndex);
   const status = useSelector(getStatus);
   const choice = useSelector(getCurrentChoice);
-
-  const [disableSubmit, setDisableSubmit] = React.useState(true);
-  const [error, setError] = React.useState(false);
-  const [helperText, setHelperText] = React.useState("");
+  const [disableSubmit, setDisableSubmit] = useState(true);
 
   const handleKeyDownEvent = (event) => {
     switch (event.code) {
@@ -56,6 +55,8 @@ function MELForm() {
         }
         break;
       case "ArrowLeft":
+        setHelperText("");
+        setError(false);
         dispatch(
           answer({
             choice: AmountType.earlierAmount,
@@ -98,11 +99,13 @@ function MELForm() {
       choice === AmountType.earlierAmount ||
       choice === AmountType.laterAmount
     ) {
+      setError(false);
+      setHelperText("");
       setDisableSubmit(false);
     } else {
       setDisableSubmit(true);
     }
-  }, [choice, q.treatmentQuestionId, dispatch]);
+  }, [choice, q.treatmentQuestionId]);
 
   useEffect(() => {
     const path = navigateFromStatus(status);
@@ -122,7 +125,7 @@ function MELForm() {
     <ThemeProvider theme={theme}>
       <Grid container style={styles.root} justifyContent="center">
         <Grid item xs={12}>
-          <MELSelectionForm
+          <MELWordComponent
             textShort={"MELRadioGroup"}
             amountEarlier={q.amountEarlier}
             timeEarlier={q.timeEarlier}
@@ -184,4 +187,5 @@ function MELForm() {
     </ThemeProvider>
   );
 }
+
 export default MELForm;

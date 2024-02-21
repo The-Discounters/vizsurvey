@@ -25,8 +25,8 @@ import { dateToState } from "@the-discounters/util";
 
 import { styles, theme, calcScreenValues } from "./ScreenHelper.js";
 import { AmountType } from "@the-discounters/types";
-import { MELSelectionForm } from "./MELSelectionForm.jsx";
-import { BarChartComponent } from "./BarChartComponent.js";
+import { MELWordComponent } from "./MELWordComponent.js";
+import { MELBarChartComponent } from "./MELBarChartComponent.js";
 import { StatusType } from "../features/StatusType.js";
 import { drawCalendar } from "./CalendarHelper.js";
 import { drawCalendarYear } from "./CalendarYearHelper.js";
@@ -287,7 +287,7 @@ const ChoiceInstructions = () => {
     switch (instructionTreatment.viewType) {
       case ViewType.word:
         return (
-          <MELSelectionForm
+          <MELWordComponent
             textShort={"MELRadioGroup"}
             error={error}
             amountEarlier={instructionTreatment.amountEarlier}
@@ -314,7 +314,7 @@ const ChoiceInstructions = () => {
         );
       case ViewType.barchart:
         return (
-          <BarChartComponent
+          <MELBarChartComponent
             error={error}
             helperText={helperText}
             maxTime={instructionTreatment.maxTime}
