@@ -140,13 +140,13 @@ const exportData = async (db, format, studyId, filename) => {
   switch (format) {
     case FileTypes.json:
       fileData = await exportParticipantsToJSON(db, studyId);
+      writeFile(filename, fileData);
       break;
     case FileTypes.csv:
-      fileData = await exportParticipantsToCSV(db, studyId);
+      fileData = await exportParticipantsToCSV(db, studyId, filename);
     default:
       break;
   }
-  writeFile(filename, fileData);
 };
 
 const exportAudit = async (db, format, studyId, filename) => {

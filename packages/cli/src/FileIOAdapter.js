@@ -1,4 +1,6 @@
 import _ from "lodash";
+import { stringify } from "csv-stringify";
+import fs from "fs";
 import {
   convertKeysCamelCaseToUnderscore,
   flattenArrayToObject,
@@ -109,6 +111,12 @@ export const flattenState = (obj) => {
           value.nanoseconds
         );
         break;
+      case "browserTimestamp":
+        flattened[key] = ISODateStringWithNanoSec(
+          value.toDate(),
+          value.nanoseconds
+        );
+        break;
       default:
         flattened[key] = value;
     }
@@ -168,7 +176,7 @@ export const participantToCSV = (participant, includeHeader) => {
   return convertToCSV(underscore, includeHeader);
 };
 
-export const exportParticipantsToCSV = async (db, studyId) => {
+export const exportParticipantsToCSV = async (db, studyId, filename) => {
   console.log("...exporting participants to CSV.");
   const { experiment, participants } = await exportParticipants(db, studyId);
   const array = [];
@@ -183,5 +191,11 @@ export const exportParticipantsToCSV = async (db, studyId) => {
     array.push(underscore);
   });
   console.log("...converting participants to CSV.");
-  return convertToCSV(array, true);
+  stringify(array, { header: true }, (err, output) => {
+    if (err) throw err;
+    fs.writeFile(filename, output, (err) => {
+      if (err) throw err;
+      console.log(`...data written to CSV file ${filename}`);
+    });
+  });
 };
