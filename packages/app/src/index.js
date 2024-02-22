@@ -11,13 +11,14 @@ import reportWebVitals from "./reportWebVitals.js";
 enableAllPlugins();
 
 ReactDOM.render(
-  //<React.StrictMode>
-  <Provider store={store}>
-    <ServiceAPIProvider>
-      <App />
-    </ServiceAPIProvider>
-  </Provider>,
-  //</React.StrictMode>,
+  <React.StrictMode>
+    <Provider store={store}>
+      <ServiceAPIProvider>
+        <App />
+      </ServiceAPIProvider>
+    </Provider>
+    ,
+  </React.StrictMode>,
   document.getElementById("root")
 );
 
