@@ -1,7 +1,7 @@
 export const POST_SURVEY_QUESTIONS = {
   promptShort: "surveyExperience",
   prompt:
-    "Please answer the following questions about your experience completing the money choice questions.",
+    "Please answer the following questions about your experience completing the money choice questions.  You can now use your mouse to choose an answer, scroll the page, and click the Next button to continue.",
   questionsType: "multiple choice auto",
   questions: [
     {
