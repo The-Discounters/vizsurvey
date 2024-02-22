@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { DateTime } from "luxon";
-import { ThemeProvider, Button } from "@mui/material";
-import { Grid } from "@material-ui/core";
+import { ThemeProvider, StyledEngineProvider, Button } from "@mui/material";
+import { Grid } from "@mui/material";
 import {
   AmountType,
   WindowAttributes,
@@ -126,146 +126,148 @@ export function Survey() {
   }, [status]);
 
   return (
-    <ThemeProvider theme={theme}>
-      <Grid
-        container
-        direction="column"
-        justifyContent="center"
-        alignItems="center"
-        sx={{ minHeight: "100vh" }}
-      >
-        <Grid item xs={12}>
-          {(() => {
-            switch (q.viewType) {
-              case ViewType.barchart:
-                return (
-                  <MELBarChartComponent
-                    maxTime={q.maxTime}
-                    maxAmount={q.maxAmount}
-                    interaction={q.interaction}
-                    variableAmount={q.variableAmount}
-                    amountEarlier={q.amountEarlier}
-                    timeEarlier={q.timeEarlier}
-                    amountLater={q.amountLater}
-                    timeLater={q.timeLater}
-                    horizontalPixels={q.horizontalPixels}
-                    verticalPixels={q.verticalPixels}
-                    leftMarginWidthIn={q.leftMarginWidthIn}
-                    graphWidthIn={q.graphWidthIn}
-                    bottomMarginHeightIn={q.bottomMarginHeightIn}
-                    graphHeightIn={q.graphHeightIn}
-                    showMinorTicks={q.showMinorTicks}
-                    error={error}
-                    helperText={helperText}
-                    choice={choice}
-                    onClickCallback={(value) => {
-                      let errorMsg;
-                      if (value === AmountType.earlierAmount) {
-                        errorMsg =
-                          "To choose the earlier amount use the left arrow key.";
-                      } else if (value === AmountType.laterAmount) {
-                        errorMsg =
-                          "To choose the later amount use the right arrow key.";
-                      }
-                      setHelperText(errorMsg);
-                      setError(true);
-                    }}
-                  />
+    <StyledEngineProvider injectFirst>
+      <ThemeProvider theme={theme}>
+        <Grid
+          container
+          direction="column"
+          justifyContent="center"
+          alignItems="center"
+          sx={{ minHeight: "100vh" }}
+        >
+          <Grid item xs={12}>
+            {(() => {
+              switch (q.viewType) {
+                case ViewType.barchart:
+                  return (
+                    <MELBarChartComponent
+                      maxTime={q.maxTime}
+                      maxAmount={q.maxAmount}
+                      interaction={q.interaction}
+                      variableAmount={q.variableAmount}
+                      amountEarlier={q.amountEarlier}
+                      timeEarlier={q.timeEarlier}
+                      amountLater={q.amountLater}
+                      timeLater={q.timeLater}
+                      horizontalPixels={q.horizontalPixels}
+                      verticalPixels={q.verticalPixels}
+                      leftMarginWidthIn={q.leftMarginWidthIn}
+                      graphWidthIn={q.graphWidthIn}
+                      bottomMarginHeightIn={q.bottomMarginHeightIn}
+                      graphHeightIn={q.graphHeightIn}
+                      showMinorTicks={q.showMinorTicks}
+                      error={error}
+                      helperText={helperText}
+                      choice={choice}
+                      onClickCallback={(value) => {
+                        let errorMsg;
+                        if (value === AmountType.earlierAmount) {
+                          errorMsg =
+                            "To choose the earlier amount use the left arrow key.";
+                        } else if (value === AmountType.laterAmount) {
+                          errorMsg =
+                            "To choose the later amount use the right arrow key.";
+                        }
+                        setHelperText(errorMsg);
+                        setError(true);
+                      }}
+                    />
+                  );
+                case ViewType.word:
+                  return (
+                    <MELWordComponent
+                      textShort={"MELRadioGroup"}
+                      amountEarlier={q.amountEarlier}
+                      timeEarlier={q.timeEarlier}
+                      dateEarlier={q.dateEarlier}
+                      amountLater={q.amountLater}
+                      timeLater={q.timeLater}
+                      dateLater={q.dateLater}
+                      error={error}
+                      helperText={helperText}
+                      choice={choice}
+                      onClickCallback={(value) => {
+                        let errorMsg;
+                        if (value === AmountType.earlierAmount) {
+                          errorMsg =
+                            "To choose the earlier amount use the left arrow key.";
+                        } else if (value === AmountType.laterAmount) {
+                          errorMsg =
+                            "To choose the later amount use the right arrow key.";
+                        }
+                        setHelperText(errorMsg);
+                        setError(true);
+                      }}
+                    />
+                  );
+                case ViewType.calendarBar:
+                case ViewType.calendarIcon:
+                case ViewType.calendarWord:
+                case ViewType.calendarWordYear:
+                case ViewType.calendarWordYearDual:
+                  return (
+                    <MELCalendarComponent
+                      viewType={q.viewType}
+                      amountEarlier={q.amountEarlier}
+                      dateEarlier={q.dateEarlier}
+                      amountLater={q.amountLater}
+                      dateLater={q.dateLater}
+                      error={error}
+                      helperText={helperText}
+                      choice={choice}
+                      onClickCallback={(value) => {
+                        let errorMsg;
+                        if (value === AmountType.earlierAmount) {
+                          errorMsg =
+                            "To choose the earlier amount use the left arrow key.";
+                        } else if (value === AmountType.laterAmount) {
+                          errorMsg =
+                            "To choose the later amount use the right arrow key.";
+                        }
+                        setHelperText(errorMsg);
+                        setError(true);
+                      }}
+                    />
+                  );
+                default:
+                  return "";
+              }
+            })()}
+          </Grid>
+          <Grid item xs={12}>
+            <hr
+              style={{
+                backgroundColor: "#aaaaaa",
+                height: 4,
+              }}
+            />
+          </Grid>
+          <Grid item align="center" xs={12}>
+            <Button
+              id="buttonNext"
+              variant="contained"
+              color="secondary"
+              disableRipple
+              disableFocusRipple
+              style={styles.button}
+              disabled={disableSubmit}
+              onClick={() => {
+                setError(true);
+                setHelperText(
+                  `Press the Enter key to accept your selection of ${
+                    choice === AmountType.earlierAmount
+                      ? "earlier amount"
+                      : "later amount"
+                  } and start the survey.`
                 );
-              case ViewType.word:
-                return (
-                  <MELWordComponent
-                    textShort={"MELRadioGroup"}
-                    amountEarlier={q.amountEarlier}
-                    timeEarlier={q.timeEarlier}
-                    dateEarlier={q.dateEarlier}
-                    amountLater={q.amountLater}
-                    timeLater={q.timeLater}
-                    dateLater={q.dateLater}
-                    error={error}
-                    helperText={helperText}
-                    choice={choice}
-                    onClickCallback={(value) => {
-                      let errorMsg;
-                      if (value === AmountType.earlierAmount) {
-                        errorMsg =
-                          "To choose the earlier amount use the left arrow key.";
-                      } else if (value === AmountType.laterAmount) {
-                        errorMsg =
-                          "To choose the later amount use the right arrow key.";
-                      }
-                      setHelperText(errorMsg);
-                      setError(true);
-                    }}
-                  />
-                );
-              case ViewType.calendarBar:
-              case ViewType.calendarIcon:
-              case ViewType.calendarWord:
-              case ViewType.calendarWordYear:
-              case ViewType.calendarWordYearDual:
-                return (
-                  <MELCalendarComponent
-                    viewType={q.viewType}
-                    amountEarlier={q.amountEarlier}
-                    dateEarlier={q.dateEarlier}
-                    amountLater={q.amountLater}
-                    dateLater={q.dateLater}
-                    error={error}
-                    helperText={helperText}
-                    choice={choice}
-                    onClickCallback={(value) => {
-                      let errorMsg;
-                      if (value === AmountType.earlierAmount) {
-                        errorMsg =
-                          "To choose the earlier amount use the left arrow key.";
-                      } else if (value === AmountType.laterAmount) {
-                        errorMsg =
-                          "To choose the later amount use the right arrow key.";
-                      }
-                      setHelperText(errorMsg);
-                      setError(true);
-                    }}
-                  />
-                );
-              default:
-                return "";
-            }
-          })()}
+              }}
+            >
+              Press Enter to advance to the next question
+            </Button>
+          </Grid>
         </Grid>
-        <Grid item xs={12}>
-          <hr
-            style={{
-              backgroundColor: "#aaaaaa",
-              height: 4,
-            }}
-          />
-        </Grid>
-        <Grid item align="center" xs={12}>
-          <Button
-            id="buttonNext"
-            variant="contained"
-            color="secondary"
-            disableRipple
-            disableFocusRipple
-            style={styles.button}
-            disabled={disableSubmit}
-            onClick={() => {
-              setError(true);
-              setHelperText(
-                `Press the Enter key to accept your selection of ${
-                  choice === AmountType.earlierAmount
-                    ? "earlier amount"
-                    : "later amount"
-                } and start the survey.`
-              );
-            }}
-          >
-            Press Enter to advance to the next question
-          </Button>
-        </Grid>
-      </Grid>
-    </ThemeProvider>
+      </ThemeProvider>
+    </StyledEngineProvider>
   );
 }
 

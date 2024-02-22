@@ -294,7 +294,7 @@ export const MELBarChartComponent = (props) => {
       props.graphHeightIn
     );
   return (
-    <FormControl required={false} error={props.error}>
+    <FormControl variant="standard" required={false} error={props.error}>
       <FormHelperText>{props.helperText}</FormHelperText>
       <svg
         width={totalSVGWidth}

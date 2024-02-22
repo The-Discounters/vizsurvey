@@ -1,5 +1,7 @@
 import { createTheme } from "@mui/material";
 
+import { adaptV4Theme } from '@mui/material/styles';
+
 export const styles = {
   root: { flexGrow: 1, margin: 20 },
   button: { marginTop: 10, marginBottom: 10 },
@@ -8,12 +10,12 @@ export const styles = {
   label: { margin: 0 },
 };
 
-export const theme = createTheme({
+export const theme = createTheme(adaptV4Theme({
   direction: "rtl",
   typography: {
     htmlFontSize: 12,
   },
-});
+}));
 
 export const selectEmpty = {
   marginTop: theme.spacing(2),

@@ -8,7 +8,7 @@ import { ViewType } from "@the-discounters/types";
 
 export const MELCalendarComponent = (props) => {
   return (
-    <FormControl required={false} error={props.error}>
+    <FormControl variant="standard" required={false} error={props.error}>
       <FormHelperText>{props.helperText}</FormHelperText>
       <table
         id="calendar"
