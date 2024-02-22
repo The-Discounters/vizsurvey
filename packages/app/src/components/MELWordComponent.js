@@ -8,7 +8,6 @@ import {
   Box,
 } from "@mui/material";
 import { format } from "d3";
-import { Grid } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { AmountType } from "@the-discounters/types";
 import { formControl } from "./ScreenHelper.js";
@@ -86,78 +85,67 @@ export function MELWordComponent(props) {
   const classes = useStyles();
 
   return (
-    <Grid item xs={12}>
-      <form className={classes.qArea}>
-        <FormControl
-          sx={{ ...formControl }}
-          required={false}
-          error={props.error}
+    <form className={classes.qArea}>
+      <FormControl sx={{ ...formControl }} required={false} error={props.error}>
+        <p className={classes.qTitle}>
+          {questionText(
+            props.amountEarlier,
+            props.timeEarlier,
+            props.amountLater,
+            props.timeLater
+          )}
+        </p>
+        <FormHelperText>{props.helperText}</FormHelperText>
+        <Box
+          component="span"
+          sx={{ width: 1 }}
+          m={1}
+          display="flex"
+          justifyContent="space-between"
+          alignItems="center"
+          border="1"
         >
-          <p className={classes.qTitle}>
-            {questionText(
-              props.amountEarlier,
-              props.timeEarlier,
-              props.amountLater,
-              props.timeLater
-            )}
-          </p>
-          <FormHelperText>{props.helperText}</FormHelperText>
-          <Box
-            component="span"
-            sx={{ width: 1 }}
-            m={1}
-            display="flex"
-            justifyContent="space-between"
-            alignItems="center"
-            border="1"
+          <RadioGroup
+            row
+            aria-labelledby={props.textShort + "-row-radio-buttons-group-label"}
+            name={"question-radio-buttons-group"}
+            onClick={(event) => {
+              props.onClickCallback(event.target.value);
+            }}
+            value={props.choice}
           >
-            <RadioGroup
-              row
-              aria-labelledby={
-                props.textShort + "-row-radio-buttons-group-label"
-              }
-              name={"question-radio-buttons-group"}
-              onClick={(event) => {
-                props.onClickCallback(event.target.value);
-              }}
-              value={props.choice}
-            >
-              {[
-                {
-                  key: AmountType.earlierAmount,
-                  label: question1stPartText(
-                    props.amountEarlier,
-                    props.timeEarlier
-                  ),
-                },
-                {
-                  key: AmountType.laterAmount,
-                  label: question2ndPartText(
-                    props.amountLater,
-                    props.timeLater
-                  ),
-                },
-              ].map(({ key, label }, index) => (
-                <FormControlLabel
-                  sx={{ mr: "100px" }}
-                  key={key}
-                  id={key}
-                  value={key}
-                  checked={props.choice === key}
-                  control={<Radio />}
-                  label={label}
-                  className={
-                    classes[
-                      "btn" + (props.choice === key ? index + "Clicked" : index)
-                    ]
-                  }
-                />
-              ))}
-            </RadioGroup>
-          </Box>
-        </FormControl>
-      </form>
-    </Grid>
+            {[
+              {
+                key: AmountType.earlierAmount,
+                label: question1stPartText(
+                  props.amountEarlier,
+                  props.timeEarlier
+                ),
+              },
+              {
+                key: AmountType.laterAmount,
+                label: question2ndPartText(props.amountLater, props.timeLater),
+              },
+            ].map(({ key, label }, index) => (
+              <FormControlLabel
+                sx={{ mr: "100px" }}
+                key={key}
+                id={key}
+                value={key}
+                checked={props.choice === key}
+                control={<Radio />}
+                label={label}
+                className={
+                  classes[
+                    "btn" + (props.choice === key ? index + "Clicked" : index)
+                  ]
+                }
+              />
+            ))}
+          </RadioGroup>
+        </Box>
+      </FormControl>
+    </form>
   );
 }
 

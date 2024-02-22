@@ -22,7 +22,12 @@ const Finished = () => {
   } else {
     return (
       <ThemeProvider theme={theme}>
-        <Grid container style={styles.root}>
+        <Grid
+          container
+          direction="column"
+          justifyContent="flex-start"
+          alignItems="stretch"
+        >
           <Grid item xs={12}>
             <Typography variant="h4">Finished</Typography>
             <hr

@@ -1,12 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  Button,
-  Grid,
-  Box,
-  Typography,
-  ThemeProvider,
-} from "@material-ui/core";
+import { Button, Grid, Typography, ThemeProvider } from "@material-ui/core";
 import { useSelector, useDispatch } from "react-redux";
 import { DateTime } from "luxon";
 import { useD3 } from "../hooks/useD3.js";
@@ -176,7 +170,7 @@ const ChoiceInstructions = () => {
           arrow keys and the enter key. You can use a mouse to answer the
           additional survey questions after the money choice questions.
         </Typography>
-        <Typography paragraph>
+        <Typography paragraph align="center">
           <img
             src={gifFilename()}
             alt={gifAltText}
@@ -363,7 +357,12 @@ const ChoiceInstructions = () => {
 
   return (
     <ThemeProvider theme={theme}>
-      <Grid container style={styles.root} justifyContent="center">
+      <Grid
+        container
+        direction="column"
+        justifyContent="flex-start"
+        alignItems="stretch"
+      >
         <Grid item xs={12}>
           <Typography variant="h4">Money Choice Instructions</Typography>
           <hr
@@ -376,7 +375,11 @@ const ChoiceInstructions = () => {
         </Grid>
         <Grid item xs={12}>
           {vizExplanation()}
+        </Grid>
+        <Grid item xs={12} align="center">
           {vizTry()}
+        </Grid>
+        <Grid item xs={12}>
           {showNextPrevious && (
             <>
               <hr
@@ -385,7 +388,6 @@ const ChoiceInstructions = () => {
                   height: 4,
                 }}
               />
-              <Typography paragraph></Typography>
               <Typography paragraph>
                 Once you have made your selection, press the enter key to accept
                 it and advance to the next question. You must make a selection
@@ -400,30 +402,28 @@ const ChoiceInstructions = () => {
             }}
           />
         </Grid>
-        <Grid item xs={12}>
-          <Box display="flex" justifyContent="center" alignItems="center">
-            <Button
-              variant="contained"
-              color="secondary"
-              id="buttonNext"
-              disableRipple
-              disableFocusRipple
-              style={styles.button}
-              onClick={() => {
-                setError(true);
-                setHelperText(
-                  `Press the Enter key to accept your selection of ${
-                    choice === AmountType.earlierAmount
-                      ? "earlier amount"
-                      : "later amount"
-                  } and start the survey.`
-                );
-              }}
-              disabled={disableSubmit}
-            >
-              Press Enter to start the survey
-            </Button>
-          </Box>
+        <Grid item xs={12} align="center">
+          <Button
+            variant="contained"
+            color="secondary"
+            id="buttonNext"
+            disableRipple
+            disableFocusRipple
+            style={styles.button}
+            onClick={() => {
+              setError(true);
+              setHelperText(
+                `Press the Enter key to accept your selection of ${
+                  choice === AmountType.earlierAmount
+                    ? "earlier amount"
+                    : "later amount"
+                } and start the survey.`
+              );
+            }}
+            disabled={disableSubmit}
+          >
+            Press Enter to start the survey
+          </Button>
         </Grid>
       </Grid>
     </ThemeProvider>

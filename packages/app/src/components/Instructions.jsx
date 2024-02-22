@@ -1,12 +1,6 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  Button,
-  Grid,
-  Box,
-  Typography,
-  ThemeProvider,
-} from "@material-ui/core";
+import { Button, Grid, Typography, ThemeProvider } from "@material-ui/core";
 import { useSelector, useDispatch } from "react-redux";
 import { DateTime } from "luxon";
 import "../App.css";
@@ -37,7 +31,12 @@ const Instructions = () => {
 
   return (
     <ThemeProvider theme={theme}>
-      <Grid container style={styles.root}>
+      <Grid
+        container
+        direction="column"
+        justifyContent="flex-start"
+        alignItems="stretch"
+      >
         <Grid item xs={12}>
           <Typography variant="h4">General Instructions</Typography>
           <hr
@@ -78,22 +77,20 @@ const Instructions = () => {
             }}
           />
         </Grid>
-        <Grid item xs={12}>
-          <Box display="flex" justifyContent="center">
-            <Button
-              variant="contained"
-              color="secondary"
-              disableRipple
-              disableFocusRipple
-              style={styles.button}
-              onClick={() => {
-                dispatch(instructionsCompleted(dateToState(DateTime.now())));
-              }}
-            >
-              {" "}
-              Next{" "}
-            </Button>
-          </Box>
+        <Grid item align="center" xs={12}>
+          <Button
+            variant="contained"
+            color="secondary"
+            disableRipple
+            disableFocusRipple
+            style={styles.button}
+            onClick={() => {
+              dispatch(instructionsCompleted(dateToState(DateTime.now())));
+            }}
+          >
+            {" "}
+            Next{" "}
+          </Button>
         </Grid>
       </Grid>
     </ThemeProvider>

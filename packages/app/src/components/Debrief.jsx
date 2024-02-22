@@ -1,14 +1,8 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { DateTime } from "luxon";
 import { useNavigate } from "react-router-dom";
-import {
-  Grid,
-  Box,
-  Button,
-  Typography,
-  ThemeProvider,
-} from "@material-ui/core";
+import { Grid, Button, Typography, ThemeProvider } from "@material-ui/core";
 import TextField from "@mui/material/TextField";
 import { ViewType } from "@the-discounters/types";
 import {
@@ -29,8 +23,8 @@ const Debrief = () => {
   const status = useSelector(getStatus);
   const navigate = useNavigate();
   const instructionTreatment = useSelector(getInstructionTreatment);
-  const [comment, setComment] = React.useState("");
-  const processingRequests = React.useContext(Context);
+  const [comment, setComment] = useState("");
+  const processingRequests = useContext(Context);
 
   useEffect(() => {
     dispatch(debriefShownTimestamp(dateToState(DateTime.now())));
@@ -77,7 +71,12 @@ const Debrief = () => {
   } else {
     return (
       <ThemeProvider theme={theme}>
-        <Grid container style={styles.root}>
+        <Grid
+          container
+          direction="column"
+          justifyContent="flex-start"
+          alignItems="stretch"
+        >
           <Grid item xs={12}>
             <Typography variant="h4">Study Explanation</Typography>
             <hr
@@ -181,23 +180,20 @@ const Debrief = () => {
               }}
             />
           </Grid>
-          <Grid item xs={12}>
-            <Box display="flex" justifyContent="center">
-              <Button
-                variant="contained"
-                color="secondary"
-                disableRipple
-                disableFocusRipple
-                style={styles.button}
-                onClick={() => {
-                  dispatch(setFeedback(comment));
-                  dispatch(debriefCompleted(dateToState(DateTime.now())));
-                }}
-              >
-                {" "}
-                Submit Feedback & Exit{" "}
-              </Button>
-            </Box>
+          <Grid item align="center" xs={12}>
+            <Button
+              variant="contained"
+              color="secondary"
+              disableRipple
+              disableFocusRipple
+              style={styles.button}
+              onClick={() => {
+                dispatch(setFeedback(comment));
+                dispatch(debriefCompleted(dateToState(DateTime.now())));
+              }}
+            >
+              Submit Feedback
+            </Button>
           </Grid>
         </Grid>
       </ThemeProvider>
