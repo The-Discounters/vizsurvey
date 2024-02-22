@@ -8,9 +8,8 @@ import {
   Box,
 } from "@mui/material";
 import { format } from "d3";
-import makeStyles from '@mui/styles/makeStyles';
+import makeStyles from "@mui/styles/makeStyles";
 import { AmountType } from "@the-discounters/types";
-import { formControl } from "./ScreenHelper.js";
 
 export function MELWordComponent(props) {
   const todayText = (sooner_time) =>
@@ -86,11 +85,7 @@ export function MELWordComponent(props) {
 
   return (
     <form className={classes.qArea}>
-      <FormControl
-        variant="standard"
-        sx={{ ...formControl }}
-        required={false}
-        error={props.error}>
+      <FormControl variant="standard" required={false} error={props.error}>
         <p className={classes.qTitle}>
           {questionText(
             props.amountEarlier,

@@ -1,6 +1,6 @@
 import { createTheme } from "@mui/material";
 
-import { adaptV4Theme } from '@mui/material/styles';
+import { adaptV4Theme } from "@mui/material/styles";
 
 export const styles = {
   root: { flexGrow: 1, margin: 20 },
@@ -10,31 +10,14 @@ export const styles = {
   label: { margin: 0 },
 };
 
-export const theme = createTheme(adaptV4Theme({
-  direction: "rtl",
-  typography: {
-    htmlFontSize: 12,
-  },
-}));
-
-export const selectEmpty = {
-  marginTop: theme.spacing(2),
-};
-
-export const formControl = {
-  margin: theme.spacing(1),
-  flexGrow: 1,
-};
-
-export const formLabel = {
-  fontSize: 32,
-  color: "black",
-};
-
-export const formControlLabel = {
-  color: "black",
-  ".MuiTypography-root": { fontSize: 32 },
-};
+export const theme = createTheme(
+  adaptV4Theme({
+    direction: "rtl",
+    typography: {
+      htmlFontSize: 12,
+    },
+  })
+);
 
 export const calcScreenValues = (
   horizontalPixels,
