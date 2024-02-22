@@ -8,7 +8,6 @@ import {
   Box,
 } from "@mui/material";
 import { format } from "d3";
-import makeStyles from "@mui/styles/makeStyles";
 import { AmountType } from "@the-discounters/types";
 
 export function MELWordComponent(props) {
@@ -30,70 +29,20 @@ export function MELWordComponent(props) {
     return `${format("$,.0f")(amountLater)} in ${timeLater} months`;
   }
 
-  let useStyles;
-
-  function resetUseStyles() {
-    let part = ["btn0", "btn1"].reduce((result, key) => {
-      result[key] = {
-        backgroundColor: "steelblue",
-        "border-radius": "20px",
-        "border-width": "5px",
-        borderColor: "#ffffff",
-        color: "black",
-        paddingRight: "10px",
-        // "&:hover": {
-        //   backgroundColor: "lightblue",
-        // },
-      };
-      return result;
-    }, {});
-
-    let part1 = ["btn0Clicked", "btn1Clicked"].reduce((result, key) => {
-      result[key] = {
-        backgroundColor: "lightblue",
-        "border-radius": "20px",
-        "border-width": "5px",
-        borderColor: "#000000",
-        color: "black",
-        paddingRight: "10px",
-        // "&:hover": {
-        //   backgroundColor: "lightblue",
-        // },
-      };
-      return result;
-    }, {});
-
-    useStyles = makeStyles(() => ({
-      btn0: part.btn0,
-      btn1: part.btn1,
-      btn0Clicked: part1.btn0Clicked,
-      btn1Clicked: part1.btn1Clicked,
-      qArea: {
-        "border-width": "5px",
-        "border-radius": "20px",
-        padding: "10px",
-        borderColor: "#000000",
-      },
-      qTitle: {
-        fontSize: "32px",
-      },
-    }));
-  }
-
-  resetUseStyles();
-  const classes = useStyles();
-
   return (
-    <form className={classes.qArea}>
-      <FormControl variant="standard" required={false} error={props.error}>
-        <p className={classes.qTitle}>
-          {questionText(
-            props.amountEarlier,
-            props.timeEarlier,
-            props.amountLater,
-            props.timeLater
-          )}
-        </p>
+    <form>
+      <FormControl
+        variant="standard"
+        required={false}
+        error={props.error}
+        sx={{ fontSize: "32px" }}
+      >
+        {questionText(
+          props.amountEarlier,
+          props.timeEarlier,
+          props.amountLater,
+          props.timeLater
+        )}
         <FormHelperText>{props.helperText}</FormHelperText>
         <Box
           component="span"
@@ -127,18 +76,27 @@ export function MELWordComponent(props) {
               },
             ].map(({ key, label }, index) => (
               <FormControlLabel
-                sx={{ mr: "100px" }}
+                sx={{
+                  mr: "100px",
+                  backgroundColor:
+                    props.choice === key ? "lightblue" : "steelblue",
+                  borderRadius: "20px",
+                  borderWidth: "5px",
+                  borderColor: props.choice === key ? "#000000" : "#ffffff",
+                  color: "black",
+                  paddingRight: "10px",
+                }}
                 key={key}
                 id={key}
                 value={key}
                 checked={props.choice === key}
                 control={<Radio />}
                 label={label}
-                className={
-                  classes[
-                    "btn" + (props.choice === key ? index + "Clicked" : index)
-                  ]
-                }
+                // className={
+                //   classes[
+                //     "btn" + (props.choice === key ? index + "Clicked" : index)
+                //   ]
+                // }
               />
             ))}
           </RadioGroup>
