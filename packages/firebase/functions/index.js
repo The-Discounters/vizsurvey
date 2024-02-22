@@ -56,7 +56,6 @@ const validateKeyValues = ({ participantId, studyId, sessionId }) => {
   return { participantId, studyId, sessionId };
 };
 
-// TODO fix cors value.  Shutting off for now.
 export const signup = onRequest(
   { cors: ["https://localhost:3000"] },
   async (request, response) => {
@@ -123,7 +122,6 @@ export const signup = onRequest(
   }
 );
 
-// TODO fix cors value.  Shutting off for now.
 export const updateState = onRequest(
   { cors: ["https://localhost:3000"] },
   async (request, response) => {
@@ -210,7 +208,6 @@ export const updateState = onRequest(
   }
 );
 
-// TODO fix cors value.  Shutting off for now.
 export const version = onRequest(
   { cors: ["https://localhost:3000"] },
   async (request, response) => {

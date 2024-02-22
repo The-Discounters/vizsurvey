@@ -1,6 +1,5 @@
 import { FormControl, FormHelperText } from "@mui/material";
 import { useD3 } from "../hooks/useD3.js";
-// TODO should we consolidate helper functions into this class.
 import { drawCalendar } from "./CalendarHelper.js";
 import { drawCalendarYear } from "./CalendarYearHelper.js";
 import { drawCalendarYearDual } from "./CalendarYearDualHelper.js";
