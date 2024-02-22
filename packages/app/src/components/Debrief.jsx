@@ -164,8 +164,9 @@ const Debrief = () => {
               <Typography paragraph>
                 We hope you have enjoyed taking this survey and welcome any
                 feedback or questions by filling out the text box below and
-                clicking submit & exit. We particularly appreciate any feedback
-                about your thought process in making the money choices you did.
+                clicking the submit feedback button. We particularly appreciate
+                any feedback about your thought process in making the money
+                choices you did.
               </Typography>
             </Grid>
             <Grid item xs={12}>
