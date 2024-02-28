@@ -1,4 +1,4 @@
-import { StatusType } from "../features/StatusType.js";
+import { StatusType } from "@the-discounters/types";
 
 export const navigateFromStatus = (status) => {
   switch (status) {

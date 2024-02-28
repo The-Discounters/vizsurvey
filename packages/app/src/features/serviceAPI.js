@@ -2,7 +2,7 @@ import { ServerStatusType, StatusError } from "@the-discounters/types";
 import { dateToState } from "@the-discounters/util";
 import { DateTime } from "luxon";
 import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
+import { getAnalytics, isSupported } from "firebase/analytics";
 
 let callback;
 let activePutRequestCount = 0;
@@ -45,7 +45,11 @@ export const initFirestore = ({
     appId: appId,
     measurementId: measurementId,
   });
-  analytics = getAnalytics(app);
+  isSupported().then((value) => {
+    if (value) {
+      analytics = getAnalytics(app);
+    }
+  });
 };
 
 export const putRequest = async (URL, body, numRetries = 3) => {
@@ -78,11 +82,13 @@ export const putRequest = async (URL, body, numRetries = 3) => {
 };
 
 export const getRequest = async (URL, numRetries = 3) => {
+  incActivePutRequestCount();
   const response = await fetch(URL, {
     method: "GET",
     headers: { "Content-Type": "application/json" },
   });
   const data = await response.json();
+  decActivePutRequestCount();
   if (response.status !== 200 || data.status !== ServerStatusType.success) {
     if (numRetries > 1 && response.status >= 500 && response.status <= 599) {
       numRetries--;

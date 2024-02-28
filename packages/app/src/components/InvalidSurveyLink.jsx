@@ -1,21 +1,15 @@
 import React from "react";
-import { Grid, Typography } from "@material-ui/core";
-
-const styles = {
-  root: {
-    flexGrow: 1, // flex:1, padding: 5,height: "100%", width: "100%"
-    margin: 20,
-  },
-  button: { marginTop: 10, marginBottom: 10 },
-  container: { display: "flex", flexWrap: "wrap" },
-  textField: { marginLeft: 10, marginRight: 10, width: 200 },
-  label: { margin: 0 },
-};
+import { Grid, Typography } from "@mui/material";
 
 const InvalidSurveyLink = () => {
   return (
     <React.Fragment>
-      <Grid container style={styles.root}>
+      <Grid
+        container
+        direction="column"
+        justifyContent="flex-start"
+        alignItems="stretch"
+      >
         <Grid item xs={12}>
           <Typography variant="h4">Error!</Typography>
           <hr

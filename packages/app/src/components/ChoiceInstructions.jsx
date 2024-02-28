@@ -3,10 +3,10 @@ import { useNavigate } from "react-router-dom";
 import {
   Button,
   Grid,
-  Box,
   Typography,
   ThemeProvider,
-} from "@material-ui/core";
+  StyledEngineProvider,
+} from "@mui/material";
 import { useSelector, useDispatch } from "react-redux";
 import { DateTime } from "luxon";
 import { useD3 } from "../hooks/useD3.js";
@@ -25,9 +25,9 @@ import { dateToState } from "@the-discounters/util";
 
 import { styles, theme, calcScreenValues } from "./ScreenHelper.js";
 import { AmountType } from "@the-discounters/types";
-import { MELSelectionForm } from "./MELSelectionForm.jsx";
-import { BarChartComponent } from "./BarChartComponent.js";
-import { StatusType } from "../features/StatusType.js";
+import { MELWordComponent } from "./MELWordComponent.js";
+import { MELBarChartComponent } from "./MELBarChartComponent.js";
+import { StatusType } from "@the-discounters/types";
 import { drawCalendar } from "./CalendarHelper.js";
 import { drawCalendarYear } from "./CalendarYearHelper.js";
 
@@ -68,7 +68,7 @@ const ChoiceInstructions = () => {
         ) {
           setError(true);
           setHelperText(
-            "You must choose one of the options below.  Press the left arrow key to select the earlier amount and the right arrow key to select the later amount."
+            "Press the left arrow key to select the earlier amount and the right arrow key to select the later amount."
           );
         } else {
           setHelperText("");
@@ -176,7 +176,7 @@ const ChoiceInstructions = () => {
           arrow keys and the enter key. You can use a mouse to answer the
           additional survey questions after the money choice questions.
         </Typography>
-        <Typography paragraph>
+        <Typography paragraph align="center">
           <img
             src={gifFilename()}
             alt={gifAltText}
@@ -287,8 +287,8 @@ const ChoiceInstructions = () => {
     switch (instructionTreatment.viewType) {
       case ViewType.word:
         return (
-          <MELSelectionForm
-            textShort={"textShort"}
+          <MELWordComponent
+            textShort={"MELRadioGroup"}
             error={error}
             amountEarlier={instructionTreatment.amountEarlier}
             timeEarlier={instructionTreatment.timeEarlier}
@@ -298,11 +298,23 @@ const ChoiceInstructions = () => {
             dateLater={instructionTreatment.dateLater}
             helperText={helperText}
             choice={choice}
+            onClickCallback={(value) => {
+              let errorMsg;
+              if (value === AmountType.earlierAmount) {
+                errorMsg =
+                  "To choose the earlier amount use the left arrow key.";
+              } else if (value === AmountType.laterAmount) {
+                errorMsg =
+                  "To choose the later amount use the right arrow key.";
+              }
+              setHelperText(errorMsg);
+              setError(true);
+            }}
           />
         );
       case ViewType.barchart:
         return (
-          <BarChartComponent
+          <MELBarChartComponent
             error={error}
             helperText={helperText}
             maxTime={instructionTreatment.maxTime}
@@ -325,10 +337,10 @@ const ChoiceInstructions = () => {
               let errorMsg;
               if (value === AmountType.earlierAmount) {
                 errorMsg =
-                  "To choose the earlier amount, use the left arrow key.";
+                  "To choose the earlier amount use the left arrow key.";
               } else if (value === AmountType.laterAmount) {
                 errorMsg =
-                  "To choose the later amount, use the right arrow key.";
+                  "To choose the later amount use the right arrow key.";
               }
               setHelperText(errorMsg);
               setError(true);
@@ -350,46 +362,54 @@ const ChoiceInstructions = () => {
   };
 
   return (
-    <ThemeProvider theme={theme}>
-      <Grid container style={styles.root} justifyContent="center">
-        <Grid item xs={12}>
-          <Typography variant="h4">Money Choice Instructions</Typography>
-          <hr
-            style={{
-              color: "#ea3433",
-              backgroundColor: "#ea3433",
-              height: 4,
-            }}
-          />
-        </Grid>
-        <Grid item xs={12}>
-          {vizExplanation()}
-          {vizTry()}
-          {showNextPrevious && (
-            <>
-              <hr
-                style={{
-                  backgroundColor: "#aaaaaa",
-                  height: 4,
-                }}
-              />
-              <Typography paragraph></Typography>
-              <Typography paragraph>
-                Once you have made your selection, press the enter key to accept
-                it and advance to the next question. You must make a selection
-                to proceed onto the next question.
-              </Typography>
-            </>
-          )}
-          <hr
-            style={{
-              backgroundColor: "#aaaaaa",
-              height: 4,
-            }}
-          />
-        </Grid>
-        <Grid item xs={12}>
-          <Box display="flex" justifyContent="center" alignItems="center">
+    <StyledEngineProvider injectFirst>
+      <ThemeProvider theme={theme}>
+        <Grid
+          container
+          direction="column"
+          justifyContent="flex-start"
+          alignItems="stretch"
+        >
+          <Grid item xs={12}>
+            <Typography variant="h4">Money Choice Instructions</Typography>
+            <hr
+              style={{
+                color: "#ea3433",
+                backgroundColor: "#ea3433",
+                height: 4,
+              }}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            {vizExplanation()}
+          </Grid>
+          <Grid item xs={12} align="center">
+            {vizTry()}
+          </Grid>
+          <Grid item xs={12}>
+            {showNextPrevious && (
+              <>
+                <hr
+                  style={{
+                    backgroundColor: "#aaaaaa",
+                    height: 4,
+                  }}
+                />
+                <Typography paragraph>
+                  Once you have made your selection, press the enter key to
+                  accept it and advance to the next question. You must make a
+                  selection to proceed onto the next question.
+                </Typography>
+              </>
+            )}
+            <hr
+              style={{
+                backgroundColor: "#aaaaaa",
+                height: 4,
+              }}
+            />
+          </Grid>
+          <Grid item xs={12} align="center">
             <Button
               variant="contained"
               color="secondary"
@@ -411,10 +431,10 @@ const ChoiceInstructions = () => {
             >
               Press Enter to start the survey
             </Button>
-          </Box>
+          </Grid>
         </Grid>
-      </Grid>
-    </ThemeProvider>
+      </ThemeProvider>
+    </StyledEngineProvider>
   );
 };
 

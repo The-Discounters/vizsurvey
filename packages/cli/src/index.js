@@ -35,6 +35,7 @@ import {
   exportAuditToJSON,
   exportParticipantsToCSV,
   exportAuditToCSV,
+  exportExperimentParticipantsAndAuditToJSON,
 } from "./FileIOAdapter.js";
 
 const validateInt = (value, dummyPrevious) => {
@@ -108,6 +109,7 @@ const ExportTypes = {
   configuration: "configuration",
   data: "data",
   audit: "audit",
+  all: "all",
 };
 Object.freeze(ExportTypes);
 
@@ -135,34 +137,6 @@ const validateFileType = (value) => {
   return result;
 };
 
-const exportData = async (db, format, studyId, filename) => {
-  let fileData;
-  switch (format) {
-    case FileTypes.json:
-      fileData = await exportParticipantsToJSON(db, studyId);
-      break;
-    case FileTypes.csv:
-      fileData = await exportParticipantsToCSV(db, studyId);
-    default:
-      break;
-  }
-  writeFile(filename, fileData);
-};
-
-const exportAudit = async (db, format, studyId, filename) => {
-  let fileData;
-  switch (format) {
-    case FileTypes.json:
-      fileData = await exportAuditToJSON(db, studyId);
-      break;
-    case FileTypes.csv:
-      fileData = await exportAuditToCSV(db, studyId);
-    default:
-      break;
-  }
-  writeFile(filename, fileData);
-};
-
 const exportConfig = async (db, format, studyId, filename) => {
   let fileData;
   switch (format) {
@@ -183,7 +157,7 @@ program
   .argument("<filename>", "the filename to export the data to.")
   .option(
     "-l, --laterthan <date>",
-    "the date to filter out files that are are equal to or later than",
+    "the date to filter out entries that are are equal to or later than",
     validateDate
   )
   .option(
@@ -191,8 +165,8 @@ program
     "the experiment id to export.  If non is provided all experiments are exported."
   )
   .option(
-    "-t, --type <definitions, data, audit>",
-    "they data to export; configuration for experiment configuration, data for exeperiment data, audit for audit data.",
+    "-t, --type <definitions, data, audit, all>",
+    "they data to export; configuration for experiment configuration, data for exeperiment data, audit for audit data, all for all data.",
     validateExportType
   )
   .option(
@@ -219,10 +193,51 @@ program
         case ExportTypes.configuration:
           throw new Error("Not implemented yet!");
         case ExportTypes.data:
-          exportData(db, options.format, options.experiment, filename);
-          break;
+          const exportData = async (db, format, studyId, filename) => {
+            let fileData;
+            switch (options.format) {
+              case FileTypes.json:
+                fileData = await exportParticipantsToJSON(
+                  db,
+                  options.experiment,
+                  filename
+                );
+                break;
+              case FileTypes.csv:
+                exportParticipantsToCSV(db, options.experiment, filename);
+              default:
+                break;
+            }
+          };
         case ExportTypes.audit:
-          exportAudit(db, options.format, options.experiment, filename);
+          let fileData;
+          switch (options.format) {
+            case FileTypes.json:
+              fileData = exportAuditToJSON(db, options.experiment, filename);
+              break;
+            case FileTypes.csv:
+              exportAuditToCSV(db, options.experiment, filename);
+            default:
+              break;
+          }
+          break;
+        case ExportTypes.all:
+          switch (options.format) {
+            case FileTypes.json:
+              exportExperimentParticipantsAndAuditToJSON(
+                db,
+                options.experiment,
+                filename
+              );
+              break;
+            case FileTypes.csv:
+              throw new InvalidArgumentError(
+                "Exporting all to CSV is not supported at this time."
+              );
+            default:
+              break;
+          }
+          break;
       }
     } catch (err) {
       console.log(chalk.red(err));
@@ -544,6 +559,58 @@ program
       console.log("Firestore delete collection was successfull!");
     } catch (err) {
       console.log(chalk.red(`Delete failed for ${args.collection}!`), err);
+      throw err;
+    }
+  });
+
+program
+  .command("validate")
+  .description("Validate data recorded for an experiment.")
+  .argument("<experiment id>", "the experiment to validate data for.")
+  .option(
+    "-l, --laterthan <date>",
+    "the date to filter out files that are are equal to or later than",
+    validateDate
+  )
+  .action((experiment, options) => {
+    try {
+      console.log(`Validating data for experiment id ${experiment}`);
+      const { db } = initializeDB();
+      readExperimentParticipantsAndAudit(db, experiment).then((exp) => {
+        exp.participants.forEach((cp, ip) => {
+          const auditBySeq = cp.audit.sort((a, b) => {
+            a.requestSequence < b.requestSequence
+              ? -1
+              : a.requestSequence > b.requestSequence
+              ? 1
+              : 0;
+          });
+          auditBySeq.forEach((cv, i, ary) => {
+            if (cv.requestSequence !== i) {
+              console.log(
+                `audit-requestSequence: requestSequence ${cv.requestSequence} is not the expected value ${i}`
+              );
+              if (
+                i !== 0 &&
+                cv.broswerTimestamp <= ary[i - 1].broswerTimestamp
+              ) {
+                console.log(
+                  `audit-broswerTimestamp: requestSequence ${
+                    cv.requestSequence
+                  } broswerTimestamp ${
+                    cv.broswerTimestamp
+                  } is less than the previous broswerTimestamp ${
+                    ary[i - 1].broswerTimestamp
+                  }`
+                );
+              }
+            }
+          });
+          cp.audit.reduce((acc, cv, ci) => {}, {});
+        });
+      });
+    } catch (err) {
+      console.log(chalk.red(err));
       throw err;
     }
   });

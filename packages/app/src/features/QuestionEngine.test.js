@@ -6,7 +6,7 @@ import {
   SurveyQuestion,
   InteractionType,
 } from "@the-discounters/types";
-import { StatusType } from "./StatusType.js";
+import { StatusType } from "@the-discounters/types";
 import { dateToState } from "@the-discounters/util";
 import {
   createQuestionNoTitrate,

@@ -28,6 +28,10 @@ import pkgJSON from "./package.json" assert { type: "json" };
 initializeApp();
 const db = getFirestore();
 
+const CORS_URLS = process.env.CORS_URLS ? process.env.CORS_URLS.split(",") : [];
+
+logger.info(`CORS_URLS=${CORS_URLS}`);
+
 const parseKeyFromQuery = (request) => {
   const participantId = request.query.prolific_pid;
   const studyId = request.query.study_id;
@@ -56,9 +60,15 @@ const validateKeyValues = ({ participantId, studyId, sessionId }) => {
   return { participantId, studyId, sessionId };
 };
 
-// TODO fix cors value.  Shutting off for now.
+// TODO fix cors to use CORS_URL since we can then specify the urls per environment.
 export const signup = onRequest(
-  { cors: ["https://localhost:3000"] },
+  {
+    cors: [
+      "https://localhost:3000",
+      "https://staging.d2ptxb5fbsc082.amplifyapp.com",
+      "https://release.d2ptxb5fbsc082.amplifyapp.com",
+    ],
+  },
   async (request, response) => {
     logger.info(
       `signup prolific_pid=${request.query.prolific_pid}, study_id=${request.query.study_id}, session_id=${request.query.session_id}`
@@ -123,9 +133,14 @@ export const signup = onRequest(
   }
 );
 
-// TODO fix cors value.  Shutting off for now.
 export const updateState = onRequest(
-  { cors: ["https://localhost:3000"] },
+  {
+    cors: [
+      "https://localhost:3000",
+      "https://staging.d2ptxb5fbsc082.amplifyapp.com",
+      "https://release.d2ptxb5fbsc082.amplifyapp.com",
+    ],
+  },
   async (request, response) => {
     logger.info(
       `updateState prolific_pid=${request.body.prolific_pid}, study_id=${request.body.study_id}, session_id=${request.body.session_id}`
@@ -210,9 +225,14 @@ export const updateState = onRequest(
   }
 );
 
-// TODO fix cors value.  Shutting off for now.
 export const version = onRequest(
-  { cors: ["https://localhost:3000"] },
+  {
+    cors: [
+      "https://localhost:3000",
+      "https://staging.d2ptxb5fbsc082.amplifyapp.com/",
+      "https://release.d2ptxb5fbsc082.amplifyapp.com",
+    ],
+  },
   async (request, response) => {
     logger.info(`version ${pkgJSON.version}`);
     try {

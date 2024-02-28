@@ -14,9 +14,12 @@ import {
   updateAnswer,
   createParticipant,
   readParticipant,
+  readExperimentAndParticipants,
+  readExperimentAndAudit,
   updateParticipant,
   createAuditLogEntry,
   readParticipants,
+  readExperimentParticipantsAndAudit,
   readAudit,
 } from "./src/firestoreAdmin.js";
 
@@ -39,5 +42,8 @@ export {
   updateParticipant,
   createAuditLogEntry,
   readParticipants,
+  readExperimentAndParticipants,
+  readExperimentAndAudit,
+  readExperimentParticipantsAndAudit,
   readAudit,
 };

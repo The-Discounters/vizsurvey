@@ -4,9 +4,9 @@ import { DateTime } from "luxon";
 import {
   Grid,
   Button,
-  Box,
   Typography,
   ThemeProvider,
+  StyledEngineProvider,
   FormControlLabel,
 } from "@mui/material";
 import FormGroup from "@mui/material/FormGroup";
@@ -206,16 +206,21 @@ export function Consent() {
   };
 
   return (
-    <ThemeProvider theme={theme}>
-      <div>
-        <Box height="25%" alignItems="center">
-          <img
-            style={{ maxHeight: "240px" }}
-            src="generic-questionaire-icon.svg"
-            alt="Question mark."
-          ></img>
-        </Box>{" "}
-        <Grid container style={styles.root} justifyContent="center">
+    <StyledEngineProvider injectFirst>
+      <ThemeProvider theme={theme}>
+        <Grid
+          container
+          direction="column"
+          justifyContent="flex-start"
+          alignItems="stretch"
+        >
+          <Grid item xs={12}>
+            <img
+              style={{ maxHeight: "240px" }}
+              src="generic-questionaire-icon.svg"
+              alt="Question mark."
+            ></img>
+          </Grid>
           <Grid item xs={12}>
             <Typography variant="h5">
               <b>Informed Consent</b>
@@ -248,7 +253,7 @@ export function Consent() {
             </Typography>
             <ConsentTextEn />
           </Grid>
-          <Grid item xs={12} style={{ margin: 0 }}>
+          <Grid item xs={12}>
             <FormGroup>
               <FormControlLabel
                 control={
@@ -268,11 +273,11 @@ export function Consent() {
                 }
               />
               <Typography paragraph>
-                <b>By selecting the checkbox and clicking &ldquo;Next&ldquo;</b>
-                , you acknowledge that you have been informed about and consent
-                to be a participant in the study described above. Make sure that
-                your questions are answered to your satisfaction before signing.
-                You are entitled to retain a copy of this consent agreement.
+                <b>By selecting the checkbox and clicking &ldquo;Next&ldquo;</b>,
+                you acknowledge that you have been informed about and consent to
+                be a participant in the study described above. Make sure that your
+                questions are answered to your satisfaction before signing. You
+                are entitled to retain a copy of this consent agreement.
               </Typography>
               <Typography paragraph>
                 I also confirm that I am on a reliable internet connection for
@@ -286,27 +291,25 @@ export function Consent() {
               }}
             />
           </Grid>
-          <Grid item xs={12} style={{ margin: 0 }}>
-            <Box display="flex" justifyContent="center">
-              <Button
-                variant="contained"
-                color="secondary"
-                disableRipple
-                disableFocusRipple
-                style={styles.button}
-                onClick={() => {
-                  dispatch(consentCompleted(dateToState(DateTime.now())));
-                }}
-                disabled={disableSubmit}
-              >
-                {" "}
-                Next{" "}
-              </Button>
-            </Box>
+          <Grid item align="center" xs={12}>
+            <Button
+              variant="contained"
+              color="secondary"
+              disableRipple
+              disableFocusRipple
+              style={styles.button}
+              onClick={() => {
+                dispatch(consentCompleted(dateToState(DateTime.now())));
+              }}
+              disabled={disableSubmit}
+            >
+              {" "}
+              Next{" "}
+            </Button>
           </Grid>
         </Grid>
-      </div>
-    </ThemeProvider>
+      </ThemeProvider>
+    </StyledEngineProvider>
   );
 }
 

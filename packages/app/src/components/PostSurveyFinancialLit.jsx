@@ -4,7 +4,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { DateTime } from "luxon";
 import {
   Grid,
-  Box,
   Button,
   Typography,
   FormLabel,
@@ -13,8 +12,8 @@ import {
   Radio,
   RadioGroup,
   ThemeProvider,
-} from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
+  StyledEngineProvider,
+} from "@mui/material";
 import {
   getStatus,
   financialLitSurveyQuestionsShown,
@@ -28,23 +27,9 @@ import { POST_SURVEY_QUESTIONS } from "../features/postsurveyquestionsfinanciall
 import { styles, theme } from "./ScreenHelper.js";
 import { navigateFromStatus } from "./Navigate.js";
 
-const useStyles = makeStyles((theme) => ({
-  formControl: {
-    margin: theme.spacing(1),
-    minWidth: 120,
-  },
-  formLabel: {
-    fontWeight: "bold",
-  },
-  selectEmpty: {
-    marginTop: theme.spacing(2),
-  },
-}));
-
 export function PostSurvey() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const classes = useStyles();
   let surveys = POST_SURVEY_QUESTIONS;
   const status = useSelector(getStatus);
   const answers = useSelector(getFinancialLitSurveyAnswers);
@@ -81,9 +66,14 @@ export function PostSurvey() {
   }, [status]);
 
   return (
-    <ThemeProvider theme={theme}>
-      <div>
-        <Grid container style={styles.root}>
+    <StyledEngineProvider injectFirst>
+      <ThemeProvider theme={theme}>
+        <Grid
+          container
+          direction="column"
+          justifyContent="flex-start"
+          alignItems="stretch"
+        >
           <Grid item xs={12}>
             <Typography variant="h4">Additional Questions 2 of 4</Typography>
             <hr
@@ -101,13 +91,13 @@ export function PostSurvey() {
             <div key={`div-${index}`}>
               <Grid item xs={12} key={`grid-${index}`}>
                 <FormControl
+                  variant="standard"
                   key={`form-control-${index}`}
-                  className={classes.formControl}
-                  required
-                >
+                  sx={{ fontWeight: "bold" }}
+                  required>
                   <FormLabel
                     id={question.textShort}
-                    className={classes.formLabel}
+                    sx={{ fontWeight: "bold" }}
                   >
                     {question.textFull}
                   </FormLabel>
@@ -174,38 +164,35 @@ export function PostSurvey() {
               <br key={`br-${index}`}></br>
             </div>
           ))}
-          <Grid item xs={12} style={{ margin: 0 }}>
+          <Grid item align="center" xs={12}>
             <hr
               style={{
                 backgroundColor: "#aaaaaa",
                 height: 4,
               }}
             />
-            <Box display="flex" justifyContent="center">
-              <Button
-                variant="contained"
-                color="secondary"
-                disableRipple
-                disableFocusRipple
-                style={styles.button}
-                onClick={() => {
-                  setTimeout(() => {
-                    dispatch(
-                      financialLitSurveyQuestionsCompleted(
-                        dateToState(DateTime.now())
-                      )
-                    );
-                  }, 400);
-                }}
-              >
-                {" "}
-                Next{" "}
-              </Button>
-            </Box>
+            <Button
+              variant="contained"
+              color="secondary"
+              disableRipple
+              disableFocusRipple
+              style={styles.button}
+              onClick={() => {
+                setTimeout(() => {
+                  dispatch(
+                    financialLitSurveyQuestionsCompleted(
+                      dateToState(DateTime.now())
+                    )
+                  );
+                }, 400);
+              }}
+            >
+              Next
+            </Button>
           </Grid>
         </Grid>
-      </div>
-    </ThemeProvider>
+      </ThemeProvider>
+    </StyledEngineProvider>
   );
 }
 

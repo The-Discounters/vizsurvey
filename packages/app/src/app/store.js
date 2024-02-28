@@ -1,7 +1,7 @@
 import { configureStore } from "@reduxjs/toolkit";
 import questionReducer from "../features/questionSlice.js";
 import { updateState } from "../features/serviceAPI.js";
-import { StatusType } from "../features/StatusType.js";
+import { StatusType } from "@the-discounters/types";
 
 export const saveStateAsync = async (state) => {
   try {

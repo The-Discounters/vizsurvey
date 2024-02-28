@@ -1,27 +1,3 @@
-# TODO
-
-1. ~~Write the retry logic working in the ServiceAPI.~~
-2. ~~Get the server sequence to be in a transaction and write the unit test to test that we get uniquely assigned sequences for requests at the same time.~~
-3. ~~Implement the logic to check if we should overwrite state based on the sequence number of the request. If the current state (under participant) is larger or equal to the state coming in, don't overwrite it and write a warning to the logs.~~
-   ~~4. Append redux state for all updates to the audit collection.~~
-4. ~~Fix the bug with many calls to updateState due to the survey making reducer calls for each question added.~~
-5. ~~Write the CLI code to do the CSV file extract for data and audit.~~
-6. Figure out what to do with the CLI monitor. Maybe turn that into a simple web page?
-   ~~6. Fix the extended bar chart max time experiment parameter.~~
-7. Write browswer errors and warning to google analytics. Maybe write the same for functions?
-8. Write firestore rules to lock down reading data from non CLI account.
-9. ~~Get everything deployed to stating env and working.~~
-10. Deploy and configure production.
-11. ~~Create a test experiment that is active for unit tests. => Using testbetween entry.~~
-12. Get emulator firestore database to reset between unit tests.
-13. Write automated test for CSV extracts.
-14. ~~Make data writes to google function queued.~~
-15. Write the CLI code to extract experiment configurations.
-16. Write CLI code to validate participant data (check that all the window and screen values match across questions, as well as other checks.)
-17. Fix the cors setting to be valid in the functions index.js once I know the production values.
-18. Fix the headers in putRequest (see TODO)
-19. ~~Add spinner to the consent page for when singup is executing and the debrief page so that the user can't close the browser window before data is written beacuse they think the survey is over.~~
-
 # What is VizSurvey
 
 We created VizSurvey out of a need to have a tool with survey questions with an accompanying visualization that could be data driven for our masters thesis reasearch. We originally investigated using survey monkey and other online survey tools; however, they lacked the ability to embed visualizations and we could't find any with a REST API that would allow the visualizations to be driven off the survey questions, so we wrote VizSurvey.
@@ -54,7 +30,7 @@ We looked at code from https://supp-exp-en.netlify.app/ for examples of how to s
 
 Download the credential files from the firestore instances you created above and put them in files named as below. Environment
 variables set via the scripts setenvdev.sh, setenvprod.sh, and setenvstating.sh will tell the firebase SDK on how to find the files.
-admin-credentials-dev.json
+admin-credentials-staging.json
 admin-credentials-prod.json
 
 ### Create .env file
@@ -229,9 +205,11 @@ You don’t have to ever use `eject`. The curated feature set is suitable for sm
 
 Below are the production urls for each treatment.
 
-https://release.d2ptxb5fbsc082.amplifyapp.com/start?participant_id=1&session_id=4&study_id=5
-https://release.d2ptxb5fbsc082.amplifyapp.com/start?participant_id=1&session_id=4&study_id=5
-https://release.d2ptxb5fbsc082.amplifyapp.com/start?participant_id=1&session_id=4&study_id=5
+https://release.d2ptxb5fbsc082.amplifyapp.com/start?participant_id=1&session_id=4&study_id=testbetween
+
+### staging URL
+
+https://staging.d2ptxb5fbsc082.amplifyapp.com/start??participant_id=1&session_id=4&study_id=testbetween
 
 ### Local URL
 

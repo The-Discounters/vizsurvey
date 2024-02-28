@@ -224,7 +224,6 @@ const drawBarChart = ({
         interaction === InteractionType.none
       ) {
         onClickCallback(d.target.__data__.barType);
-        choice = d.target.__data__.barType;
       }
     });
 
@@ -284,7 +283,7 @@ const drawBarChart = ({
   dragHandler(chart.selectAll(".bar"));
 };
 
-export const BarChartComponent = (props) => {
+export const MELBarChartComponent = (props) => {
   const { totalSVGWidth, totalSVGHeight, totalUCWidth, totalUCHeight } =
     calcScreenValues(
       props.horizontalPixels,
@@ -295,7 +294,7 @@ export const BarChartComponent = (props) => {
       props.graphHeightIn
     );
   return (
-    <FormControl required={false} error={props.error}>
+    <FormControl variant="standard" required={false} error={props.error}>
       <FormHelperText>{props.helperText}</FormHelperText>
       <svg
         width={totalSVGWidth}
