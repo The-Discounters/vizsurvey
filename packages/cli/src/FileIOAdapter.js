@@ -6,10 +6,12 @@ import {
   flattenArrayToObject,
 } from "@the-discounters/types";
 import { convertToCSV, ISODateStringWithNanoSec } from "@the-discounters/util";
+import { writeFile } from "./files.js";
 import {
   readExperiment,
-  readParticipants,
-  readAudit,
+  readExperimentAndParticipants,
+  readExperimentAndAudit,
+  readExperimentParticipantsAndAudit,
 } from "@the-discounters/firebase-shared";
 
 /**
@@ -20,9 +22,24 @@ import {
 export const flattenTreatmentValueAry = (propertyName, array) => {
   return array.reduce((acc, cv) => {
     const key = `${propertyName}_${cv.treatmentId}`;
-    acc[key] = cv.value;
+    acc[key] = convertValue(propertyName, cv.value);
     return acc;
   }, {});
+};
+
+export const convertValue = (key, value) => {
+  switch (key) {
+    case "serverTimestamp":
+      return ISODateStringWithNanoSec(value.toDate(), value.nanoseconds);
+    case "browserTimestamp":
+      return ISODateStringWithNanoSec(value.toDate(), value.nanoseconds);
+    default:
+      return value;
+  }
+};
+
+export const convertValues = (obj) => {
+  _.mapValues(obj, (value, key, object) => convertValue(key, value));
 };
 
 export const flattenState = (obj) => {
@@ -32,7 +49,7 @@ export const flattenState = (obj) => {
     let flattened = {};
     switch (key) {
       case "timestamps":
-        flattened = { ...value };
+        flattened = { ...convertValue(key, value) };
         delete flattened.choiceInstructionCompletedTimestamp;
         flattened = {
           ...flattened,
@@ -87,38 +104,27 @@ export const flattenState = (obj) => {
           delete v.screenAttributes;
           delete v.windowAttributes;
         });
-        flattened = flattenArrayToObject(value, (key, value, obj) => {
-          return key === "participantId" ||
-            key === "sessionId" ||
-            key === "studyId"
-            ? key
-            : `${key}_${obj.treatmentId}_${
-                obj.sequenceId ? obj.sequenceId : ""
-              }`;
-        });
+        flattened = flattenArrayToObject(
+          value,
+          (key, value, obj) =>
+            key === "participantId" || key === "sessionId" || key === "studyId"
+              ? key
+              : `${key}_${obj.treatmentId}_${
+                  obj.sequenceId ? obj.sequenceId : ""
+                }`,
+          (key, value, obj) => convertValue(key, value)
+        );
         break;
       case "financialLitSurvey":
       case "purposeSurvey":
       case "experienceSurvey":
-        flattened = value;
+        flattened = convertValues(value);
         break;
       case "instructionTreatment":
         // TODO not sure what to do with this
         break;
-      case "serverTimestamp":
-        flattened[key] = ISODateStringWithNanoSec(
-          value.toDate(),
-          value.nanoseconds
-        );
-        break;
-      case "browserTimestamp":
-        flattened[key] = ISODateStringWithNanoSec(
-          value.toDate(),
-          value.nanoseconds
-        );
-        break;
       default:
-        flattened[key] = value;
+        flattened[key] = convertValue(key, value);
     }
     result = {
       ...result,
@@ -128,40 +134,24 @@ export const flattenState = (obj) => {
   return result;
 };
 
-const exportParticipants = async (db, studyId) => {
-  const experiment = await readExperiment(db, studyId);
-  const participants = await readParticipants(db, experiment.path);
-  return { experiment, participants };
+export const exportParticipantsToJSON = async (db, studyId, filename) => {
+  const { experiment, participants } = await readExperimentAndParticipants(
+    db,
+    studyId
+  );
+  const fileData = JSON.stringify(
+    convertValues({
+      ...experiment,
+      participants: participants,
+    })
+  );
+  writeFile(filename, fileData);
 };
 
-export const exportParticipantsToJSON = async (db, studyId) => {
-  const { experiment, participants } = await exportParticipants(db, studyId);
-  return JSON.stringify({ ...experiment, participants: participants });
-};
-
-const exportAudit = async (db, studyId) => {
-  const experiment = await readExperiment(db, studyId);
-  const audit = await readAudit(db, experiment.path);
-  return { experiment, audit };
-};
-
-export const exportAuditToJSON = async (db, studyId) => {
-  const { experiment, audit } = await exportAudit(db, studyId);
-  return JSON.stringify({ ...experiment, audit });
-};
-
-export const exportAuditToCSV = async (db, studyId) => {
-  console.log("...exporting audit to CSV.");
-  const { experiment, audit } = await exportAudit(db, studyId);
-  const array = [];
-  audit.forEach((cv) => {
-    console.log(`...exporting audit ${cv.participantId}.`);
-    const flattened = flattenState(cv);
-    const underscore = convertKeysCamelCaseToUnderscore(flattened);
-    array.push(underscore);
-  });
-  console.log("...converting audit to CSV.");
-  return convertToCSV(array, true);
+export const exportAuditToJSON = async (db, studyId, filename) => {
+  const { experiment, audit } = await readExperimentAndAudit(db, studyId);
+  const fileData = JSON.stringify(convertValues({ ...experiment, audit }));
+  writeFile(filename, fileData);
 };
 
 export const exportConfigToJSON = async (db, studyId) => {
@@ -170,15 +160,47 @@ export const exportConfigToJSON = async (db, studyId) => {
   //return JSON.stringify({ ...exp, participants: participants });
 };
 
-export const participantToCSV = (participant, includeHeader) => {
-  const flattened = flattenState(participant);
-  const underscore = convertKeysCamelCaseToUnderscore(flattened);
-  return convertToCSV(underscore, includeHeader);
+export const exportExperimentParticipantsAndAuditToJSON = async (
+  db,
+  studyId,
+  filename
+) => {
+  const { experiment, participants, audit } =
+    await readExperimentParticipantsAndAudit(db, studyId);
+  const fileData = JSON.stringify({
+    ...experiment,
+    participants: participants,
+    audit: audit,
+  });
+  writeFile(filename, fileData);
+};
+
+export const exportAuditToCSV = async (db, studyId, filename) => {
+  console.log("...exporting audit to CSV.");
+  const { experiment, audit } = await readExperimentAndAudit(db, studyId);
+  const array = [];
+  audit.forEach((cv) => {
+    console.log(`...exporting audit ${cv.participantId}.`);
+    const flattened = flattenState(cv);
+    const underscore = convertKeysCamelCaseToUnderscore(flattened);
+    array.push(underscore);
+  });
+  console.log("...converting audit to CSV.");
+  stringify(array, { header: true }, (err, output) => {
+    if (err) throw err;
+    fs.writeFile(filename, output, (err) => {
+      if (err) throw err;
+      console.log(`...data written to CSV file ${filename}`);
+    });
+  });
 };
 
 export const exportParticipantsToCSV = async (db, studyId, filename) => {
   console.log("...exporting participants to CSV.");
-  const { experiment, participants } = await exportParticipants(db, studyId);
+  const { experiment, participants } = await readExperimentAndParticipants(
+    db,
+    studyId
+  );
   const array = [];
   participants.forEach((cv) => {
     console.log(`...exporting participant ${cv.participantId}.`);

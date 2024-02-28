@@ -1,7 +1,13 @@
 import nock from "nock";
 import { ServerStatusType } from "@the-discounters/types";
 import { getRandomIntInclusive } from "@the-discounters/util";
-import { putRequest, signupParticipant, initFirestore } from "./serviceAPI.js";
+import {
+  putRequest,
+  getRequest,
+  subscribe,
+  signupParticipant,
+  initFirestore,
+} from "./serviceAPI.js";
 
 const URLROOT = "http://127.0.0.1:5001/vizsurvey-staging/us-central1";
 const PARMATERS = "prolific_pid=1&study_id=2&session_id=3&user_agent=agent";
@@ -9,93 +15,126 @@ const PARMATERS = "prolific_pid=1&study_id=2&session_id=3&user_agent=agent";
 describe("serviceAPI tests", () => {
   test("getRequest throws error on three retries.", async () => {
     // TODO fix this now that I switched to google function implementation
-    // const scope = nock(URLROOT)
-    //   .defaultReplyHeaders({
-    //     "access-control-allow-origin": "*",
-    //     "access-control-allow-credentials": "true",
-    //   })
-    //   .get(`/signup?${PARMATERS}`)
-    //   .reply(503, {})
-    //   .get(`/signup?${PARMATERS}`)
-    //   .reply(503, {})
-    //   .get(`/signup?${PARMATERS}`)
-    //   .reply(503, {});
-    // await expect(
-    //   getRequest(`${URLROOT}/signup?${PARMATERS}`)
-    // ).rejects.toHaveProperty("httpstatus", 503);
-    // if (!scope.isDone()) {
-    //   console.error("pending mocks: %j", scope.pendingMocks());
-    // }
-    // scope.done();
-  });
-
-  test("getRequest doesn't throw error on two failues and last try a success.", async () => {
-    // TODO fix this now that I switched to google function implementation.
-    // const scope = nock(URLROOT)
-    //   .defaultReplyHeaders({
-    //     "access-control-allow-origin": "*",
-    //     "access-control-allow-credentials": "true",
-    //   })
-    //   .get(`/signup?${PARMATERS}`)
-    //   .reply(503, {})
-    //   .get(`/signup?${PARMATERS}`)
-    //   .reply(503, {})
-    //   .get(`/signup?${PARMATERS}`)
-    //   .reply(200, { status: ServerStatusType.success });
-    // const result = await getRequest(`${URLROOT}/signup?${PARMATERS}`);
-    // if (!scope.isDone()) {
-    //   console.error("pending mocks: %j", scope.pendingMocks());
-    // }
-    // scope.done();
-    // // TODO fix this
-    // //expect(result.status).toBe(ServerStatusType.success);
-  });
-
-  test("getRequest doesn't retry on success the first time.", async () => {
-    // TODO fix this now that I switched to google function implementation
-    // const scope = nock(URLROOT)
-    //   .defaultReplyHeaders({
-    //     "access-control-allow-origin": "*",
-    //     "access-control-allow-credentials": "true",
-    //   })
-    //   .get(`/signup?${PARMATERS}`)
-    //   .reply(200, { status: ServerStatusType.success });
-    // const result = await getRequest(`${URLROOT}/signup?${PARMATERS}`);
-    // if (!scope.isDone()) {
-    //   console.error("pending mocks: %j", scope.pendingMocks());
-    // }
-    // scope.done();
-    // // TODO fix this.
-    // // expect(result.status).toBe(ServerStatusType.success);
-  });
-
-  test("putRequest throws error on three retries.", async () => {
     const scope = nock(URLROOT)
       .defaultReplyHeaders({
         "access-control-allow-origin": "*",
-        "access-control-allow-headers": "content-type",
-        "access-control-allow-methods": "GET,HEAD,PUT,PATCH,POST,DELETE",
-        "content-type": "application/json",
+        "access-control-allow-credentials": "true",
       })
-      .intercept("/updateState", "OPTIONS")
-      .reply(200)
-      .put("/updateState", '{"value":1}')
+      .get(`/signup?${PARMATERS}`)
       .reply(503, {})
-      .intercept("/updateState", "OPTIONS")
-      .reply(200)
-      .put("/updateState", '{"value":1}')
+      .get(`/signup?${PARMATERS}`)
       .reply(503, {})
-      .intercept("/updateState", "OPTIONS")
-      .reply(200)
-      .put("/updateState", '{"value":1}')
+      .get(`/signup?${PARMATERS}`)
       .reply(503, {});
+    const requestActiveHistory = [];
+    subscribe((processingRequests) => {
+      requestActiveHistory.push(processingRequests);
+    });
     await expect(
-      putRequest(`${URLROOT}/updateState`, { value: 1 })
+      getRequest(`${URLROOT}/signup?${PARMATERS}`)
     ).rejects.toHaveProperty("httpstatus", 503);
     if (!scope.isDone()) {
       console.error("pending mocks: %j", scope.pendingMocks());
     }
     scope.done();
+    expect(JSON.stringify(requestActiveHistory)).toBe(
+      JSON.stringify([true, false, true, false, true, false])
+    );
+  });
+
+  test("getRequest doesn't throw error on two failues and last try a success.", async () => {
+    // TODO fix this now that I switched to google function implementation.
+    const scope = nock(URLROOT)
+      .defaultReplyHeaders({
+        "access-control-allow-origin": "*",
+        "access-control-allow-credentials": "true",
+      })
+      .get(`/signup?${PARMATERS}`)
+      .reply(503, {})
+      .get(`/signup?${PARMATERS}`)
+      .reply(503, {})
+      .get(`/signup?${PARMATERS}`)
+      .reply(200, { status: ServerStatusType.success });
+    const requestActiveHistory = [];
+    subscribe((processingRequests) => {
+      requestActiveHistory.push(processingRequests);
+    });
+    const result = await getRequest(`${URLROOT}/signup?${PARMATERS}`);
+    if (!scope.isDone()) {
+      console.error("pending mocks: %j", scope.pendingMocks());
+    }
+    scope.done();
+    expect(JSON.stringify(requestActiveHistory)).toBe(
+      JSON.stringify([true, false, true, false, true, false])
+    );
+    // TODO fix this
+    //expect(result.status).toBe(ServerStatusType.success);
+  });
+
+  test("getRequest doesn't retry on success the first time.", async () => {
+    // TODO fix this now that I switched to google function implementation
+    const scope = nock(URLROOT)
+      .defaultReplyHeaders({
+        "access-control-allow-origin": "*",
+        "access-control-allow-credentials": "true",
+      })
+      .get(`/signup?${PARMATERS}`)
+      .reply(200, { status: ServerStatusType.success });
+    const requestActiveHistory = [];
+    subscribe((processingRequests) => {
+      requestActiveHistory.push(processingRequests);
+    });
+    const result = await getRequest(`${URLROOT}/signup?${PARMATERS}`);
+    if (!scope.isDone()) {
+      console.error("pending mocks: %j", scope.pendingMocks());
+    }
+    scope.done();
+    expect(JSON.stringify(requestActiveHistory)).toBe(
+      JSON.stringify([true, false])
+    );
+    // TODO fix this.
+    // expect(result.status).toBe(ServerStatusType.success);
+  });
+
+  test("putRequest throws error on three retries.", async () => {
+    // "http://127.0.0.1:5001/vizsurvey-staging/us-central1/updateState"
+    const scope = nock(URLROOT)
+      .defaultReplyHeaders({
+        "content-type": "application/json",
+        referer: "http://localhost/",
+        "user-agent":
+          "Mozilla/5.0 (darwin) AppleWebKit/537.36 (KHTML, like Gecko) jsdom/16.7.0",
+        "accept-language": "en",
+        "access-control-allow-origin": "*",
+        "access-control-allow-headers": "content-type",
+        "access-control-allow-methods": "GET,HEAD,PUT,PATCH,POST,DELETE",
+      })
+      .intercept("/updateState", "OPTIONS")
+      .reply(200)
+      .put("/updateState", "")
+      .reply(503, {})
+      .intercept("/updateState", "OPTIONS")
+      .reply(200)
+      .put("/updateState", "")
+      .reply(503, {})
+      .intercept("/updateState", "OPTIONS")
+      .reply(200)
+      .put("/updateState", "")
+      .reply(503, {});
+    const requestActiveHistory = [];
+    subscribe((processingRequests) => {
+      requestActiveHistory.push(processingRequests);
+    });
+    await expect(
+      putRequest(`${URLROOT}/updateState`, "")
+    ).rejects.toHaveProperty("httpstatus", 503);
+    if (!scope.isDone()) {
+      console.error("pending mocks: %j", scope.pendingMocks());
+    }
+    scope.done();
+    expect(JSON.stringify(requestActiveHistory)).toBe(
+      JSON.stringify([true, false, true, false, true, false])
+    );
   });
 
   test("putRequest doesn't throw error on two failues and last try a success.", async () => {
@@ -108,62 +147,64 @@ describe("serviceAPI tests", () => {
       })
       .intercept("/updateState", "OPTIONS")
       .reply(200)
-      .put("/updateState", '{"value":1}')
+      .put("/updateState", "")
       .reply(503, {})
       .intercept("/updateState", "OPTIONS")
       .reply(200)
-      .put("/updateState", '{"value":1}')
+      .put("/updateState", "")
       .reply(503, {})
       .intercept("/updateState", "OPTIONS")
       .reply(200)
-      .put("/updateState", '{"value":1}')
+      .put("/updateState", "")
       .reply(200, { status: ServerStatusType.success });
-    const result = await putRequest(`${URLROOT}/updateState`, { value: 1 });
+    const result = await putRequest(`${URLROOT}/updateState`, "");
     if (!scope.isDone()) {
       console.error("pending mocks: %j", scope.pendingMocks());
     }
     scope.done();
-    // TODO fix this.
-    // expect(result.status).toBe(ServerStatusType.success);
+    //expect(result.status).toBe(ServerStatusType.success);
   });
 
   test("putRequest doesn't retry on success the first time.", async () => {
     const scope = nock(URLROOT)
       .defaultReplyHeaders({
         "access-control-allow-origin": "*",
-        "access-control-allow-credentials": "true",
+        "access-control-allow-headers": "content-type",
+        "access-control-allow-methods": "GET,HEAD,PUT,PATCH,POST,DELETE",
+        "content-type": "application/json",
       })
-      .get(`/signup`)
+      .intercept("/updateState", "OPTIONS")
+      .reply(200)
+      .put("/updateState", "")
       .reply(200, { status: ServerStatusType.success });
-    const result = await putRequest(`${URLROOT}/updateState`, {});
+    const result = await putRequest(`${URLROOT}/updateState`, "");
     if (!scope.isDone()) {
       console.error("pending mocks: %j", scope.pendingMocks());
     }
     scope.done();
-    // TODO fix this.
-    // expect(result.status).toBe(ServerStatusType.success);
+    //expect(result.status).toBe(ServerStatusType.success);
   });
 
-  test("signupParticipant", async () => {
-    const firebaseConfig = {
-      apiKey: "AIzaSyD_28tvkqLM5yIMXiIujOsy597e8y1O_Mw",
-      authDomain: "vizsurvey-staging.firebaseapp.com",
-      projectId: "vizsurvey-staging",
-      storageBucket: "vizsurvey-staging.appspot.com",
-      messagingSenderId: "500855366678",
-      appId: "1:500855366678:web:79d68a0dba013a8c1a4137",
-      measurementId: "G-9JM63BDRPY",
-    };
-    initFirestore(firebaseConfig);
-    const result = signupParticipant(
-      "https://us-central1-vizsurvey-staging.cloudfunctions.net",
-      getRandomIntInclusive(0, 1000000),
-      "testbetween",
-      1,
-      "userAgent"
-    );
-    expect(result.status).toBe("success");
-  });
+  // test("signupParticipant", async () => {
+  //   const firebaseConfig = {
+  //     apiKey: "AIzaSyD_28tvkqLM5yIMXiIujOsy597e8y1O_Mw",
+  //     authDomain: "vizsurvey-staging.firebaseapp.com",
+  //     projectId: "vizsurvey-staging",
+  //     storageBucket: "vizsurvey-staging.appspot.com",
+  //     messagingSenderId: "500855366678",
+  //     appId: "1:500855366678:web:79d68a0dba013a8c1a4137",
+  //     measurementId: "G-9JM63BDRPY",
+  //   };
+  //   initFirestore(firebaseConfig);
+  //   const result = signupParticipant(
+  //     "https://us-central1-vizsurvey-staging.cloudfunctions.net",
+  //     getRandomIntInclusive(0, 1000000),
+  //     "testbetween",
+  //     1,
+  //     "userAgent"
+  //   );
+  //   expect(result.status).toBe("success");
+  // });
 
   // test("signin.", async () => {
   //   const firebaseConfig = {

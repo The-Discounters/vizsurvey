@@ -19,7 +19,7 @@ import {
   WindowAttributes,
   ScreenAttributes,
 } from "@the-discounters/types";
-import { StatusType } from "../features/StatusType.js";
+import { StatusType } from "@the-discounters/types";
 import { InteractionType } from "@the-discounters/types";
 import { drawCalendar } from "./CalendarHelper.js";
 import { stateToDate, dateToState } from "@the-discounters/util";

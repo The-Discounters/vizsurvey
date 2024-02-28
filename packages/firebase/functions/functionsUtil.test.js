@@ -19,7 +19,7 @@ import {
 import { SURVEY_QUESTIONS_JSON } from "@the-discounters/test-shared";
 import { deleteCollection } from "@the-discounters/firebase-test-shared";
 // TODO can we fix this import so that it comes from an env var?
-import ADMIN_CREDS from "./admin-credentials-dev.json" assert { type: "json" };
+import ADMIN_CREDS from "./admin-credentials-staging.json" assert { type: "json" };
 
 // this needs to match the value that is passed to firebase emulators:start --project=
 const PROJECT_ID = "vizsurvey-staging";

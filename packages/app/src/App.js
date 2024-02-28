@@ -28,7 +28,7 @@ import {
   clearState,
   initializeSurvey,
 } from "./features/questionSlice.js";
-import { StatusType } from "./features/StatusType.js";
+import { StatusType } from "@the-discounters/types";
 import { Consent } from "./components/Consent.jsx";
 import {
   POST_SURVEY_AWARE_CONTENT,
@@ -174,11 +174,18 @@ const DevHome = () => {
             https://release.d2ptxb5fbsc082.amplifyapp.com/start?participant_id=&#123;&#123;%PROLIFIC_PID%&#125;&#125;&study_id=&#123;&#123;%STUDY_ID%&#125;&#125;&session_id=&#123;&#123;%session_id%&#125;&#125;
           </p>
           <p>
-            An example is
+            An example for production is where participant_id must be unique for
+            the study_id
             https://release.d2ptxb5fbsc082.amplifyapp.com/start?participant_id=1&study_id=2&session_id=3
           </p>
           <p>
-            And for localhost with the treatment id being randomly determined
+            And for staging is where participant_id must be unique for the
+            study_id
+            https://staging.d2ptxb5fbsc082.amplifyapp.com/start??participant_id=1&session_id=4&study_id=testbetween
+          </p>
+          <p>
+            And for localhost with the particpant_id must be unique for the
+            study_id
             http://localhost:3000/start?participant_id=1&study_id=2&session_id=3
           </p>
           <p>

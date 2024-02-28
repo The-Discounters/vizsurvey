@@ -1,6 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Button, Grid, Typography, ThemeProvider, StyledEngineProvider } from "@mui/material";
+import {
+  Button,
+  Grid,
+  Typography,
+  ThemeProvider,
+  StyledEngineProvider,
+} from "@mui/material";
 import { useSelector, useDispatch } from "react-redux";
 import { DateTime } from "luxon";
 import { useD3 } from "../hooks/useD3.js";
@@ -21,7 +27,7 @@ import { styles, theme, calcScreenValues } from "./ScreenHelper.js";
 import { AmountType } from "@the-discounters/types";
 import { MELWordComponent } from "./MELWordComponent.js";
 import { MELBarChartComponent } from "./MELBarChartComponent.js";
-import { StatusType } from "../features/StatusType.js";
+import { StatusType } from "@the-discounters/types";
 import { drawCalendar } from "./CalendarHelper.js";
 import { drawCalendarYear } from "./CalendarYearHelper.js";
 
@@ -390,9 +396,9 @@ const ChoiceInstructions = () => {
                   }}
                 />
                 <Typography paragraph>
-                  Once you have made your selection, press the enter key to accept
-                  it and advance to the next question. You must make a selection
-                  to proceed onto the next question.
+                  Once you have made your selection, press the enter key to
+                  accept it and advance to the next question. You must make a
+                  selection to proceed onto the next question.
                 </Typography>
               </>
             )}

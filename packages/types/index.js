@@ -31,6 +31,7 @@ import {
   injectSurveyQuestionFields,
   flattenArrayToObject,
 } from "./src/ObjectUtil.js";
+import { StatusType, nextStatus } from "./src/StatusType.js";
 
 export {
   AmountType,
@@ -62,4 +63,6 @@ export {
   flattenArrayToObject,
   injectKey,
   StatusError,
+  StatusType,
+  nextStatus,
 };

@@ -14,7 +14,7 @@ import {
   ThemeProvider,
   StyledEngineProvider,
 } from "@mui/material";
-import { StatusType } from "../features/StatusType.js";
+import { StatusType } from "@the-discounters/types";
 import {
   getStatus,
   purposeSurveyQuestionsShown,
@@ -96,7 +96,8 @@ export function PostSurvey(props) {
                 <FormControl
                   variant="standard"
                   key={`form-control-${index}`}
-                  sx={{ fontWeight: "bold" }}>
+                  sx={{ fontWeight: "bold" }}
+                >
                   <FormLabel
                     id={question.textShort}
                     sx={{ fontWeight: "bold" }}

@@ -30,7 +30,7 @@ We looked at code from https://supp-exp-en.netlify.app/ for examples of how to s
 
 Download the credential files from the firestore instances you created above and put them in files named as below. Environment
 variables set via the scripts setenvdev.sh, setenvprod.sh, and setenvstating.sh will tell the firebase SDK on how to find the files.
-admin-credentials-dev.json
+admin-credentials-staging.json
 admin-credentials-prod.json
 
 ### Create .env file
@@ -205,9 +205,11 @@ You don’t have to ever use `eject`. The curated feature set is suitable for sm
 
 Below are the production urls for each treatment.
 
-https://release.d2ptxb5fbsc082.amplifyapp.com/start?participant_id=1&session_id=4&study_id=5
-https://release.d2ptxb5fbsc082.amplifyapp.com/start?participant_id=1&session_id=4&study_id=5
-https://release.d2ptxb5fbsc082.amplifyapp.com/start?participant_id=1&session_id=4&study_id=5
+https://release.d2ptxb5fbsc082.amplifyapp.com/start?participant_id=1&session_id=4&study_id=testbetween
+
+### staging URL
+
+https://staging.d2ptxb5fbsc082.amplifyapp.com/start??participant_id=1&session_id=4&study_id=testbetween
 
 ### Local URL
 

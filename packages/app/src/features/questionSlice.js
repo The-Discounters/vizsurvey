@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { SystemZone } from "luxon";
 import { secondsBetween } from "@the-discounters/util";
 import { QuestionEngine } from "./QuestionEngine.js";
-import { StatusType } from "./StatusType.js";
+import { StatusType } from "@the-discounters/types";
 import { initFirestore, signupParticipant } from "./serviceAPI.js";
 import packageFile from "../../package.json";
 

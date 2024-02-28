@@ -88,6 +88,25 @@ export const readExperimentAndQuestions = async (db, studyId) => {
   return result;
 };
 
+export const readExperimentAndParticipants = async (db, studyId) => {
+  const experiment = await readExperiment(db, studyId);
+  const participants = await readParticipants(db, experiment.path);
+  return { experiment, participants };
+};
+
+export const readExperimentAndAudit = async (db, studyId) => {
+  const experiment = await readExperiment(db, studyId);
+  const audit = await readAudit(db, experiment.path);
+  return { experiment, audit };
+};
+
+export const readExperimentParticipantsAndAudit = async (db, studyId) => {
+  const experiment = await readExperiment(db, studyId);
+  const participants = await readParticipants(db, experiment.path);
+  const audit = await readAudit(db, experiment.path);
+  return { experiment, participants, audit };
+};
+
 export const readExperimentsAndQuestions = async (db) => {
   const expCol = await db.collection("experiments").get();
   const expAry = [];

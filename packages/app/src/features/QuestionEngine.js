@@ -1,4 +1,4 @@
-import { StatusType } from "./StatusType.js";
+import { nextStatus } from "@the-discounters/types";
 import { secondsBetween } from "@the-discounters/util";
 
 export const TIMESTAMP_FORMAT = "MM/dd/yyyy H:mm:ss:SSS ZZZZ";
@@ -87,41 +87,6 @@ export class QuestionEngine {
   }
 
   nextStatus(state, onLastTreatmentQuestion, onLastQuestion) {
-    switch (state.status) {
-      case StatusType.Unitialized:
-        return StatusType.Fetching;
-      case StatusType.Fetching:
-        return StatusType.Consent;
-      case StatusType.Consent:
-        return StatusType.Instructions;
-      case StatusType.Instructions:
-        return StatusType.ChoiceInstructions;
-      case StatusType.ChoiceInstructions:
-        return StatusType.Survey;
-      case StatusType.Survey:
-        if (onLastQuestion) {
-          return StatusType.ExperienceQuestionaire;
-        } else if (onLastTreatmentQuestion) {
-          return StatusType.ChoiceInstructions;
-        } else {
-          return StatusType.Survey;
-        }
-      case StatusType.ExperienceQuestionaire:
-        return StatusType.FinancialQuestionaire;
-      case StatusType.FinancialQuestionaire:
-        return StatusType.PurposeAwareQuestionaire;
-      case StatusType.PurposeAwareQuestionaire:
-        return StatusType.PurposeWorthQuestionaire;
-      case StatusType.PurposeWorthQuestionaire:
-        return StatusType.Demographic;
-      case StatusType.Demographic:
-        return StatusType.Debrief;
-      case StatusType.Debrief:
-        return StatusType.Finished;
-      case StatusType.Error:
-        return StatusType.Error;
-      default:
-        return null;
-    }
+    return nextStatus(state.status, onLastQuestion, onLastTreatmentQuestion);
   }
 }

@@ -10,7 +10,7 @@ import {
   ScreenAttributes,
 } from "@the-discounters/types";
 import { dateToState } from "@the-discounters/util";
-import { StatusType } from "../features/StatusType.js";
+import { StatusType } from "@the-discounters/types";
 import { ViewType } from "@the-discounters/types";
 import { useKeyDown } from "../hooks/useKeydown.js";
 import {
