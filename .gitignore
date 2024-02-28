@@ -1,5 +1,23 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
+# creds
+*admin-credentials-*.json
+web-credentials-staging.json
+web-credentials-production.json
+.env.staging
+.env
+.env.local
+.env.development
+.env.dev
+.env.production
+.env.prod
+.env.staging
+discounters.development.json
+discounters.production.json
+/setenvprod.sh
+/setenvdev.sh
+/setenvstaging.sh
+
 # dependencies
 /node_modules
 /.pnp
@@ -7,23 +25,21 @@
 
 # testing
 /coverage
-test/node_modules
-test/public
+pacakages/test/node_modules
+packages/test/public
 
 # production
 /build
+/packages/firebase/functions/temp
 
 # misc
 .DS_Store
-.env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
 
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
+#logs
+#npm-debug.log*
+#yarn-debug.log*
+#yarn-error.log*
+**/*.log
 
 /dist
 
@@ -31,11 +47,11 @@ yarn-error.log*
 *.swp
 
 # cypress
-cypress/fixtures
-cypress/plugins
-cypress/screenshots
-cypress/videos
-cypress/downloads
+packages/app/cypress/fixtures
+packages/app/cypress/plugins
+packages/app/cypress/screenshots
+packages/app/cypress/videos
+packages/app/cypress/downloads
 doc/~$MCL questions.xlsx
 
 #amplify-do-not-edit-begin
@@ -58,3 +74,15 @@ amplifytools.xcconfig
 .secret-*
 **.sample
 #amplify-do-not-edit-end
+
+#test data folders
+/temp
+
+# yarn with zero installs
+.yarn/*
+!.yarn/cache
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions

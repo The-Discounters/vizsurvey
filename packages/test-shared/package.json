@@ -1,0 +1,16 @@
+{
+  "name": "@the-discounters/test-shared",
+  "description": "Test infrastructure.",
+  "version": "1.0.0",
+  "main": "index.js",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "lint": "eslint .",
+    "build": "echo 'Build script currently does nothing in @the-discounters/firebase-shared module.'"
+  },
+  "devDependencies": {
+    "eslint": "^8.15.0",
+    "eslint-config-google": "^0.14.0"
+  }
+}
