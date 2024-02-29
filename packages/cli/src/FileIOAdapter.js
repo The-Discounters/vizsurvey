@@ -42,6 +42,111 @@ export const convertValues = (obj) => {
   _.mapValues(obj, (value, key, object) => convertValue(key, value));
 };
 
+// {
+//     serverTimestamp: timestamp,
+//     nested: {
+//       browserTimestamp: timestamp,
+// }
+// export const _convertValues = (obj, result) => {
+//   for (const [key, value] of Object.entries(obj)) {
+//     const convertedValue = convertValue(key, value);
+//     if (value == convertedValue && typeof value === "object") {
+//       result[key] = _convertValues(value, result);
+//     } else {
+//       result[key] = convertedValue;
+//     }
+//   }
+// };
+
+export const convertState = (obj) => {
+  let result = {};
+  Object.keys(obj).forEach((key) => {
+    const value = obj[key];
+    let converted = {};
+    switch (key) {
+      case "timestamps":
+        converted = { ...value };
+        // [
+        //   { "value": "2024-02-26T14:59:42.496-05:00", "treatmentId": 2 }
+        // ]
+        value.choiceInstructionCompletedTimestamp =
+          value.choiceInstructionCompletedTimestamp.map((cv) => {
+            convertValues(cv);
+            return cv;
+          });
+        value.choiceInstructionShownTimestamp =
+          value.choiceInstructionShownTimestamp.map((cv) => {
+            convertValues(cv);
+            return cv;
+          });
+        delete converted.choiceInstructionTimeSec;
+        converted = {
+          ...converted,
+          ...flattenTreatmentValueAry(
+            "choiceInstructionTimeSec",
+            value.choiceInstructionTimeSec
+          ),
+        };
+        delete converted.attentionCheckShownTimestamp;
+        converted = {
+          ...converted,
+          ...flattenTreatmentValueAry(
+            "attentionCheckShownTimestamp",
+            value.attentionCheckShownTimestamp
+          ),
+        };
+        delete converted.attentionCheckCompletedTimestamp;
+        converted = {
+          ...converted,
+          ...flattenTreatmentValueAry(
+            "attentionCheckCompletedTimestamp",
+            value.attentionCheckCompletedTimestamp
+          ),
+        };
+        delete converted.attentionCheckTimeSec;
+        converted = {
+          ...converted,
+          ...flattenTreatmentValueAry(
+            "attentionCheckTimeSec",
+            value.attentionCheckTimeSec
+          ),
+        };
+        break;
+      case "questions":
+        value.forEach((v) => {
+          delete v.screenAttributes;
+          delete v.windowAttributes;
+        });
+        converted = flattenArrayToObject(
+          value,
+          (key, value, obj) =>
+            key === "participantId" || key === "sessionId" || key === "studyId"
+              ? key
+              : `${key}_${obj.treatmentId}_${
+                  obj.sequenceId ? obj.sequenceId : ""
+                }`,
+          (key, value, obj) => convertValue(key, value)
+        );
+        break;
+      case "financialLitSurvey":
+      case "purposeSurvey":
+      case "experienceSurvey":
+        converted = convertValues(value);
+        break;
+      case "instructionTreatment":
+        // TODO not sure what to do with this
+        break;
+      default:
+        converted[key] = convertValue(key, value);
+    }
+    result = {
+      ...result,
+      ...converted,
+    };
+  });
+  return result;
+};
+
 export const flattenState = (obj) => {
   let result = {};
   Object.keys(obj).forEach((key) => {
@@ -49,7 +154,7 @@ export const flattenState = (obj) => {
     let flattened = {};
     switch (key) {
       case "timestamps":
-        flattened = { ...convertValue(key, value) };
+        flattened = { ...value };
         delete flattened.choiceInstructionCompletedTimestamp;
         flattened = {
           ...flattened,
@@ -139,12 +244,10 @@ export const exportParticipantsToJSON = async (db, studyId, filename) => {
     db,
     studyId
   );
-  const fileData = JSON.stringify(
-    convertValues({
-      ...experiment,
-      participants: participants,
-    })
-  );
+  const fileData = JSON.stringify({
+    ...experiment,
+    participants: participants,
+  });
   writeFile(filename, fileData);
 };
 

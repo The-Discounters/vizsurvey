@@ -1,8 +1,11 @@
+import admin from "firebase-admin";
+import { DateTime } from "luxon";
 import { ViewType, setAllPropertiesEmpty } from "@the-discounters/types";
 import { initFirestore } from "@the-discounters/firebase-shared";
 import {
   flattenState,
   flattenTreatmentValueAry,
+  convertState,
   exportParticipantsToJSON,
   exportAuditToJSON,
 } from "./FileIOAdapter.js";
@@ -614,6 +617,23 @@ describe("FileIOAdapter non firestore integration tests", () => {
       timestamps_2: "timestamp2",
     });
   });
+});
+
+describe("convertState tests", () => {
+  const timestamp = admin.firestore.Timestamp.fromDate(
+    DateTime.fromISO("1974-11-08T00:00:00.199-05:00").toJSDate()
+  );
+  const input = {
+    serverTimestamp: timestamp,
+    nested: {
+      browserTimestamp: timestamp,
+    },
+  };
+  expect(JSON.stringify(input)).toBe(
+    '{"serverTimestamp":{"_seconds":153118800,"_nanoseconds":199000000},"nested":{"browserTimestamp":{"_seconds":153118800,"_nanoseconds":199000000}}}'
+  );
+  const result = convertState(input);
+  expect(JSON.stringify(result)).toBe("");
 });
 
 describe("FileIOAdapter firestore integration tests", () => {

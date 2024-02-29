@@ -34,3 +34,13 @@ export const ISODateStringWithNanoSec = (date, nanosec) => {
   const result = dateStr.replace(regex, `.${nanosec}`);
   return result;
 };
+
+export const dateFromISOStringWithNanoSec = (ISOdateStr) => {
+  // format 2017-04-22T20:47:05.3350000000-04:00
+  const regex = /\.(?<nanosec>[\d]+)/;
+  const matches = ISOdateStr.match(regex);
+  return {
+    date: DateTime.fromISO(ISOdateStr),
+    nanosec: matches ? parseInt(matches.groups.nanosec) : null,
+  };
+};
