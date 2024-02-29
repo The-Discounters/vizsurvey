@@ -1,5 +1,6 @@
 # What is VizSurvey
 
+
 We created VizSurvey out of a need to have a tool with survey questions with an accompanying visualization that could be data driven for our masters thesis reasearch. We originally investigated using survey monkey and other online survey tools; however, they lacked the ability to embed visualizations and we could't find any with a REST API that would allow the visualizations to be driven off the survey questions, so we wrote VizSurvey.
 
 The application is written in javascript with react using redux and uses firestore to retrieve treatment definitions, store survey answers, and assign survey treatments across participants. The application loads the treatments for the survey questionaire data, and renders the questions in a click through format making the data avialable to the react component that wraps the D3 visualization. The app connects
