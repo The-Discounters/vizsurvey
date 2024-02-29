@@ -1,5 +1,5 @@
 import React from "react";
-import ReactDOM from "react-dom";
+import { createRoot } from "react-dom/client";
 import { enableAllPlugins } from "immer";
 import { Provider } from "react-redux";
 import { store } from "./app/store.js";
@@ -10,16 +10,16 @@ import reportWebVitals from "./reportWebVitals.js";
 
 enableAllPlugins();
 
-ReactDOM.render(
-  <React.StrictMode>
-    <Provider store={store}>
-      <ServiceAPIProvider>
-        <App />
-      </ServiceAPIProvider>
-    </Provider>
-    ,
-  </React.StrictMode>,
-  document.getElementById("root")
+const container = document.getElementById("root");
+const root = createRoot(container); // createRoot(container!) if you use TypeScript
+root.render(
+  //<React.StrictMode>
+  <Provider store={store}>
+    <ServiceAPIProvider>
+      <App />
+    </ServiceAPIProvider>
+  </Provider>
+  //</React.StrictMode>
 );
 
 // If you want to start measuring performance in your app, pass a function

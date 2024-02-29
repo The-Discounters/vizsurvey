@@ -16,7 +16,7 @@ export const subscribe = (_callback) => {
 
 const incActivePutRequestCount = () => {
   activePutRequestCount++;
-  if (activePutRequestCount === 1) {
+  if (activePutRequestCount === 1 && callback) {
     callback(true);
   }
 };
@@ -24,7 +24,7 @@ const incActivePutRequestCount = () => {
 const decActivePutRequestCount = () => {
   activePutRequestCount--;
   console.assert(activePutRequestCount >= 0);
-  if (activePutRequestCount === 0) {
+  if (activePutRequestCount === 0 && callback) {
     callback(false);
   }
 };
