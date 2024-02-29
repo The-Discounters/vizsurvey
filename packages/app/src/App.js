@@ -150,10 +150,10 @@ const GenTreatmentId = () => {
 };
 
 const DevHome = () => {
+  console.log("in DevHome");
   const dispatch = useDispatch();
-
-  function testLinks() {
-    return (
+  return (
+    <div id="home-text">
       <div key="testlinks-parent">
         <p>
           This page will not be available when deployed in production since the
@@ -238,10 +238,8 @@ const DevHome = () => {
           </p>
         </div>
       </div>
-    );
-  }
-
-  return <div id="home-text">{testLinks()}</div>;
+    </div>
+  );
 };
 
 export default App;
