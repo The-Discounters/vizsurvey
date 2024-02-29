@@ -119,9 +119,15 @@ export const signup = onRequest(
           }
         }
       );
-      response
-        .status(200)
-        .json({ ...signupData, status: ServerStatusType.success });
+      const sendbackData = { ...signupData, status: ServerStatusType.success };
+      logger.info(
+        `signup Senging back singup data ${JSON.stringify(
+          sendbackData
+        )} for experimentId ${
+          exp.experimentId
+        }, participantId ${participantId}, server assigned sequence ${sequenceNumber}`
+      );
+      response.status(200).json(sendbackData);
     } catch (err) {
       logger.error(
         `signup ${err.message} participantId=${participantId}, studyId=${studyId}, sessionId=${sessionId}`
