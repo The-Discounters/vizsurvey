@@ -38,6 +38,8 @@ module.exports = {
       ["@babel/plugin-syntax-dynamic-import", { loose: true }],
       ["@babel/plugin-proposal-class-properties", { loose: true }],
       ["@babel/plugin-syntax-import-assertions", { loose: true }],
+      ["@babel/plugin-transform-private-methods", { loose: true }],
+      ["@babel/plugin-transform-private-property-in-object", { loose: true }],
     ],
     loaderOptions: (babelLoaderOptions, { env, paths }) => {
       /* ... */
