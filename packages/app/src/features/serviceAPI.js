@@ -57,8 +57,6 @@ export const putRequest = async (URL, body, numRetries = 3) => {
   const response = await fetch(URL, {
     method: "PUT",
     headers: {
-      referer: "http://localhost/",
-      origin: "http://localhost",
       "access-control-request-method": "PUT",
       "Content-Type": "application/json",
     },
