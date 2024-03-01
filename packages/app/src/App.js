@@ -100,7 +100,7 @@ const App = () => {
             <Route path="/debrief" element={<Debrief />} />
             <Route path="/finished" element={<Finished />} />
             <Route path="/invalidlink" element={<InvalidSurveyLink />} />
-            <Route path="*" element={<InvalidSurveyLink />} />
+            <Route path="*" element={<DevHome />} />
           </Routes>
         </ErrorBoundary>
       </Container>
