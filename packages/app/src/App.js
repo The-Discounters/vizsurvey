@@ -3,7 +3,6 @@ import { useSelector, useDispatch } from "react-redux";
 import {
   useNavigate,
   useSearchParams,
-  BrowserRouter,
   Route,
   Routes,
   Link,
@@ -65,52 +64,46 @@ const App = () => {
   console.log(chalk.yellow(`Running for ${process.env.REACT_APP_ENV}`));
   return (
     <div>
-      <ErrorBoundary>
-        <BrowserRouter>
-          <Container>
-            <Routes>
-              <Route path="/dev" element={<DevHome />} />
-              <Route path="/start" element={<GenTreatmentId />} />
-              <Route path="/consent" element={<Consent />} />
-              <Route path="/demographic" element={<Demographic />} />
-              <Route
-                path="/choiceinstructions"
-                element={<ChoiceInstructions />}
-              />
-              <Route path="/instruction" element={<Instructions />} />
-              <Route path="/survey" element={<Survey />} />
-              <Route
-                path="/experiencequestionaire"
-                element={<PostSurveyExperience />}
-              />
-              <Route
-                path="/financialquestionaire"
-                element={<PostSurveyFinancialLit />}
-              />
-              <Route
-                path="/purposeawarequestionaire"
-                element={
-                  <PostSurveySenseOfPurpose
-                    content={POST_SURVEY_AWARE_CONTENT}
-                  />
-                }
-              />
-              <Route
-                path="/purposeworthquestionaire"
-                element={
-                  <PostSurveySenseOfPurpose
-                    content={POST_SURVEY_WORTH_CONTENT}
-                  />
-                }
-              />
-              <Route path="/debrief" element={<Debrief />} />
-              <Route path="/finished" element={<Finished />} />
-              <Route path="/invalidlink" element={<InvalidSurveyLink />} />
-              <Route path="*" element={<InvalidSurveyLink />} />
-            </Routes>
-          </Container>
-        </BrowserRouter>
-      </ErrorBoundary>
+      <Container>
+        <ErrorBoundary>
+          <Routes>
+            <Route path="/dev" element={<DevHome />} />
+            <Route path="/start" element={<GenTreatmentId />} />
+            <Route path="/consent" element={<Consent />} />
+            <Route path="/demographic" element={<Demographic />} />
+            <Route
+              path="/choiceinstructions"
+              element={<ChoiceInstructions />}
+            />
+            <Route path="/instruction" element={<Instructions />} />
+            <Route path="/survey" element={<Survey />} />
+            <Route
+              path="/experiencequestionaire"
+              element={<PostSurveyExperience />}
+            />
+            <Route
+              path="/financialquestionaire"
+              element={<PostSurveyFinancialLit />}
+            />
+            <Route
+              path="/purposeawarequestionaire"
+              element={
+                <PostSurveySenseOfPurpose content={POST_SURVEY_AWARE_CONTENT} />
+              }
+            />
+            <Route
+              path="/purposeworthquestionaire"
+              element={
+                <PostSurveySenseOfPurpose content={POST_SURVEY_WORTH_CONTENT} />
+              }
+            />
+            <Route path="/debrief" element={<Debrief />} />
+            <Route path="/finished" element={<Finished />} />
+            <Route path="/invalidlink" element={<InvalidSurveyLink />} />
+            <Route path="*" element={<InvalidSurveyLink />} />
+          </Routes>
+        </ErrorBoundary>
+      </Container>
     </div>
   );
 };

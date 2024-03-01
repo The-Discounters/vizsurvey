@@ -2,6 +2,7 @@ import React from "react";
 import { createRoot } from "react-dom/client";
 import { enableAllPlugins } from "immer";
 import { Provider } from "react-redux";
+import { BrowserRouter } from "react-router-dom";
 import { store } from "./app/store.js";
 import { ServiceAPIProvider } from "./app/ReactContext.js";
 import "./index.css";
@@ -16,7 +17,9 @@ root.render(
   //<React.StrictMode>
   <Provider store={store}>
     <ServiceAPIProvider>
-      <App />
+      <BrowserRouter>
+        <App />
+      </BrowserRouter>
     </ServiceAPIProvider>
   </Provider>
   //</React.StrictMode>
