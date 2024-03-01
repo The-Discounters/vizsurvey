@@ -69,11 +69,7 @@ const App = () => {
         <BrowserRouter>
           <Container>
             <Routes>
-              {process.env.REACT_APP_ENV !== "production" ? (
-                <Route path="dev" element={<DevHome />} />
-              ) : (
-                ""
-              )}
+              <Route path="dev" element={<DevHome />} />
               <Route path="start" element={<GenTreatmentId />} />
               <Route path={"consent"} element={<Consent />} />
               <Route path={"demographic"} element={<Demographic />} />
