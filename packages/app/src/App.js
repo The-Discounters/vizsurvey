@@ -69,8 +69,8 @@ const App = () => {
         <BrowserRouter>
           <Container>
             <Routes>
-              <Route path="dev" element={<DevHome />} />
-              <Route path="start" element={<GenTreatmentId />} />
+              <Route path={"dev"} element={<DevHome />} />
+              <Route path={"start"} element={<GenTreatmentId />} />
               <Route path={"consent"} element={<Consent />} />
               <Route path={"demographic"} element={<Demographic />} />
               <Route
