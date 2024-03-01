@@ -69,26 +69,26 @@ const App = () => {
         <BrowserRouter>
           <Container>
             <Routes>
-              <Route path={"dev"} element={<DevHome />} />
-              <Route path={"start"} element={<GenTreatmentId />} />
-              <Route path={"consent"} element={<Consent />} />
-              <Route path={"demographic"} element={<Demographic />} />
+              <Route path="dev" element={<DevHome />} />
+              <Route path="start" element={<GenTreatmentId />} />
+              <Route path="consent" element={<Consent />} />
+              <Route path="demographic" element={<Demographic />} />
               <Route
-                path={"choiceinstructions"}
+                path="choiceinstructions"
                 element={<ChoiceInstructions />}
               />
-              <Route path={"instruction"} element={<Instructions />} />
-              <Route path={"survey"} element={<Survey />} />
+              <Route path="instruction" element={<Instructions />} />
+              <Route path="survey" element={<Survey />} />
               <Route
-                path={"experiencequestionaire"}
+                path="experiencequestionaire"
                 element={<PostSurveyExperience />}
               />
               <Route
-                path={"financialquestionaire"}
+                path="financialquestionaire"
                 element={<PostSurveyFinancialLit />}
               />
               <Route
-                path={"purposeawarequestionaire"}
+                path="purposeawarequestionaire"
                 element={
                   <PostSurveySenseOfPurpose
                     content={POST_SURVEY_AWARE_CONTENT}
@@ -96,16 +96,16 @@ const App = () => {
                 }
               />
               <Route
-                path={"purposeworthquestionaire"}
+                path="purposeworthquestionaire"
                 element={
                   <PostSurveySenseOfPurpose
                     content={POST_SURVEY_WORTH_CONTENT}
                   />
                 }
               />
-              <Route path={"debrief"} element={<Debrief />} />
-              <Route path={"finished"} element={<Finished />} />
-              <Route path={"invalidlink"} element={<InvalidSurveyLink />} />
+              <Route path="debrief" element={<Debrief />} />
+              <Route path="finished" element={<Finished />} />
+              <Route path="invalidlink" element={<InvalidSurveyLink />} />
               <Route path="*" element={<InvalidSurveyLink />} />
             </Routes>
           </Container>
