@@ -67,7 +67,6 @@ const App = () => {
       <Container>
         <ErrorBoundary>
           <Routes>
-            <Route path="/dev" element={<DevHome />} />
             <Route path="/start" element={<GenTreatmentId />} />
             <Route path="/consent" element={<Consent />} />
             <Route path="/demographic" element={<Demographic />} />
@@ -100,7 +99,16 @@ const App = () => {
             <Route path="/debrief" element={<Debrief />} />
             <Route path="/finished" element={<Finished />} />
             <Route path="/invalidlink" element={<InvalidSurveyLink />} />
-            <Route path="*" element={<DevHome />} />
+            <Route
+              path="*"
+              element={
+                process.env.REACT_APP_ENV !== "production" ? (
+                  <DevHome />
+                ) : (
+                  <InvalidSurveyLink />
+                )
+              }
+            />
           </Routes>
         </ErrorBoundary>
       </Container>
