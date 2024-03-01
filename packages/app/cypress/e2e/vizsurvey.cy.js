@@ -67,15 +67,6 @@ function postsurvey(expects) {
                 qsinglediscount: "v1350",
                 qfinddiscount: "v20p",
               },
-
-              purposeSurvey: {
-                posdiff: "strongly-disagree",
-                carbetplac: "strongly-disagree",
-                servsoc: "strongly-disagree",
-                thinkach: "strongly-disagree",
-                descrpurp: "strongly-disagree",
-                effort: "strongly-disagree",
-              },
               demographics: {
                 countryOfResidence: "usa",
                 vizFamiliarity: "3",
@@ -98,8 +89,6 @@ function postsurvey(expects) {
                 attentionCheckShownTimestamp: 5000,
                 attentionCheckCompletedTimestamp: 6000,
                 financialLitSurveyQuestionsShownTimestamp: 6000,
-                purposeSurveyAwareQuestionsShownTimestamp: 9000,
-                purposeSurveyWorthQuestionsShownTimestamp: 9000,
                 debriefShownTimestamp: null, // TODO
                 debriefCompletedTimestamp: null, // TODO
                 theEndShownTimestamp: 10000,

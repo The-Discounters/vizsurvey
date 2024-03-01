@@ -8,8 +8,6 @@ export const StatusType = {
   Attention: "attention",
   ExperienceQuestionaire: "experiencequestionaire",
   FinancialQuestionaire: "financialquestionaire",
-  PurposeAwareQuestionaire: "purposeawarequestionaire",
-  PurposeWorthQuestionaire: "purposeworthquestionaire",
   Demographic: "demographic",
   Debrief: "debrief",
   Finished: "finished",
@@ -41,10 +39,6 @@ export const nextStatus = (status, onLastQuestion, onLastTreatmentQuestion) => {
     case StatusType.ExperienceQuestionaire:
       return StatusType.FinancialQuestionaire;
     case StatusType.FinancialQuestionaire:
-      return StatusType.PurposeAwareQuestionaire;
-    case StatusType.PurposeAwareQuestionaire:
-      return StatusType.PurposeWorthQuestionaire;
-    case StatusType.PurposeWorthQuestionaire:
       return StatusType.Demographic;
     case StatusType.Demographic:
       return StatusType.Debrief;

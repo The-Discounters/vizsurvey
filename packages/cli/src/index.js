@@ -70,6 +70,7 @@ const initializeDB = () => {
       `Using creds from ${process.env.GOOGLE_APPLICATION_CREDENTIALS} ` +
         `and project id ${process.env.FIRESTORE_PROJECT_ID} ` +
         `and database url ${process.env.FIRESTORE_DATABASE_URL} ` +
+        `and emulator host ${process.env.FIRESTORE_EMULATOR_HOST}` +
         "set with environment variables GOOGLE_APPLICATION_CREDENTIALS, " +
         "FIRESTORE_PROJECT_ID, and FIRESTORE_DATABASE_URL"
     )
@@ -193,27 +194,20 @@ program
         case ExportTypes.configuration:
           throw new Error("Not implemented yet!");
         case ExportTypes.data:
-          const exportData = async (db, format, studyId, filename) => {
-            let fileData;
-            switch (options.format) {
-              case FileTypes.json:
-                fileData = await exportParticipantsToJSON(
-                  db,
-                  options.experiment,
-                  filename
-                );
-                break;
-              case FileTypes.csv:
-                exportParticipantsToCSV(db, options.experiment, filename);
-              default:
-                break;
-            }
-          };
-        case ExportTypes.audit:
-          let fileData;
           switch (options.format) {
             case FileTypes.json:
-              fileData = exportAuditToJSON(db, options.experiment, filename);
+              exportParticipantsToJSON(db, options.experiment, filename);
+              break;
+            case FileTypes.csv:
+              exportParticipantsToCSV(db, options.experiment, filename);
+            default:
+              break;
+          }
+          break;
+        case ExportTypes.audit:
+          switch (options.format) {
+            case FileTypes.json:
+              exportAuditToJSON(db, options.experiment, filename);
               break;
             case FileTypes.csv:
               exportAuditToCSV(db, options.experiment, filename);
@@ -238,6 +232,8 @@ program
               break;
           }
           break;
+        default:
+          console.log(`Unknow export type ${options.type}`);
       }
     } catch (err) {
       console.log(chalk.red(err));

@@ -36,13 +36,23 @@ describe("ObjectUtil test.", () => {
         data: null,
       },
     ];
-    const result = obj.flattenArrayToObject(input, (key, value, o) => {
-      if (key === "participantId" || key === "sessionId" || key === "studyId") {
-        return key;
-      } else {
-        return `${key}_${o.treatmentId}_${o.sequenceId}`;
+    const result = obj.flattenArrayToObject(
+      input,
+      (key, value, o) => {
+        if (
+          key === "participantId" ||
+          key === "sessionId" ||
+          key === "studyId"
+        ) {
+          return key;
+        } else {
+          return `${key}_${o.treatmentId}_${o.sequenceId}`;
+        }
+      },
+      (key, value, o) => {
+        return value;
       }
-    });
+    );
 
     expect(result.participantId).toBe(1);
     expect(result.sessionId).toBe(2);

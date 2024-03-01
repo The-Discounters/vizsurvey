@@ -48,7 +48,6 @@ const initialState = {
   studyId: null,
   experienceSurvey: {},
   financialLitSurvey: {},
-  purposeSurvey: {},
   countryOfResidence: "",
   vizFamiliarity: "",
   age: "",
@@ -81,12 +80,6 @@ const initialState = {
     financialLitSurveyQuestionsShownTimestamp: null,
     financialLitSurveyQuestionsCompletedTimestamp: null,
     financialLitSurveyTimeSec: null,
-    purposeSurveyAwareQuestionsShownTimestamp: null,
-    purposeSurveyAwareQuestionsCompletedTimestamp: null,
-    purposeSurveyAwareTimeSec: null,
-    purposeSurveyWorthQuestionsShownTimestamp: null,
-    purposeSurveyWorthQuestionsCompletedTimestamp: null,
-    purposeSurveyWorthTimeSec: null,
     debriefShownTimestamp: null,
     debriefCompletedTimestamp: null,
     debriefTimeSec: null,
@@ -140,14 +133,6 @@ export const questionSlice = createSlice({
     },
     setFinancialLitSurveyQuestion(state, action) {
       state.financialLitSurvey[action.payload.key] = action.payload.value;
-    },
-    initPurposeSurveyQuestion(state, action) {
-      const combined = { ...state.purposeSurvey, ...action.payload };
-      state.purposeSurvey = combined;
-      // state.purposeSurvey = action.payload;
-    },
-    setPurposeSurveyQuestion(state, action) {
-      state.purposeSurvey[action.payload.key] = action.payload.value;
     },
     setAttentionCheck(state, action) {
       state.attentionCheck.push({
@@ -270,33 +255,6 @@ export const questionSlice = createSlice({
       );
       state.status = qe.nextState(state);
     },
-    purposeSurveyQuestionsShown(state, action) {
-      if (state.status === StatusType.PurposeAwareQuestionaire) {
-        state.timestamps.purposeSurveyAwareQuestionsShownTimestamp =
-          action.payload;
-      } else if (state.status === StatusType.PurposeWorthQuestionaire) {
-        state.timestamps.purposeSurveyWorthQuestionsShownTimestamp =
-          action.payload;
-      }
-    },
-    purposeSurveyQuestionsCompleted(state, action) {
-      if (state.status === StatusType.PurposeAwareQuestionaire) {
-        state.timestamps.purposeSurveyAwareQuestionsCompletedTimestamp =
-          action.payload;
-        state.timestamps.purposeSurveyAwareTimeSec = secondsBetween(
-          state.timestamps.purposeSurveyAwareQuestionsShownTimestamp,
-          state.timestamps.purposeSurveyAwareQuestionsCompletedTimestamp
-        );
-      } else if (state.status === StatusType.PurposeWorthQuestionaire) {
-        state.timestamps.purposeSurveyWorthQuestionsCompletedTimestamp =
-          action.payload;
-        state.timestamps.purposeSurveyWorthTimeSec = secondsBetween(
-          state.timestamps.purposeSurveyWorthQuestionsShownTimestamp,
-          state.timestamps.purposeSurveyWorthQuestionsCompletedTimestamp
-        );
-      }
-      state.status = qe.nextState(state);
-    },
     debriefShownTimestamp(state, action) {
       state.timestamps.debriefShownTimestamp = action.payload;
     },
@@ -375,10 +333,6 @@ export const getFinancialLitSurveyQuestion = (questionId) => (state) => {
   return state.questions.financialLitSurvey[questionId];
 };
 
-export const getPurposeSurveyAnswers = (state) => {
-  return state.questions.purposeSurvey;
-};
-
 export const getFinancialLitSurveyAnswers = (state) =>
   state.questions.financialLitSurvey;
 
@@ -434,8 +388,6 @@ export const {
   initFinancialLitSurveyQuestion,
   setFinancialLitSurveyQuestion,
   setSurveyQuestion,
-  initPurposeSurveyQuestion,
-  setPurposeSurveyQuestion,
   setAttentionCheck,
   instructionsShown,
   setFeedback,
@@ -447,8 +399,6 @@ export const {
   experienceSurveyQuestionsCompleted,
   financialLitSurveyQuestionsShown,
   financialLitSurveyQuestionsCompleted,
-  purposeSurveyQuestionsShown,
-  purposeSurveyQuestionsCompleted,
   debriefShownTimestamp,
   debriefCompleted,
   finishedShownTimestamp,

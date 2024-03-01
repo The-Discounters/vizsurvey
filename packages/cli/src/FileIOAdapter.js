@@ -116,7 +116,6 @@ export const flattenState = (obj) => {
         );
         break;
       case "financialLitSurvey":
-      case "purposeSurvey":
       case "experienceSurvey":
         flattened = convertValues(value);
         break;

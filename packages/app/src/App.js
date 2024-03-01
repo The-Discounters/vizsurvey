@@ -17,7 +17,6 @@ import Instructions from "./components/Instructions.jsx";
 import Survey from "./components/Survey.jsx";
 import PostSurveyExperience from "./components/PostSurveyExperience.jsx";
 import PostSurveyFinancialLit from "./components/PostSurveyFinancialLit.jsx";
-import PostSurveySenseOfPurpose from "./components/PostSurveySenseOfPurpose.jsx";
 import Debrief from "./components/Debrief.jsx";
 import Finished from "./components/Finished.jsx";
 import Spinner from "./components/Spinner.js";
@@ -29,10 +28,6 @@ import {
 } from "./features/questionSlice.js";
 import { StatusType } from "@the-discounters/types";
 import { Consent } from "./components/Consent.jsx";
-import {
-  POST_SURVEY_AWARE_CONTENT,
-  POST_SURVEY_WORTH_CONTENT,
-} from "./features/postsurveyquestionssenseofpurpose.js";
 import { getRandomIntInclusive } from "@the-discounters/util";
 
 class ErrorBoundary extends React.Component {
@@ -83,18 +78,6 @@ const App = () => {
             <Route
               path="/financialquestionaire"
               element={<PostSurveyFinancialLit />}
-            />
-            <Route
-              path="/purposeawarequestionaire"
-              element={
-                <PostSurveySenseOfPurpose content={POST_SURVEY_AWARE_CONTENT} />
-              }
-            />
-            <Route
-              path="/purposeworthquestionaire"
-              element={
-                <PostSurveySenseOfPurpose content={POST_SURVEY_WORTH_CONTENT} />
-              }
             />
             <Route path="/debrief" element={<Debrief />} />
             <Route path="/finished" element={<Finished />} />
@@ -226,12 +209,6 @@ const DevHome = () => {
               Within subject bar chart experiment with production values used in
               thesis and CHI paper.
             </Link>
-          </p>
-          <p>
-            <b>
-              Teest treatments are listed below for the different configuraiton
-              scenarios.
-            </b>
           </p>
         </div>
       </div>

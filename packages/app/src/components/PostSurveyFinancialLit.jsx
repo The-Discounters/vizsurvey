@@ -75,7 +75,7 @@ export function PostSurvey() {
           alignItems="stretch"
         >
           <Grid item xs={12}>
-            <Typography variant="h4">Additional Questions 2 of 4</Typography>
+            <Typography variant="h4">Additional Questions 2 of 2</Typography>
             <hr
               style={{
                 color: "#ea3433",
@@ -94,7 +94,8 @@ export function PostSurvey() {
                   variant="standard"
                   key={`form-control-${index}`}
                   sx={{ fontWeight: "bold" }}
-                  required>
+                  required
+                >
                   <FormLabel
                     id={question.textShort}
                     sx={{ fontWeight: "bold" }}
