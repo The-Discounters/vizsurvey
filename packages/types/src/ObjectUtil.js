@@ -49,3 +49,7 @@ export const injectSurveyQuestionFields = (questions) => {
   const result = questions.map((v) => SurveyQuestion({ ...v }));
   return result;
 };
+
+export const removeUndefinedOrNullProperties = (obj) => {
+  return _.omitBy(obj, (value) => value === null || value === undefined);
+};

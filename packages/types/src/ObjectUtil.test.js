@@ -114,4 +114,16 @@ describe("ObjectUtil test.", () => {
     expect(result[0]).toHaveProperty("choiceTimestamp");
     expect(result[0]).toHaveProperty("choiceTimeSec");
   });
+
+  test("removeUndefinedOrNullProperties test.", async () => {
+    const input = {
+      property1: undefined,
+      property2: "value2",
+      property3: null,
+    };
+    const result = obj.removeUndefinedOrNullProperties(input);
+    expect(result.property1).toBeUndefined();
+    expect(result.property2).toBe("value2");
+    expect(result.property3).toBeUndefined();
+  });
 });

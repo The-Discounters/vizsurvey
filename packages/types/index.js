@@ -30,6 +30,7 @@ import {
   convertKeysUnderscoreToCamelCase,
   injectSurveyQuestionFields,
   flattenArrayToObject,
+  removeUndefinedOrNullProperties,
 } from "./src/ObjectUtil.js";
 import { StatusType, nextStatus } from "./src/StatusType.js";
 
@@ -61,6 +62,7 @@ export {
   stateFormatFilename,
   injectSurveyQuestionFields,
   flattenArrayToObject,
+  removeUndefinedOrNullProperties,
   injectKey,
   StatusError,
   StatusType,

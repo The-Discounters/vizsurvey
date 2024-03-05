@@ -4,6 +4,7 @@ import fs from "fs";
 import {
   convertKeysCamelCaseToUnderscore,
   flattenArrayToObject,
+  removeUndefinedOrNullProperties,
 } from "@the-discounters/types";
 import { convertToCSV, ISODateStringWithNanoSec } from "@the-discounters/util";
 import { writeFile } from "./files.js";
@@ -213,7 +214,7 @@ export const exportParticipantsToCSV = async (db, studyId, filename) => {
       ...experiment,
       ...cv,
     };
-    const flattened = flattenState(combined);
+    const flattened = removeUndefinedOrNullProperties(flattenState(combined));
     const underscore = convertKeysCamelCaseToUnderscore(flattened);
     array.push(underscore);
   });
