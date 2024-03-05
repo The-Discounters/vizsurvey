@@ -20,6 +20,7 @@ import {
   fetchCurrentTreatment,
   getInstructionTreatment,
   getStatus,
+  getExperiment,
 } from "../features/questionSlice.js";
 import { dateToState } from "@the-discounters/util";
 
@@ -35,6 +36,7 @@ const ChoiceInstructions = () => {
   const dispatch = useDispatch();
   const treatment = useSelector(fetchCurrentTreatment);
   const instructionTreatment = useSelector(getInstructionTreatment);
+  const experiment = useSelector(getExperiment);
   const navigate = useNavigate();
 
   const [choice, setChoice] = useState(AmountType.none);
@@ -110,10 +112,7 @@ const ChoiceInstructions = () => {
 
   useEffect(() => {
     const path = navigateFromStatus(status);
-    if (
-      status === StatusType.Survey &&
-      process.env.REACT_APP_FULLSCREEN === "enabled"
-    ) {
+    if (status === StatusType.Survey && experiment.fullScreen === "enabled") {
       document.body.requestFullscreen();
     }
     navigate(path);

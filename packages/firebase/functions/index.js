@@ -11,7 +11,11 @@ import { getFirestore, Timestamp } from "firebase-admin/firestore";
 import { logger } from "firebase-functions";
 import { onRequest } from "firebase-functions/v2/https";
 import { stateToDate } from "@the-discounters/util";
-import { ServerStatusType, StatusError } from "@the-discounters/types";
+import {
+  Experiment,
+  ServerStatusType,
+  StatusError,
+} from "@the-discounters/types";
 import {
   readParticipant,
   updateParticipant,
@@ -28,9 +32,7 @@ import pkgJSON from "./package.json" assert { type: "json" };
 initializeApp();
 const db = getFirestore();
 
-const CORS_URLS = process.env.CORS_URLS ? process.env.CORS_URLS.split(",") : [];
-
-logger.info(`CORS_URLS=${CORS_URLS}`);
+//const CORS_URLS = process.env.CORS_URLS ? process.env.CORS_URLS.split(",") : [];
 
 const parseKeyFromQuery = (request) => {
   const participantId = request.query.prolific_pid;
@@ -119,15 +121,16 @@ export const signup = onRequest(
           }
         }
       );
-      const sendbackData = { ...signupData, status: ServerStatusType.success };
+      signupData.status = ServerStatusType.success;
+      signupData.experiment = Experiment(exp);
       logger.info(
         `signup Senging back singup data ${JSON.stringify(
-          sendbackData
+          signupData
         )} for experimentId ${
           exp.experimentId
         }, participantId ${participantId}, server assigned sequence ${sequenceNumber}`
       );
-      response.status(200).json(sendbackData);
+      response.status(200).json(signupData);
     } catch (err) {
       logger.error(
         `signup ${err.message} participantId=${participantId}, studyId=${studyId}, sessionId=${sessionId}`

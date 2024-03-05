@@ -166,7 +166,7 @@ const DevHome = () => {
           <p>
             And for localhost with the particpant_id must be unique for the
             study_id
-            http://localhost:3000/start?participant_id=1&study_id=2&session_id=3
+            https://localhost:3000/start?participant_id=1&study_id=2&session_id=3
           </p>
           <p>
             Click a link below to launch one of the experiments. The

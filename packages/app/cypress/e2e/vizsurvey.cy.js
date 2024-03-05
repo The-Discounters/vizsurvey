@@ -1,7 +1,7 @@
 /* eslint-disable no-undef */
 /// <reference types="cypress" />
 
-let baseURL = "http://localhost:3000/start";
+let baseURL = "https://localhost:3000/start";
 
 let participantId = 1;
 let studyId = 1;

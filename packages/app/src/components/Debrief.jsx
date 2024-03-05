@@ -14,6 +14,7 @@ import { ViewType } from "@the-discounters/types";
 import {
   getStatus,
   getInstructionTreatment,
+  getExperiment,
   setFeedback,
   debriefShownTimestamp,
   debriefCompleted,
@@ -27,6 +28,7 @@ import { Context } from "../app/ReactContext.js";
 const Debrief = () => {
   const dispatch = useDispatch();
   const status = useSelector(getStatus);
+  const experiment = useSelector(getExperiment);
   const navigate = useNavigate();
   const instructionTreatment = useSelector(getInstructionTreatment);
   const [comment, setComment] = useState("");
@@ -121,19 +123,19 @@ const Debrief = () => {
               </Typography>
               {[
                 {
-                  name: `${process.env.REACT_APP_CONTACT_NAME}`,
-                  phone: `${process.env.REACT_APP_CONTACT_PHONE}`,
-                  email: `${process.env.REACT_APP_CONTACT_EMAIL}`,
+                  name: `${experiment.contactName}`,
+                  phone: `${experiment.contactPhone}`,
+                  email: `${experiment.contactEmail}`,
                 },
                 {
-                  name: `${process.env.REACT_APP_IRB_NAME}`,
-                  phone: `${process.env.REACT_APP_IRB_PHONE}`,
-                  email: `${process.env.REACT_APP_IRB_EMAIL}`,
+                  name: `${experiment.irbName}`,
+                  phone: `${experiment.irbPhone}`,
+                  email: `${experiment.irbEmail}`,
                 },
                 {
-                  name: `${process.env.REACT_APP_HPA_NAME}`,
-                  phone: `${process.env.REACT_APP_HPA_PHONE}`,
-                  email: `${process.env.REACT_APP_HPA_EMAIL}`,
+                  name: `${experiment.hpaName}`,
+                  phone: `${experiment.hpaPhone}`,
+                  email: `${experiment.hpaEmail}`,
                 },
               ].map(({ name, phone, email }, index) => {
                 return (
@@ -154,9 +156,9 @@ const Debrief = () => {
               })}
               <Typography paragraph variant="h6">
                 <b>
-                  Please remember to enter the code{" "}
-                  {process.env.REACT_APP_PROLIFIC_CODE} into Prolific so that
-                  you will be paid {process.env.REACT_APP_PAYMENT_AMOUT}.
+                  Please remember to enter the code {experiment.prolificCode}{" "}
+                  into Prolific so that you will be paid{" "}
+                  {experiment.paymentAmount}.
                 </b>
               </Typography>
             </Grid>

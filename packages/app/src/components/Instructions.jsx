@@ -1,6 +1,12 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Button, Grid, Typography, ThemeProvider, StyledEngineProvider } from "@mui/material";
+import {
+  Button,
+  Grid,
+  Typography,
+  ThemeProvider,
+  StyledEngineProvider,
+} from "@mui/material";
 import { useSelector, useDispatch } from "react-redux";
 import { DateTime } from "luxon";
 import "../App.css";
@@ -8,6 +14,7 @@ import {
   instructionsShown,
   instructionsCompleted,
   getStatus,
+  getExperiment,
 } from "../features/questionSlice.js";
 import { dateToState } from "@the-discounters/util";
 import { navigateFromStatus } from "./Navigate.js";
@@ -16,6 +23,7 @@ import { styles, theme } from "./ScreenHelper.js";
 const Instructions = () => {
   const dispatch = useDispatch();
   const status = useSelector(getStatus);
+  const experiment = useSelector(getExperiment);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -55,18 +63,19 @@ const Instructions = () => {
               all these questions in order to remain in the study.
             </Typography>
             <Typography paragraph>
-              Then, you will be presented with four short sets of questions about
-              your experience answering the survey, as well as about you in
-              general.
+              Then, you will be presented with four short sets of questions
+              about your experience answering the survey, as well as about you
+              in general.
             </Typography>
             <Typography paragraph>
               Finally, you will be presented with a more detailed explanation of
               the goals behind this research along with an opportunity to submit
-              feedback and a <b>code you must enter into Prolific to get paid.</b>
+              feedback and a{" "}
+              <b>code you must enter into Prolific to get paid.</b>
             </Typography>
             <Typography paragraph>
-              The entire survey will take about{" "}
-              {process.env.REACT_APP_TIME_IN_MIN_TO_COMPLETE} minutes to complete.
+              The entire survey will take about {experiment.timeToCompleteMin}{" "}
+              minutes to complete.
             </Typography>
             <Typography paragraph>
               <b>Click the Next button to start.</b>

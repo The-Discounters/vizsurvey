@@ -19,6 +19,7 @@ import {
   getCurrentDragAmount,
   getCurrentQuestionIndex,
   getStatus,
+  getExperiment,
   setQuestionShownTimestamp,
   nextQuestion,
   answer,
@@ -38,6 +39,7 @@ export function Survey() {
   const qi = useSelector(getCurrentQuestionIndex);
   const status = useSelector(getStatus);
   const choice = useSelector(getCurrentChoice);
+  const experiment = useSelector(getExperiment);
   const [disableSubmit, setDisableSubmit] = useState(true);
   const dragAmount = useSelector(getCurrentDragAmount);
 
@@ -116,7 +118,7 @@ export function Survey() {
     if (
       status !== StatusType.Survey &&
       status !== StatusType.Attention &&
-      process.env.REACT_APP_FULLSCREEN === "enabled" &&
+      experiment.fullScreen === "enabled" &&
       document.fullscreenElement
     ) {
       document.exitFullscreen();

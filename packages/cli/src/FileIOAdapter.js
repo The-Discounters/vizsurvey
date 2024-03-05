@@ -138,19 +138,22 @@ export const exportParticipantsToJSON = async (db, studyId, filename) => {
     db,
     studyId
   );
-  const fileData = JSON.stringify(
-    convertValues({
-      ...experiment,
-      participants: participants,
-    })
-  );
-  writeFile(filename, fileData);
+  const fileData = {
+    ...experiment,
+    participants: participants,
+  };
+  convertValues(fileData);
+  writeFile(filename, JSON.stringify(fileData));
 };
 
 export const exportAuditToJSON = async (db, studyId, filename) => {
   const { experiment, audit } = await readExperimentAndAudit(db, studyId);
-  const fileData = JSON.stringify(convertValues({ ...experiment, audit }));
-  writeFile(filename, fileData);
+  const fileData = {
+    ...experiment,
+    audit: audit,
+  };
+  convertValues(fileData);
+  writeFile(filename, JSON.stringify(fileData));
 };
 
 export const exportConfigToJSON = async (db, studyId) => {
@@ -166,12 +169,13 @@ export const exportExperimentParticipantsAndAuditToJSON = async (
 ) => {
   const { experiment, participants, audit } =
     await readExperimentParticipantsAndAudit(db, studyId);
-  const fileData = JSON.stringify({
+  const fileData = {
     ...experiment,
     participants: participants,
     audit: audit,
-  });
-  writeFile(filename, fileData);
+  };
+  convertValues(fileData);
+  writeFile(filename, JSON.stringify(fileData));
 };
 
 export const exportAuditToCSV = async (db, studyId, filename) => {
@@ -180,6 +184,7 @@ export const exportAuditToCSV = async (db, studyId, filename) => {
   const array = [];
   audit.forEach((cv) => {
     console.log(`...exporting audit ${cv.participantId}.`);
+    delete cv.experiment;
     const flattened = flattenState(cv);
     const underscore = convertKeysCamelCaseToUnderscore(flattened);
     array.push(underscore);
@@ -203,6 +208,7 @@ export const exportParticipantsToCSV = async (db, studyId, filename) => {
   const array = [];
   participants.forEach((cv) => {
     console.log(`...exporting participant ${cv.participantId}.`);
+    delete cv.experiment;
     const combined = {
       ...experiment,
       ...cv,
@@ -211,8 +217,16 @@ export const exportParticipantsToCSV = async (db, studyId, filename) => {
     const underscore = convertKeysCamelCaseToUnderscore(flattened);
     array.push(underscore);
   });
+  let columns = new Set();
+  array.forEach((cv) => {
+    Object.keys(cv).forEach((ck) => columns.add(ck));
+  });
+  columns = Array.from(columns);
   console.log("...converting participants to CSV.");
-  stringify(array, { header: true }, (err, output) => {
+  // const CSVData = convertToCSV(array);
+  // writeFile(filename, CSVData);
+  // console.log(`...data written to CSV file ${filename}`);
+  stringify(array, { header: true, columns: columns }, (err, output) => {
     if (err) throw err;
     fs.writeFile(filename, output, (err) => {
       if (err) throw err;

@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { DateTime } from "luxon";
 import {
   Grid,
@@ -7,7 +7,10 @@ import {
   ThemeProvider,
   StyledEngineProvider,
 } from "@mui/material";
-import { finishedShownTimestamp } from "../features/questionSlice.js";
+import {
+  finishedShownTimestamp,
+  getExperiment,
+} from "../features/questionSlice.js";
 import { dateToState } from "@the-discounters/util";
 import { theme } from "./ScreenHelper.js";
 import Spinner from "../components/Spinner.js";
@@ -15,6 +18,7 @@ import { Context } from "../app/ReactContext.js";
 
 const Finished = () => {
   const dispatch = useDispatch();
+  const experiment = useSelector(getExperiment);
   const processingRequests = React.useContext(Context);
 
   useEffect(() => {
@@ -48,8 +52,8 @@ const Finished = () => {
               <Typography paragraph>
                 Thank you for your feedback. You have completed the survey and
                 may close the browswer and please remember to enter the code{" "}
-                {process.env.REACT_APP_PROLIFIC_CODE} into Prolific so that you
-                will be paid {process.env.REACT_APP_PAYMENT_AMOUT}.
+                {experiment.prolificCode} into Prolific so that you will be paid{" "}
+                {experiment.paymentAmount}.
               </Typography>
             </Grid>
           </Grid>

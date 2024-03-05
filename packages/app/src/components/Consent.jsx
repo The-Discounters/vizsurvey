@@ -16,6 +16,7 @@ import {
   consentShown,
   consentCompleted,
   getStatus,
+  getExperiment,
 } from "../features/questionSlice.js";
 import { dateToState } from "@the-discounters/util";
 import { navigateFromStatus } from "./Navigate.js";
@@ -28,6 +29,7 @@ export function Consent() {
   const [disableSubmit, setDisableSubmit] = React.useState(true);
   const [checked, setChecked] = React.useState(false);
   const status = useSelector(getStatus);
+  const experiment = useSelector(getExperiment);
 
   const navigate = useNavigate();
 
@@ -52,27 +54,26 @@ export function Consent() {
       <React.Fragment>
         <Typography paragraph>
           <b>Investigator: </b>
-          {process.env.REACT_APP_RESEARCHER_NAMES}
+          {experiment.researcherNames}
         </Typography>
         <Typography paragraph>
-          <b>Contact Information: </b> {process.env.REACT_APP_CONTACT_NAME}{" "}
+          <b>Contact Information: </b> {experiment.contactName}{" "}
           <a
-            href={`mailto:${process.env.REACT_APP_CONTACT_EMAIL}?subject=%5b${process.env.REACT_APP_RESEARCH_TITLE}%20Survey%20Consent%5d`}
+            href={`mailto:${experiment.contactEmail}?subject=%5b${experiment.researchTitle}%20Survey%20Consent%5d`}
           >
-            {process.env.REACT_APP_CONTACT_EMAIL}
+            {experiment.contactEmail}
           </a>
         </Typography>
         <Typography paragraph>
           <b>Title of Research Study: </b>
-          {process.env.REACT_APP_RESEARCH_TITLE}
+          {experiment.researchTitle}
         </Typography>
         <Typography paragraph>
           <b>Sponsor: </b>
           <a
-            href={`mailto:${process.env.REACT_APP_SPONSOR_EMAIL}?subject=%5b${process.env.REACT_APP_RESEARCH_TITLE}%20Survey%20Consent%5d`}
+            href={`mailto:${experiment.sponsorEmail}?subject=%5b${experiment.researchTitle}%20Survey%20Consent%5d`}
           >
-            {process.env.REACT_APP_SPONSOR_NAME} (
-            {process.env.REACT_APP_SPONSOR_EMAIL})
+            {experiment.sponsorName} ({experiment.sponsorEmail})
           </a>
         </Typography>
         <Typography paragraph>
@@ -94,8 +95,8 @@ export function Consent() {
           <b>You will choose</b> either the earlier or later amount. Then you
           will be presented with additional questions about your experience
           taking the survey as well as questions about yourself. The study
-          should take about {process.env.REACT_APP_TIME_IN_MIN_TO_COMPLETE}{" "}
-          minutes to complete.&nbsp;
+          should take about {experiment.timeToCompleteMin} minutes to
+          complete.&nbsp;
           <b>
             This survey is not designed to render on a mobile device and should
             be taken on a laptop or desktop computer with a reliable Internet
@@ -134,17 +135,16 @@ export function Consent() {
           <b>Cost/Payment:</b>
           <b>
             <i>
-              You will be compensated {process.env.REACT_APP_PAYMENT_AMOUT}{" "}
-              (United States Dollars) for your participation in this survey if
-              you complete the survey in its entirety and enter the code
-              presented at the end into Prolific. If you choose to end the
-              survey before completion, you will not be paid. All dollar amounts
-              in the survey questions are hypothetical and you will not be
-              compensated the survey question amounts. You will be compensated{" "}
-              {process.env.REACT_APP_PAYMENT_AMOUT} upon completion and
-              submission of all questions, entering the code presented into
-              Prolific, and acknowledgement of your completion by the
-              researchers.
+              You will be compensated {experiment.paymentAmount} (United States
+              Dollars) for your participation in this survey if you complete the
+              survey in its entirety and enter the code presented at the end
+              into Prolific. If you choose to end the survey before completion,
+              you will not be paid. All dollar amounts in the survey questions
+              are hypothetical and you will not be compensated the survey
+              question amounts. You will be compensated{" "}
+              {experiment.paymentAmount} upon completion and submission of all
+              questions, entering the code presented into Prolific, and
+              acknowledgement of your completion by the researchers.
             </i>
           </b>
         </Typography>
@@ -157,19 +157,19 @@ export function Consent() {
         </Typography>
         {[
           {
-            name: `${process.env.REACT_APP_CONTACT_NAME}`,
-            phone: `${process.env.REACT_APP_CONTACT_PHONE}`,
-            email: `${process.env.REACT_APP_CONTACT_EMAIL}`,
+            name: `${experiment.contactName}`,
+            phone: `${experiment.contactPhone}`,
+            email: `${experiment.contactEmail}`,
           },
           {
-            name: `${process.env.REACT_APP_IRB_NAME}`,
-            phone: `${process.env.REACT_APP_IRB_PHONE}`,
-            email: `${process.env.REACT_APP_IRB_EMAIL}`,
+            name: `${experiment.irbName}`,
+            phone: `${experiment.irbPhone}`,
+            email: `${experiment.irbEmail}`,
           },
           {
-            name: `${process.env.REACT_APP_HPA_NAME}`,
-            phone: `${process.env.REACT_APP_HPA_PHONE}`,
-            email: `${process.env.REACT_APP_HPA_EMAIL}`,
+            name: `${experiment.hpaName}`,
+            phone: `${experiment.hpaPhone}`,
+            email: `${experiment.hpaEmail}`,
           },
         ].map(({ name, phone, email }, index) => {
           return (
@@ -181,7 +181,7 @@ export function Consent() {
                 <br />
                 Email:
                 <a
-                  href={`mailto:${email}?subject=%5b${process.env.REACT_APP_RESEARCH_TITLE}%20Survey%20Consent%5d`}
+                  href={`mailto:${email}?subject=%5b${experiment.researchTitle}%20Survey%20Consent%5d`}
                 >
                   {email}
                 </a>
@@ -196,10 +196,10 @@ export function Consent() {
           any loss of benefits to which you may otherwise be entitled. You may
           decide to stop participating in the research at any time without
           penalty or loss of other benefits; however, you will not receive the
-          compensation of {process.env.REACT_APP_PAYMENT_AMOUT} unless you
-          complete the survey in its entirety. The project investigators retain
-          the right to cancel or postpone the experimental procedures at any
-          time they see fit.
+          compensation of {experiment.paymentAmount} unless you complete the
+          survey in its entirety. The project investigators retain the right to
+          cancel or postpone the experimental procedures at any time they see
+          fit.
         </Typography>
       </React.Fragment>
     );
@@ -273,11 +273,11 @@ export function Consent() {
                 }
               />
               <Typography paragraph>
-                <b>By selecting the checkbox and clicking &ldquo;Next&ldquo;</b>,
-                you acknowledge that you have been informed about and consent to
-                be a participant in the study described above. Make sure that your
-                questions are answered to your satisfaction before signing. You
-                are entitled to retain a copy of this consent agreement.
+                <b>By selecting the checkbox and clicking &ldquo;Next&ldquo;</b>
+                , you acknowledge that you have been informed about and consent
+                to be a participant in the study described above. Make sure that
+                your questions are answered to your satisfaction before signing.
+                You are entitled to retain a copy of this consent agreement.
               </Typography>
               <Typography paragraph>
                 I also confirm that I am on a reliable internet connection for

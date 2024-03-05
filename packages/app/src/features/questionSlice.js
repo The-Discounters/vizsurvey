@@ -30,6 +30,7 @@ export const initializeSurvey = createAsyncThunk(
       );
       result.questions = data.survey;
       result.instruction = data.instruction;
+      result.experiment = data.experiment;
       return result;
     } catch (err) {
       return thunkAPI.rejectWithValue({
@@ -88,6 +89,8 @@ const initialState = {
   attentionCheck: [],
   feedback: "",
   instructionTreatment: [],
+  questions: [],
+  experiment: null,
   currentAnswerIdx: 0,
   status: StatusType.Unitialized,
   error: null,
@@ -290,6 +293,7 @@ export const questionSlice = createSlice({
         state.serverSequenceId = action.payload.serverSequenceId;
         state.questions = action.payload.questions;
         state.instructionTreatment = action.payload.instruction;
+        state.experiment = action.payload.experiment;
 
         state.status = qe.nextState(state);
       })
@@ -364,6 +368,8 @@ export const getStatus = (state) => state.questions.status;
 export const getStudyId = (state) => state.questions.studyId;
 
 export const getConsentChecked = (state) => state.questions.consentChecked;
+
+export const getExperiment = (state) => state.questions.experiment;
 
 // Action creators are generated for each case reducer function
 export const {
