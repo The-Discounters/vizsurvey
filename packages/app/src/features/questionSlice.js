@@ -72,9 +72,6 @@ const initialState = {
     instructionsShownTimestamp: null,
     instructionsCompletedTimestamp: null,
     instructionsTimeSec: null,
-    attentionCheckShownTimestamp: [],
-    attentionCheckCompletedTimestamp: [],
-    attentionCheckTimeSec: [],
     experienceSurveyQuestionsShownTimestamp: null,
     experienceSurveyQuestionsCompletedTimestamp: null,
     experienceSurveyTimeSec: null,
@@ -86,7 +83,6 @@ const initialState = {
     debriefTimeSec: null,
     finishedShownTimestamp: null,
   },
-  attentionCheck: [],
   feedback: "",
   instructionTreatment: [],
   questions: [],
@@ -136,24 +132,6 @@ export const questionSlice = createSlice({
     },
     setFinancialLitSurveyQuestion(state, action) {
       state.financialLitSurvey[action.payload.key] = action.payload.value;
-    },
-    setAttentionCheck(state, action) {
-      state.attentionCheck.push({
-        treatmentId: qe.currentAnswer(state).treatmentId,
-        value: action.payload.value,
-      });
-      state.timestamps.attentionCheckCompletedTimestamp.push({
-        treatmentId: qe.currentAnswer(state).treatmentId,
-        value: action.payload.timestamp,
-      });
-      const shownTimestamp = state.timestamps.attentionCheckShownTimestamp.find(
-        (cv) => cv.treatmentId === qe.currentAnswer(state).treatmentId
-      ).timestamp;
-      state.timestamps.attentionCheckTimeSec.push({
-        treatmentId: qe.currentAnswer(state).treatmentId,
-        value: secondsBetween(shownTimestamp, action.payload.timestamp),
-      });
-      state.status = qe.nextState(state);
     },
     consentShown(state, action) {
       state.timestamps.consentShownTimestamp = action.payload;
@@ -219,12 +197,6 @@ export const questionSlice = createSlice({
     setQuestionShownTimestamp(state, action) {
       qe.setCurrentAnswerShown(state, action.payload);
       return state;
-    },
-    attentionCheckShown(state, action) {
-      state.timestamps.attentionCheckShownTimestamp.push({
-        treatmentId: qe.currentAnswer(state).treatmentId,
-        value: action.payload,
-      });
     },
     answer(state, action) {
       qe.answerCurrentQuestion(state, action.payload);
@@ -344,8 +316,6 @@ export const getExperienceSurveyAnswers = (state) => {
   return state.questions.experienceSurvey;
 };
 
-export const getAttentionCheck = (state) => state.questions.attentionCheck;
-
 export const getCurrentQuestionIndex = (state) =>
   state.questions.currentAnswerIdx;
 
@@ -394,13 +364,11 @@ export const {
   initFinancialLitSurveyQuestion,
   setFinancialLitSurveyQuestion,
   setSurveyQuestion,
-  setAttentionCheck,
   instructionsShown,
   setFeedback,
   instructionsCompleted,
   MCLInstructionsShown,
   MCLInstructionsCompleted,
-  attentionCheckShown,
   experienceSurveyQuestionsShown,
   experienceSurveyQuestionsCompleted,
   financialLitSurveyQuestionsShown,

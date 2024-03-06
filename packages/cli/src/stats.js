@@ -19,8 +19,6 @@ export const createStat = (numTreatments) => {
     instructionsComplete: new Array(numberTreatments).fill(0),
     choicesInProgress: new Array(numberTreatments).fill(0),
     choicesComplete: new Array(numberTreatments).fill(0),
-    attentionCheckCompleted: new Array(numberTreatments).fill(0),
-    attentionCheckInProgress: new Array(numberTreatments).fill(0),
     experienceInProgress: new Array(numberTreatments).fill(0),
     experienceComplete: new Array(numberTreatments).fill(0),
     financialInProgress: new Array(numberTreatments).fill(0),
@@ -62,11 +60,6 @@ export const updateStats = (CSVData) => {
     stats.instructionsComplete[index]++;
   } else if (CSVData.instructions_shown_timestamp) {
     stats.instructionsInProgress[index]++;
-  }
-  if (CSVData.attention_check_completed_timestamp) {
-    stats.attentionCheckCompleted[index]++;
-  } else if (CSVData.attention_check_shown_timestamp) {
-    stats.attentionCheckInProgress[index]++;
   }
   if (CSVData.choice_timestamp_8) {
     stats.choicesComplete[index]++;
@@ -144,8 +137,6 @@ export const clearStats = () => {
   stats.instructionsComplete.fill(0);
   stats.choicesInProgress.fill(0);
   stats.choicesComplete.fill(0);
-  stats.attentionCheckCompleted.fill(0);
-  stats.attentionCheckInProgress.fill(0);
   stats.experienceInProgress.fill(0);
   stats.experienceComplete.fill(0);
   stats.financialInProgress.fill(0);

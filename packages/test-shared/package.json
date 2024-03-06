@@ -10,6 +10,7 @@
     "build": "echo 'Build script currently does nothing in @the-discounters/firebase-shared module.'"
   },
   "devDependencies": {
+    "@the-discounters/util": "workspace:^",
     "eslint": "^8.15.0",
     "eslint-config-google": "^0.14.0"
   }

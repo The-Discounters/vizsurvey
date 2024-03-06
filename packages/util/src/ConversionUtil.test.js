@@ -3,6 +3,7 @@ import {
   stateToDate,
   stringToDate,
   ISODateStringWithNanoSec,
+  dateFromISOStringWithNanoSec,
 } from "./ConversionUtil";
 import { DateTime } from "luxon";
 
@@ -64,5 +65,13 @@ describe("ConversionUtil test.", () => {
     const dateValue = DateTime.fromISO(stringValue);
     const result = ISODateStringWithNanoSec(dateValue.toJSDate(), 100000000);
     expect(result).toBe("1974-11-08T00:00:00.100000000-05:00");
+  });
+
+  test("Test dateFromISOStringWithNanoSec.", async () => {
+    const stringValue = "1974-11-08T00:00:00.1999999999-05:00";
+    const dateValue = DateTime.fromISO("1974-11-08T00:00:00.199-05:00");
+    const result = dateFromISOStringWithNanoSec(stringValue);
+    expect(result.date.toString()).toBe(dateValue.toString());
+    expect(result.nanosec).toBe(1999999999);
   });
 });

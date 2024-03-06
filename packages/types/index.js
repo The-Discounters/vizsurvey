@@ -31,6 +31,7 @@ import {
   injectSurveyQuestionFields,
   flattenArrayToObject,
   removeUndefinedOrNullProperties,
+  convertFields,
 } from "./src/ObjectUtil.js";
 import { StatusType, nextStatus } from "./src/StatusType.js";
 
@@ -67,4 +68,5 @@ export {
   StatusError,
   StatusType,
   nextStatus,
+  convertFields,
 };

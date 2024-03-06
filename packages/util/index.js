@@ -4,6 +4,7 @@ import {
   stringToDate,
   secondsBetween,
   ISODateStringWithNanoSec,
+  dateFromISOStringWithNanoSec,
 } from "./src/ConversionUtil.js";
 import { parseCSV, parseJSON, convertToCSV } from "./src/parserUtil.js";
 import { getRandomIntInclusive } from "./src/randomUtil.js";
@@ -17,4 +18,5 @@ export {
   convertToCSV,
   getRandomIntInclusive,
   ISODateStringWithNanoSec,
+  dateFromISOStringWithNanoSec,
 };

@@ -16,8 +16,6 @@ export const navigateFromStatus = (status) => {
       return "/instruction";
     case StatusType.Survey:
       return "/survey";
-    case StatusType.Attention:
-      return "/attentioncheck";
     case StatusType.ExperienceQuestionaire:
       return "/experiencequestionaire";
     case StatusType.FinancialQuestionaire:

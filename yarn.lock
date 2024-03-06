@@ -6983,6 +6983,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@the-discounters/test-shared@workspace:packages/test-shared"
   dependencies:
+    "@the-discounters/util": "workspace:^"
     eslint: "npm:^8.15.0"
     eslint-config-google: "npm:^0.14.0"
   languageName: unknown

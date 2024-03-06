@@ -86,8 +86,6 @@ function postsurvey(expects) {
                 demographicCompletedTimestamp: 4000,
                 instructionsShownTimestamp: 4000,
                 instructionsCompletedTimestamp: 5000,
-                attentionCheckShownTimestamp: 5000,
-                attentionCheckCompletedTimestamp: 6000,
                 financialLitSurveyQuestionsShownTimestamp: 6000,
                 debriefShownTimestamp: null, // TODO
                 debriefCompletedTimestamp: null, // TODO

@@ -53,3 +53,20 @@ export const injectSurveyQuestionFields = (questions) => {
 export const removeUndefinedOrNullProperties = (obj) => {
   return _.omitBy(obj, (value) => value === null || value === undefined);
 };
+
+export const convertFields = (obj, convertFunc) => {
+  return _.mapValues(obj, (value, key) => {
+    if (Array.isArray(value)) {
+      return value.map((cv) => convertFields(cv, convertFunc));
+    } else if (value !== null && typeof value === "object") {
+      const { converted, result } = convertFunc(key, value);
+      if (converted) {
+        return result;
+      } else {
+        return convertFields(value, convertFunc);
+      }
+    } else {
+      return convertFunc(key, value).result;
+    }
+  });
+};
