@@ -1,4 +1,4 @@
-import { AmountType } from "./src/AmountType.js";
+import { AmountType, isAmountChoice } from "./src/AmountType.js";
 import { ExperimentType } from "./src/ExperimentType.js";
 import { InteractionType } from "./src/InteractionType.js";
 import { ViewType } from "./src/ViewType.js";
@@ -37,6 +37,7 @@ import { StatusType, nextStatus } from "./src/StatusType.js";
 
 export {
   AmountType,
+  isAmountChoice,
   ExperimentType,
   InteractionType,
   ViewType,

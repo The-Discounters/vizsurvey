@@ -115,6 +115,22 @@ export const assignParticipantSequenceNumberXaction = async (db, studyId) => {
   return result;
 };
 
+// TODO not clear that we need this.
+// export const incParticipantCompletedXaction = async (db, studyId) => {
+//   const result = await db.runTransaction(async (transaction) => {
+//     const expDoc = await readExperimentDocXaction(db, transaction, studyId);
+//     validateExperiment(expDoc.data());
+//     const newCount = expDoc.data().numParticipantsCompleted + 1;
+//     const updateObj = { numParticipantsCompleted: newCount };
+//     await transaction.update(expDoc.ref, updateObj);
+//     return {
+//       experimentId: expDoc.data().experimentId,
+//       numParticipantsCompleted: newCount,
+//     };
+//   });
+//   return result;
+// };
+
 export const signupParticipant = async (
   db,
   participantId,

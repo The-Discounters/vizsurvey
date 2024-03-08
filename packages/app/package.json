@@ -23,7 +23,7 @@
     "formik": "^2.2.9",
     "immer": "^8.0.1",
     "lodash": "^4.17.21",
-    "luxon": "^2.1.1",
+    "luxon": "^3.4.4",
     "react": "^18.2.0",
     "react-bootstrap": "^1.6.1",
     "react-dom": "^18.2.0",

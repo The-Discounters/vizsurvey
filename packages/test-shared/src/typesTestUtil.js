@@ -7,8 +7,6 @@ import {
   WindowAttributes,
 } from "@the-discounters/types";
 
-import { dateFromISOStringWithNanoSec } from "@the-discounters/util";
-
 export const mockWindowAttributes = () => {
   return WindowAttributes({
     devicePixelRatio: 1,
@@ -96,21 +94,4 @@ export const create2ndQuestionNoTitrate = (treatmentId, sequenceId) => {
     heightIn: 6.5,
     comment: "No titration test case second treatment.",
   });
-};
-
-export const convertStateFieldsToObject = (key, value) => {
-  switch (key) {
-    case "serverTimestamp":
-      return {
-        converted: true,
-        result: dateFromISOStringWithNanoSec(value.toDate(), value.nanoseconds),
-      };
-    case "browserTimestamp":
-      return {
-        converted: true,
-        result: dateFromISOStringWithNanoSec(value.toDate(), value.nanoseconds),
-      };
-    default:
-      return { converted: false, result: value };
-  }
 };

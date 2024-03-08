@@ -12,6 +12,7 @@ import { logger } from "firebase-functions";
 import { onRequest } from "firebase-functions/v2/https";
 import { stateToDate } from "@the-discounters/util";
 import {
+  StatusType,
   Experiment,
   ServerStatusType,
   StatusError,
@@ -26,6 +27,7 @@ import {
   signupParticipant,
   validateExperiment,
   assignParticipantSequenceNumberXaction,
+  //incParticipantCompletedXaction,
 } from "./functionsUtil.js";
 import pkgJSON from "./package.json" assert { type: "json" };
 
@@ -178,17 +180,17 @@ export const updateState = onRequest(
         ? Timestamp.fromDate(stateToDate(state.browserTimestamp).toJSDate())
         : state.browserTimestamp;
 
-      const lastParticipantEntry = await readParticipant(
+      const currentParticipant = await readParticipant(
         db,
         exp.path,
         participantId
       );
       if (
-        !lastParticipantEntry.requestSequence ||
-        state.requestSequence > lastParticipantEntry.requestSequence
+        !currentParticipant.requestSequence ||
+        state.requestSequence > currentParticipant.requestSequence
       ) {
         logger.info(
-          `updateState current requestSequence ${state.requestSequence} is greater than last request sequence ${lastParticipantEntry.requestSequence} so updating participant entry foer participantId=${participantId}, study_id=${studyId}, session_id=${sessionId}}`
+          `updateState current requestSequence ${state.requestSequence} is greater than last request sequence ${currentParticipant.requestSequence} so updating participant entry foer participantId=${participantId}, study_id=${studyId}, session_id=${sessionId}}`
         );
         const writeTime = await updateParticipant(
           db,
@@ -206,9 +208,17 @@ export const updateState = onRequest(
         logger.info(
           `updateState succesfull requestSequence=${requestSequence}, participantId=${participantId}, study_id=${studyId}, session_id=${sessionId} update time ${writeTime.toDate()}`
         );
+        // TODO not clear that we need this.  I can count the number of completed participant entries.
+        // if (currentParticipant.status === StatusType.Debrief) {
+        //   const numCompletedBefore = exp.numCompleted;
+        //   const numCompleted = incParticipantCompletedXaction(db, studyId);
+        //   logger.info(
+        //     `updateState numParticipantsCompleted incremented from ${numCompletedBefore} to ${numCompleted} for study_id=${studyId}} on participantId=${participantId}`
+        //   );
+        // }
       } else {
         logger.info(
-          `updateState current requestSequence ${state.requestSequence} is NOT greater than or is equal to last request sequence ${lastParticipantEntry.requestSequence} so NOT updating participant entry foer participantId=${participantId}, study_id=${studyId}, session_id=${sessionId}}`
+          `updateState current requestSequence ${state.requestSequence} is NOT greater than or is equal to last request sequence ${currentParticipant.requestSequence} so NOT updating participant entry for participantId=${participantId}, study_id=${studyId}, session_id=${sessionId}}`
         );
       }
       await createAuditLogEntry(

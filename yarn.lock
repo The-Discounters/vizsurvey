@@ -6937,6 +6937,7 @@ __metadata:
     firebase: "npm:^10.7.2"
     firebase-admin: "npm:^12.0.0"
     jest: "npm:^29.7.0"
+    luxon: "npm:^3.4.4"
     mocha: "npm:^10.2.0"
   languageName: unknown
   linkType: soft
@@ -6979,7 +6980,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@the-discounters/test-shared@npm:*, @the-discounters/test-shared@workspace:packages/test-shared":
+"@the-discounters/test-shared@npm:*, @the-discounters/test-shared@workspace:^, @the-discounters/test-shared@workspace:packages/test-shared":
   version: 0.0.0-use.local
   resolution: "@the-discounters/test-shared@workspace:packages/test-shared"
   dependencies:
@@ -7058,7 +7059,7 @@ __metadata:
     jest-watch-typeahead: "npm:^2.2.2"
     lerna: "npm:^7.4.2"
     lodash: "npm:^4.17.21"
-    luxon: "npm:^2.1.1"
+    luxon: "npm:^3.4.4"
     nock: "npm:^13.4.0"
     node-fetch: "npm:^3.3.2"
     nuxt3: "npm:latest"
@@ -11024,6 +11025,7 @@ __metadata:
     "@babel/plugin-syntax-import-assertions": "npm:^7.20.0"
     "@babel/preset-env": "npm:^7.20.2"
     "@the-discounters/firebase-shared": "npm:*"
+    "@the-discounters/test-shared": "workspace:^"
     "@the-discounters/types": "npm:*"
     "@the-discounters/util": "npm:*"
     "@types/csvtojson": "npm:^2.0.0"
@@ -11045,7 +11047,7 @@ __metadata:
     is-valid-path: "npm:^0.1.1"
     jest: "npm:^29.7.0"
     lodash: "npm:^4.17.21"
-    luxon: "npm:^3.3.0"
+    luxon: "npm:^3.4.4"
     to-csv: "npm:^0.1.1"
   bin:
     dsc: ./src/index.js
@@ -20915,14 +20917,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"luxon@npm:^2.1.1":
-  version: 2.5.2
-  resolution: "luxon@npm:2.5.2"
-  checksum: c93b71c4ae74c440982f39832159b9311eca6db1e55d032d30a3f9354e6ceb16d576158c5dc9f847eb15c481557063bd61defdb96ee0953f8df2c57cd91e0b13
-  languageName: node
-  linkType: hard
-
-"luxon@npm:^3.2.0, luxon@npm:^3.3.0, luxon@npm:^3.4.4":
+"luxon@npm:^3.4.4":
   version: 3.4.4
   resolution: "luxon@npm:3.4.4"
   checksum: 02e26a0b039c11fd5b75e1d734c8f0332c95510f6a514a9a0991023e43fb233884da02d7f966823ffb230632a733fc86d4a4b1e63c3fbe00058b8ee0f8c728af
@@ -28924,7 +28919,7 @@ __metadata:
     chalk: "npm:^4.1.2"
     cors: "npm:^2.8.5"
     express: "npm:^4.18.2"
-    luxon: "npm:^3.2.0"
+    luxon: "npm:^3.4.4"
   languageName: unknown
   linkType: soft
 

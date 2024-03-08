@@ -37,7 +37,7 @@ const readCollection = async (db, path) => {
   const result = [];
   const col = await db.collection(path).get();
   col.forEach((doc) => {
-    result.push(doc.data());
+    result.push({ path: doc.ref.path, ...doc.data() });
   });
   return result;
 };

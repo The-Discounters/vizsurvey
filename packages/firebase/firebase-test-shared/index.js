@@ -1,3 +1,3 @@
-import { deleteCollection } from "./src/firestoreTestUtil.js";
+import { deleteCollection, typeStateFields } from "./src/firestoreTestUtil.js";
 
-export { deleteCollection };
+export { deleteCollection, typeStateFields };

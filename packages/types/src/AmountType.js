@@ -5,3 +5,9 @@ export const AmountType = {
 };
 
 Object.freeze(AmountType);
+
+export const isAmountChoice = (choice) => {
+  return (
+    choice === AmountType.laterAmount || choice === AmountType.earlierAmount
+  );
+};
