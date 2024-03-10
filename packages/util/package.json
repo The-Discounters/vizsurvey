@@ -14,7 +14,7 @@
     "test:watch": "npm run test -- --watch"
   },
   "devDependencies": {
-    "eslint": "^8.15.0",
+    "eslint": "^8.57.0",
     "jest": "^29.7.0"
   },
   "private": true

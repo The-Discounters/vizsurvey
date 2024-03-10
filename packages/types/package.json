@@ -12,12 +12,12 @@
     "lodash": "^4.17.21"
   },
   "devDependencies": {
-    "@babel/core": "^7.23.6",
+    "@babel/core": "^7.24.0",
     "@babel/plugin-syntax-import-assertions": "^7.23.3",
     "@babel/plugin-syntax-import-attributes": "^7.23.3",
     "@babel/preset-env": "^7.23.6",
     "@the-discounters/test-shared": "*",
-    "eslint": "^8.15.0"
+    "eslint": "^8.57.0"
   },
   "private": true
 }
