@@ -9,7 +9,14 @@ describe("Validator tests", () => {
     TEST_BETWEEN_ALL_JSON,
     typeStateFields
   );
-  const result = validateExperimentData(typedBetweenAllJson);
-  console.log(result);
+  const participants = typedBetweenAllJson.participants;
+  const audit = typedBetweenAllJson.audit;
+  delete typedBetweenAllJson.participants;
+  delete typedBetweenAllJson.audit;
+  const result = validateExperimentData(
+    typedBetweenAllJson,
+    participants,
+    audit
+  );
   expect(result.length).toBe(1);
 });

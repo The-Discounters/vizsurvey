@@ -1,14 +1,8 @@
 import clui from "clui";
 import clc from "cli-color";
-import { stateToDate } from "@the-discounters/util";
+import { StatusType } from "@the-discounters/types";
 
-export const drawStatus = (
-  surveysTotal,
-  stats,
-  monitorRunning,
-  inProgressMax,
-  numTreatments
-) => {
+export const drawStatus = (stats) => {
   var outputBuffer = new clui.LineBuffer({
     x: 0,
     y: 0,
@@ -16,52 +10,7 @@ export const drawStatus = (
     height: "console",
   });
 
-  let firstColWidth = Math.floor((outputBuffer.width() - 35) / 2);
-  var title = new clui.Line(outputBuffer)
-    .column("", firstColWidth, [clc.yellow])
-    .column(
-      "Totals (count / total participants)",
-      outputBuffer.width() - firstColWidth,
-      [clc.yellow]
-    )
-    .fill()
-    .store();
-  var line;
-  line = new clui.Line(outputBuffer).column(`Surveys Completed`, 20, [
-    clc.green,
-  ]);
-  for (let i = 1; i <= numTreatments; i++) {
-    line.column(
-      clui.Gauge(
-        stats.surveysComplete[i - 1],
-        surveysTotal,
-        15,
-        surveysTotal,
-        `${stats.surveysComplete[i - 1]} / ${surveysTotal}`
-      ),
-      30
-    );
-  }
-  line.fill().store();
-
-  line = new clui.Line(outputBuffer).column(`Surveys In Progress`, 20, [
-    clc.green,
-  ]);
-  for (let i = 1; i <= numTreatments; i++) {
-    line.column(
-      clui.Gauge(
-        stats.surveysInProgress[i - 1],
-        surveysTotal,
-        15,
-        surveysTotal,
-        stats.surveysInProgress[i - 1]
-      ),
-      30
-    );
-  }
-  line.fill().store();
-
-  firstColWidth = Math.floor((outputBuffer.width() - 49) / 2);
+  let firstColWidth = Math.floor((outputBuffer.width() - 49) / 2); // centers the text
   title = new clui.Line(outputBuffer)
     .column("", firstColWidth, [clc.yellow])
     .column(
@@ -72,17 +21,19 @@ export const drawStatus = (
     .fill()
     .store();
 
-  line = new clui.Line(outputBuffer)
+  // note gauge width parameter doesn't include the suffix text which would be 9 characters if format is ### / ### (assumes we don't run more than 1,000 people)
+  var line = new clui.Line(outputBuffer)
     .column("USA", 20, [clc.green])
     .column(
       clui.Gauge(
-        stats.countryUSA,
-        surveysTotal,
-        15,
-        surveysTotal,
-        `${stats.countryUSA} / ${surveysTotal}`
+        stats.countryUSACount,
+        stats.totalParticipants,
+        outputBuffer.width() - 20 - 9,
+        stats.totalParticipants,
+        `${stats.countryUSACount} / ${stats.totalParticipants}`
       ),
-      30
+      //outputBuffer.width() - 20
+      outputBuffer.width() - 20
     )
     .fill()
     .store();
@@ -91,219 +42,85 @@ export const drawStatus = (
     .column("Non USA", 20, [clc.green])
     .column(
       clui.Gauge(
-        stats.countryOther,
-        surveysTotal,
-        15,
+        stats.countryOtherCount,
+        stats.totalParticipants,
+        outputBuffer.width() - 20 - 9,
         1,
-        `${stats.countryOther} / ${surveysTotal}`
+        `${stats.countryOtherCount} / ${stats.totalParticipants}`
       ),
-      30
+      outputBuffer.width() - 20
     )
     .fill()
     .store();
 
-  firstColWidth = Math.floor((outputBuffer.width() - 54) / 2);
+  firstColWidth = Math.floor((outputBuffer.width() - 46) / 2);
   title = new clui.Line(outputBuffer)
     .column("", firstColWidth, [clc.yellow])
     .column(
-      "Breakdown By Later Choice (count / total participants)",
-      outputBuffer.width() - firstColWidth,
-      [clc.yellow]
-    )
-    .fill()
-    .store();
-  line = new clui.Line(outputBuffer).column(`Later Choice`, 20, [clc.green]);
-  for (let i = 1; i <= numTreatments; i++) {
-    line.column(
-      clui.Gauge(
-        stats.laterChoice[[i - 1]],
-        surveysTotal,
-        15,
-        surveysTotal,
-        `${stats.laterChoice[i - 1]} / ${surveysTotal}`
-      ),
-      30
-    );
-  }
-  line.fill().store();
-
-  firstColWidth = Math.floor((outputBuffer.width() - 45) / 2);
-  title = new clui.Line(outputBuffer)
-    .column("", firstColWidth, [clc.yellow])
-    .column(
-      "Breakdown By Step (count / bar max)",
+      "Breakdown By Step (count / total participants)",
       outputBuffer.width() - firstColWidth,
       [clc.yellow]
     )
     .fill()
     .store();
 
-  line = new clui.Line(outputBuffer).column(`Consent`, 20, [clc.green]);
-  for (let i = 1; i <= numTreatments; i++) {
-    line.column(
-      clui.Gauge(
-        stats.consentInProgress[[i - 1]],
-        inProgressMax,
-        15,
-        inProgressMax,
-        `${stats.consentInProgress[i - 1]} / ${inProgressMax}`
-      ),
-      30
-    );
-  }
-  line.fill().store();
-
-  line = new clui.Line(outputBuffer).column(`General Instructions `, 20, [
-    clc.green,
-  ]);
-  for (let i = 1; i <= numTreatments; i++) {
-    line.column(
-      clui.Gauge(
-        stats.instructionsInProgress[i - 1],
-        inProgressMax,
-        15,
-        inProgressMax,
-        `${stats.instructionsInProgress[i - 1]} / ${inProgressMax}`
-      ),
-      30
-    );
-  }
-  line.fill().store();
-
-  line = new clui.Line(outputBuffer).column(`MCL Instructions`, 20, [
-    clc.green,
-  ]);
-  for (let i = 1; i <= numTreatments; i++) {
-    line.column(
-      clui.Gauge(
-        stats.introductionInProgress[i - 1],
-        inProgressMax,
-        15,
-        inProgressMax,
-        `${stats.introductionInProgress[i - 1]} / ${inProgressMax}`
-      ),
-      30
-    );
-  }
-  line.fill().store();
-
-  line = new clui.Line(outputBuffer).column(`Survey`, 20, [clc.green]);
-  for (let i = 1; i <= numTreatments; i++) {
-    line.column(
-      clui.Gauge(
-        stats.choicesInProgress[i - 1],
-        inProgressMax,
-        15,
-        inProgressMax,
-        `${stats.choicesInProgress[i - 1]} / ${inProgressMax}`
-      ),
-      30
-    );
-  }
-  line.fill().store();
-
-  line = new clui.Line(outputBuffer).column(`Experience Survey`, 20, [
-    clc.green,
-  ]);
-
-  for (let i = 1; i <= numTreatments; i++) {
-    line.column(
-      clui.Gauge(
-        stats.experienceInProgress[i - 1],
-        inProgressMax,
-        15,
-        inProgressMax,
-        `${stats.experienceInProgress[i - 1]} / ${inProgressMax}`
-      ),
-      30
-    );
-  }
-  line.fill().store();
-
-  line = new clui.Line(outputBuffer).column(`Financial Survey`, 20, [
-    clc.green,
-  ]);
-  for (let i = 1; i <= numTreatments; i++) {
-    line.column(
-      clui.Gauge(
-        stats.financialInProgress[i - 1],
-        inProgressMax,
-        15,
-        inProgressMax,
-        `${stats.financialInProgress[i - 1]} / ${inProgressMax}`
-      ),
-      30
-    );
-  }
-  line.fill().store();
-
-  line = new clui.Line(outputBuffer).column(`Purpose Survey`, 20, [clc.green]);
-  for (let i = 1; i <= numTreatments; i++) {
-    line.column(
-      clui.Gauge(
-        stats.purposeInProgress[i - 1],
-        inProgressMax,
-        15,
-        inProgressMax,
-        `${stats.purposeInProgress[i - 1]} / ${inProgressMax}`
-      ),
-      30
-    );
-  }
-  line.fill().store();
-
-  line = new clui.Line(outputBuffer).column(`Demographic`, 20, [clc.green]);
-  for (let i = 1; i <= numTreatments; i++) {
-    line.column(
-      clui.Gauge(
-        stats.demographicsInProgress[i - 1],
-        inProgressMax,
-        15,
-        inProgressMax,
-        `${stats.demographicsInProgress[i - 1]} / ${inProgressMax}`
-      ),
-      30
-    );
-  }
-  line.fill().store();
-
-  line = new clui.Line(outputBuffer).column(`Debrief Survey`, 20, [clc.green]);
-  for (let i = 1; i <= numTreatments; i++) {
-    line.column(
-      clui.Gauge(
-        stats.debriefInProgress[i - 1],
-        inProgressMax,
-        15,
-        inProgressMax,
-        `${stats.debriefInProgress[i - 1]} / ${inProgressMax}`
-      ),
-      30
-    );
-  }
-  line.fill().store();
+  firstColWidth = 22; // width of longest StatusType
+  Object.keys(StatusType).forEach((status) => {
+    line = new clui.Line(outputBuffer).column(`${status}`, firstColWidth, [
+      clc.green,
+    ]);
+    if (
+      status === StatusType.Survey ||
+      status === StatusType.Debrief ||
+      status === StatusType.Finished
+    ) {
+      const columnWidth =
+        (outputBuffer.width() - firstColWidth - 9) / stats.treatments.size;
+      // TODO show column with treatment id in header
+      stats.countsForStatus(status).forEach((count, treatmentId) => {
+        line.column(
+          clui.Gauge(
+            count,
+            stats.totalParticipants,
+            columnWidth,
+            stats.totalParticipants,
+            `${value} / ${stats.totalParticipants}`
+          ),
+          columnWidth
+        );
+      });
+      line.fill().store();
+    } else {
+      const columnWidth = outputBuffer.width() - firstColWidth - 9;
+      line
+        .column(
+          clui.Gauge(
+            stats.countsForStatus(status),
+            stats.totalParticipants,
+            columnWidth,
+            1,
+            `${stats.countsForStatus(status)} / ${stats.totalParticipants}`
+          ),
+          columnWidth
+        )
+        .fill()
+        .store();
+    }
+  });
 
   firstColWidth = Math.floor((outputBuffer.width() - 8) / 2);
-
   var title = new clui.Line(outputBuffer)
     .column("", firstColWidth, [clc.yellow])
     .column("Feedback", outputBuffer.width() - firstColWidth, [clc.yellow])
     .fill()
     .store();
-
   stats.feedback
-    .sort((a, b) => {
-      const aDate = stateToDate(a.date);
-      const bDate = stateToDate(b.date);
-      return aDate < bDate ? 1 : aDate > bDate ? -1 : 0;
-    })
+    .sort((a, b) => (a < b ? 1 : a > b ? -1 : 0))
     .slice(0, outputBuffer.height() - 20)
     .forEach((e) =>
       new clui.Line(outputBuffer)
         .column(
-          `${e.treatmentId} ${e.date}: ${e.feedback.slice(
-            0,
-            outputBuffer.width()
-          )}`,
+          `${e.date}: ${e.feedback.slice(0, outputBuffer.width())}`,
           "console",
           [clc.white]
         )
@@ -311,15 +128,9 @@ export const drawStatus = (
         .store()
     );
 
-  const threeColumnWidth = Math.floor(outputBuffer.width() / 3);
+  firstColWidth = Math.floor((outputBuffer.width() - 29) / 2);
   new clui.Line(outputBuffer)
-    .column(
-      `Monitor ${monitorRunning ? "Running" : "Paused"}`,
-      threeColumnWidth,
-      [clc.black.bgWhite]
-    )
-    .column(`Enter to pause and resume.`, threeColumnWidth, [clc.yellow])
-    .column(`Ctrl + C to exit the monitor.`, threeColumnWidth, [clc.yellow])
+    .column(`Ctrl + C to exit the monitor.`, firstColWidth, [clc.yellow])
     .fill()
     .store();
 

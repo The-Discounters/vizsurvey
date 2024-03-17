@@ -21,6 +21,8 @@ import {
   readParticipants,
   readExperimentParticipantsAndAudit,
   readAudit,
+  subscribeParticipantUpdates,
+  unsubscribeParticipantUpdates,
 } from "./src/firestoreAdmin.js";
 
 export {
@@ -46,4 +48,6 @@ export {
   readExperimentAndAudit,
   readExperimentParticipantsAndAudit,
   readAudit,
+  subscribeParticipantUpdates,
+  unsubscribeParticipantUpdates,
 };

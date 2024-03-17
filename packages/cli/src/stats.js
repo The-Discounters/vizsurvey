@@ -1,150 +1,98 @@
-let stats;
-let numberTreatments;
+import { group } from "d3";
+import { StatusType, AmountType } from "@the-discounters/types";
+import { stateToDate } from "@the-discounters/util";
 
-export const createStat = (numTreatments) => {
-  numberTreatments = numTreatments;
-  stats = {
-    surveysComplete: new Array(numberTreatments).fill(0),
-    surveysInProgress: new Array(numberTreatments).fill(0),
-    countryUSA: 0,
-    countryOther: 0,
-    laterChoice: new Array(numberTreatments).fill(0),
-    consentInProgress: new Array(numberTreatments).fill(0),
-    consentComplete: new Array(numberTreatments).fill(0),
-    demographicsInProgress: new Array(numberTreatments).fill(0),
-    demographicsComplete: new Array(numberTreatments).fill(0),
-    introductionInProgress: new Array(numberTreatments).fill(0),
-    introductionComplete: new Array(numberTreatments).fill(0),
-    instructionsInProgress: new Array(numberTreatments).fill(0),
-    instructionsComplete: new Array(numberTreatments).fill(0),
-    choicesInProgress: new Array(numberTreatments).fill(0),
-    choicesComplete: new Array(numberTreatments).fill(0),
-    experienceInProgress: new Array(numberTreatments).fill(0),
-    experienceComplete: new Array(numberTreatments).fill(0),
-    financialInProgress: new Array(numberTreatments).fill(0),
-    financialComplete: new Array(numberTreatments).fill(0),
-    purposeInProgress: new Array(numberTreatments).fill(0),
-    purposeComplete: new Array(numberTreatments).fill(0),
-    debriefInProgress: new Array(numberTreatments).fill(0),
-    debriefComplete: new Array(numberTreatments).fill(0),
-    feedback: new Array(),
-  };
-};
+export class Stats {
+  #totalParticipants;
+  #treatments;
+  #countryUSACount;
+  #countryOtherCount;
+  #stats;
+  #feedback;
 
-export const updateStats = (CSVData) => {
-  const index = +CSVData.treatment_id - 1;
-  if (CSVData.country_of_residence === "usa") {
-    stats.countryUSA++;
-  } else if (CSVData.country_of_residence) {
-    stats.countryOther++;
+  constructor(treatments, totalParticipants) {
+    this.#totalParticipants = totalParticipants;
+    this.#treatments = treatments;
+    this.#stats = new Map(
+      Object.entries(StatusType).map(([key, value]) => [value, 0])
+    );
+    this.#stats.set(
+      StatusType.Survey,
+      new Map([...this.#treatments].map((treatment) => [treatment, 0]))
+    );
   }
-  if (CSVData.consent_completed_timestamp) {
-    stats.consentComplete[index]++;
-  } else if (CSVData.consent_shown_timestamp) {
-    stats.consentInProgress[index]++;
-  }
-  if (!CSVData.demographic_completed_timestamp) {
-    stats.surveysInProgress[index]++;
-  }
-  if (CSVData.demographic_completed_timestamp) {
-    stats.demographicsComplete[index]++;
-  } else if (CSVData.demographic_shown_timestamp) {
-    stats.demographicsInProgress[index]++;
-  }
-  if (CSVData.introduction_completed_timestamp) {
-    stats.introductionComplete[index]++;
-  } else if (CSVData.introduction_shown_timestamp) {
-    stats.introductionInProgress[index]++;
-  }
-  if (CSVData.instructions_completed_timestamp) {
-    stats.instructionsComplete[index]++;
-  } else if (CSVData.instructions_shown_timestamp) {
-    stats.instructionsInProgress[index]++;
-  }
-  if (CSVData.choice_timestamp_8) {
-    stats.choicesComplete[index]++;
-  } else if (CSVData.shown_timestamp_1) {
-    stats.choicesInProgress[index]++;
-  }
-  if (CSVData.choice_1 === "laterAmount") {
-    stats.laterChoice[index]++;
-  }
-  if (CSVData.choice_2 === "laterAmount") {
-    stats.laterChoice[index]++;
-  }
-  if (CSVData.choice_3 === "laterAmount") {
-    stats.laterChoice[index]++;
-  }
-  if (CSVData.choice_4 === "laterAmount") {
-    stats.laterChoice[index]++;
-  }
-  if (CSVData.choice_5 === "laterAmount") {
-    stats.laterChoice[index]++;
-  }
-  if (CSVData.choice_6 === "laterAmount") {
-    stats.laterChoice[index]++;
-  }
-  if (CSVData.choice_7 === "laterAmount") {
-    stats.laterChoice[index]++;
-  }
-  if (CSVData.choice_8 === "laterAmount") {
-    stats.laterChoice[index]++;
-  }
-  if (CSVData.experience_survey_questions_completed_timestamp) {
-    stats.experienceComplete[index]++;
-  } else if (CSVData.experience_survey_questions_shown_timestamp) {
-    stats.experienceInProgress[index]++;
-  }
-  if (CSVData.financial_lit_survey_questions_completed_timestamp) {
-    stats.financialComplete[index]++;
-  } else if (CSVData.financial_lit_survey_questions_shown_timestamp) {
-    stats.financialInProgress[index]++;
-  }
-  if (CSVData.purpose_survey_questions_completed_timestamp) {
-    stats.purposeComplete[index]++;
-    stats.surveysComplete[index]++;
-  } else if (CSVData.purpose_survey_questions_shown_timestamp) {
-    stats.purposeInProgress[index]++;
-  }
-  if (CSVData.debrief_completed_timestamp) {
-    stats.debriefComplete[index]++;
-  } else if (CSVData.debrief_shown_timestamp) {
-    stats.debriefInProgress[index]++;
-  }
-  if (CSVData.feedback) {
-    stats.feedback.push({
-      treatmentId: CSVData.treatment_id,
-      date: CSVData.debrief_completed_timestamp,
-      feedback: CSVData.feedback,
-    });
-  }
-  return stats;
-};
 
-export const clearStats = () => {
-  stats.surveysComplete.fill(0);
-  stats.surveysInProgress.fill(0);
-  stats.countryUSA = 0;
-  stats.countryOther = 0;
-  stats.laterChoice.fill(0);
-  stats.consentInProgress.fill(0);
-  stats.consentComplete.fill(0);
-  stats.demographicsInProgress.fill(0);
-  stats.demographicsComplete.fill(0);
-  stats.introductionInProgress.fill(0);
-  stats.introductionComplete.fill(0);
-  stats.instructionsInProgress.fill(0);
-  stats.instructionsComplete.fill(0);
-  stats.choicesInProgress.fill(0);
-  stats.choicesComplete.fill(0);
-  stats.experienceInProgress.fill(0);
-  stats.experienceComplete.fill(0);
-  stats.financialInProgress.fill(0);
-  stats.financialComplete.fill(0);
-  stats.purposeInProgress.fill(0);
-  stats.purposeComplete.fill(0);
-  stats.debriefInProgress.fill(0);
-  stats.debriefComplete.fill(0);
-  stats.feedback.length = 0;
-  return stats;
-};
+  get countryUSACount() {
+    return this.#countryUSACount;
+  }
+
+  get countryOtherCount() {
+    return this.#countryOtherCount;
+  }
+
+  get totalParticipants() {
+    return this.#totalParticipants;
+  }
+
+  get feedback() {
+    return this.#feedback;
+  }
+
+  get treatments() {
+    return this.#treatments;
+  }
+
+  countsForStatus(status) {
+    return this.#stats.get(status);
+  }
+
+  completedQuestionsCount(questions) {
+    const result = new Map(
+      [...this.#treatments].map((treatment) => [treatment, 0])
+    );
+    group(questions, (d) => d.treatmentId).forEach(
+      (questionsForTreatment, treatmentId) =>
+        result.set(
+          treatmentId,
+          questionsForTreatment.filter(
+            (question) => question.choice !== AmountType.none
+          ).length
+        )
+    );
+    return result;
+  }
+
+  updateStats(participants) {
+    group(participants, (d) => d.status).forEach(
+      (participantsForStatus, status) => {
+        if (
+          status === StatusType.Survey ||
+          status === StatusType.Debrief ||
+          status === StatusType.Finished
+        ) {
+          participantsForStatus.forEach((participant) => {
+            this.#stats.set(
+              status,
+              this.completedQuestionsCount(participant.questions)
+            );
+          });
+        } else {
+          this.#stats.set(status, participantsForStatus.length);
+        }
+      }
+    );
+    this.#countryUSACount = participants.filter(
+      (participant) => participant.countryOfResidence === "usa" // TODO should we have a country type that we share with app drop down for country with a USA constant value
+    ).length;
+    this.#countryOtherCount = participants.length - this.#countryUSACount;
+    this.#feedback = participants.reduce((acc, participant) => {
+      if (participant.feedback) {
+        acc.push({
+          date: stateToDate(participant.debriefCompletedTimestamp),
+          feedback: participant.feedback,
+        });
+      }
+      return acc;
+    }, []);
+  }
+}

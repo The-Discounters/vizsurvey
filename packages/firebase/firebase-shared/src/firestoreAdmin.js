@@ -1,9 +1,11 @@
 import { initializeApp } from "firebase-admin/app";
 import { cert } from "firebase-admin/app";
 import { getFirestore } from "firebase-admin/firestore";
+import { collection, query, where, onSnapshot } from "firebase/firestore";
 
 var batch;
 var colRef;
+var unsubscribe;
 
 export const initFirestore = (projectId, databaseURL, adminCred) => {
   const app = initializeApp({
@@ -305,4 +307,20 @@ export const linkDocs = async (
       );
     }
   }
+};
+
+export const subscribeParticipantUpdates = (db, expPath, callback) => {
+  unsubscribe = db
+    .collection(`${expPath}/participants`)
+    .onSnapshot((querySnapshot) => {
+      const participants = [];
+      querySnapshot.forEach((doc) => {
+        participants.push(doc.data());
+      });
+      callback(participants);
+    });
+};
+
+export const unsubscribeParticipantUpdates = () => {
+  unsubscribe();
 };

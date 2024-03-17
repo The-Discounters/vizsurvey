@@ -140,12 +140,18 @@
             "name": "Debug CLI monitor",
             "type": "node",
             "request": "launch",
-            "runtimeExecutable": "/Users/pete/.nvm/versions/node/v19.3.0/bin/node",
-            "program": "${workspaceFolder}/cli/src/index.js",
-            "args": ["monitor", "450", "-l", "06/30/2023", "-t", "3"],
+            "runtimeExecutable": "/Users/pete/.nvm/versions/node/v18.17.0/bin/node",
+            "program": "${workspaceFolder}/packages/cli/src/index.js",
+            "args": ["monitor", "testbetween"],
             "cwd": "${workspaceRoot}/packages/cli",
             "console": "integratedTerminal",
-            "internalConsoleOptions": "neverOpen"
+            "internalConsoleOptions": "neverOpen",
+            "env": {
+                "GOOGLE_APPLICATION_CREDENTIALS": "/Users/pete/vizsurvey/packages/firebase/functions/admin-credentials-staging.json",
+                "FIRESTORE_EMULATOR_HOST": "127.0.0.1:8080",
+                "FIRESTORE_PROJECT_ID": "vizsurvey-staging",
+                "FIRESTORE_DATABASE_URL": "https://vizsurvey-staging.firebaseio.com/"
+            } 
         },
         {
             "name": "Debug CLI import firebase experiments",
@@ -341,6 +347,23 @@
             "runtimeExecutable": "/Users/pete/.nvm/versions/node/v18.17.0/bin/node",
             "program": "${workspaceFolder}/packages/cli/src/index.js",
             "args": ["export", "../../temp/testbetween-all.json", "-e", "testbetween", "-t", "all", "-f", "json"],
+            "cwd": "${workspaceRoot}/packages/cli",
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen",
+            "env": {
+                "GOOGLE_APPLICATION_CREDENTIALS": "/Users/pete/vizsurvey/packages/firebase/functions/admin-credentials-staging.json",
+                "FIRESTORE_EMULATOR_HOST": "127.0.0.1:8080",
+                "FIRESTORE_PROJECT_ID": "vizsurvey-staging",
+                "FIRESTORE_DATABASE_URL": "https://vizsurvey-staging.firebaseio.com/"
+            }             
+        },
+        {
+            "name": "Debug CLI validate",
+            "type": "node",
+            "request": "launch",
+            "runtimeExecutable": "/Users/pete/.nvm/versions/node/v18.17.0/bin/node",
+            "program": "${workspaceFolder}/packages/cli/src/index.js",
+            "args": ["validate", "testbetween"],
             "cwd": "${workspaceRoot}/packages/cli",
             "console": "integratedTerminal",
             "internalConsoleOptions": "neverOpen",

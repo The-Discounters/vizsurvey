@@ -16,10 +16,14 @@ import {
   linkDocs,
   deleteDocs,
   readExperimentsAndQuestions,
+  readExperimentParticipantsAndAudit,
+  subscribeParticipantUpdates,
+  unsubscribeParticipantUpdates,
+  readExperimentAndQuestions,
 } from "@the-discounters/firebase-shared";
 import { convertKeysUnderscoreToCamelCase } from "@the-discounters/types";
 import { isCSVExt, directoryOrFileExists, writeFile } from "./files.js";
-import { updateStats, createStat, clearStats } from "./stats.js";
+import { Stats } from "./stats.js";
 import { drawStatus } from "./monitorUtil.js";
 import {
   typeExperimentObj,
@@ -37,6 +41,7 @@ import {
   exportAuditToCSV,
   exportExperimentParticipantsAndAuditToJSON,
 } from "./FileIOAdapter.js";
+import { validateExperimentData } from "./Validator.js";
 
 const validateInt = (value, dummyPrevious) => {
   const parsedValue = parseInt(value, 10);
@@ -244,155 +249,37 @@ program
 program
   .command("monitor")
   .description(
-    "Monitors the status of an experiment running by downloading the S3 files and reporting summary statistics in real time to the screen."
+    "Monitors the status of an experiment running by reporting summary statistics in real time to the screen."
   )
-  .argument(
-    "<number participants>",
-    "the total number of participants the experiment was ran for.  Used to update the percent progress bars",
-    validateInt
-  )
-  .option(
-    "-l, --laterthan <date>",
-    "the date to filter out files that are are equal to or later than",
-    validateDate
-  )
-  .option(
-    "-t, --numtreatments <number>",
-    "the number of treatments for breaking down inprogress results by treatment",
-    validateInt
-  )
-  .action((totalParticipants, options) => {
-    const MonitorStateType = {
-      monitorPaused: "monitorPaused",
-      fetchingData: "fetchingData",
-      refreshingScreen: "refreshingScreen",
-    };
-    Object.freeze(MonitorStateType);
-    try {
-      console.log(
-        chalk.red(
-          `Monitoring with ${totalParticipants} total participants that started  ${
-            options.laterthan ? options.laterthan : "all"
-          }" for ${options.numtreatments} treatments...`
-        )
-      );
-      var monitorState = MonitorStateType.monitorPaused;
-      console.log(chalk.yellow("Press Enter to start monitoring."));
-      readline.emitKeypressEvents(process.stdin);
-      process.stdin.setRawMode(true);
-      let inProgressMax = Math.floor(totalParticipants / 10);
-      let pendingPauseMonitor = false;
-      process.stdin.on("keypress", (str, key) => {
-        if (key.ctrl && key.name === "c") {
-          console.log("monitor ending.");
-          process.exit(); // eslint-disable-line no-process-exit
-        } else if (key.name === "return") {
-          switch (monitorState) {
-            case MonitorStateType.monitorPaused:
-              monitorState = MonitorStateType.fetchingData;
-              break;
-            case MonitorStateType.fetchingData:
-            case MonitorStateType.refreshingScreen:
-              pendingPauseMonitor = true;
-              break;
-          }
-        } else if (key.name === "up") {
-          inProgressMax = Math.min(
-            inProgressMax + Math.floor(totalParticipants / 10),
-            totalParticipants
-          );
-        } else if (key.name === "down") {
-          inProgressMax = Math.max(
-            inProgressMax - Math.floor(totalParticipants / 10),
-            totalParticipants / 10
-          );
-        }
+  .argument("<experiment id>", "the experiment to validate data for.")
+  .action((studyId) => {
+    console.log(chalk.red(`Monitoring expriment ${studyId}...`));
+    console.log(chalk.yellow("Press Enter to start monitoring."));
+    readline.emitKeypressEvents(process.stdin);
+    process.stdin.setRawMode(true);
+    const { db } = initializeDB();
+    readExperimentAndQuestions(db, studyId)
+      .then((exp) => {
+        let treatmentIds = new Set(
+          exp.treatmentQuestions.map((item) => item.treatmentId)
+        );
+        let stats = new Stats(treatmentIds, exp.numParticipants);
+        subscribeParticipantUpdates(db, exp.path, (participants) => {
+          stats.updateStats(participants);
+          clear();
+          drawStatus(stats).output();
+          process.stdin.on("keypress", (str, key) => {
+            if (key.ctrl && key.name === "c") {
+              console.log("monitor ending.");
+              process.exit(); // eslint-disable-line no-process-exit
+            }
+          });
+        });
+      })
+      .catch((err) => {
+        console.log(chalk.red(err));
+        throw err;
       });
-      let stats = createStat(options.numtreatments);
-      let inFetchingData = false;
-      let inRefreshingScreen = false;
-      let nIntervId = setInterval(() => {
-        try {
-          switch (monitorState) {
-            case MonitorStateType.monitorPaused:
-              break;
-            case MonitorStateType.fetchingData:
-              if (inFetchingData) break;
-              inFetchingData = true;
-              listFiles().then((response) => {
-                const files = response.Contents.filter((file) => {
-                  if (
-                    isCSVExt(file.Key) &&
-                    (!options.laterthan ||
-                      (options.laterthan &&
-                        DateTime.fromJSDate(file.LastModified) >=
-                          options.laterthan))
-                  ) {
-                    return true;
-                  } else {
-                    return false;
-                  }
-                });
-                let filesDownloaded = 0;
-                if (files.length === 0) {
-                  monitorState = MonitorStateType.refreshingScreen;
-                  inFetchingData = false;
-                } else {
-                  files.forEach((file, index) => {
-                    downloadFile(
-                      file /*, (error) => {
-                    //console.log(chalk.red(error));
-                  }*/
-                    ).then((data) => {
-                      filesDownloaded++;
-                      const CSVData = parseCSV(data)[0];
-                      if (CSVData.treatment_id > options.numtreatments) {
-                        console.log(
-                          `file ${file.Key} has treatment_id of ${CSVData.teratment_id} which is greater than ${options.numtreatments} exiting.`
-                        );
-                        process.exit(); // eslint-disable-line no-process-exit
-                      }
-                      stats = updateStats(CSVData);
-                      if (filesDownloaded === files.length) {
-                        monitorState = MonitorStateType.refreshingScreen;
-                        inFetchingData = false;
-                      }
-                    });
-                  });
-                }
-              });
-              break;
-            case MonitorStateType.refreshingScreen:
-              if (inRefreshingScreen) break;
-              inRefreshingScreen = true;
-              clear();
-              if (pendingPauseMonitor) {
-                monitorState = MonitorStateType.monitorPaused;
-                pendingPauseMonitor = false;
-              }
-              drawStatus(
-                totalParticipants,
-                stats,
-                monitorState != MonitorStateType.monitorPaused,
-                inProgressMax,
-                options.numtreatments
-              ).output();
-              inRefreshingScreen = false;
-              stats = clearStats();
-              if (monitorState != MonitorStateType.monitorPaused) {
-                monitorState = MonitorStateType.fetchingData;
-              }
-              break;
-          }
-        } catch (err) {
-          console.log(chalk.red(err));
-          throw err;
-        }
-      }, 1000);
-    } catch (err) {
-      console.log(chalk.red(err));
-      throw err;
-    }
   });
 
 const commitBatchSync = async () => {
@@ -572,39 +459,20 @@ program
     try {
       console.log(`Validating data for experiment id ${experiment}`);
       const { db } = initializeDB();
-      readExperimentParticipantsAndAudit(db, experiment).then((exp) => {
-        exp.participants.forEach((cp, ip) => {
-          const auditBySeq = cp.audit.sort((a, b) => {
-            a.requestSequence < b.requestSequence
-              ? -1
-              : a.requestSequence > b.requestSequence
-              ? 1
-              : 0;
-          });
-          auditBySeq.forEach((cv, i, ary) => {
-            if (cv.requestSequence !== i) {
-              console.log(
-                `audit-requestSequence: requestSequence ${cv.requestSequence} is not the expected value ${i}`
-              );
-              if (
-                i !== 0 &&
-                cv.broswerTimestamp <= ary[i - 1].broswerTimestamp
-              ) {
-                console.log(
-                  `audit-broswerTimestamp: requestSequence ${
-                    cv.requestSequence
-                  } broswerTimestamp ${
-                    cv.broswerTimestamp
-                  } is less than the previous broswerTimestamp ${
-                    ary[i - 1].broswerTimestamp
-                  }`
-                );
-              }
-            }
-          });
-          cp.audit.reduce((acc, cv, ci) => {}, {});
-        });
-      });
+      readExperimentParticipantsAndAudit(db, experiment).then(
+        ({ experiment, participants, audit }) => {
+          const result = validateExperimentData(
+            experiment,
+            participants,
+            audit
+          );
+          console.log(
+            result.reduce((acc, issue) => {
+              return acc + issue.message;
+            }, "")
+          );
+        }
+      );
     } catch (err) {
       console.log(chalk.red(err));
       throw err;

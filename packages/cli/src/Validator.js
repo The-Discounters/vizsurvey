@@ -40,8 +40,7 @@ class ValidationIssue {
   }
 }
 
-export const validateExperimentData = (exp) => {
-  const result = [];
+export const validateExperiment = (exp, result) => {
   if (exp.numParticipantsCompleted !== exp.numParticipants) {
     result.push(
       new ValidationIssue(
@@ -69,7 +68,10 @@ export const validateExperimentData = (exp) => {
       )
     );
   }
-  exp.participants.forEach((participant) => {
+};
+
+export const validateParticipantData = (participants, result) => {
+  participants.forEach((participant) => {
     if (!participant.consentChecked) {
       result.push(
         new ValidationIssue(
@@ -106,122 +108,126 @@ export const validateExperimentData = (exp) => {
       );
     }
   });
-  group(exp.audit, (d) => d.participantId).forEach(
-    (auditList, partcipantId) => {
-      const auditStats = {
-        maxSeqNum: 0,
-      };
-      const uniqueScreen = new Set();
-      let lastStatus = null;
-      const auditsForParticipantBySequence = auditList.sort((a, b) =>
-        +a.requestSequence < +b.requestSequence
-          ? -1
-          : +a.requestSequence > +b.requestSequence
-          ? 1
-          : 0
+};
+
+export const validateAuditData = (audit, result) => {
+  group(audit, (d) => d.participantId).forEach((auditList, partcipantId) => {
+    const auditStats = {
+      maxSeqNum: 0,
+    };
+    const uniqueScreen = new Set();
+    let lastStatus = null;
+    const auditsForParticipantBySequence = auditList.sort((a, b) =>
+      +a.requestSequence < +b.requestSequence
+        ? -1
+        : +a.requestSequence > +b.requestSequence
+        ? 1
+        : 0
+    );
+    auditsForParticipantBySequence.forEach((auditEntry, i, ary) => {
+      auditStats.maxSeqNum = Math.max(
+        auditStats.maxSeqNum,
+        auditEntry.requestSequence
       );
-      auditsForParticipantBySequence.forEach((auditEntry, i, ary) => {
-        auditStats.maxSeqNum = Math.max(
-          auditStats.maxSeqNum,
-          auditEntry.requestSequence
+      uniqueScreen.add(JSON.stringify(auditEntry.screenAttributes));
+      if (lastStatus) {
+        let onLastTreatmentQuestion;
+        const onLastQuestion =
+          auditEntry.questions.slice(0, -1).choice !== AmountType.none;
+        if (onLastQuestion) {
+          onLastTreatmentQuestion = true;
+        } else {
+          onLastTreatmentQuestion =
+            auditEntry.questions[0].treatmentId !==
+            auditsForParticipantBySequence[i + 1].questions[0].treatmentId;
+        }
+        const expectedStatus = nextStatus(
+          lastStatus,
+          onLastQuestion,
+          onLastTreatmentQuestion
         );
-        uniqueScreen.add(JSON.stringify(auditEntry.screenAttributes));
-        if (lastStatus) {
-          let onLastTreatmentQuestion;
-          const onLastQuestion =
-            auditEntry.questions.slice(0, -1).choice !== AmountType.none;
-          if (onLastQuestion) {
-            onLastTreatmentQuestion = true;
-          } else {
-            onLastTreatmentQuestion =
-              auditEntry.questions[0].treatmentId !==
-              auditsForParticipantBySequence[i + 1].questions[0].treatmentId;
-          }
-          const expectedStatus = nextStatus(
-            lastStatus,
-            onLastQuestion,
-            onLastTreatmentQuestion
-          );
-          auditEntry.status;
-        }
-        if (auditEntry.requestSequence !== i + 1) {
-          result.push(
-            new ValidationIssue(
-              ERROR,
-              AUDIT,
-              `requestSequence ${auditEntry.requestSequence} is not the expected value ${i} for audit entry ${auditEntry.path} participant ${auditEntry.participantId}`
-            )
-          );
-        }
-        if (
-          i !== 0 &&
-          auditEntry.broswerTimestamp <= ary[i - 1].broswerTimestamp
-        ) {
-          result.push(
-            new ValidationIssue(
-              ERROR,
-              AUDIT,
-              `broswerTimestamp broswerTimestamp ${dateToState(
-                auditEntry.broswerTimestamp
-              )} is less than the previous broswerTimestamp ${dateToState(
-                ary[i - 1].broswerTimestamp
-              )} for participant ${auditEntry.participantId} audit entry ${
-                auditEntry.path
-              } requestSequence ${auditEntry.requestSequence}`
-            )
-          );
-        }
-        if (
-          i !== 0 &&
-          auditEntry.serverTimestamp <= ary[i - 1].serverTimestamp
-        ) {
-          result.push(
-            new ValidationIssue(
-              WARN,
-              AUDIT,
-              `serverTimestamp ${ISODateStringWithNanoSec(
-                auditEntry.serverTimestamp.toDate(),
-                auditEntry.serverTimestamp.nanoseconds
-              )} is less than the previous serverTimestamp ${ISODateStringWithNanoSec(
-                ary[i - 1].serverTimestamp.toDate(),
-                ary[i - 1].serverTimestamp.nanoseconds
-              )} for participant ${auditEntry.participantId} audit entry ${
-                auditEntry.path
-              } requestSequence ${auditEntry.requestSequence}`
-            )
-          );
-        }
-      }); // end audit by sequence forEach
-      if (uniqueScreen.size !== 1) {
+        auditEntry.status;
+      }
+      if (auditEntry.requestSequence !== i + 1) {
         result.push(
           new ValidationIssue(
             ERROR,
             AUDIT,
-            `screenAttributes found ${uniqueScreen.size} values and was expecting 1, ${uniqueScreen} values for participant ${partcipantId}`
+            `requestSequence ${auditEntry.requestSequence} is not the expected value ${i} for audit entry ${auditEntry.path} participant ${auditEntry.participantId}`
           )
         );
       }
       if (
-        auditStats.maxSeqNum !==
-        auditsForParticipantBySequence[
-          auditsForParticipantBySequence.length - 1
-        ].requestSequence
+        i !== 0 &&
+        auditEntry.broswerTimestamp <= ary[i - 1].broswerTimestamp
       ) {
         result.push(
           new ValidationIssue(
             ERROR,
             AUDIT,
-            `requestSequence max value ${
-              auditStats.maxSeqNum
-            } is not equal to the last audit entry sequence number ${
-              auditsForParticipantBySequence[
-                auditsForParticipantBySequence.length - 1
-              ].requestSequence
-            } for participant ${partcipantId}`
+            `broswerTimestamp broswerTimestamp ${dateToState(
+              auditEntry.broswerTimestamp
+            )} is less than the previous broswerTimestamp ${dateToState(
+              ary[i - 1].broswerTimestamp
+            )} for participant ${auditEntry.participantId} audit entry ${
+              auditEntry.path
+            } requestSequence ${auditEntry.requestSequence}`
           )
         );
       }
+      if (i !== 0 && auditEntry.serverTimestamp <= ary[i - 1].serverTimestamp) {
+        result.push(
+          new ValidationIssue(
+            WARN,
+            AUDIT,
+            `serverTimestamp ${ISODateStringWithNanoSec(
+              auditEntry.serverTimestamp.toDate(),
+              auditEntry.serverTimestamp.nanoseconds
+            )} is less than the previous serverTimestamp ${ISODateStringWithNanoSec(
+              ary[i - 1].serverTimestamp.toDate(),
+              ary[i - 1].serverTimestamp.nanoseconds
+            )} for participant ${auditEntry.participantId} audit entry ${
+              auditEntry.path
+            } requestSequence ${auditEntry.requestSequence}`
+          )
+        );
+      }
+    }); // end audit by sequence forEach
+    if (uniqueScreen.size !== 1) {
+      result.push(
+        new ValidationIssue(
+          ERROR,
+          AUDIT,
+          `screenAttributes found ${uniqueScreen.size} values and was expecting 1, ${uniqueScreen} values for participant ${partcipantId}`
+        )
+      );
     }
-  );
+    if (
+      auditStats.maxSeqNum !==
+      auditsForParticipantBySequence[auditsForParticipantBySequence.length - 1]
+        .requestSequence
+    ) {
+      result.push(
+        new ValidationIssue(
+          ERROR,
+          AUDIT,
+          `requestSequence max value ${
+            auditStats.maxSeqNum
+          } is not equal to the last audit entry sequence number ${
+            auditsForParticipantBySequence[
+              auditsForParticipantBySequence.length - 1
+            ].requestSequence
+          } for participant ${partcipantId}`
+        )
+      );
+    }
+  });
+};
+
+export const validateExperimentData = (experiment, participants, audit) => {
+  const result = [];
+  validateExperiment(experiment, result);
+  validateParticipantData(participants, result);
+  validateAuditData(audit, result);
   return result;
 };

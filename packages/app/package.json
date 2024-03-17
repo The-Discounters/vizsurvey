@@ -75,7 +75,7 @@
     "@mui/codemod": "5.15.10",
     "babel-jest": "^29.7.0",
     "babel-preset-flow": "^6.23.0",
-    "cypress": "^10.11.0",
+    "cypress": "^13.6.6",
     "eslint": "^8.57.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^4.0.0",
