@@ -261,7 +261,9 @@ program
     readExperimentAndQuestions(db, studyId)
       .then((exp) => {
         let treatmentIds = new Set(
-          exp.treatmentQuestions.map((item) => item.treatmentId)
+          exp.treatmentQuestions
+            .map((item) => item.treatmentId)
+            .sort((a, b) => a - b)
         );
         let stats = new Stats(treatmentIds, exp.numParticipants);
         subscribeParticipantUpdates(db, exp.path, (participants) => {

@@ -9,109 +9,126 @@ export const drawStatus = (stats) => {
     width: "console",
     height: "console",
   });
+  const firstColumnLabelWidth = 22;
+  // note gauge width parameter doesn't include the suffix text which would be 9 characters if format is ### / ### (assumes we don't run more than 1,000 people)
+  const countOutOfWidth = 9;
 
-  let firstColWidth = Math.floor((outputBuffer.width() - 49) / 2); // centers the text
+  let centerTitleTextWidth = Math.floor((outputBuffer.width() - 49) / 2); // centers the text
   title = new clui.Line(outputBuffer)
-    .column("", firstColWidth, [clc.yellow])
+    .column("", centerTitleTextWidth, [clc.yellow])
     .column(
       "Breakdown By Country (count / total participants)",
-      outputBuffer.width() - firstColWidth,
+      outputBuffer.width() - centerTitleTextWidth,
       [clc.yellow]
     )
     .fill()
     .store();
 
-  // note gauge width parameter doesn't include the suffix text which would be 9 characters if format is ### / ### (assumes we don't run more than 1,000 people)
   var line = new clui.Line(outputBuffer)
-    .column("USA", 20, [clc.green])
+    .column("USA", firstColumnLabelWidth, [clc.green])
     .column(
       clui.Gauge(
         stats.countryUSACount,
         stats.totalParticipants,
-        outputBuffer.width() - 20 - 9,
+        outputBuffer.width() - firstColumnLabelWidth - countOutOfWidth,
         stats.totalParticipants,
         `${stats.countryUSACount} / ${stats.totalParticipants}`
       ),
-      //outputBuffer.width() - 20
-      outputBuffer.width() - 20
+      outputBuffer.width() - firstColumnLabelWidth
     )
     .fill()
     .store();
 
   line = new clui.Line(outputBuffer)
-    .column("Non USA", 20, [clc.green])
+    .column("Non USA", firstColumnLabelWidth, [clc.green])
     .column(
       clui.Gauge(
         stats.countryOtherCount,
         stats.totalParticipants,
-        outputBuffer.width() - 20 - 9,
+        outputBuffer.width() - firstColumnLabelWidth - countOutOfWidth,
         1,
         `${stats.countryOtherCount} / ${stats.totalParticipants}`
       ),
-      outputBuffer.width() - 20
+      outputBuffer.width() - firstColumnLabelWidth
     )
     .fill()
     .store();
 
-  firstColWidth = Math.floor((outputBuffer.width() - 46) / 2);
+  centerTitleTextWidth = Math.floor((outputBuffer.width() - 46) / 2);
   title = new clui.Line(outputBuffer)
-    .column("", firstColWidth, [clc.yellow])
+    .column("", centerTitleTextWidth, [clc.yellow])
     .column(
       "Breakdown By Step (count / total participants)",
-      outputBuffer.width() - firstColWidth,
+      outputBuffer.width() - centerTitleTextWidth,
       [clc.yellow]
     )
     .fill()
     .store();
 
-  firstColWidth = 22; // width of longest StatusType
-  Object.keys(StatusType).forEach((status) => {
-    line = new clui.Line(outputBuffer).column(`${status}`, firstColWidth, [
-      clc.green,
-    ]);
+  Object.values(StatusType).forEach((status) => {
     if (
       status === StatusType.Survey ||
       status === StatusType.Debrief ||
       status === StatusType.Finished
     ) {
-      const columnWidth =
-        (outputBuffer.width() - firstColWidth - 9) / stats.treatments.size;
-      // TODO show column with treatment id in header
+      const treatmentColWidth = Math.floor(
+        (outputBuffer.width() - firstColumnLabelWidth) / stats.treatments.size
+      );
+      line = new clui.Line(outputBuffer).column(
+        "",
+        firstColumnLabelWidth + Math.floor(treatmentColWidth / 2) - 1,
+        [clc.yellow]
+      );
+      stats.treatments.forEach((treatmentId) => {
+        line.column(`${treatmentId}`, treatmentColWidth - 1, [clc.yellow]);
+      });
+      line.fill().store();
+      line = new clui.Line(outputBuffer).column(
+        `${status}`,
+        firstColumnLabelWidth,
+        [clc.green]
+      );
       stats.countsForStatus(status).forEach((count, treatmentId) => {
         line.column(
           clui.Gauge(
             count,
             stats.totalParticipants,
-            columnWidth,
+            treatmentColWidth - 9,
             stats.totalParticipants,
-            `${value} / ${stats.totalParticipants}`
+            `${count} / ${stats.totalParticipants}`
           ),
-          columnWidth
+          treatmentColWidth
         );
       });
       line.fill().store();
     } else {
-      const columnWidth = outputBuffer.width() - firstColWidth - 9;
+      line = new clui.Line(outputBuffer).column(
+        `${status}`,
+        firstColumnLabelWidth,
+        [clc.green]
+      );
       line
         .column(
           clui.Gauge(
             stats.countsForStatus(status),
             stats.totalParticipants,
-            columnWidth,
+            outputBuffer.width() - firstColumnLabelWidth - countOutOfWidth,
             1,
             `${stats.countsForStatus(status)} / ${stats.totalParticipants}`
           ),
-          columnWidth
+          outputBuffer.width() - firstColumnLabelWidth
         )
         .fill()
         .store();
     }
   });
 
-  firstColWidth = Math.floor((outputBuffer.width() - 8) / 2);
+  centerTitleTextWidth = Math.floor((outputBuffer.width() - 8) / 2);
   var title = new clui.Line(outputBuffer)
-    .column("", firstColWidth, [clc.yellow])
-    .column("Feedback", outputBuffer.width() - firstColWidth, [clc.yellow])
+    .column("", centerTitleTextWidth, [clc.yellow])
+    .column("Feedback", outputBuffer.width() - centerTitleTextWidth, [
+      clc.yellow,
+    ])
     .fill()
     .store();
   stats.feedback
@@ -128,9 +145,9 @@ export const drawStatus = (stats) => {
         .store()
     );
 
-  firstColWidth = Math.floor((outputBuffer.width() - 29) / 2);
+  centerTitleTextWidth = Math.floor((outputBuffer.width() - 29) / 2);
   new clui.Line(outputBuffer)
-    .column(`Ctrl + C to exit the monitor.`, firstColWidth, [clc.yellow])
+    .column(`Ctrl + C to exit the monitor.`, centerTitleTextWidth, [clc.yellow])
     .fill()
     .store();
 
