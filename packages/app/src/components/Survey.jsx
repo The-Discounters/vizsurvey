@@ -34,7 +34,7 @@ export function Survey() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [error, setError] = useState(false);
-  const [helperText, setHelperText] = useState("");
+  const [helperText, setHelperText] = useState(" ");
   const q = useSelector(getCurrentQuestion);
   const qi = useSelector(getCurrentQuestionIndex);
   const status = useSelector(getStatus);
@@ -55,13 +55,13 @@ export function Survey() {
             "Press the left arrow key to select the earlier amount and the right arrow key to select the later amount."
           );
         } else {
-          setHelperText("");
+          setHelperText(" ");
           setError(false);
           dispatch(nextQuestion());
         }
         break;
       case "ArrowLeft":
-        setHelperText("");
+        setHelperText(" ");
         setError(false);
         dispatch(
           answer({
@@ -81,7 +81,7 @@ export function Survey() {
             screen: ScreenAttributes(window.screen),
           })
         );
-        setHelperText("");
+        setHelperText(" ");
         setError(false);
         break;
       default:
@@ -106,7 +106,7 @@ export function Survey() {
       choice === AmountType.laterAmount
     ) {
       setError(false);
-      setHelperText("");
+      setHelperText(" ");
       setDisableSubmit(false);
     } else {
       setDisableSubmit(true);
@@ -126,6 +126,17 @@ export function Survey() {
     navigate(path);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status]);
+
+  const showSelectionHint = (selection) => {
+    let errorMsg;
+    if (selection === AmountType.earlierAmount) {
+      errorMsg = "To choose the earlier amount use the left arrow key.";
+    } else if (selection === AmountType.laterAmount) {
+      errorMsg = "To choose the later amount use the right arrow key.";
+    }
+    setHelperText(errorMsg);
+    setError(true);
+  };
 
   return (
     <StyledEngineProvider injectFirst>
@@ -161,17 +172,15 @@ export function Survey() {
                       error={error}
                       helperText={helperText}
                       choice={choice}
-                      onClickCallback={(value) => {
-                        let errorMsg;
-                        if (value === AmountType.earlierAmount) {
-                          errorMsg =
-                            "To choose the earlier amount use the left arrow key.";
-                        } else if (value === AmountType.laterAmount) {
-                          errorMsg =
-                            "To choose the later amount use the right arrow key.";
-                        }
-                        setHelperText(errorMsg);
-                        setError(true);
+                      onClickCallback={(selection) => {
+                        showSelectionHint(selection);
+                      }}
+                      onHoverOverSelection={(selection) => {
+                        showSelectionHint(selection);
+                      }}
+                      onHoverOutSelection={(selection) => {
+                        setHelperText(" ");
+                        setError(false);
                       }}
                     />
                   );

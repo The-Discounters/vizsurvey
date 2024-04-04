@@ -106,7 +106,7 @@ describe("ObjectUtil test.", () => {
     expect(SURVEY_QUESTIONS_JSON[0]).not.toHaveProperty("choice");
     expect(SURVEY_QUESTIONS_JSON[0]).not.toHaveProperty("choiceTimestamp");
     expect(SURVEY_QUESTIONS_JSON[0]).not.toHaveProperty("choiceTimeSec");
-    const result = obj.injectSurveyQuestionFields(SURVEY_QUESTIONS_JSON);
+    const result = obj.clientSurveyQuestionFields(SURVEY_QUESTIONS_JSON);
     expect(result.length).toBe(27);
     expect(result[0]).toHaveProperty("shownTimestamp");
     expect(result[0]).toHaveProperty("dragAmount");

@@ -45,7 +45,7 @@ export const flattenArrayToObject = (array, keyFunc, valueFunc) => {
   return result;
 };
 
-export const injectSurveyQuestionFields = (questions) => {
+export const clientSurveyQuestionFields = (questions) => {
   const result = questions.map((v) => SurveyQuestion({ ...v }));
   return result;
 };

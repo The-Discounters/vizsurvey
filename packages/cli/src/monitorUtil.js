@@ -11,7 +11,7 @@ export const drawStatus = (stats) => {
   });
   const firstColumnLabelWidth = 22;
   // note gauge width parameter doesn't include the suffix text which would be 9 characters if format is ### / ### (assumes we don't run more than 1,000 people)
-  const countOutOfWidth = 9;
+  const countOutOfWidth = 10;
 
   let centerTitleTextWidth = Math.floor((outputBuffer.width() - 49) / 2); // centers the text
   title = new clui.Line(outputBuffer)
@@ -79,7 +79,7 @@ export const drawStatus = (stats) => {
         firstColumnLabelWidth + Math.floor(treatmentColWidth / 2) - 1,
         [clc.yellow]
       );
-      stats.treatments.forEach((treatmentId) => {
+      stats.treatments.forEach((noQuestions, treatmentId) => {
         line.column(`${treatmentId}`, treatmentColWidth - 1, [clc.yellow]);
       });
       line.fill().store();
@@ -89,16 +89,20 @@ export const drawStatus = (stats) => {
         [clc.green]
       );
       stats.countsForStatus(status).forEach((count, treatmentId) => {
-        line.column(
-          clui.Gauge(
-            count,
-            stats.totalParticipants,
-            treatmentColWidth - 9,
-            stats.totalParticipants,
-            `${count} / ${stats.totalParticipants}`
-          ),
-          treatmentColWidth
-        );
+        line
+          .column(
+            clui.Gauge(
+              count,
+              stats.totalParticipants,
+              treatmentColWidth - countOutOfWidth,
+              stats.totalParticipants,
+              `${count} / ${
+                stats.totalParticipants * stats.treatments.get(treatmentId)
+              }`
+            ),
+            treatmentColWidth
+          )
+          .column("", 1);
       });
       line.fill().store();
     } else {

@@ -24,13 +24,18 @@ import {
 } from "../features/questionSlice.js";
 import { dateToState } from "@the-discounters/util";
 
-import { styles, theme, calcScreenValues } from "./ScreenHelper.js";
+import { styles, theme } from "./ScreenHelper.js";
 import { AmountType } from "@the-discounters/types";
 import { MELWordComponent } from "./MELWordComponent.js";
 import { MELBarChartComponent } from "./MELBarChartComponent.js";
 import { StatusType } from "@the-discounters/types";
 import { drawCalendar } from "./CalendarHelper.js";
 import { drawCalendarYear } from "./CalendarYearHelper.js";
+// import { ReactComponent as LeftArrowKey } from "../assets/leftarrow.svg";
+// import { ReactComponent as RightArrowKey } from "../assets/rightarrow.svg";
+import { ReactComponent as EnterKey } from "../assets/enter.svg";
+import { ReactComponent as LeftArrowKey } from "../assets/leftarrow.svg";
+import { ReactComponent as RightArrowKey } from "../assets/rightarrow.svg";
 
 const ChoiceInstructions = () => {
   const dispatch = useDispatch();
@@ -42,18 +47,9 @@ const ChoiceInstructions = () => {
   const [choice, setChoice] = useState(AmountType.none);
   const [disableSubmit, setDisableSubmit] = React.useState(true);
   const [error, setError] = React.useState(false);
-  const [helperText, setHelperText] = React.useState("");
+  const [helperText, setHelperText] = React.useState(" ");
   const [showNextPrevious, setShowNextPrevious] = useState(false);
   const status = useSelector(getStatus);
-
-  const { totalSVGWidth, totalSVGHeight } = calcScreenValues(
-    instructionTreatment.horizontalPixels,
-    instructionTreatment.verticalPixels,
-    instructionTreatment.leftMarginWidthIn,
-    instructionTreatment.graphWidthIn,
-    instructionTreatment.bottomMarginHeightIn,
-    instructionTreatment.graphHeightIn
-  );
 
   useEffect(() => {
     dispatch(MCLInstructionsShown(dateToState(DateTime.now())));
@@ -73,7 +69,7 @@ const ChoiceInstructions = () => {
             "Press the left arrow key to select the earlier amount and the right arrow key to select the later amount."
           );
         } else {
-          setHelperText("");
+          setHelperText(" ");
           setError(false);
           dispatch(MCLInstructionsCompleted(dateToState(DateTime.now())));
         }
@@ -103,7 +99,7 @@ const ChoiceInstructions = () => {
       choice === AmountType.laterAmount
     ) {
       setError(false);
-      setHelperText("");
+      setHelperText(" ");
       setDisableSubmit(false);
     } else {
       setDisableSubmit(true);
@@ -118,15 +114,6 @@ const ChoiceInstructions = () => {
     navigate(path);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status]);
-
-  /**
-   * @returns The name of the animated gif filename to show in the instructions page.
-   */
-  const gifFilename = () => {
-    const randIndex = Math.floor(Math.random() * 2);
-    const randAmountType = AmountType[Object.keys(AmountType)[randIndex + 1]];
-    return `${instructionTreatment.instructionGifPrefix}-${randAmountType}.gif`;
-  };
 
   const instructions = (description, gifAltText, tryLeftDesc, tryRightDesc) => {
     return (
@@ -148,41 +135,29 @@ const ChoiceInstructions = () => {
         <Typography paragraph>
           The amount and delay time for each option will be represented as{" "}
           {description}. You will make your choice by using keys on your
-          keyboard (not your mouse). Press the left arrow key{" "}
-          <img
-            src="leftarrow.png"
-            alt="left arrow keyboard key"
-            width="40px"
-            height="40px"
-          ></img>{" "}
-          to choose the earlier amount or the right arrow key{" "}
-          <img
-            src="rightarrow.png"
-            alt="right arrow keyboard key"
-            width="40px"
-            height="40px"
-          ></img>{" "}
-          to choose the later amount then press the enter key{" "}
-          <img
-            src="enterkey.png"
-            alt="enter keyboard key"
-            width="75px"
-            height="40px"
-          ></img>{" "}
-          to accept your choice and advance to the next question. You must make
-          a selection to proceed onto the next question. You can not make your
-          money choice selection using a mouse and must use the left or right
-          arrow keys and the enter key. You can use a mouse to answer the
-          additional survey questions after the money choice questions.
+          keyboard (not your mouse). Press the{" "}
+          <b>
+            left arrow key <LeftArrowKey /> to choose the earlier amount
+          </b>{" "}
+          or the{" "}
+          <b>
+            right arrow key <RightArrowKey /> to choose the later amount
+          </b>{" "}
+          then press the{" "}
+          <b>
+            enter key <EnterKey /> to accept your choice and advance to the next
+            question.{" "}
+          </b>{" "}
+          You must make a selection to proceed onto the next question. You can
+          not make your money choice selection using a mouse and{" "}
+          <b>must use the left or right arrow keys and the enter key.</b> You
+          can use a mouse to answer the additional survey questions after the
+          money choice questions.
         </Typography>
-        <Typography paragraph align="center">
-          <img
-            src={gifFilename()}
-            alt={gifAltText}
-            width={totalSVGWidth}
-            height={totalSVGHeight}
-          ></img>
+        <Typography component={"span"} align="center">
+          {vizDemo()}
         </Typography>
+        <Typography paragraph></Typography>
         <Typography paragraph>
           <b>Try it out below: </b>
           In the example below, the {tryLeftDesc} represents the choice of
@@ -282,6 +257,17 @@ const ChoiceInstructions = () => {
     );
   };
 
+  const showSelectionHint = (selection) => {
+    let errorMsg;
+    if (selection === AmountType.earlierAmount) {
+      errorMsg = "To choose the earlier amount use the left arrow key.";
+    } else if (selection === AmountType.laterAmount) {
+      errorMsg = "To choose the later amount use the right arrow key.";
+    }
+    setHelperText(errorMsg);
+    setError(true);
+  };
+
   const vizTry = () => {
     switch (instructionTreatment.viewType) {
       case ViewType.word:
@@ -332,6 +318,47 @@ const ChoiceInstructions = () => {
             bottomMarginHeightIn={instructionTreatment.bottomMarginHeightIn}
             graphHeightIn={instructionTreatment.graphHeightIn}
             showMinorTicks={instructionTreatment.showMinorTicks}
+            onClickCallback={(selection) => {
+              showSelectionHint(selection);
+            }}
+            onHoverOverSelection={(selection) => {
+              showSelectionHint(selection);
+            }}
+            onHoverOutSelection={(selection) => {
+              setHelperText(" ");
+              setError(false);
+            }}
+          />
+        );
+      case ViewType.calendarBar:
+        return "";
+      case ViewType.calendarWord:
+        return <DrawCalendar />;
+      case ViewType.calendarWordYear:
+      case ViewType.calendarWordYearDual:
+        return <DrawCalendarYear />;
+      case ViewType.calendarIcon:
+        return "";
+      default:
+        return "";
+    }
+  };
+
+  const vizDemo = () => {
+    switch (instructionTreatment.viewType) {
+      case ViewType.word:
+        return (
+          <MELWordComponent
+            textShort={"MELRadioGroup"}
+            error={error}
+            amountEarlier={instructionTreatment.amountEarlier}
+            timeEarlier={instructionTreatment.timeEarlier}
+            dateEarlier={instructionTreatment.dateEarlier}
+            amountLater={instructionTreatment.amountLater}
+            timeLater={instructionTreatment.timeLater}
+            dateLater={instructionTreatment.dateLater}
+            helperText={helperText}
+            choice={choice}
             onClickCallback={(value) => {
               let errorMsg;
               if (value === AmountType.earlierAmount) {
@@ -343,6 +370,39 @@ const ChoiceInstructions = () => {
               }
               setHelperText(errorMsg);
               setError(true);
+            }}
+          />
+        );
+      case ViewType.barchart:
+        return (
+          <MELBarChartComponent
+            error={error}
+            helperText={helperText}
+            maxTime={instructionTreatment.maxTime}
+            maxAmount={instructionTreatment.maxAmount}
+            interaction={instructionTreatment.interaction}
+            variableAmount={instructionTreatment.variableAmount}
+            amountEarlier={instructionTreatment.amountEarlier}
+            timeEarlier={instructionTreatment.timeEarlier}
+            amountLater={instructionTreatment.amountLater}
+            timeLater={instructionTreatment.timeLater}
+            choice={choice}
+            horizontalPixels={instructionTreatment.horizontalPixels}
+            verticalPixels={instructionTreatment.verticalPixels}
+            leftMarginWidthIn={instructionTreatment.leftMarginWidthIn}
+            graphWidthIn={instructionTreatment.graphWidthIn}
+            bottomMarginHeightIn={instructionTreatment.bottomMarginHeightIn}
+            graphHeightIn={instructionTreatment.graphHeightIn}
+            showMinorTicks={instructionTreatment.showMinorTicks}
+            onClickCallback={(selection) => {
+              showSelectionHint(selection);
+            }}
+            onHoverOverSelection={(selection) => {
+              showSelectionHint(selection);
+            }}
+            onHoverOutSelection={(selection) => {
+              setHelperText(" ");
+              setError(false);
             }}
           />
         );

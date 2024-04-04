@@ -130,7 +130,6 @@ const GenTreatmentId = () => {
 };
 
 const DevHome = () => {
-  console.log("in DevHome");
   const dispatch = useDispatch();
   return (
     <div id="home-text">
@@ -161,7 +160,7 @@ const DevHome = () => {
           <p>
             And for staging is where participant_id must be unique for the
             study_id
-            https://staging.d2ptxb5fbsc082.amplifyapp.com/start??participant_id=1&session_id=4&study_id=testbetween
+            https://staging.d2ptxb5fbsc082.amplifyapp.com/start?participant_id=1&session_id=4&study_id=testbetween
           </p>
           <p>
             And for localhost with the particpant_id must be unique for the

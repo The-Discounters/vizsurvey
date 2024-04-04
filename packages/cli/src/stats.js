@@ -12,17 +12,23 @@ export class Stats {
 
   constructor(treatments, totalParticipants) {
     this.#totalParticipants = totalParticipants;
-    this.#treatments = treatments;
+    this.#treatments = new Map(treatments);
 
     this.#stats = new Map(
-      Object.entries(StatusType).map(([key, value]) => [
-        value,
-        value === StatusType.Survey ||
-        value === StatusType.Debrief ||
-        value === StatusType.Finished
-          ? new Map([...this.#treatments].map((treatment) => [treatment, 0]))
-          : 0,
-      ])
+      Object.entries(StatusType).map(([key, value]) => {
+        let entry;
+        if (
+          value === StatusType.Survey ||
+          value === StatusType.Debrief ||
+          value === StatusType.Finished
+        ) {
+          entry = new Map(treatments);
+          entry.forEach((counts, treatmentId, map) => map.set(treatmentId, 0));
+        } else {
+          entry = 0;
+        }
+        return [value, entry];
+      })
     );
   }
 
@@ -58,21 +64,22 @@ export class Stats {
         status === StatusType.Debrief ||
         status === StatusType.Finished
       ) {
-        this.#treatments.forEach((treatmentId) => {
+        this.#treatments.forEach((noQuestions, treatmentId) => {
           const participants = participantsByStatus.get(status);
+          const questionCount = participants
+            ? participantsByStatus
+                .get(status)
+                .reduce(
+                  (pv, cv) =>
+                    pv +
+                    cv.questions.filter((p) => p.treatmentId === treatmentId)
+                      .length,
+                  0
+                )
+            : 0;
           this.countsForStatus(status).set(
             treatmentId,
-            participants
-              ? participantsByStatus
-                  .get(status)
-                  .reduce(
-                    (pv, cv) =>
-                      pv +
-                      cv.questions.filter((p) => p.treatmentId === treatmentId)
-                        .length,
-                    0
-                  )
-              : 0
+            this.countsForStatus(status).get(treatmentId) + questionCount
           );
         });
       } else {

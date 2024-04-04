@@ -78,11 +78,11 @@ export function MELWordComponent(props) {
               <FormControlLabel
                 sx={{
                   mr: "100px",
-                  backgroundColor:
-                    props.choice === key ? "lightblue" : "steelblue",
+                  border: 1,
+                  backgroundColor: props.choice === key ? "lightblue" : "none",
                   borderRadius: "20px",
-                  borderWidth: "5px",
-                  borderColor: props.choice === key ? "#000000" : "#ffffff",
+                  borderWidth: "1px",
+                  borderColor: "black",
                   color: "black",
                   paddingRight: "10px",
                 }}

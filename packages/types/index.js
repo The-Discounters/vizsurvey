@@ -28,12 +28,13 @@ import {
   setAllPropertiesEmpty,
   setUndefinedPropertiesNull,
   convertKeysUnderscoreToCamelCase,
-  injectSurveyQuestionFields,
+  clientSurveyQuestionFields,
   flattenArrayToObject,
   removeUndefinedOrNullProperties,
   convertFields,
 } from "./src/ObjectUtil.js";
 import { StatusType, nextStatus } from "./src/StatusType.js";
+import { QuestionOrderType } from "./src/QuestionOrderType.js";
 
 export {
   AmountType,
@@ -62,7 +63,7 @@ export {
   CSVDataFilenameFromKey,
   stateFilename,
   stateFormatFilename,
-  injectSurveyQuestionFields,
+  clientSurveyQuestionFields,
   flattenArrayToObject,
   removeUndefinedOrNullProperties,
   injectKey,
@@ -70,4 +71,5 @@ export {
   StatusType,
   nextStatus,
   convertFields,
+  QuestionOrderType,
 };

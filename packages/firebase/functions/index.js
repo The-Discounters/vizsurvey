@@ -12,7 +12,6 @@ import { logger } from "firebase-functions";
 import { onRequest } from "firebase-functions/v2/https";
 import { stateToDate } from "@the-discounters/util";
 import {
-  StatusType,
   Experiment,
   ServerStatusType,
   StatusError,
@@ -21,6 +20,7 @@ import {
   readParticipant,
   updateParticipant,
   createAuditLogEntry,
+  readExperiment,
   readExperimentAndQuestions,
 } from "@the-discounters/firebase-shared";
 import {
@@ -169,9 +169,7 @@ export const updateState = onRequest(
           reason: ServerStatusType.invalid,
         });
       }
-      const exp = await validateExperiment(
-        await readExperimentAndQuestions(db, studyId)
-      );
+      const exp = await validateExperiment(await readExperiment(db, studyId));
       logger.info(
         `updateState requestSequence=${requestSequence} fetched experiment ${exp.experimentId} for studyId=${studyId}, numParticipantsStarted = ${exp.numParticipantsStarted}, numParticipants = ${exp.numParticipants}, status = ${exp.status}, prolificPid = ${participantId}, sessionId = ${sessionId}`
       );

@@ -260,11 +260,18 @@ program
     const { db } = initializeDB();
     readExperimentAndQuestions(db, studyId)
       .then((exp) => {
-        let treatmentIds = new Set(
-          exp.treatmentQuestions
-            .map((item) => item.treatmentId)
-            .sort((a, b) => a - b)
-        );
+        let treatmentIds = exp.treatmentQuestions
+          .filter((question) => !question.instructionQuestion)
+          .sort((a, b) => a.treatmentId - b.treatmentId)
+          .reduce((acc, question) => {
+            acc.set(
+              question.treatmentId,
+              acc.has(question.treatmentId)
+                ? acc.get(question.treatmentId) + 1
+                : 1
+            );
+            return acc;
+          }, new Map());
         let stats = new Stats(treatmentIds, exp.numParticipants);
         subscribeParticipantUpdates(db, exp.path, (participants) => {
           stats.updateStats(participants);

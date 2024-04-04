@@ -6,7 +6,6 @@ import {
   filterQuestions,
   parseQuestions,
   orderQuestions,
-  orderQuestionsRandom,
   signupParticipant,
   validateExperiment,
   assignParticipantSequenceNumberXaction,
@@ -179,10 +178,10 @@ describe("functionsUtil test ", () => {
     assertCorrectOrder(result);
   });
 
-  it("Test for orderQuestionsRandom for within subject study (latin square 1, 2, 3]).", async () => {
+  it("Test for randomizeQuestionSequence for between subject study (latin square 1, 2, 3).", async () => {
     const grouped = group(SURVEY_QUESTIONS_JSON, (d) => d.instructionQuestion);
     const q = grouped.get(false);
-    let result = orderQuestionsRandom(q, [1, 2, 3]);
+    randomizeQuestionSequence(q);
     assert.notEqual(
       result,
       q,
@@ -190,13 +189,34 @@ describe("functionsUtil test ", () => {
     );
     assertCorrectOrder(result);
     const first = result.map((v) => v.treatmentQuestionId);
-    result = orderQuestionsRandom(q, [1, 2, 3]);
+    result = randomizeQuestionSequence(q, [1]);
     assertCorrectOrder(result);
     const second = result.map((v) => v.treatmentQuestionId);
     assert.notDeepEqual(
       first,
       second,
-      "Order of entries returned by orderQuestionsRandom was the same which is higly unlikely but possible."
+      "Order of entries returned by randomizeQuestionSequence was the same which is higly unlikely but possible."
+    );
+  });
+
+  it("Test for randomizeQuestionSequence for within subject study (latin square [1, 2, 3]).", async () => {
+    const grouped = group(SURVEY_QUESTIONS_JSON, (d) => d.instructionQuestion);
+    const q = grouped.get(false);
+    let result = randomizeQuestionSequence(q, [1, 2, 3]);
+    assert.notEqual(
+      result,
+      q,
+      "Array instance returned should not be the same as parameter value."
+    );
+    assertCorrectOrder(result);
+    const first = result.map((v) => v.treatmentQuestionId);
+    result = randomizeQuestionSequence(q, [1, 2, 3]);
+    assertCorrectOrder(result);
+    const second = result.map((v) => v.treatmentQuestionId);
+    assert.notDeepEqual(
+      first,
+      second,
+      "Order of entries returned by randomizeQuestionSequence was the same which is higly unlikely but possible."
     );
   });
 

@@ -45,7 +45,7 @@ export const calcScreenValues = (
     bottomOffSetUC = 100;
     barAreaWidthUC = totalUCWidth - leftOffSetUC;
     barAreaHeightUC = totalUCHeight - bottomOffSetUC;
-    barWidth = 40;
+    barWidth = 20;
   } else {
     // SVG thinks the resolution is 96 ppi when macbook is 132 ppi so we need to adjust by device pixel ratio
     const minScreenRes = Math.min(window.innerHeight, window.innerWidth);

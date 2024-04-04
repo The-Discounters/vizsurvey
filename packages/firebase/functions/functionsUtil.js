@@ -7,7 +7,7 @@ import {
   ServerStatusType,
   StatusError,
   setUndefinedPropertiesNull,
-  injectSurveyQuestionFields,
+  clientSurveyQuestionFields,
 } from "@the-discounters/types";
 import { ProlificSumbissionStatusType } from "@the-discounters/prolific";
 
@@ -58,18 +58,14 @@ const shuffleArray = (array) => {
   }
 };
 
-export const orderQuestionsRandom = (questions, treatmentIds) => {
-  const result = new Array();
-  const qbt = group(questions, (d) => d.treatmentId);
-  treatmentIds.forEach((id) => {
-    const q = qbt.get(id);
-    shuffleArray(q);
-    q.forEach((cv, i) => {
-      cv.sequenceId = i + 1;
-    });
-    result.push(...q);
+export const randomizeQuestionSequence = (questions) => {
+  const questionIds = Array.from(
+    questions.reduce((acc, q) => acc.add(q.questionId), new Set())
+  );
+  shuffleArray(questionIds);
+  questions.forEach((q) => {
+    q.sequenceId = questionIds.findIndex((qi) => qi === q.questionId) + 1;
   });
-  return result;
 };
 
 export const validateExperiment = (exp) => {
@@ -155,8 +151,16 @@ export const signupParticipant = async (
     exp.treatmentQuestions
   );
   let { instruction, survey } = parseQuestions(treatmentQuestions);
-  survey = injectSurveyQuestionFields(survey);
+  survey = clientSurveyQuestionFields(survey);
   survey = survey.map((v) => setUndefinedPropertiesNull(v));
+  if (exp.questionOrder === "random") {
+    randomizeQuestionSequence(survey);
+  } else if (exp.questionOrder !== "fixed") {
+    callback(
+      true,
+      `Experiment not setup correctly.  Was expecting a value of "fixed" or "random" for questionOrder and experiment was setup with "${exp.questionOrder}" for experiment id ${exp.experimentId} for participant id ${participantId}, study id ${studyId}, session id ${sessionId}`
+    );
+  }
   survey = orderQuestions(survey, treatmentIds);
   await createParticipant(
     db,

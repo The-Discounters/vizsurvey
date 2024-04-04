@@ -33,6 +33,8 @@ const drawBarChart = ({
   graphHeightIn,
   showMinorTicks,
   onClickCallback,
+  onHoverOverSelection,
+  onHoverOutSelection,
 }) => {
   const {
     totalUCWidth,
@@ -201,23 +203,23 @@ const drawBarChart = ({
     .attr("id", (d) => {
       return d.barType;
     })
+    .attr("stroke", "black")
     .attr("fill", (d) => {
-      return d.barType === choice ? "lightblue" : "steelblue";
+      return d.barType === choice ? "lightblue" : "white";
     })
+
     .attr("class", "bar")
     .attr("x", (d) => x(d.time) - barWidth / 2)
     .attr("y", (d) => y(d.amount))
     .attr("transform", `translate(${leftOffSetUC / 2},${bottomOffSetUC / 2})`)
     .attr("width", barWidth)
     .attr("height", (d) => y(0) - y(d.amount))
-    // .on("mouseover", function () {
-    //   d3.select(this).attr("fill", "lightblue");
-    // })
-    // .on("mouseout", function () {
-    //   d3.select(this).attr("fill", (d) => {
-    //     return d.barType === choice ? "lightblue" : "steelblue";
-    //   });
-    // })
+    .on("mouseover", function (d) {
+      onHoverOverSelection(d.target.__data__.barType);
+    })
+    .on("mouseout", function (d) {
+      onHoverOutSelection(d.target.__data__.barType);
+    })
     .on("click", function (d) {
       if (
         interaction === InteractionType.titration ||
@@ -321,6 +323,8 @@ export const MELBarChartComponent = (props) => {
               graphHeightIn: props.graphHeightIn,
               showMinorTicks: props.showMinorTicks,
               onClickCallback: props.onClickCallback,
+              onHoverOverSelection: props.onHoverOverSelection,
+              onHoverOutSelection: props.onHoverOutSelection,
             });
           },
           [props.choice]
