@@ -130,9 +130,9 @@ export function Survey() {
   const showSelectionHint = (selection) => {
     let errorMsg;
     if (selection === AmountType.earlierAmount) {
-      errorMsg = "To choose the earlier amount use the left arrow key.";
+      errorMsg = "To choose the earlier amount press the left arrow key.";
     } else if (selection === AmountType.laterAmount) {
-      errorMsg = "To choose the later amount use the right arrow key.";
+      errorMsg = "To choose the later amount press the right arrow key.";
     }
     setHelperText(errorMsg);
     setError(true);
@@ -201,10 +201,10 @@ export function Survey() {
                         let errorMsg;
                         if (value === AmountType.earlierAmount) {
                           errorMsg =
-                            "To choose the earlier amount use the left arrow key.";
+                            "To choose the earlier amount press the left arrow key.";
                         } else if (value === AmountType.laterAmount) {
                           errorMsg =
-                            "To choose the later amount use the right arrow key.";
+                            "To choose the later amount press the right arrow key.";
                         }
                         setHelperText(errorMsg);
                         setError(true);
@@ -230,10 +230,10 @@ export function Survey() {
                         let errorMsg;
                         if (value === AmountType.earlierAmount) {
                           errorMsg =
-                            "To choose the earlier amount use the left arrow key.";
+                            "To choose the earlier amount press the left arrow key.";
                         } else if (value === AmountType.laterAmount) {
                           errorMsg =
-                            "To choose the later amount use the right arrow key.";
+                            "To choose the later amount press the right arrow key.";
                         }
                         setHelperText(errorMsg);
                         setError(true);

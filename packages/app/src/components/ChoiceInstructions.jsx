@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Button,
@@ -118,53 +118,59 @@ const ChoiceInstructions = () => {
   const instructions = (description, gifAltText, tryLeftDesc, tryRightDesc) => {
     return (
       <React.Fragment>
-        <Typography paragraph>
-          You will be presented with a series of hypothetical choices of
-          receiving two different amounts of money at two different times. Both
-          amounts are in United States Dollars (USD) and both times are the
-          delay in months from now.{" "}
-          <b>
-            All amounts and delay times in the questions are hypothetical. We do
-            ask that you imagine to the best of your ability that you are in
-            this situation and need to make a choice between the two payments.
-            These are very realistic choices that can present themselves to
-            anyone, so for each question, please think which option you would
-            choose if you were truly in this situation.
-          </b>
-        </Typography>
-        <Typography paragraph>
-          The amount and delay time for each option will be represented as{" "}
-          {description}. You will make your choice by using keys on your
-          keyboard (not your mouse). Press the{" "}
-          <b>
-            left arrow key <LeftArrowKey /> to choose the earlier amount
-          </b>{" "}
-          or the{" "}
-          <b>
-            right arrow key <RightArrowKey /> to choose the later amount
-          </b>{" "}
-          then press the{" "}
-          <b>
-            enter key <EnterKey /> to accept your choice and advance to the next
-            question.{" "}
-          </b>{" "}
-          You must make a selection to proceed onto the next question. You can
-          not make your money choice selection using a mouse and{" "}
-          <b>must use the left or right arrow keys and the enter key.</b> You
-          can use a mouse to answer the additional survey questions after the
-          money choice questions.
-        </Typography>
-        <Typography component={"span"} align="center">
-          {vizDemo()}
-        </Typography>
-        <Typography paragraph></Typography>
-        <Typography paragraph>
-          <b>Try it out below: </b>
-          In the example below, the {tryLeftDesc} represents the choice of
-          receiving $300 two months from now and the {tryRightDesc} receiving
-          $700 seven months from now. Select the earlier amount by pressing the
-          left arrow key and later amount by pressing the right arrow key.
-        </Typography>
+        <Grid
+          container
+          direction="column"
+          justifyContent="flex-start"
+          alignItems="stretch"
+        >
+          <Grid item xs={12}>
+            You will be presented with a series of hypothetical choices of
+            receiving two different amounts of money at two different times.
+            Both amounts are in United States Dollars (USD) and both times are
+            the delay in months from today.{" "}
+            <b>
+              All amounts and delay times in the questions are hypothetical. We
+              do ask that you imagine to the best of your ability that you are
+              in this situation and need to make a choice between the two
+              payments. These are very realistic choices that can present
+              themselves to anyone, so for each question, please think which
+              option you would choose if you were truly in this situation.
+            </b>
+          </Grid>
+          <Grid item xs={12}>
+            The amount and delay time for each option will be represented as{" "}
+            {description}. You will make your choice by using keys on your
+            keyboard (not your mouse). Press the{" "}
+            <b>
+              left arrow key <LeftArrowKey /> to choose the earlier amount
+            </b>{" "}
+            or the{" "}
+            <b>
+              right arrow key <RightArrowKey /> to choose the later amount
+            </b>{" "}
+            then press the{" "}
+            <b>
+              enter key <EnterKey /> to accept your choice and advance to the
+              next question.{" "}
+            </b>{" "}
+            You must make a selection to proceed onto the next question. You can
+            not make your money choice selection using a mouse and{" "}
+            <b>must use the left or right arrow keys and the enter key.</b> You
+            can use a mouse to answer the additional survey questions after the
+            money choice questions.
+          </Grid>
+          <Grid align="center" item xs={12}>
+            <VizDemo />
+          </Grid>
+          <Grid item xs={12}>
+            <b>Try it out below: </b>
+            In the example below, the {tryLeftDesc} represents the choice of
+            receiving $300 two months from now and the {tryRightDesc} receiving
+            $700 seven months from now. Select the earlier amount by pressing
+            the left arrow key and later amount by pressing the right arrow key.
+          </Grid>
+        </Grid>
       </React.Fragment>
     );
   };
@@ -260,9 +266,9 @@ const ChoiceInstructions = () => {
   const showSelectionHint = (selection) => {
     let errorMsg;
     if (selection === AmountType.earlierAmount) {
-      errorMsg = "To choose the earlier amount use the left arrow key.";
+      errorMsg = "To choose the earlier amount press the left arrow key.";
     } else if (selection === AmountType.laterAmount) {
-      errorMsg = "To choose the later amount use the right arrow key.";
+      errorMsg = "To choose the later amount press the right arrow key.";
     }
     setHelperText(errorMsg);
     setError(true);
@@ -287,10 +293,10 @@ const ChoiceInstructions = () => {
               let errorMsg;
               if (value === AmountType.earlierAmount) {
                 errorMsg =
-                  "To choose the earlier amount use the left arrow key.";
+                  "To choose the earlier amount press the left arrow key.";
               } else if (value === AmountType.laterAmount) {
                 errorMsg =
-                  "To choose the later amount use the right arrow key.";
+                  "To choose the later amount press the right arrow key.";
               }
               setHelperText(errorMsg);
               setError(true);
@@ -344,7 +350,19 @@ const ChoiceInstructions = () => {
     }
   };
 
-  const vizDemo = () => {
+  const VizDemo = () => {
+    const ref = useRef();
+
+    // This is simply an example that demonstrates
+    // how you can dispatch an event on the element.
+    useEffect(() => {
+      // ref.dispatchEvent(
+      //   new KeyboardEvent("keypress", {
+      //     key: "ArrowLeft",
+      //   })
+      // );
+    }, []);
+
     switch (instructionTreatment.viewType) {
       case ViewType.word:
         return (
@@ -363,10 +381,10 @@ const ChoiceInstructions = () => {
               let errorMsg;
               if (value === AmountType.earlierAmount) {
                 errorMsg =
-                  "To choose the earlier amount use the left arrow key.";
+                  "To choose the earlier amount press the left arrow key.";
               } else if (value === AmountType.laterAmount) {
                 errorMsg =
-                  "To choose the later amount use the right arrow key.";
+                  "To choose the later amount press the right arrow key.";
               }
               setHelperText(errorMsg);
               setError(true);

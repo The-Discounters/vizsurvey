@@ -7,6 +7,7 @@ import {
   RadioGroup,
   Box,
 } from "@mui/material";
+import Tooltip from "@mui/material/Tooltip";
 import { format } from "d3";
 import { AmountType } from "@the-discounters/types";
 
@@ -75,29 +76,33 @@ export function MELWordComponent(props) {
                 label: question2ndPartText(props.amountLater, props.timeLater),
               },
             ].map(({ key, label }, index) => (
-              <FormControlLabel
-                sx={{
-                  mr: "100px",
-                  border: 1,
-                  backgroundColor: props.choice === key ? "lightblue" : "none",
-                  borderRadius: "20px",
-                  borderWidth: "1px",
-                  borderColor: "black",
-                  color: "black",
-                  paddingRight: "10px",
-                }}
-                key={key}
-                id={key}
-                value={key}
-                checked={props.choice === key}
-                control={<Radio />}
-                label={label}
-                // className={
-                //   classes[
-                //     "btn" + (props.choice === key ? index + "Clicked" : index)
-                //   ]
-                // }
-              />
+              <Tooltip
+                title={
+                  key === "earlierAmount"
+                    ? "Press the left arrow to select earlier amount"
+                    : "Press the right arrow to select later amount"
+                }
+              >
+                <FormControlLabel
+                  sx={{
+                    mr: "100px",
+                    border: 1,
+                    backgroundColor:
+                      props.choice === key ? "lightblue" : "none",
+                    borderRadius: "20px",
+                    borderWidth: "1px",
+                    borderColor: "black",
+                    color: "black",
+                    paddingRight: "10px",
+                  }}
+                  key={key}
+                  id={key}
+                  value={key}
+                  checked={props.choice === key}
+                  control={<Radio />}
+                  label={label}
+                />
+              </Tooltip>
             ))}
           </RadioGroup>
         </Box>
