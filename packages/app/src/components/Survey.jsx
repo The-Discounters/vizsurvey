@@ -12,6 +12,8 @@ import {
 import { dateToState } from "@the-discounters/util";
 import { StatusType } from "@the-discounters/types";
 import { ViewType } from "@the-discounters/types";
+import { useTranslation } from "react-i18next";
+
 import { useKeyDown } from "../hooks/useKeydown.js";
 import {
   getCurrentQuestion,
@@ -33,6 +35,8 @@ import { navigateFromStatus } from "./Navigate.js";
 export function Survey() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { t } = useTranslation();
+
   const [error, setError] = useState(false);
   const [helperText, setHelperText] = useState(" ");
   const q = useSelector(getCurrentQuestion);
@@ -130,9 +134,9 @@ export function Survey() {
   const showSelectionHint = (selection) => {
     let errorMsg;
     if (selection === AmountType.earlierAmount) {
-      errorMsg = "To choose the earlier amount press the left arrow key.";
+      errorMsg = t("leftArrowTooltip");
     } else if (selection === AmountType.laterAmount) {
-      errorMsg = "To choose the later amount press the right arrow key.";
+      errorMsg = t("rightArrowTooltip");
     }
     setHelperText(errorMsg);
     setError(true);
@@ -200,11 +204,9 @@ export function Survey() {
                       onClickCallback={(value) => {
                         let errorMsg;
                         if (value === AmountType.earlierAmount) {
-                          errorMsg =
-                            "To choose the earlier amount press the left arrow key.";
+                          errorMsg = t("leftArrowTooltip");
                         } else if (value === AmountType.laterAmount) {
-                          errorMsg =
-                            "To choose the later amount press the right arrow key.";
+                          errorMsg = t("rightArrowTooltip");
                         }
                         setHelperText(errorMsg);
                         setError(true);
@@ -229,11 +231,9 @@ export function Survey() {
                       onClickCallback={(value) => {
                         let errorMsg;
                         if (value === AmountType.earlierAmount) {
-                          errorMsg =
-                            "To choose the earlier amount press the left arrow key.";
+                          errorMsg = t("leftArrowTooltip");
                         } else if (value === AmountType.laterAmount) {
-                          errorMsg =
-                            "To choose the later amount press the right arrow key.";
+                          errorMsg = t("rightArrowTooltip");
                         }
                         setHelperText(errorMsg);
                         setError(true);

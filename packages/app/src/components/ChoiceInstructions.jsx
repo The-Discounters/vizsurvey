@@ -23,6 +23,7 @@ import {
   getExperiment,
 } from "../features/questionSlice.js";
 import { dateToState } from "@the-discounters/util";
+import { useTranslation } from "react-i18next";
 
 import { styles, theme } from "./ScreenHelper.js";
 import { AmountType } from "@the-discounters/types";
@@ -43,6 +44,7 @@ const ChoiceInstructions = () => {
   const instructionTreatment = useSelector(getInstructionTreatment);
   const experiment = useSelector(getExperiment);
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const [choice, setChoice] = useState(AmountType.none);
   const [disableSubmit, setDisableSubmit] = React.useState(true);
@@ -266,9 +268,9 @@ const ChoiceInstructions = () => {
   const showSelectionHint = (selection) => {
     let errorMsg;
     if (selection === AmountType.earlierAmount) {
-      errorMsg = "To choose the earlier amount press the left arrow key.";
+      errorMsg = t("leftArrowTooltip");
     } else if (selection === AmountType.laterAmount) {
-      errorMsg = "To choose the later amount press the right arrow key.";
+      errorMsg = t("rightArrowTooltip");
     }
     setHelperText(errorMsg);
     setError(true);
@@ -292,11 +294,9 @@ const ChoiceInstructions = () => {
             onClickCallback={(value) => {
               let errorMsg;
               if (value === AmountType.earlierAmount) {
-                errorMsg =
-                  "To choose the earlier amount press the left arrow key.";
+                errorMsg = t("leftArrowTooltip");
               } else if (value === AmountType.laterAmount) {
-                errorMsg =
-                  "To choose the later amount press the right arrow key.";
+                errorMsg = t("righArrowTooltip");
               }
               setHelperText(errorMsg);
               setError(true);
@@ -380,11 +380,9 @@ const ChoiceInstructions = () => {
             onClickCallback={(value) => {
               let errorMsg;
               if (value === AmountType.earlierAmount) {
-                errorMsg =
-                  "To choose the earlier amount press the left arrow key.";
+                errorMsg = t("leftArrowTooltip");
               } else if (value === AmountType.laterAmount) {
-                errorMsg =
-                  "To choose the later amount press the right arrow key.";
+                errorMsg = t("rightArrowTooltip");
               }
               setHelperText(errorMsg);
               setError(true);

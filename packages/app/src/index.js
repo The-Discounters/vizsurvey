@@ -8,6 +8,8 @@ import { ServiceAPIProvider } from "./app/ReactContext.js";
 import "./index.css";
 import App from "./App.js";
 import reportWebVitals from "./reportWebVitals.js";
+// import i18n (needs to be bundled ;))
+import "./i18n";
 
 enableAllPlugins();
 
