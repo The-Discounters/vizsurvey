@@ -30,13 +30,13 @@ describe("QuestionEngine tests", () => {
       StatusType.Instructions
     );
     expect((state.status = qe.nextStatus(state, false, false))).toBe(
-      StatusType.ChoiceInstructions
+      StatusType.MELQuestionInstructions
     );
     expect((state.status = qe.nextStatus(state, false, false))).toBe(
       StatusType.Survey
     );
     expect((state.status = qe.nextStatus(state, true, false))).toBe(
-      StatusType.ChoiceInstructions
+      StatusType.MELQuestionInstructions
     );
     expect((state.status = qe.nextStatus(state, true, false))).toBe(
       StatusType.Survey
@@ -131,7 +131,7 @@ describe("QuestionEngine tests", () => {
     qe.incNextQuestion(state);
     expect(state.currentAnswerIdx).toBe(2);
     expect(qe.currentAnswer(state).treatmentId).toBe(2);
-    expect(state.status).toBe(StatusType.ChoiceInstructions);
+    expect(state.status).toBe(StatusType.MELQuestionInstructions);
     qe.incNextQuestion(state);
     expect(qe.currentAnswer(state).treatmentId).toBe(2);
     expect(state.currentAnswerIdx).toBe(3);

@@ -20,7 +20,7 @@ describe("ConversionUtil test.", () => {
     // but we want to report them in utc format
     const strLocal = nowLocal.toString();
     // TODO we need to account for daylight savings instead of manually updating.
-    expect(strLocal.slice(-6)).toBe("-05:00");
+    expect(strLocal.slice(-6)).toBe("-04:00");
   });
 
   // we need to be able to convert from a date object to a primitive while

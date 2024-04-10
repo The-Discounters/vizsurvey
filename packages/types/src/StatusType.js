@@ -3,7 +3,7 @@ export const StatusType = {
   Fetching: "fetching",
   Consent: "consent",
   Instructions: "instruction",
-  ChoiceInstructions: "choiceinstructions",
+  MELQuestionInstructions: "melquestioninstructions",
   Survey: "survey",
   Attention: "attention",
   ExperienceQuestionaire: "experiencequestionaire",
@@ -25,14 +25,14 @@ export const nextStatus = (status, onLastQuestion, onLastTreatmentQuestion) => {
     case StatusType.Consent:
       return StatusType.Instructions;
     case StatusType.Instructions:
-      return StatusType.ChoiceInstructions;
-    case StatusType.ChoiceInstructions:
+      return StatusType.MELQuestionInstructions;
+    case StatusType.MELQuestionInstructions:
       return StatusType.Survey;
     case StatusType.Survey:
       if (onLastQuestion) {
         return StatusType.ExperienceQuestionaire;
       } else if (onLastTreatmentQuestion) {
-        return StatusType.ChoiceInstructions;
+        return StatusType.MELQuestionInstructions;
       } else {
         return StatusType.Survey;
       }

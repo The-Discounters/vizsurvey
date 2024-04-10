@@ -11,7 +11,7 @@ import { Container } from "@mui/material";
 import chalk from "chalk";
 import "./App.css";
 import { navigateFromStatus } from "./components/Navigate.js";
-import ChoiceInstructions from "./components/ChoiceInstructions.jsx";
+import MELQuestionInstructions from "./components/MELQuestionInstructions.jsx";
 import Demographic from "./components/Demographic.jsx";
 import Instructions from "./components/Instructions.jsx";
 import Survey from "./components/Survey.jsx";
@@ -66,8 +66,8 @@ const App = () => {
             <Route path="/consent" element={<Consent />} />
             <Route path="/demographic" element={<Demographic />} />
             <Route
-              path="/choiceinstructions"
-              element={<ChoiceInstructions />}
+              path="/melquestioninstructions"
+              element={<MELQuestionInstructions />}
             />
             <Route path="/instruction" element={<Instructions />} />
             <Route path="/survey" element={<Survey />} />

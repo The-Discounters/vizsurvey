@@ -1,6 +1,6 @@
 import { strict as assert } from "assert";
 import { assertSucceeds } from "@firebase/rules-unit-testing";
-import { SURVEY_QUESTIONS_JSON } from "@the-discounters/test-shared";
+import { TEST_WITHIN_SURVEY_QUESTIONS } from "@the-discounters/test-shared";
 import { deleteCollection } from "@the-discounters/firebase-test-shared";
 import { Participant } from "@the-discounters/types";
 // TODO can we fix this import so that it comes from an env var?
@@ -355,7 +355,7 @@ describe("firestoreAdmin test ", () => {
       db.collection("functionsUtil-createAnswers-test").get()
     );
     const path = snapshot.docs[0].ref.path;
-    await createAnswers(db, path, 1, 2, SURVEY_QUESTIONS_JSON);
+    await createAnswers(db, path, 1, 2, TEST_WITHIN_SURVEY_QUESTIONS);
     snapshot = await assertSucceeds(db.collection(`${path}/answers`).get());
     assert.equal(
       snapshot.docs.length,

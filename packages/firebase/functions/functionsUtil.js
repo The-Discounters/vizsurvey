@@ -41,7 +41,6 @@ export const orderQuestions = (questions, treatmentIds) => {
     const psr = a.sequenceId - b.sequenceId;
     return tsr != 0 ? tsr : psr;
   });
-  return questions;
 };
 
 /**
@@ -161,7 +160,7 @@ export const signupParticipant = async (
       `Experiment not setup correctly.  Was expecting a value of "fixed" or "random" for questionOrder and experiment was setup with "${exp.questionOrder}" for experiment id ${exp.experimentId} for participant id ${participantId}, study id ${studyId}, session id ${sessionId}`
     );
   }
-  survey = orderQuestions(survey, treatmentIds);
+  orderQuestions(survey, treatmentIds);
   await createParticipant(
     db,
     exp.path,

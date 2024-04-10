@@ -9,13 +9,17 @@ import {
   signupParticipant,
   validateExperiment,
   assignParticipantSequenceNumberXaction,
+  randomizeQuestionSequence,
 } from "./functionsUtil.js";
 import {
   initFirestore,
   readExperimentAndQuestions,
   readExperimentDoc,
 } from "@the-discounters/firebase-shared";
-import { SURVEY_QUESTIONS_JSON } from "@the-discounters/test-shared";
+import {
+  TEST_WITHIN_SURVEY_QUESTIONS,
+  TEST_BETWEEN_SURVEY_QUESTIONS,
+} from "@the-discounters/test-shared";
 import { deleteCollection } from "@the-discounters/firebase-test-shared";
 // TODO can we fix this import so that it comes from an env var?
 import ADMIN_CREDS from "./admin-credentials-staging.json" assert { type: "json" };
@@ -124,17 +128,19 @@ describe("functionsUtil test ", () => {
   });
 
   it("Test for filterQuestions between subject study (treatmentIds array like [1]).", async () => {
-    const result = filterQuestions([1], SURVEY_QUESTIONS_JSON);
+    const result = filterQuestions([1], TEST_WITHIN_SURVEY_QUESTIONS);
     assert.equal(result.length, 9, "Returned array was not expected size.");
   });
 
   it("Test for filterQuestions for within subject study (treatmentIds array like [1,2,3]).", async () => {
-    const result = filterQuestions([1, 2, 3], SURVEY_QUESTIONS_JSON);
+    const result = filterQuestions([1, 2, 3], TEST_WITHIN_SURVEY_QUESTIONS);
     assert.equal(result.length, 27, "Returned array was not expected size.");
   });
 
   it("Test for parseQuestions.", async () => {
-    const { instruction, survey } = parseQuestions(SURVEY_QUESTIONS_JSON);
+    const { instruction, survey } = parseQuestions(
+      TEST_WITHIN_SURVEY_QUESTIONS
+    );
     assert.equal(
       instruction.length,
       3,
@@ -172,50 +178,93 @@ describe("functionsUtil test ", () => {
   };
 
   it("Test for orderQuestions for within subject study (latin square 1, 2, 3]).", async () => {
-    const grouped = group(SURVEY_QUESTIONS_JSON, (d) => d.instructionQuestion);
+    const grouped = group(
+      TEST_WITHIN_SURVEY_QUESTIONS,
+      (d) => d.instructionQuestion
+    );
     const q = grouped.get(false);
-    const result = orderQuestions(q, [1, 2, 3]);
-    assertCorrectOrder(result);
+    orderQuestions(q, [1, 2, 3]);
+    assertCorrectOrder(q);
   });
 
-  it("Test for randomizeQuestionSequence for between subject study (latin square 1, 2, 3).", async () => {
-    const grouped = group(SURVEY_QUESTIONS_JSON, (d) => d.instructionQuestion);
-    const q = grouped.get(false);
-    randomizeQuestionSequence(q);
-    assert.notEqual(
-      result,
-      q,
-      "Array instance returned should not be the same as parameter value."
+  it("Test for randomizeQuestionSequence for between subject study (latin square [[1],[2],[3]]).", async () => {
+    const grouped = group(
+      TEST_BETWEEN_SURVEY_QUESTIONS,
+      (d) => d.instructionQuestion
     );
-    assertCorrectOrder(result);
-    const first = result.map((v) => v.treatmentQuestionId);
-    result = randomizeQuestionSequence(q, [1]);
-    assertCorrectOrder(result);
-    const second = result.map((v) => v.treatmentQuestionId);
+    const q = grouped.get(false);
+    // I sorted by questionId since we don't actually need arrays sorted by sequence, just both in the same order to have a valid compare with notDeepEqual
+    const beforeSequence = q
+      .map((cv) => {
+        return {
+          questionId: cv.questionId,
+          treatmentId: cv.treatmentId,
+          sequenceId: cv.sequenceId,
+        };
+      })
+      .sort((a, b) => {
+        const tsr = a.treatmentId - b.treatmentId;
+        const psr = a.sequenceId - b.sequenceId;
+        return tsr != 0 ? tsr : psr;
+      });
+    randomizeQuestionSequence(q);
+    const afterSequence = q
+      .map((cv) => {
+        return {
+          questionId: cv.questionId,
+          treatmentId: cv.treatmentId,
+          sequenceId: cv.sequenceId,
+        };
+      })
+      .sort((a, b) => {
+        const tsr = a.treatmentId - b.treatmentId;
+        const psr = a.sequenceId - b.sequenceId;
+        return tsr != 0 ? tsr : psr;
+      });
     assert.notDeepEqual(
-      first,
-      second,
+      beforeSequence,
+      afterSequence,
       "Order of entries returned by randomizeQuestionSequence was the same which is higly unlikely but possible."
     );
   });
 
-  it("Test for randomizeQuestionSequence for within subject study (latin square [1, 2, 3]).", async () => {
-    const grouped = group(SURVEY_QUESTIONS_JSON, (d) => d.instructionQuestion);
-    const q = grouped.get(false);
-    let result = randomizeQuestionSequence(q, [1, 2, 3]);
-    assert.notEqual(
-      result,
-      q,
-      "Array instance returned should not be the same as parameter value."
+  it("Test for randomizeQuestionSequence for within subject study (latin square [[1, 2, 3], [1, 3, 2],[3, 1, 2],[3, 2, 1],[2, 3, 1],[2, 1, 3]]).", async () => {
+    const grouped = group(
+      TEST_WITHIN_SURVEY_QUESTIONS,
+      (d) => d.instructionQuestion
     );
-    assertCorrectOrder(result);
-    const first = result.map((v) => v.treatmentQuestionId);
-    result = randomizeQuestionSequence(q, [1, 2, 3]);
-    assertCorrectOrder(result);
-    const second = result.map((v) => v.treatmentQuestionId);
+    const q = grouped.get(false);
+    // I sorted by questionId since we don't actually need arrays sorted by sequence, just both in the same order to have a valid compare with notDeepEqual
+    const beforeSequence = q
+      .map((cv) => {
+        return {
+          questionId: cv.questionId,
+          treatmentId: cv.treatmentId,
+          sequenceId: cv.sequenceId,
+        };
+      })
+      .sort((a, b) => {
+        const tsr = a.treatmentId - b.treatmentId;
+        const psr = a.sequenceId - b.sequenceId;
+        return tsr != 0 ? tsr : psr;
+      });
+    randomizeQuestionSequence(q);
+    const afterSequence = q
+      .map((cv) => {
+        return {
+          questionId: cv.questionId,
+          treatmentId: cv.treatmentId,
+          sequenceId: cv.sequenceId,
+        };
+      })
+      .sort((a, b) => {
+        const tsr = a.treatmentId - b.treatmentId;
+        const psr = a.sequenceId - b.sequenceId;
+        return tsr != 0 ? tsr : psr;
+      });
     assert.notDeepEqual(
-      first,
-      second,
+      beforeSequence,
+      afterSequence,
       "Order of entries returned by randomizeQuestionSequence was the same which is higly unlikely but possible."
     );
   });

@@ -1,4 +1,4 @@
-import { SURVEY_QUESTIONS_JSON } from "@the-discounters/test-shared";
+import { TEST_WITHIN_SURVEY_QUESTIONS } from "@the-discounters/test-shared";
 import * as obj from "./ObjectUtil";
 
 describe("ObjectUtil test.", () => {
@@ -100,13 +100,17 @@ describe("ObjectUtil test.", () => {
   });
 
   it("Test injectFields.", async () => {
-    expect(SURVEY_QUESTIONS_JSON.length).toBe(27);
-    expect(SURVEY_QUESTIONS_JSON[0]).not.toHaveProperty("shownTimestamp");
-    expect(SURVEY_QUESTIONS_JSON[0]).not.toHaveProperty("dragAmount");
-    expect(SURVEY_QUESTIONS_JSON[0]).not.toHaveProperty("choice");
-    expect(SURVEY_QUESTIONS_JSON[0]).not.toHaveProperty("choiceTimestamp");
-    expect(SURVEY_QUESTIONS_JSON[0]).not.toHaveProperty("choiceTimeSec");
-    const result = obj.clientSurveyQuestionFields(SURVEY_QUESTIONS_JSON);
+    expect(TEST_WITHIN_SURVEY_QUESTIONS.length).toBe(27);
+    expect(TEST_WITHIN_SURVEY_QUESTIONS[0]).not.toHaveProperty(
+      "shownTimestamp"
+    );
+    expect(TEST_WITHIN_SURVEY_QUESTIONS[0]).not.toHaveProperty("dragAmount");
+    expect(TEST_WITHIN_SURVEY_QUESTIONS[0]).not.toHaveProperty("choice");
+    expect(TEST_WITHIN_SURVEY_QUESTIONS[0]).not.toHaveProperty(
+      "choiceTimestamp"
+    );
+    expect(TEST_WITHIN_SURVEY_QUESTIONS[0]).not.toHaveProperty("choiceTimeSec");
+    const result = obj.clientSurveyQuestionFields(TEST_WITHIN_SURVEY_QUESTIONS);
     expect(result.length).toBe(27);
     expect(result[0]).toHaveProperty("shownTimestamp");
     expect(result[0]).toHaveProperty("dragAmount");

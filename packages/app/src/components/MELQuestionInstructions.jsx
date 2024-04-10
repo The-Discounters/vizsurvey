@@ -32,13 +32,11 @@ import { MELBarChartComponent } from "./MELBarChartComponent.js";
 import { StatusType } from "@the-discounters/types";
 import { drawCalendar } from "./CalendarHelper.js";
 import { drawCalendarYear } from "./CalendarYearHelper.js";
-// import { ReactComponent as LeftArrowKey } from "../assets/leftarrow.svg";
-// import { ReactComponent as RightArrowKey } from "../assets/rightarrow.svg";
 import { ReactComponent as EnterKey } from "../assets/enter.svg";
 import { ReactComponent as LeftArrowKey } from "../assets/leftarrow.svg";
 import { ReactComponent as RightArrowKey } from "../assets/rightarrow.svg";
 
-const ChoiceInstructions = () => {
+const MELQuestionInstructions = () => {
   const dispatch = useDispatch();
   const treatment = useSelector(fetchCurrentTreatment);
   const instructionTreatment = useSelector(getInstructionTreatment);
@@ -513,4 +511,4 @@ const ChoiceInstructions = () => {
   );
 };
 
-export default ChoiceInstructions;
+export default MELQuestionInstructions;
