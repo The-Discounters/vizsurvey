@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Button,
@@ -349,8 +349,6 @@ const MELQuestionInstructions = () => {
   };
 
   const VizDemo = () => {
-    const ref = useRef();
-
     // This is simply an example that demonstrates
     // how you can dispatch an event on the element.
     useEffect(() => {
