@@ -34,38 +34,53 @@ export const MELBarChartComponent = (props) => {
     data: { values: data },
     width: props.horizontalPixels,
     height: props.verticalPixels,
+    encoding: {
+      x: {
+        field: "time",
+        type: "ordinal",
+        axis: {
+          title: "Months",
+          labelAngle: 0,
+          titleFontSize: 18,
+          labelFontSize: 15,
+        },
+      },
+      y: {
+        field: "amount",
+        type: "quantitative",
+        scale: { domain: [0, props.maxAmount] },
+        axis: {
+          title: "Amount USD",
+          format: "$,.0f",
+          titleFontSize: 18,
+          labelFontSize: 15,
+          minExtent: 50,
+        },
+      },
+    },
     layer: [
       {
         mark: "bar",
         encoding: {
-          x: {
-            field: "time",
-            type: "ordinal",
-            axis: {
-              title: "Months",
-              labelAngle: 0,
-              titleFontSize: 18,
-              labelFontSize: 15,
-            },
-          },
-          y: {
-            field: "amount",
-            type: "quantitative",
-            scale: { domain: [0, props.maxAmount] },
-            axis: {
-              title: "Amount USD",
-              format: "$,.0f",
-              titleFontSize: 18,
-              labelFontSize: 15,
-              minExtent: 50,
-            },
-          },
           fill: { value: "white" },
           stroke: { value: "black" },
           strokeWidth: {
             condition: { test: "datum['amount'] > 0", value: 1 },
             value: 0,
           },
+        },
+      },
+      {
+        mark: {
+          type: "text",
+          align: "center",
+          baseline: "bottom",
+          dx: 0,
+          dy: -10,
+          fontSize: 15,
+        },
+        encoding: {
+          text: { field: "amount", type: "quantitative" },
         },
       },
     ],
