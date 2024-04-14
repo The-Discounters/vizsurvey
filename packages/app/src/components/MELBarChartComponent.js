@@ -60,7 +60,9 @@ export const MELBarChartComponent = (props) => {
     },
     layer: [
       {
-        mark: "bar",
+        mark: {
+          type: "bar",
+        },
         encoding: {
           fill: { value: "white" },
           stroke: { value: "black" },
@@ -73,14 +75,20 @@ export const MELBarChartComponent = (props) => {
       {
         mark: {
           type: "text",
+        },
+        encoding: {
           align: "center",
           baseline: "bottom",
           dx: 0,
           dy: -10,
           fontSize: 15,
-        },
-        encoding: {
-          text: { field: "amount", type: "quantitative" },
+          text: {
+            condition: {
+              test: "datum.amount > 0",
+              value: { expr: "datum.amount" },
+            },
+            value: "",
+          },
         },
       },
     ],
