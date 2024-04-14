@@ -24,7 +24,6 @@ import {
 } from "../features/questionSlice.js";
 import { dateToState } from "@the-discounters/util";
 import { useTranslation } from "react-i18next";
-
 import { styles, theme } from "./ScreenHelper.js";
 import { AmountType } from "@the-discounters/types";
 import { MELWordComponent } from "./MELWordComponent.js";

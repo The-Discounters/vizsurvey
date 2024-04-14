@@ -1,9 +1,12 @@
 import React from "react";
 import { FormControl, FormHelperText } from "@mui/material";
 import { VegaLite } from "react-vega";
+import { useTranslation } from "react-i18next";
 import { AmountType } from "@the-discounters/types";
 
 export const MELBarChartComponent = (props) => {
+  const { t } = useTranslation();
+
   const data = Array.from(
     Array(props.showMinorTicks ? props.maxTime * 4 : props.maxTime + 1).keys()
   ).map((d) => {
@@ -13,19 +16,20 @@ export const MELBarChartComponent = (props) => {
       return {
         time: delay,
         amount: props.amountEarlier,
-        strokeWidth: 1,
+        title: t("leftArrowTooltip"),
+        image: "/leftarrow.svg",
       };
     } else if (isMajor && delay === props.timeLater) {
       return {
         time: delay,
         amount: props.amountLater,
-        strokeWidth: 1,
+        title: t("rightArrowTooltip"),
+        image: "/rightarrow.svg",
       };
     } else {
       return {
         time: delay,
         amount: 0,
-        strokeWidth: 0,
       };
     }
   });
@@ -70,6 +74,10 @@ export const MELBarChartComponent = (props) => {
             condition: { test: "datum['amount'] > 0", value: 1 },
             value: 0,
           },
+          tooltip: [
+            { field: "title", type: "nominal" },
+            { field: "image", type: "nominal" },
+          ],
         },
       },
       {
@@ -97,7 +105,7 @@ export const MELBarChartComponent = (props) => {
   return (
     <FormControl variant="standard" required={false} error={props.error}>
       <FormHelperText>{props.helperText}</FormHelperText>
-      <VegaLite spec={spec} />,
+      <VegaLite spec={spec} actions={false} />,
     </FormControl>
   );
 };

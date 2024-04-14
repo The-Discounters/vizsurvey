@@ -31,7 +31,11 @@
   padding: 1rem;
 }
 
-
 ::backdrop {
     background-color: white;
+}
+
+#vg-tooltip-element h2 {
+  font-size: 15px;
+  font-weight: bold;
 }

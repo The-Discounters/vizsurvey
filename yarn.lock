@@ -7202,6 +7202,7 @@ __metadata:
     redux-immutable-state-invariant: "npm:^2.1.0"
     serve: "npm:^14.2.1"
     vega: "npm:^5.28.0"
+    vega-embed: "npm:^6.25.0"
     vega-lite: "npm:^5.18.0"
     web-vitals: "npm:^1.1.2"
     webpack: "npm:^4.44.2"
@@ -30601,7 +30602,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vega-embed@npm:^6.5.1":
+"vega-embed@npm:^6.25.0, vega-embed@npm:^6.5.1":
   version: 6.25.0
   resolution: "vega-embed@npm:6.25.0"
   dependencies:
