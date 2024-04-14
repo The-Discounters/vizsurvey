@@ -75,17 +75,17 @@ export const MELBarChartComponent = (props) => {
       {
         mark: {
           type: "text",
-        },
-        encoding: {
           align: "center",
           baseline: "bottom",
           dx: 0,
           dy: -10,
           fontSize: 15,
+        },
+        encoding: {
           text: {
             condition: {
               test: "datum.amount > 0",
-              value: { expr: "datum.amount" },
+              value: { expr: "'$' + datum.amount" },
             },
             value: "",
           },
