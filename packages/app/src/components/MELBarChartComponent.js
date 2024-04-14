@@ -16,6 +16,7 @@ export const MELBarChartComponent = (props) => {
       return {
         time: delay,
         amount: props.amountEarlier,
+        chosen: props.choice === AmountType.earlierAmount,
         title: t("leftArrowTooltip"),
         image: "/leftarrow.svg",
       };
@@ -23,6 +24,7 @@ export const MELBarChartComponent = (props) => {
       return {
         time: delay,
         amount: props.amountLater,
+        chosen: props.choice === AmountType.laterAmount,
         title: t("rightArrowTooltip"),
         image: "/rightarrow.svg",
       };
@@ -30,6 +32,7 @@ export const MELBarChartComponent = (props) => {
       return {
         time: delay,
         amount: 0,
+        chosen: false,
       };
     }
   });
@@ -68,10 +71,13 @@ export const MELBarChartComponent = (props) => {
           type: "bar",
         },
         encoding: {
-          fill: { value: "white" },
+          fill: {
+            condition: { test: "datum.chosen", value: "lightblue" },
+            value: "white",
+          },
           stroke: { value: "black" },
           strokeWidth: {
-            condition: { test: "datum['amount'] > 0", value: 1 },
+            condition: { test: "datum.amount > 0", value: 1 },
             value: 0,
           },
           tooltip: [
