@@ -23,6 +23,8 @@ i18n
             "To choose the earlier amount press the left arrow key.",
           rightArrowTooltip:
             "To choose the later amount press the right arrow key.",
+          enterTooltip:
+            "Press the Enter key to accept your selection of {{choice}} and start the survey.",
         },
       },
     },

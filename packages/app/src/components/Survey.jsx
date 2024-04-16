@@ -265,11 +265,12 @@ export function Survey() {
               onClick={() => {
                 setError(true);
                 setHelperText(
-                  `Press the Enter key to accept your selection of ${
-                    choice === AmountType.earlierAmount
-                      ? "earlier amount"
-                      : "later amount"
-                  } and start the survey.`
+                  t("enterTooltip", {
+                    choice:
+                      choice === AmountType.earlierAmount
+                        ? "earlier amount"
+                        : "later amount",
+                  })
                 );
               }}
             >

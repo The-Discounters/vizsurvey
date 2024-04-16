@@ -6,6 +6,7 @@ import {
   Typography,
   ThemeProvider,
   StyledEngineProvider,
+  Tooltip,
 } from "@mui/material";
 import { useSelector, useDispatch } from "react-redux";
 import { DateTime } from "luxon";
@@ -31,9 +32,9 @@ import { MELBarChartComponent } from "./MELBarChartComponent.js";
 import { StatusType } from "@the-discounters/types";
 import { drawCalendar } from "./CalendarHelper.js";
 import { drawCalendarYear } from "./CalendarYearHelper.js";
-import { ReactComponent as EnterKey } from "../assets/enter.svg";
-import { ReactComponent as LeftArrowKey } from "../assets/leftarrow.svg";
-import { ReactComponent as RightArrowKey } from "../assets/rightarrow.svg";
+import { ReactComponent as EnterKey } from "../assets/enterKey.svg";
+import { ReactComponent as LeftArrowKey } from "../assets/leftArrowKey.svg";
+import { ReactComponent as RightArrowKey } from "../assets/rightArrowKey.svg";
 
 const MELQuestionInstructions = () => {
   const dispatch = useDispatch();
@@ -431,6 +432,17 @@ const MELQuestionInstructions = () => {
     }
   };
 
+  const enterButtonTooltip = () => {
+    const choiceText =
+      choice === AmountType.earlierAmount ? "earlier amount" : "later amount";
+    return (
+      <React.Fragment>
+        {t("enterTooltip", { choice: choiceText })}
+        <EnterKey />
+      </React.Fragment>
+    );
+  };
+
   return (
     <StyledEngineProvider injectFirst>
       <ThemeProvider theme={theme}>
@@ -480,27 +492,32 @@ const MELQuestionInstructions = () => {
             />
           </Grid>
           <Grid item xs={12} align="center">
-            <Button
-              variant="contained"
-              color="secondary"
-              id="buttonNext"
-              disableRipple
-              disableFocusRipple
-              style={styles.button}
-              onClick={() => {
-                setError(true);
-                setHelperText(
-                  `Press the Enter key to accept your selection of ${
-                    choice === AmountType.earlierAmount
-                      ? "earlier amount"
-                      : "later amount"
-                  } and start the survey.`
-                );
-              }}
-              disabled={disableSubmit}
-            >
-              Press Enter to start the survey
-            </Button>
+            <Tooltip title={enterButtonTooltip()} arrow>
+              <span>
+                <Button
+                  variant="contained"
+                  color="secondary"
+                  id="buttonNext"
+                  disableRipple
+                  disableFocusRipple
+                  style={styles.button}
+                  onClick={() => {
+                    setError(true);
+                    setHelperText(
+                      t("enterTooltip", {
+                        choice:
+                          choice === AmountType.earlierAmount
+                            ? "earlier amount"
+                            : "later amount",
+                      })
+                    );
+                  }}
+                  disabled={disableSubmit}
+                >
+                  Press Enter to start the survey
+                </Button>
+              </span>
+            </Tooltip>
           </Grid>
         </Grid>
       </ThemeProvider>

@@ -1,8 +1,12 @@
 import React from "react";
+import ReactDOMServer from "react-dom/server";
 import { FormControl, FormHelperText } from "@mui/material";
 import { VegaLite } from "react-vega";
+import vegaTooltipHandler from "vega-tooltip";
 import { useTranslation } from "react-i18next";
 import { AmountType } from "@the-discounters/types";
+import { ReactComponent as LeftArrowKey } from "../assets/leftArrowKey.svg";
+import { ReactComponent as RightArrowKey } from "../assets/rightArrowKey.svg";
 
 export const MELBarChartComponent = (props) => {
   const { t } = useTranslation();
@@ -17,16 +21,18 @@ export const MELBarChartComponent = (props) => {
         time: delay,
         amount: props.amountEarlier,
         chosen: props.choice === AmountType.earlierAmount,
-        title: t("leftArrowTooltip"),
-        image: "/leftarrow.svg",
+        tooltipHTML: `${t(
+          "leftArrowTooltip"
+        )} ${ReactDOMServer.renderToStaticMarkup(<LeftArrowKey />)}`,
       };
     } else if (isMajor && delay === props.timeLater) {
       return {
         time: delay,
         amount: props.amountLater,
         chosen: props.choice === AmountType.laterAmount,
-        title: t("rightArrowTooltip"),
-        image: "/rightarrow.svg",
+        tooltipHTML: `${t(
+          "rightArrowTooltip"
+        )} ${ReactDOMServer.renderToStaticMarkup(<RightArrowKey />)}`,
       };
     } else {
       return {
@@ -37,6 +43,12 @@ export const MELBarChartComponent = (props) => {
     }
   });
 
+  var tooltipOptions = {
+    formatTooltip: (value, sanitize) => {
+      return value.tooltipHTML;
+    },
+    theme: "light",
+  };
   const spec = {
     data: { values: data },
     width: props.horizontalPixels,
@@ -80,10 +92,7 @@ export const MELBarChartComponent = (props) => {
             condition: { test: "datum.amount > 0", value: 1 },
             value: 0,
           },
-          tooltip: [
-            { field: "title", type: "nominal" },
-            { field: "image", type: "nominal" },
-          ],
+          tooltip: [{ field: "tooltipHTML", type: "nominal" }],
         },
       },
       {
@@ -111,7 +120,12 @@ export const MELBarChartComponent = (props) => {
   return (
     <FormControl variant="standard" required={false} error={props.error}>
       <FormHelperText>{props.helperText}</FormHelperText>
-      <VegaLite spec={spec} actions={false} />,
+      <VegaLite
+        spec={spec}
+        actions={false}
+        tooltip={(vegaTooltipHandler, tooltipOptions)}
+      />
+      ,
     </FormControl>
   );
 };
