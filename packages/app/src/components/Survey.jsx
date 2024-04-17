@@ -265,7 +265,7 @@ export function Survey() {
               onClick={() => {
                 setError(true);
                 setHelperText(
-                  t("enterTooltip", {
+                  t("tooltipEnterSelectionInstructions", {
                     choice:
                       choice === AmountType.earlierAmount
                         ? "earlier amount"

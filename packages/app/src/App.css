@@ -35,7 +35,15 @@
     background-color: white;
 }
 
-#vg-tooltip-element h2 {
+/* #vg-tooltip-element h2 {
   font-size: 15px;
   font-weight: bold;
+} */
+
+#vg-tooltip-element.vg-tooltip.custom-theme {
+  font-size: 15px;
+  font-weight: bold;
+  color: rgba(0, 0, 0, 0.87);
+  background-color: #f5f5f9;
+  border: 1px solid #dadde9;
 }

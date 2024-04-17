@@ -2,12 +2,13 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Button,
-  Grid,
   Typography,
   ThemeProvider,
   StyledEngineProvider,
-  Tooltip,
 } from "@mui/material";
+import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
+import Tooltip, { tooltipClasses } from "@mui/material/Tooltip";
+import { styled } from "@mui/material/styles";
 import { useSelector, useDispatch } from "react-redux";
 import { DateTime } from "luxon";
 import { useD3 } from "../hooks/useD3.js";
@@ -432,16 +433,17 @@ const MELQuestionInstructions = () => {
     }
   };
 
-  const enterButtonTooltip = () => {
-    const choiceText =
-      choice === AmountType.earlierAmount ? "earlier amount" : "later amount";
-    return (
-      <React.Fragment>
-        {t("enterTooltip", { choice: choiceText })}
-        <EnterKey />
-      </React.Fragment>
-    );
-  };
+  const HtmlTooltip = styled(({ className, ...props }) => (
+    <Tooltip {...props} classes={{ popper: className }} />
+  ))(({ theme }) => ({
+    [`& .${tooltipClasses.tooltip}`]: {
+      backgroundColor: "#f5f5f9",
+      color: "rgba(0, 0, 0, 0.87)",
+      fontSize: theme.typography.pxToRem(12),
+      border: "1px solid #dadde9",
+      maxWidth: 250,
+    },
+  }));
 
   return (
     <StyledEngineProvider injectFirst>
@@ -492,7 +494,35 @@ const MELQuestionInstructions = () => {
             />
           </Grid>
           <Grid item xs={12} align="center">
-            <Tooltip title={enterButtonTooltip()} arrow>
+            <HtmlTooltip
+              title={
+                <React.Fragment>
+                  <Grid container spacing={1} sx={{ textAlign: "center" }}>
+                    <Grid item xs="auto">
+                      {choice === AmountType.earlierAmount ||
+                      choice === AmountType.laterAmount ? (
+                        <EnterKey />
+                      ) : (
+                        <React.Fragment>
+                          <LeftArrowKey /> <RightArrowKey />
+                        </React.Fragment>
+                      )}
+                    </Grid>
+                    <Grid item xs={6}>
+                      {choice === AmountType.earlierAmount ||
+                      choice === AmountType.laterAmount
+                        ? t("tooltipEnterSelectionInstructions", {
+                            choice:
+                              choice === AmountType.earlierAmount
+                                ? "earlier amount"
+                                : "later amount",
+                          })
+                        : t("tooltipEnterNoSelectionInstructions")}
+                    </Grid>
+                  </Grid>
+                </React.Fragment>
+              }
+            >
               <span>
                 <Button
                   variant="contained"
@@ -504,12 +534,15 @@ const MELQuestionInstructions = () => {
                   onClick={() => {
                     setError(true);
                     setHelperText(
-                      t("enterTooltip", {
-                        choice:
-                          choice === AmountType.earlierAmount
-                            ? "earlier amount"
-                            : "later amount",
-                      })
+                      choice === AmountType.earlierAmount ||
+                        choice === AmountType.laterAmount
+                        ? t("tooltipEnterSelectionInstructions", {
+                            choice:
+                              choice === AmountType.earlierAmount
+                                ? "earlier amount"
+                                : "later amount",
+                          })
+                        : t("tooltipEnterNoSelectionInstructions")
                     );
                   }}
                   disabled={disableSubmit}
@@ -517,7 +550,7 @@ const MELQuestionInstructions = () => {
                   Press Enter to start the survey
                 </Button>
               </span>
-            </Tooltip>
+            </HtmlTooltip>
           </Grid>
         </Grid>
       </ThemeProvider>

@@ -21,18 +21,19 @@ export const MELBarChartComponent = (props) => {
         time: delay,
         amount: props.amountEarlier,
         chosen: props.choice === AmountType.earlierAmount,
-        tooltipHTML: `${t(
-          "leftArrowTooltip"
-        )} ${ReactDOMServer.renderToStaticMarkup(<LeftArrowKey />)}`,
+        tooltipHTML: `${ReactDOMServer.renderToStaticMarkup(
+          <LeftArrowKey />
+        )} ${t("leftArrowTooltip")}`,
       };
     } else if (isMajor && delay === props.timeLater) {
       return {
         time: delay,
         amount: props.amountLater,
         chosen: props.choice === AmountType.laterAmount,
-        tooltipHTML: `${t(
+        tooltipHTML: `
+          ${ReactDOMServer.renderToStaticMarkup(<RightArrowKey />)} ${t(
           "rightArrowTooltip"
-        )} ${ReactDOMServer.renderToStaticMarkup(<RightArrowKey />)}`,
+        )}`,
       };
     } else {
       return {
@@ -43,11 +44,17 @@ export const MELBarChartComponent = (props) => {
     }
   });
 
+  /**
+   * Helfull links
+   * https://github.com/vega/vega-tooltip/blob/main/docs/customizing_your_tooltip.md
+   * https://vega.github.io/vega-lite/docs/tooltip.html
+   * https://observablehq.com/@amitkaps/custom-tooltip
+   */
   var tooltipOptions = {
     formatTooltip: (value, sanitize) => {
       return value.tooltipHTML;
     },
-    theme: "light",
+    theme: "custom",
   };
   const spec = {
     data: { values: data },
