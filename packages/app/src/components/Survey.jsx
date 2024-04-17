@@ -31,6 +31,7 @@ import { MELBarChartComponent } from "./MELBarChartComponent.js";
 import { MELWordComponent } from "./MELWordComponent.js";
 import { styles, theme } from "./ScreenHelper.js";
 import { navigateFromStatus } from "./Navigate.js";
+import { EnterButtonTooltip } from "./EnterButtonTooltip.js";
 
 export function Survey() {
   const dispatch = useDispatch();
@@ -254,28 +255,30 @@ export function Survey() {
             />
           </Grid>
           <Grid item align="center" xs={12}>
-            <Button
-              id="buttonNext"
-              variant="contained"
-              color="secondary"
-              disableRipple
-              disableFocusRipple
-              style={styles.button}
-              disabled={disableSubmit}
-              onClick={() => {
-                setError(true);
-                setHelperText(
-                  t("tooltipEnterSelectionInstructions", {
-                    choice:
-                      choice === AmountType.earlierAmount
-                        ? "earlier amount"
-                        : "later amount",
-                  })
-                );
-              }}
-            >
-              Press Enter to advance to the next question
-            </Button>
+            <EnterButtonTooltip choice={choice}>
+              <Button
+                id="buttonNext"
+                variant="contained"
+                color="secondary"
+                disableRipple
+                disableFocusRipple
+                style={styles.button}
+                disabled={disableSubmit}
+                onClick={() => {
+                  setError(true);
+                  setHelperText(
+                    t("tooltipEnterSelectionInstructions", {
+                      choice:
+                        choice === AmountType.earlierAmount
+                          ? "earlier amount"
+                          : "later amount",
+                    })
+                  );
+                }}
+              >
+                Press Enter to advance to the next question
+              </Button>
+            </EnterButtonTooltip>
           </Grid>
         </Grid>
       </ThemeProvider>
