@@ -26,7 +26,7 @@ export const EnterButtonTooltip = (props) => {
     <HTMLTooltip
       title={
         <React.Fragment>
-          <Grid container spacing={1}>
+          <Grid container spacing={2}>
             <Grid item xs="auto">
               {props.choice === AmountType.earlierAmount ||
               props.choice === AmountType.laterAmount ? (
