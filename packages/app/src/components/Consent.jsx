@@ -222,10 +222,7 @@ export function Consent() {
             ></img>
           </Grid>
           <Grid item xs={12}>
-            <Typography variant="h5">
-              <b>Informed Consent</b>
-              <br />
-            </Typography>
+            <Typography variant="h4">Informed Consent</Typography>
             <hr
               style={{
                 color: "#ea3433",

@@ -130,10 +130,7 @@ export function Consent() {
           alignItems="stretch"
         >
           <Grid item xs={12}>
-            <Typography variant="h5">
-              <b>Demographic Questions</b>
-              <br />
-            </Typography>
+            <Typography variant="h4">Demographic Questions</Typography>
             <hr
               style={{
                 color: "#ea3433",
@@ -238,7 +235,8 @@ export function Consent() {
                     } else {
                       setAgeState(event.target.value);
                     }
-                  }} />
+                  }}
+                />
               </Grid>
               <Grid item xs={3}>
                 <TextField
@@ -251,7 +249,8 @@ export function Consent() {
                     setProfessionState(event.target.value);
                   }}
                   label="Current Profession"
-                  id="Current-Profession" />
+                  id="Current-Profession"
+                />
               </Grid>
               <Grid item xs={3}>
                 <FormControl variant="standard">
@@ -297,7 +296,8 @@ export function Consent() {
                   }}
                   label="Self Describe Gender"
                   id="Self-Describe-Gender"
-                  disabled={disableSelfDescribe} />
+                  disabled={disableSelfDescribe}
+                />
               </Grid>
               <Grid item xs={3}>
                 <FormControl variant="standard">
@@ -344,7 +344,8 @@ export function Consent() {
                   }}
                   label="Describe Employment"
                   id="self-describe-employment"
-                  disabled={disableSelfDescribeEmployment} />
+                  disabled={disableSelfDescribeEmployment}
+                />
               </Grid>
             </Grid>
             <Grid item xs={12}>
