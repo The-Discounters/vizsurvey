@@ -21,6 +21,7 @@ export const MELBarChartComponent = (props) => {
         time: delay,
         amount: props.amountEarlier,
         chosen: props.choice === AmountType.earlierAmount,
+        barType: AmountType.earlierAmount,
         tooltipHTML: `${ReactDOMServer.renderToStaticMarkup(
           <LeftArrowKey />
         )} ${t("leftArrowTooltip")}`,
@@ -30,6 +31,7 @@ export const MELBarChartComponent = (props) => {
         time: delay,
         amount: props.amountLater,
         chosen: props.choice === AmountType.laterAmount,
+        barType: AmountType.laterAmount,
         tooltipHTML: `
           ${ReactDOMServer.renderToStaticMarkup(<RightArrowKey />)} ${t(
           "rightArrowTooltip"
@@ -40,6 +42,8 @@ export const MELBarChartComponent = (props) => {
         time: delay,
         amount: 0,
         chosen: false,
+        barType: AmountType.none,
+        tooltipHTML: null,
       };
     }
   });
@@ -56,8 +60,16 @@ export const MELBarChartComponent = (props) => {
     },
     theme: "custom",
   };
+
   const spec = {
     data: { values: data },
+    signals: [
+      {
+        name: "click",
+        value: {},
+        on: [{ events: "*:mousedown", update: "datum" }],
+      },
+    ],
     width: props.horizontalPixels,
     height: props.verticalPixels,
     encoding: {
@@ -129,6 +141,22 @@ export const MELBarChartComponent = (props) => {
       <FormHelperText>{props.helperText}</FormHelperText>
       <VegaLite
         spec={spec}
+        patch={(spec) => {
+          // usefull links
+          // https://stackoverflow.com/questions/57707494/whats-the-proper-way-to-implement-a-custom-click-handler-in-vega-lite
+          // https://codepen.io/stephenshank/pen/XWJpPxo
+          spec.signals = {
+            name: "barClick",
+            value: 0,
+            on: [{ events: "rect:mousedown", update: "datum" }],
+          };
+          return spec;
+        }}
+        onNewView={(view) =>
+          view.addSignalListener("barClick", (n, v) => {
+            props.onClickCallback(v.barType);
+          })
+        }
         actions={false}
         tooltip={(vegaTooltipHandler, tooltipOptions)}
       />

@@ -180,13 +180,6 @@ export function Survey() {
                       onClickCallback={(selection) => {
                         showSelectionHint(selection);
                       }}
-                      onHoverOverSelection={(selection) => {
-                        showSelectionHint(selection);
-                      }}
-                      onHoverOutSelection={(selection) => {
-                        setHelperText(" ");
-                        setError(false);
-                      }}
                     />
                   );
                 case ViewType.word:

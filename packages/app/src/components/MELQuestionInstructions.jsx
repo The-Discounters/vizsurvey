@@ -115,7 +115,7 @@ const MELQuestionInstructions = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status]);
 
-  const instructions = (description, gifAltText, tryLeftDesc, tryRightDesc) => {
+  const instructions = (description, tryLeftDesc, tryRightDesc) => {
     return (
       <React.Fragment>
         <Grid
@@ -160,9 +160,7 @@ const MELQuestionInstructions = () => {
             can use a mouse to answer the additional survey questions after the
             money choice questions.
           </Grid>
-          <Grid align="center" item xs={12}>
-            <VizDemo />
-          </Grid>
+          <Grid align="center" item xs={12}></Grid>
           <Grid item xs={12}>
             <b>Try it out below: </b>
             In the example below, the {tryLeftDesc} represents the choice of
@@ -324,97 +322,6 @@ const MELQuestionInstructions = () => {
             showMinorTicks={instructionTreatment.showMinorTicks}
             onClickCallback={(selection) => {
               showSelectionHint(selection);
-            }}
-            onHoverOverSelection={(selection) => {
-              showSelectionHint(selection);
-            }}
-            onHoverOutSelection={(selection) => {
-              setHelperText(" ");
-              setError(false);
-            }}
-          />
-        );
-      case ViewType.calendarBar:
-        return "";
-      case ViewType.calendarWord:
-        return <DrawCalendar />;
-      case ViewType.calendarWordYear:
-      case ViewType.calendarWordYearDual:
-        return <DrawCalendarYear />;
-      case ViewType.calendarIcon:
-        return "";
-      default:
-        return "";
-    }
-  };
-
-  const VizDemo = () => {
-    // This is simply an example that demonstrates
-    // how you can dispatch an event on the element.
-    useEffect(() => {
-      // ref.dispatchEvent(
-      //   new KeyboardEvent("keypress", {
-      //     key: "ArrowLeft",
-      //   })
-      // );
-    }, []);
-
-    switch (instructionTreatment.viewType) {
-      case ViewType.word:
-        return (
-          <MELWordComponent
-            textShort={"MELRadioGroup"}
-            error={error}
-            amountEarlier={instructionTreatment.amountEarlier}
-            timeEarlier={instructionTreatment.timeEarlier}
-            dateEarlier={instructionTreatment.dateEarlier}
-            amountLater={instructionTreatment.amountLater}
-            timeLater={instructionTreatment.timeLater}
-            dateLater={instructionTreatment.dateLater}
-            helperText={helperText}
-            choice={choice}
-            onClickCallback={(value) => {
-              let errorMsg;
-              if (value === AmountType.earlierAmount) {
-                errorMsg = t("leftArrowTooltip");
-              } else if (value === AmountType.laterAmount) {
-                errorMsg = t("rightArrowTooltip");
-              }
-              setHelperText(errorMsg);
-              setError(true);
-            }}
-          />
-        );
-      case ViewType.barchart:
-        return (
-          <MELBarChartComponent
-            error={error}
-            helperText={helperText}
-            maxTime={instructionTreatment.maxTime}
-            maxAmount={instructionTreatment.maxAmount}
-            interaction={instructionTreatment.interaction}
-            variableAmount={instructionTreatment.variableAmount}
-            amountEarlier={instructionTreatment.amountEarlier}
-            timeEarlier={instructionTreatment.timeEarlier}
-            amountLater={instructionTreatment.amountLater}
-            timeLater={instructionTreatment.timeLater}
-            choice={choice}
-            horizontalPixels={instructionTreatment.horizontalPixels}
-            verticalPixels={instructionTreatment.verticalPixels}
-            leftMarginWidthIn={instructionTreatment.leftMarginWidthIn}
-            graphWidthIn={instructionTreatment.graphWidthIn}
-            bottomMarginHeightIn={instructionTreatment.bottomMarginHeightIn}
-            graphHeightIn={instructionTreatment.graphHeightIn}
-            showMinorTicks={instructionTreatment.showMinorTicks}
-            onClickCallback={(selection) => {
-              showSelectionHint(selection);
-            }}
-            onHoverOverSelection={(selection) => {
-              showSelectionHint(selection);
-            }}
-            onHoverOutSelection={(selection) => {
-              setHelperText(" ");
-              setError(false);
             }}
           />
         );
