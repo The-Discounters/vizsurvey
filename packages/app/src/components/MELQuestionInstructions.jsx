@@ -362,6 +362,12 @@ const MELQuestionInstructions = () => {
             {vizExplanation()}
           </Grid>
           <Grid item xs={12} align="center">
+            <hr
+              style={{
+                backgroundColor: "#aaaaaa",
+                height: 4,
+              }}
+            />
             {vizTry()}
           </Grid>
           <Grid item xs={12}>
