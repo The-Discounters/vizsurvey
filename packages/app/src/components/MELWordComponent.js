@@ -7,11 +7,16 @@ import {
   RadioGroup,
   Box,
 } from "@mui/material";
-import Tooltip from "@mui/material/Tooltip";
+import { HTMLTooltip } from "./HTMLTooltip";
+import { useTranslation } from "react-i18next";
 import { format } from "d3";
 import { AmountType } from "@the-discounters/types";
+import { ReactComponent as LeftArrowKey } from "../assets/leftArrowKey.svg";
+import { ReactComponent as RightArrowKey } from "../assets/rightArrowKey.svg";
 
-export function MELWordComponent(props) {
+export const MELWordComponent = (props) => {
+  const { t } = useTranslation();
+
   const todayText = (sooner_time) =>
     sooner_time === 0 ? "today" : `in ${sooner_time} months`;
 
@@ -65,22 +70,28 @@ export function MELWordComponent(props) {
           >
             {[
               {
-                key: AmountType.earlierAmount,
+                key: `tooltip-${AmountType.earlierAmount}`,
                 label: question1stPartText(
                   props.amountEarlier,
                   props.timeEarlier
                 ),
               },
               {
-                key: AmountType.laterAmount,
+                key: `tooltip-${AmountType.laterAmount}`,
                 label: question2ndPartText(props.amountLater, props.timeLater),
               },
             ].map(({ key, label }, index) => (
-              <Tooltip
+              <HTMLTooltip
                 title={
-                  key === "earlierAmount"
-                    ? "Press the left arrow to select earlier amount"
-                    : "Press the right arrow to select later amount"
+                  key === `tooltip-${AmountType.earlierAmount}` ? (
+                    <React.Fragment>
+                      <LeftArrowKey /> {t("leftArrowTooltip")}
+                    </React.Fragment>
+                  ) : (
+                    <React.Fragment>
+                      <RightArrowKey /> {t("rightArrowTooltip")}
+                    </React.Fragment>
+                  )
                 }
               >
                 <FormControlLabel
@@ -102,13 +113,13 @@ export function MELWordComponent(props) {
                   control={<Radio />}
                   label={label}
                 />
-              </Tooltip>
+              </HTMLTooltip>
             ))}
           </RadioGroup>
         </Box>
       </FormControl>
     </form>
   );
-}
+};
 
 export default MELWordComponent;
