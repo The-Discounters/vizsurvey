@@ -14,7 +14,7 @@ import { navigateFromStatus } from "./components/Navigate.js";
 import MELQuestionInstructions from "./components/MELQuestionInstructions.jsx";
 import Demographic from "./components/Demographic.jsx";
 import Instructions from "./components/Instructions.jsx";
-import Survey from "./components/Survey.jsx";
+import Survey from "./components/MELSurvey.jsx";
 import PostSurveyExperience from "./components/PostSurveyExperience.jsx";
 import PostSurveyFinancialLit from "./components/PostSurveyFinancialLit.jsx";
 import Debrief from "./components/Debrief.jsx";
