@@ -12,7 +12,12 @@ import { DateTime } from "luxon";
 import { useD3 } from "../hooks/useD3.js";
 import { useKeyDown } from "../hooks/useKeydown.js";
 import "../App.css";
-import { ViewType } from "@the-discounters/types";
+import {
+  ExperimentType,
+  ViewType,
+  AmountType,
+  StatusType,
+} from "@the-discounters/types";
 import { navigateFromStatus } from "./Navigate.js";
 import {
   MCLInstructionsShown,
@@ -25,10 +30,8 @@ import {
 import { dateToState } from "@the-discounters/util";
 import { useTranslation } from "react-i18next";
 import { styles, theme } from "./ScreenHelper.js";
-import { AmountType } from "@the-discounters/types";
 import { MELWordComponent } from "./MELWordComponent.js";
 import { MELBarChartComponent } from "./MELBarChartComponent.js";
-import { StatusType } from "@the-discounters/types";
 import { drawCalendar } from "./CalendarHelper.js";
 import { drawCalendarYear } from "./CalendarYearHelper.js";
 import { ReactComponent as EnterKey } from "../assets/enterKey.svg";
@@ -118,80 +121,75 @@ const MELQuestionInstructions = () => {
   const instructions = (description, tryLeftDesc, tryRightDesc) => {
     return (
       <React.Fragment>
-        <Grid
-          container
-          direction="column"
-          justifyContent="flex-start"
-          alignItems="stretch"
-        >
-          <Grid item xs={12}>
-            You will be presented with a series of hypothetical choices of
-            receiving two different amounts of money at two different times.
-            Both amounts are in United States Dollars (USD) and both times are
-            the delay in months from today.{" "}
-            <b>
-              All amounts and delay times in the questions are hypothetical. We
-              do ask that you imagine to the best of your ability that you are
-              in this situation and need to make a choice between the two
-              payments. These are very realistic choices that can present
-              themselves to anyone, so for each question, please think which
-              option you would choose if you were truly in this situation.
-            </b>
-          </Grid>
-          <Grid item xs={12}>
-            The amount and delay time for each option will be represented as{" "}
-            {description}. You will make your choice by using keys on your
-            keyboard (not your mouse). Press the{" "}
-            <b>
-              left arrow key <LeftArrowKey /> to choose the earlier amount
-            </b>{" "}
-            or the{" "}
-            <b>
-              right arrow key <RightArrowKey /> to choose the later amount
-            </b>{" "}
-            then press the{" "}
-            <b>
-              enter key <EnterKey /> to accept your choice and advance to the
-              next question.{" "}
-            </b>{" "}
-            You must make a selection to proceed onto the next question. You can
-            not make your money choice selection using a mouse and{" "}
-            <b>must use the left or right arrow keys and the enter key.</b> You
-            can use a mouse to answer the additional survey questions after the
-            money choice questions.
-          </Grid>
-          <Grid align="center" item xs={12}></Grid>
-          <Grid item xs={12}>
-            <b>Try it out below: </b>
-            In the example below, the {tryLeftDesc} represents the choice of
-            receiving $300 two months from now and the {tryRightDesc} receiving
-            $700 seven months from now. Select the earlier amount by pressing
-            the left arrow key and later amount by pressing the right arrow key.
-          </Grid>
-        </Grid>
+        <Typography paragraph>
+          You will be presented with a series of hypothetical choices of
+          receiving two different amounts of money at two different times. Both
+          amounts are in United States Dollars (USD) and both times are the
+          delay in months from today.{" "}
+          <b>
+            All amounts and delay times in the questions are hypothetical. We do
+            ask that you imagine to the best of your ability that you are in
+            this situation and need to make a choice between the two payments.
+            These are very realistic choices that can present themselves to
+            anyone, so for each question, please think which option you would
+            choose if you were truly in this situation.
+          </b>
+        </Typography>
+        <Typography paragraph>
+          The amount and delay time for each option will be represented{" "}
+          {description}. You will make your choice by using keys on your
+          keyboard (not your mouse). Press the{" "}
+          <b>
+            left arrow key <LeftArrowKey /> to choose the earlier amount
+          </b>{" "}
+          or the{" "}
+          <b>
+            right arrow key <RightArrowKey /> to choose the later amount
+          </b>{" "}
+          then press the{" "}
+          <b>
+            enter key <EnterKey /> to accept your choice and advance to the next
+            question.{" "}
+          </b>{" "}
+          You must make a selection to proceed onto the next question. You can
+          not make your money choice selection using a mouse and{" "}
+          <b>must use the left or right arrow keys and the enter key.</b> You
+          can use a mouse to answer the additional survey questions after the
+          money choice questions.
+        </Typography>
+        <Typography paragraph>
+          <b>Try it out below: </b>
+          In the example below, the {tryLeftDesc} represents the choice of
+          receiving $300 two months from now and the {tryRightDesc} receiving
+          $700 seven months from now. Select the earlier amount by pressing the
+          left arrow key and later amount by pressing the right arrow key.
+        </Typography>
       </React.Fragment>
     );
   };
 
   const vizExplanation = () => {
+    //experiment.type === ExperimentType.betweenSubject
     switch (instructionTreatment.viewType) {
       case ViewType.word:
         return instructions(
-          "a radio button",
+          experiment.type === ExperimentType.betweenSubject
+            ? "as a radio button"
+            : "",
           "Radio button example",
           "button on the left",
           "button on the right"
         );
       case ViewType.barchart:
         return instructions(
-          "a bar chart",
+          "as a bar chart",
           "Bar chart button example",
           "bar on the left",
           "bar on the right"
         );
       case ViewType.calendarBar:
         return instructions(
-          "calendar bar chart",
+          "as a calendar bar chart",
           "Radio button example",
           "button on the left",
           "button on the right"
@@ -200,14 +198,14 @@ const MELQuestionInstructions = () => {
       case ViewType.calendarWordYear:
       case ViewType.calendarWordYearDual:
         return instructions(
-          "a calendar space",
+          "as a calendar space",
           "Calendar word chart example",
           "space on the earlier day",
           "space on the later day"
         );
       case ViewType.calendarIcon:
         return instructions(
-          "calendar icon chart",
+          "as a calendar icon chart",
           "Calendar icon chart example",
           "icon chart on the earlier day",
           "icon chart on the later day"
@@ -292,7 +290,7 @@ const MELQuestionInstructions = () => {
               if (value === AmountType.earlierAmount) {
                 errorMsg = t("leftArrowTooltip");
               } else if (value === AmountType.laterAmount) {
-                errorMsg = t("righArrowTooltip");
+                errorMsg = t("rightArrowTooltip");
               }
               setHelperText(errorMsg);
               setError(true);

@@ -7,6 +7,7 @@ import {
   RadioGroup,
   Box,
 } from "@mui/material";
+import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
 import { HTMLTooltip } from "./HTMLTooltip";
 import { useTranslation } from "react-i18next";
 import { format } from "d3";
@@ -43,80 +44,102 @@ export const MELWordComponent = (props) => {
         error={props.error}
         sx={{ fontSize: "32px" }}
       >
-        {questionText(
-          props.amountEarlier,
-          props.timeEarlier,
-          props.amountLater,
-          props.timeLater
-        )}
-        <FormHelperText>{props.helperText}</FormHelperText>
-        <Box
-          component="span"
-          sx={{ width: 1 }}
-          m={1}
-          display="flex"
-          justifyContent="space-between"
-          alignItems="center"
-          border="1"
-        >
-          <RadioGroup
-            row
-            aria-labelledby={props.textShort + "-row-radio-buttons-group-label"}
-            name={"question-radio-buttons-group"}
-            onClick={(event) => {
-              props.onClickCallback(event.target.value);
-            }}
-            value={props.choice}
+        <Grid container>
+          <Grid
+            item
+            xs={12}
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
           >
-            {[
-              {
-                key: `tooltip-${AmountType.earlierAmount}`,
-                label: question1stPartText(
-                  props.amountEarlier,
-                  props.timeEarlier
-                ),
-              },
-              {
-                key: `tooltip-${AmountType.laterAmount}`,
-                label: question2ndPartText(props.amountLater, props.timeLater),
-              },
-            ].map(({ key, label }, index) => (
-              <HTMLTooltip
-                title={
-                  key === `tooltip-${AmountType.earlierAmount}` ? (
-                    <React.Fragment>
-                      <LeftArrowKey /> {t("leftArrowTooltip")}
-                    </React.Fragment>
-                  ) : (
-                    <React.Fragment>
-                      <RightArrowKey /> {t("rightArrowTooltip")}
-                    </React.Fragment>
-                  )
-                }
-              >
-                <FormControlLabel
-                  sx={{
-                    mr: "100px",
-                    border: 1,
-                    backgroundColor:
-                      props.choice === key ? "lightblue" : "none",
-                    borderRadius: "20px",
-                    borderWidth: "1px",
-                    borderColor: "black",
-                    color: "black",
-                    paddingRight: "10px",
-                  }}
-                  key={key}
-                  id={key}
-                  value={key}
-                  checked={props.choice === key}
-                  control={<Radio />}
-                  label={label}
-                />
-              </HTMLTooltip>
-            ))}
-          </RadioGroup>
-        </Box>
+            <FormHelperText>{props.helperText}</FormHelperText>
+          </Grid>
+          <Grid
+            item
+            xs={12}
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+          >
+            {questionText(
+              props.amountEarlier,
+              props.timeEarlier,
+              props.amountLater,
+              props.timeLater
+            )}
+          </Grid>
+          <Grid
+            item
+            xs={12}
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+          >
+            <RadioGroup
+              row
+              aria-labelledby={
+                props.textShort + "-row-radio-buttons-group-label"
+              }
+              name={"question-radio-buttons-group"}
+              onClick={(event) => {
+                props.onClickCallback(event.target.value);
+              }}
+              value={props.choice}
+            >
+              {[
+                {
+                  key: `${AmountType.earlierAmount}`,
+                  label: question1stPartText(
+                    props.amountEarlier,
+                    props.timeEarlier
+                  ),
+                },
+                {
+                  key: `${AmountType.laterAmount}`,
+                  label: question2ndPartText(
+                    props.amountLater,
+                    props.timeLater
+                  ),
+                },
+              ].map(({ key, label }, index) => (
+                <HTMLTooltip
+                  key={`tooltip-${key}`}
+                  title={
+                    key === `${AmountType.earlierAmount}` ? (
+                      <React.Fragment>
+                        <LeftArrowKey /> {t("leftArrowTooltip")}
+                      </React.Fragment>
+                    ) : (
+                      <React.Fragment>
+                        <RightArrowKey /> {t("rightArrowTooltip")}
+                      </React.Fragment>
+                    )
+                  }
+                >
+                  <FormControlLabel
+                    sx={{
+                      mr: "100px",
+                      border: 1,
+                      backgroundColor:
+                        props.choice === key ? "lightblue" : "none",
+                      borderRadius: "20px",
+                      borderWidth: "1px",
+                      borderColor: "black",
+                      color: "black",
+                      paddingRight: "10px",
+                    }}
+                    key={key}
+                    id={key}
+                    value={key}
+                    checked={props.choice === key}
+                    control={<Radio />}
+                    label={label}
+                  />
+                </HTMLTooltip>
+              ))}
+            </RadioGroup>
+          </Grid>
+        </Grid>
       </FormControl>
     </form>
   );

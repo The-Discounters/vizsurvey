@@ -20,40 +20,34 @@ describe("QuestionEngine tests", () => {
       status: StatusType.Unitialized,
     };
     const qe = new QuestionEngine();
-    expect((state.status = qe.nextStatus(state, false, true))).toBe(
+    expect((state.status = qe.nextStatus(state, false))).toBe(
       StatusType.Fetching
     );
-    expect((state.status = qe.nextStatus(state, false, false))).toBe(
+    expect((state.status = qe.nextStatus(state, false))).toBe(
       StatusType.Consent
     );
-    expect((state.status = qe.nextStatus(state, false, false))).toBe(
+    expect((state.status = qe.nextStatus(state, false))).toBe(
       StatusType.Instructions
     );
-    expect((state.status = qe.nextStatus(state, false, false))).toBe(
+    expect((state.status = qe.nextStatus(state, false))).toBe(
       StatusType.MELQuestionInstructions
     );
-    expect((state.status = qe.nextStatus(state, false, false))).toBe(
+    expect((state.status = qe.nextStatus(state, false))).toBe(
       StatusType.Survey
     );
-    expect((state.status = qe.nextStatus(state, true, false))).toBe(
-      StatusType.MELQuestionInstructions
-    );
-    expect((state.status = qe.nextStatus(state, true, false))).toBe(
-      StatusType.Survey
-    );
-    expect((state.status = qe.nextStatus(state, true, true))).toBe(
+    expect((state.status = qe.nextStatus(state, true))).toBe(
       StatusType.ExperienceQuestionaire
     );
-    expect((state.status = qe.nextStatus(state, true, true))).toBe(
+    expect((state.status = qe.nextStatus(state, true))).toBe(
       StatusType.FinancialQuestionaire
     );
-    expect((state.status = qe.nextStatus(state, true, true))).toBe(
+    expect((state.status = qe.nextStatus(state, true))).toBe(
       StatusType.Demographic
     );
-    expect((state.status = qe.nextStatus(state, true, true))).toBe(
+    expect((state.status = qe.nextStatus(state, true))).toBe(
       StatusType.Debrief
     );
-    expect(qe.nextStatus(state, true, true)).toBe(StatusType.Finished);
+    expect(qe.nextStatus(state, true)).toBe(StatusType.Finished);
   });
 
   test("answerCurrentQuestion for non titration single treatment question.", () => {
@@ -131,7 +125,7 @@ describe("QuestionEngine tests", () => {
     qe.incNextQuestion(state);
     expect(state.currentAnswerIdx).toBe(2);
     expect(qe.currentAnswer(state).treatmentId).toBe(2);
-    expect(state.status).toBe(StatusType.MELQuestionInstructions);
+    expect(state.status).toBe(StatusType.Survey);
     qe.incNextQuestion(state);
     expect(qe.currentAnswer(state).treatmentId).toBe(2);
     expect(state.currentAnswerIdx).toBe(3);

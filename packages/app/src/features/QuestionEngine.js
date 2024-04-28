@@ -54,11 +54,7 @@ export class QuestionEngine {
 
   incNextQuestion(state) {
     const isLastQuestion = this.isLastQuestion(state);
-    const nextStatus = this.nextStatus(
-      state,
-      this.isLastTreatmentQuestion(state),
-      isLastQuestion
-    );
+    const nextStatus = this.nextStatus(state, isLastQuestion);
     if (!isLastQuestion) {
       state.currentAnswerIdx++;
     }
@@ -79,14 +75,10 @@ export class QuestionEngine {
   }
 
   nextState(state) {
-    return this.nextStatus(
-      state,
-      this.isLastTreatmentQuestion(state),
-      this.isLastQuestion(state)
-    );
+    return this.nextStatus(state, this.isLastQuestion(state));
   }
 
-  nextStatus(state, onLastTreatmentQuestion, onLastQuestion) {
-    return nextStatus(state.status, onLastQuestion, onLastTreatmentQuestion);
+  nextStatus(state, onLastQuestion) {
+    return nextStatus(state.status, onLastQuestion);
   }
 }

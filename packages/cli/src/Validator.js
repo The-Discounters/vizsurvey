@@ -131,21 +131,9 @@ export const validateAuditData = (audit, result) => {
       );
       uniqueScreen.add(JSON.stringify(auditEntry.screenAttributes));
       if (lastStatus) {
-        let onLastTreatmentQuestion;
         const onLastQuestion =
           auditEntry.questions.slice(0, -1).choice !== AmountType.none;
-        if (onLastQuestion) {
-          onLastTreatmentQuestion = true;
-        } else {
-          onLastTreatmentQuestion =
-            auditEntry.questions[0].treatmentId !==
-            auditsForParticipantBySequence[i + 1].questions[0].treatmentId;
-        }
-        const expectedStatus = nextStatus(
-          lastStatus,
-          onLastQuestion,
-          onLastTreatmentQuestion
-        );
+        const expectedStatus = nextStatus(lastStatus, onLastQuestion);
         auditEntry.status;
       }
       if (auditEntry.requestSequence !== i + 1) {

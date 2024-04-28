@@ -16,7 +16,8 @@ export const StatusType = {
 
 Object.freeze(StatusType);
 
-export const nextStatus = (status, onLastQuestion, onLastTreatmentQuestion) => {
+// TODO: I put this function in types because I needed to use it in cli.  I really should put it in the app and export it from there since it's app specific.
+export const nextStatus = (status, onLastQuestion) => {
   switch (status) {
     case StatusType.Unitialized:
       return StatusType.Fetching;
@@ -31,8 +32,6 @@ export const nextStatus = (status, onLastQuestion, onLastTreatmentQuestion) => {
     case StatusType.Survey:
       if (onLastQuestion) {
         return StatusType.ExperienceQuestionaire;
-      } else if (onLastTreatmentQuestion) {
-        return StatusType.MELQuestionInstructions;
       } else {
         return StatusType.Survey;
       }

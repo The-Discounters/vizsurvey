@@ -20,17 +20,17 @@ i18n
       en: {
         translation: {
           leftArrowTooltip:
-            "Press the Left Arrow key to choose the earlier amount.",
+            "Press the left arrow key to choose the earlier amount.",
           rightArrowTooltip:
-            "Press the Right Arrow key to choose the later amount.",
+            "Press the right arrow key to choose the later amount.",
           tooltipEnterNoSelectionInstructions:
-            "Press the Left or Right Arrow key to make a selection, then press the Enter key to accept your selection and start the survey.",
+            "Press the left or right arrow key to make a selection, then press the enter key to accept your selection and start the survey.",
           tooltipEnterSelectionInstructions:
-            "Press the Enter key to accept your selection of {{choice}} and start the survey.",
+            "Press the enter key to accept your selection of {{choice}} and start the survey.",
           tooltipEnterNoSelectionMELQuestions:
-            "Press the Left or Right Arrow key to make a selection, then press the Enter key to accept your selection and advance to the next question.",
+            "Press the left or right arrow key to make a selection, then press the enter key to accept your selection and advance to the next question.",
           tooltipEnterSelectionMELQuestions:
-            "Press the Enter key to accept your selection of {{choice}} and advance to the next question.",
+            "Press the enter key to accept your selection of {{choice}} and advance to the next question.",
         },
       },
     },
