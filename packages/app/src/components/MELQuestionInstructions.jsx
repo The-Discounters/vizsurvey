@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { format } from "d3";
 import { useNavigate } from "react-router-dom";
 import {
   Button,
@@ -118,7 +119,7 @@ const MELQuestionInstructions = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status]);
 
-  const instructions = (description, tryLeftDesc, tryRightDesc) => {
+  const instructions = (description, tryLeftDesc, tryRightDesc, tryView) => {
     return (
       <React.Fragment>
         <Typography paragraph>
@@ -159,56 +160,64 @@ const MELQuestionInstructions = () => {
         </Typography>
         <Typography paragraph>
           <b>Try it out below: </b>
-          In the example below, the {tryLeftDesc} represents the choice of
-          receiving $300 two months from now and the {tryRightDesc} receiving
-          $700 seven months from now. Select the earlier amount by pressing the
-          left arrow key and later amount by pressing the right arrow key.
+          In the example below the amounts and times are represented {tryView}.
+          The {tryLeftDesc} represents the choice of receiving $300 two months
+          from now and the {tryRightDesc} receiving $700 seven months from now.
+          Select the earlier amount by pressing the left arrow key or later
+          amount by pressing the right arrow key.
         </Typography>
       </React.Fragment>
     );
   };
 
   const vizExplanation = () => {
-    //experiment.type === ExperimentType.betweenSubject
     switch (instructionTreatment.viewType) {
       case ViewType.word:
         return instructions(
           experiment.type === ExperimentType.betweenSubject
-            ? "as a radio button"
-            : "",
-          "Radio button example",
-          "button on the left",
-          "button on the right"
+            ? "in words"
+            : "in words or as a bar chart",
+          "radio button on the left",
+          "radio button on the right",
+          "in words as radio buttons"
         );
       case ViewType.barchart:
         return instructions(
-          "as a bar chart",
-          "Bar chart button example",
+          experiment.type === ExperimentType.betweenSubject
+            ? "as a bar chart"
+            : "in words or as a bar chart",
           "bar on the left",
-          "bar on the right"
+          "bar on the right",
+          "as a bar chart"
         );
       case ViewType.calendarBar:
         return instructions(
-          "as a calendar bar chart",
-          "Radio button example",
-          "button on the left",
-          "button on the right"
+          experiment.type === ExperimentType.betweenSubject
+            ? "as a calendar bar chart"
+            : "in words, as a bar chart, or as a calendar bar chart",
+          "radio button on the left",
+          "radio button on the right",
+          "as bars on a calendar"
         );
       case ViewType.calendarWord:
       case ViewType.calendarWordYear:
       case ViewType.calendarWordYearDual:
         return instructions(
-          "as a calendar space",
-          "Calendar word chart example",
+          experiment.type === ExperimentType.betweenSubject
+            ? "as a calendar space"
+            : "in words or as a calendar space",
           "space on the earlier day",
-          "space on the later day"
+          "space on the later day",
+          "as words on a calendar"
         );
       case ViewType.calendarIcon:
         return instructions(
-          "as a calendar icon chart",
-          "Calendar icon chart example",
+          experiment.type === ExperimentType.betweenSubject
+            ? "as a calendar icon chart"
+            : "in words or as a calendar icon chart",
           "icon chart on the earlier day",
-          "icon chart on the later day"
+          "icon chart on the later day",
+          "as icon charts on a calendar"
         );
       default:
         return <React.Fragment>{navigate("/invalidlink")}</React.Fragment>;
@@ -378,9 +387,22 @@ const MELQuestionInstructions = () => {
                   }}
                 />
                 <Typography paragraph>
-                  Once you have made your selection, press the enter key to
-                  accept it and advance to the next question. You must make a
-                  selection to proceed onto the next question.
+                  {t("tryPressEnterToAdvance", {
+                    choiceText: t("choiceText", {
+                      amount:
+                        choice === AmountType.earlierAmount
+                          ? format("$,.0f")(instructionTreatment.amountEarlier)
+                          : format("$,.0f")(instructionTreatment.amountLater),
+                      delay:
+                        choice === AmountType.earlierAmount
+                          ? instructionTreatment.timeEarlier
+                          : instructionTreatment.timeLater,
+                    }),
+                    arrowKey:
+                      choice === AmountType.earlierAmount
+                        ? t("rightArrow")
+                        : t("leftArrow"),
+                  })}
                 </Typography>
               </>
             )}

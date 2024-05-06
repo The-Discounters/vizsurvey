@@ -153,7 +153,7 @@ export function Survey() {
           alignItems="stretch"
           sx={{ minHeight: "100vh" }}
         >
-          <Grid item xs={12}>
+          <Grid item xs={12} align="center">
             {(() => {
               switch (q.viewType) {
                 case ViewType.barchart:
@@ -247,7 +247,7 @@ export function Survey() {
               }}
             />
           </Grid>
-          <Grid item align="center" xs={12}>
+          <Grid item xs={12} align="center">
             <EnterButtonTooltip choice={choice}>
               <Button
                 id="buttonNext"

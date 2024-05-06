@@ -19,6 +19,8 @@ i18n
     resources: {
       en: {
         translation: {
+          leftArrow: "left arrow",
+          rightArrow: "right arrow",
           leftArrowTooltip:
             "Press the left arrow key to choose the earlier amount.",
           rightArrowTooltip:
@@ -31,6 +33,9 @@ i18n
             "Press the left or right arrow key to make a selection, then press the enter key to accept your selection and advance to the next question.",
           tooltipEnterSelectionMELQuestions:
             "Press the enter key to accept your selection of {{choice}} and advance to the next question.",
+          tryPressEnterToAdvance:
+            "You have made your selection to receive {{choiceText}}.  You can press the {{arrowKey}} key to change your selection or press the enter key to accept it and advance to the survey questions.",
+          choiceText: "{{amount}} in {{delay}} months",
         },
       },
     },

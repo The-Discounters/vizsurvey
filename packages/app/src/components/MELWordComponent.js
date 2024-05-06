@@ -15,26 +15,33 @@ import { AmountType } from "@the-discounters/types";
 import { ReactComponent as LeftArrowKey } from "../assets/leftArrowKey.svg";
 import { ReactComponent as RightArrowKey } from "../assets/rightArrowKey.svg";
 
+const todayText = (sooner_time) =>
+  sooner_time === 0 ? "today" : `in ${sooner_time} months`;
+
+export function MELQuestionText(
+  amountEarlier,
+  timeEarlier,
+  amountLater,
+  timeLater
+) {
+  return `Make a choice to receive ${MELQuestion1stPartText(
+    amountEarlier,
+    timeEarlier
+  )} or ${MEQuestion2ndPartText(amountLater, timeLater)}.`;
+}
+
+export function MELQuestion1stPartText(amountEarlier, timeEarlier) {
+  return `${format("$,.0f")(amountEarlier)} ${todayText(timeEarlier)}`;
+}
+
+export function MEQuestion2ndPartText(amountLater, timeLater) {
+  return `${format("$,.0f")(amountLater)} in ${timeLater} months`;
+}
+
 export const MELWordComponent = (props) => {
   const { t } = useTranslation();
 
-  const todayText = (sooner_time) =>
-    sooner_time === 0 ? "today" : `in ${sooner_time} months`;
-
-  function questionText(amountEarlier, timeEarlier, amountLater, timeLater) {
-    return `Make a choice to receive ${question1stPartText(
-      amountEarlier,
-      timeEarlier
-    )} or ${question2ndPartText(amountLater, timeLater)}.`;
-  }
-
-  function question1stPartText(amountEarlier, timeEarlier) {
-    return `${format("$,.0f")(amountEarlier)} ${todayText(timeEarlier)}`;
-  }
-
-  function question2ndPartText(amountLater, timeLater) {
-    return `${format("$,.0f")(amountLater)} in ${timeLater} months`;
-  }
+  // TODO I can probably refactor this code that builds up the text for choice question into a common place to use in the instructions.
 
   return (
     <form>
@@ -61,7 +68,7 @@ export const MELWordComponent = (props) => {
             justifyContent="center"
             alignItems="center"
           >
-            {questionText(
+            {MELQuestionText(
               props.amountEarlier,
               props.timeEarlier,
               props.amountLater,
@@ -89,14 +96,14 @@ export const MELWordComponent = (props) => {
               {[
                 {
                   key: `${AmountType.earlierAmount}`,
-                  label: question1stPartText(
+                  label: MELQuestion1stPartText(
                     props.amountEarlier,
                     props.timeEarlier
                   ),
                 },
                 {
                   key: `${AmountType.laterAmount}`,
-                  label: question2ndPartText(
+                  label: MEQuestion2ndPartText(
                     props.amountLater,
                     props.timeLater
                   ),

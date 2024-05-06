@@ -11,12 +11,9 @@ import { ReactComponent as RightArrowKey } from "../assets/rightArrowKey.svg";
 export const MELBarChartComponent = (props) => {
   const { t } = useTranslation();
 
-  const data = Array.from(
-    Array(props.showMinorTicks ? props.maxTime * 4 : props.maxTime + 1).keys()
-  ).map((d) => {
-    const isMajor = props.showMinorTicks ? d % 4 === 0 : true;
-    const delay = props.showMinorTicks ? d / 4 : d;
-    if (isMajor && delay === props.timeEarlier) {
+  const data = Array.from(Array(props.maxTime + 1).keys()).map((d) => {
+    const delay = d;
+    if (delay === props.timeEarlier) {
       return {
         time: delay,
         amount: props.amountEarlier,
@@ -26,7 +23,7 @@ export const MELBarChartComponent = (props) => {
           <LeftArrowKey />
         )} ${t("leftArrowTooltip")}`,
       };
-    } else if (isMajor && delay === props.timeLater) {
+    } else if (delay === props.timeLater) {
       return {
         time: delay,
         amount: props.amountLater,

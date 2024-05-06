@@ -22,6 +22,7 @@ export const Experiment = ({
   hpaEmail,
   hpaPhone,
   prolificStudyId,
+  type,
 }) =>
   Object.freeze({
     experimentId,
@@ -47,4 +48,5 @@ export const Experiment = ({
     hpaEmail,
     hpaPhone,
     prolificStudyId,
+    type,
   });
