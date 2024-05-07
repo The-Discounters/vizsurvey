@@ -40,7 +40,10 @@ import { ReactComponent as LeftArrowKey } from "../assets/leftArrowKey.svg";
 import { ReactComponent as RightArrowKey } from "../assets/rightArrowKey.svg";
 import { EnterButtonTooltip } from "./EnterButtonTooltip.js";
 
+console.log("MELQuestionInstructions loaded.");
+
 const MELQuestionInstructions = () => {
+  console.log("MELQuestionInstructions called.");
   const dispatch = useDispatch();
   const treatment = useSelector(fetchCurrentTreatment);
   const instructionTreatment = useSelector(getInstructionTreatment);
@@ -56,8 +59,11 @@ const MELQuestionInstructions = () => {
   const status = useSelector(getStatus);
 
   useEffect(() => {
+    console.log("useEffect [] fired.");
     dispatch(MCLInstructionsShown(dateToState(DateTime.now())));
+    console.log("treatment: " + JSON.stringify(treatment));
     if (!treatment) navigate("/invalidlink");
+    console.log("useEffect [] completed.");
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
