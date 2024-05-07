@@ -5,7 +5,6 @@ import {
   FormHelperText,
   Radio,
   RadioGroup,
-  Box,
 } from "@mui/material";
 import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
 import { HTMLTooltip } from "./HTMLTooltip";
