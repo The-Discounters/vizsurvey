@@ -56,7 +56,11 @@ class ErrorBoundary extends React.Component {
 }
 
 const App = () => {
-  console.log(chalk.yellow(`Running for ${process.env.REACT_APP_ENV}`));
+  console.log(
+    chalk.yellow(
+      `Running for ${process.env.REACT_APP_ENV}, app version ${process.env.REACT_APP_VERSION}`
+    )
+  );
   return (
     <div>
       <Container>
