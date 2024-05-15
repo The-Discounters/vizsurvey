@@ -33,6 +33,7 @@ const Instructions = () => {
 
   useEffect(() => {
     const path = navigateFromStatus(status);
+    console.log(`Instructions-useEffect[status] - path=${path}`);
     navigate(path);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status]);
