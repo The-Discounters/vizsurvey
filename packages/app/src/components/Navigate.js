@@ -1,6 +1,7 @@
 import { StatusType } from "@the-discounters/types";
 
 export const navigateFromStatus = (status) => {
+  console.log(`navigateFromStatus status=${status}`);
   switch (status) {
     case StatusType.Unitialized:
       return "/invalidlink";
