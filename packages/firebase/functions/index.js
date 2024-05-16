@@ -69,6 +69,7 @@ export const signup = onRequest(
   {
     cors: [
       "https://localhost:3000",
+      "https://main.d2ptxb5fbsc082.amplifyapp.com",
       "https://staging.d2ptxb5fbsc082.amplifyapp.com",
       "https://release.d2ptxb5fbsc082.amplifyapp.com",
     ],
@@ -148,6 +149,7 @@ export const updateState = onRequest(
   {
     cors: [
       "https://localhost:3000",
+      "https://main.d2ptxb5fbsc082.amplifyapp.com",
       "https://staging.d2ptxb5fbsc082.amplifyapp.com",
       "https://release.d2ptxb5fbsc082.amplifyapp.com",
     ],
@@ -246,7 +248,8 @@ export const version = onRequest(
   {
     cors: [
       "https://localhost:3000",
-      "https://staging.d2ptxb5fbsc082.amplifyapp.com/",
+      "https://main.d2ptxb5fbsc082.amplifyapp.com",
+      "https://staging.d2ptxb5fbsc082.amplifyapp.com",
       "https://release.d2ptxb5fbsc082.amplifyapp.com",
     ],
   },
