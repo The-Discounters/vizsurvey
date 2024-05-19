@@ -148,40 +148,83 @@ const DevHome = () => {
           </a>
           <br></br>
           <a href="https://github.com/The-Discounters">public website</a>
-          <br></br>
-          <a href="https://release.d2ptxb5fbsc082.amplifyapp.com/">
-            Dev URL Treatment List
-          </a>
+          <p></p>
           <p>
-            The prolific url is:
+            The prolific production url is:
             https://release.d2ptxb5fbsc082.amplifyapp.com/start?participant_id=&#123;&#123;%PROLIFIC_PID%&#125;&#125;&study_id=&#123;&#123;%STUDY_ID%&#125;&#125;&session_id=&#123;&#123;%session_id%&#125;&#125;
           </p>
           <p>
-            An example for production is where participant_id must be unique for
-            the study_id
-            https://release.d2ptxb5fbsc082.amplifyapp.com/start?participant_id=1&study_id=2&session_id=3
+            Example URLs for the different environments are listed below where
+            participant_id must be unique for the study_id production:
+            <table style={{ border: "1px solid black" }}>
+              <tr style={{ border: "1px solid black" }}>
+                <th style={{ border: "1px solid black" }}>Environment</th>
+                <th style={{ border: "1px solid black" }}>Treatment</th>
+                <th style={{ border: "1px solid black" }}>URL</th>
+              </tr>
+              <tr style={{ border: "1px solid black" }}>
+                <td style={{ border: "1px solid black" }}>production</td>
+                <td style={{ border: "1px solid black" }}>between subject</td>
+                <td style={{ border: "1px solid black" }}>
+                  https://release.d2ptxb5fbsc082.amplifyapp.com/start?participant_id=1&study_id=testbetween&session_id=1
+                </td>
+              </tr>
+              <tr style={{ border: "1px solid black" }}>
+                <td style={{ border: "1px solid black" }}>production</td>
+                <td style={{ border: "1px solid black" }}>within subject</td>
+                <td style={{ border: "1px solid black" }}>
+                  https://release.d2ptxb5fbsc082.amplifyapp.com/start?participant_id=1&study_id=testwithin&session_id=1
+                </td>
+              </tr>
+              <tr style={{ border: "1px solid black" }}>
+                <td style={{ border: "1px solid black" }}>staging</td>
+                <td style={{ border: "1px solid black" }}>between subject</td>
+                <td style={{ border: "1px solid black" }}>
+                  https://staging.d2ptxb5fbsc082.amplifyapp.com/start?participant_id=1&study_id=testbetween&session_id=1
+                </td>
+              </tr>
+              <tr style={{ border: "1px solid black" }}>
+                <td style={{ border: "1px solid black" }}>staging</td>
+                <td style={{ border: "1px solid black" }}>within subject</td>
+                <td style={{ border: "1px solid black" }}>
+                  https://staging.d2ptxb5fbsc082.amplifyapp.com/start?participant_id=1&study_id=testwithin&session_id=1
+                </td>
+              </tr>
+              <tr style={{ border: "1px solid black" }}>
+                <td style={{ border: "1px solid black" }}>development</td>
+                <td style={{ border: "1px solid black" }}>between subject</td>
+                <td style={{ border: "1px solid black" }}>
+                  https://main.d2ptxb5fbsc082.amplifyapp.com/start?participant_id=1&study_id=testbetween&session_id=1
+                </td>
+              </tr>
+              <tr style={{ border: "1px solid black" }}>
+                <td style={{ border: "1px solid black" }}>development</td>
+                <td style={{ border: "1px solid black" }}>within subject</td>
+                <td style={{ border: "1px solid black" }}>
+                  https://main.d2ptxb5fbsc082.amplifyapp.com/start?participant_id=1&study_id=testbetween&session_id=1
+                </td>
+              </tr>
+              <tr style={{ border: "1px solid black" }}>
+                <td style={{ border: "1px solid black" }}>local</td>
+                <td style={{ border: "1px solid black" }}>between subject</td>
+                <td style={{ border: "1px solid black" }}>
+                  https:localhost:3000/start?participant_id=1&study_id=testbetween&session_id=1
+                </td>
+              </tr>
+              <tr style={{ border: "1px solid black" }}>
+                <td style={{ border: "1px solid black" }}>local</td>
+                <td style={{ border: "1px solid black" }}>within subject</td>
+                <td style={{ border: "1px solid black" }}>
+                  https://localhost:3000/start?participant_id=1&study_id=testwithin&session_id=1
+                </td>
+              </tr>
+            </table>
           </p>
           <p>
-            And for staging is where participant_id must be unique for the
-            study_id
-            https://staging.d2ptxb5fbsc082.amplifyapp.com/start?participant_id=1&session_id=4&study_id=testbetween
-          </p>
-          <p>
-            And for localhost with the particpant_id must be unique for the
-            study_id
-            https://localhost:3000/start?participant_id=1&study_id=2&session_id=3
-          </p>
-          <p>
-            Click a link below to launch one of the experiments. The
-            experimental parameters are not setup yet and are configurable
-            through a file. Right now these links give a feel for what each type
-            of stimulus is like.
-          </p>
-          <p>
-            <b>
-              Refactored google functions back end treatment links are listed
-              below.
-            </b>
+            Click a link below to launch one of the experiments. Participants
+            will not see this page and launch the app directly into the
+            configuration configured for the experiment. The links below are
+            provided for convience in testing in non production environments.
           </p>
           <p>
             <Link
