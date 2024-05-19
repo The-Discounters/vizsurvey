@@ -141,8 +141,47 @@ const DevHome = () => {
         <p>
           This page will not be available when deployed in production since the
           participants will be provided a link with the treatment id in the URL.
+          The links below are provided for convience in testing in non
+          production environments. Click a link below to launch one of the
+          experiments
         </p>
         <div key="testlinks-list">
+          <p>
+            <b>Test Links</b>
+          </p>
+          <p>
+            <Link
+              id="1"
+              to={`/start?participant_id=${getRandomIntInclusive(
+                0,
+                1000000
+              )}&study_id=testbetween&session_id=3`}
+              onClick={() => {
+                dispatch(clearState());
+              }}
+            >
+              Between subject barchart experiment with production values used in
+              thesis and CHI paper.
+            </Link>
+          </p>
+          <p>
+            <Link
+              id="1"
+              to={`/start?participant_id=${getRandomIntInclusive(
+                0,
+                1000000
+              )}&study_id=testwithin&session_id=3`}
+              onClick={() => {
+                dispatch(clearState());
+              }}
+            >
+              Within subject bar chart experiment with production values used in
+              thesis and CHI paper.
+            </Link>
+          </p>
+          <p>
+            <b>Reference Information</b>
+          </p>
           <a href="https://github.com/The-Discounters/vizsurvey">
             Github README.md
           </a>
@@ -219,42 +258,6 @@ const DevHome = () => {
                 </td>
               </tr>
             </table>
-          </p>
-          <p>
-            Click a link below to launch one of the experiments. Participants
-            will not see this page and launch the app directly into the
-            configuration configured for the experiment. The links below are
-            provided for convience in testing in non production environments.
-          </p>
-          <p>
-            <Link
-              id="1"
-              to={`/start?participant_id=${getRandomIntInclusive(
-                0,
-                1000000
-              )}&study_id=testbetween&session_id=3`}
-              onClick={() => {
-                dispatch(clearState());
-              }}
-            >
-              Between subject barchart experiment with production values used in
-              thesis and CHI paper.
-            </Link>
-          </p>
-          <p>
-            <Link
-              id="1"
-              to={`/start?participant_id=${getRandomIntInclusive(
-                0,
-                1000000
-              )}&study_id=testwithin&session_id=3`}
-              onClick={() => {
-                dispatch(clearState());
-              }}
-            >
-              Within subject bar chart experiment with production values used in
-              thesis and CHI paper.
-            </Link>
           </p>
         </div>
       </div>
