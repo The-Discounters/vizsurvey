@@ -22,15 +22,15 @@ i18n
           leftArrow: "left arrow",
           rightArrow: "right arrow",
           leftArrowTooltip:
-            "Press the left arrow key to choose the earlier amount.",
+            "Press the left arrow key to choose the left option.",
           rightArrowTooltip:
-            "Press the right arrow key to choose the later amount.",
+            "Press the right arrow key to choose the right option.",
           tooltipEnterNoSelectionInstructions:
             "Press the left or right arrow key to make a selection, then press the enter key to accept your selection and start the survey.",
-          tooltipEnterSelectionInstructions:
-            "Press the enter key to accept your selection of {{choice}} and start the survey.",
           tooltipEnterNoSelectionMELQuestions:
             "Press the left or right arrow key to make a selection, then press the enter key to accept your selection and advance to the next question.",
+          tooltipEnterSelectionInstructions:
+            "Press the enter key to accept your selection of {{choice}} and start the survey.",
           tooltipEnterSelectionMELQuestions:
             "Press the enter key to accept your selection of {{choice}} and advance to the next question.",
           tryPressEnterToAdvance:

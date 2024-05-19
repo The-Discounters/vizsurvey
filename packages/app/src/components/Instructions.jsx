@@ -64,7 +64,7 @@ const Instructions = () => {
               all these questions in order to remain in the study.
             </Typography>
             <Typography paragraph>
-              Then, you will be presented with four short sets of questions
+              Then, you will be presented with three short sets of questions
               about your experience answering the survey, as well as about you
               in general.
             </Typography>

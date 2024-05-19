@@ -56,9 +56,7 @@ export function Survey() {
           choice !== AmountType.laterAmount
         ) {
           setError(true);
-          setHelperText(
-            "Press the left arrow key to select the earlier amount and the right arrow key to select the later amount."
-          );
+          setHelperText(t("tooltipEnterNoSelectionInstructions"));
         } else {
           setHelperText(" ");
           setError(false);

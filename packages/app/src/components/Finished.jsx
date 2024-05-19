@@ -51,9 +51,9 @@ const Finished = () => {
             <Grid item xs={12}>
               <Typography paragraph>
                 Thank you for your feedback. You have completed the survey and
-                may close the browswer and please remember to enter the code{" "}
-                {experiment.prolificCode} into Prolific so that you will be paid{" "}
-                {experiment.paymentAmount}.
+                may close the browser. Befo re you do, please remember to enter
+                the code {experiment.prolificCode} into Prolific so that you
+                will be paid {experiment.paymentAmount}.
               </Typography>
             </Grid>
           </Grid>
