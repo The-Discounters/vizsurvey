@@ -55,10 +55,10 @@ const Debrief = () => {
       case ViewType.barchart:
         return `This experiment seeks to examine how visualization can be designed to
           influence people in making long term decisions differently.  For this
-          purpose, participants in this experiment are randomly assigned to be presented 
-          with word choices or different versions of graphical displays, such as a bar graph. 
-          In particular, we examine how space can be used in the time (horizontal) axis to increase 
-          the likelihood of choosing the longer-term option.`;
+          purpose, participants in this experiment are presented with word choices and
+          different bar graphs in a random order.  In particular, we examine how space
+          can be used in the time (horizontal) axis to increase the likelihood of choosing
+          the longer-term option.`;
       case ViewType.calendarIcon:
       case ViewType.calendarBar:
       case ViewType.calendarWord:

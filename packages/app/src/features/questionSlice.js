@@ -57,6 +57,10 @@ const initialState = {
   profession: "",
   employment: "",
   selfDescribeEmployment: "",
+  householdIncome: "",
+  selfDescribeHouseholdIncome: "",
+  educationLevel: "",
+  selfDescribeEducationLevel: "",
   consentChecked: null,
   timezone: null,
   timestamps: {
@@ -120,6 +124,18 @@ export const questionSlice = createSlice({
     },
     setSelfDescribeEmployment(state, action) {
       state.selfDescribeEmployment = action.payload;
+    },
+    setHouseholdIncome(state, action) {
+      state.householdIncome = action.payload;
+    },
+    setSelfDescribeHouseholdIncome(state, action) {
+      state.selfDescribeHouseholdIncome = action.payload;
+    },
+    setEducationLevel(state, action) {
+      state.educationLevel = action.payload;
+    },
+    setSelfDescribeEducationLevel(state, action) {
+      state.selfDescribeEducationLevel = action.payload;
     },
     initExperienceSurveyQuestion(state, action) {
       state.experienceSurvey = action.payload;
@@ -301,20 +317,27 @@ export const getEmployment = (state) => state.questions.employment;
 export const getSelfDescribeEmployment = (state) =>
   state.questions.selfDescribeEmployment;
 
-export const getExperienceSurveyQuestion = (questionId) => (state) => {
-  return state.questions.experienceSurvey[questionId];
-};
+export const getHouseholdIncome = (state) => state.questions.householdIncome;
 
-export const getFinancialLitSurveyQuestion = (questionId) => (state) => {
-  return state.questions.financialLitSurvey[questionId];
-};
+export const getSelfDescribeHouseholdIncome = (state) =>
+  state.questions.selfDescribeHouseholdIncome;
+
+export const getEducationLevel = (state) => state.questions.educationLevel;
+
+export const getSelfDescribeEducationLevel = (state) =>
+  state.questions.selfDescribeEducationLevel;
+
+export const getExperienceSurveyQuestion = (questionId) => (state) =>
+  state.questions.experienceSurvey[questionId];
+
+export const getFinancialLitSurveyQuestion = (questionId) => (state) =>
+  state.questions.financialLitSurvey[questionId];
 
 export const getFinancialLitSurveyAnswers = (state) =>
   state.questions.financialLitSurvey;
 
-export const getExperienceSurveyAnswers = (state) => {
-  return state.questions.experienceSurvey;
-};
+export const getExperienceSurveyAnswers = (state) =>
+  state.questions.experienceSurvey;
 
 export const getCurrentQuestionIndex = (state) =>
   state.questions.currentAnswerIdx;
@@ -359,6 +382,10 @@ export const {
   setProfession,
   setEmployment,
   setSelfDescribeEmployment,
+  setHouseholdIncome,
+  setSelfDescribeHouseholdIncome,
+  setEducationLevel,
+  setSelfDescribeEducationLevel,
   initExperienceSurveyQuestion,
   setExperienceSurveyQuestion,
   initFinancialLitSurveyQuestion,

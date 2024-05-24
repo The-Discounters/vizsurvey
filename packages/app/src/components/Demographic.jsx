@@ -33,19 +33,91 @@ import {
   setProfession,
   setEmployment,
   setSelfDescribeEmployment,
+  setHouseholdIncome,
+  setSelfDescribeHouseholdIncome,
+  setEducationLevel,
+  setSelfDescribeEducationLevel,
   demographicShown,
   demographicCompleted,
   getStatus,
+  getHouseholdIncome,
+  getSelfDescribeHouseholdIncome,
+  getEducationLevel,
+  getSelfDescribeEducationLevel,
 } from "../features/questionSlice.js";
 import { dateToState } from "@the-discounters/util";
 import { styles, theme } from "./ScreenHelper.js";
 import "../App.css";
 
+const employmentOptionValues = [
+  { value: "full-time", text: "Full Time" },
+  { value: "part-time", text: "Part Time" },
+  { value: "unemployed", text: "Unemployed" },
+  { value: "retried", text: "Retired" },
+  {
+    value: "self-describe",
+    text: "Prefer to Self-Describe",
+  },
+];
+
+const genderOptionValues = [
+  { value: "female", text: "Female" },
+  { value: "male", text: "Male" },
+  { value: "transgender", text: "Transgender" },
+  { value: "non-binary", text: "Non-binary" },
+  { value: "intersex", text: "Intersex" },
+  {
+    value: "self-describe",
+    text: "Prefer to Self-Describe",
+  },
+];
+
+const householdIncomeOptionValues = [
+  { value: "less-than-10K", text: "Less than $10,000" },
+  { value: "10K-less-than-16K", text: "$10,000 - $15,999" },
+  { value: "16K-less-than-20K", text: "$16,000 - $19,999" },
+  { value: "20K-less-than-30K", text: "$20,000 - $29,999" },
+  { value: "30K-less-than-40K", text: "$30,000 - $39,999" },
+  { value: "40K-less-than-50K", text: "$40,000 - $49,999" },
+  { value: "50K-less-than-60K", text: "$50,000 - $59,999" },
+  { value: "60K-less-than-70K", text: "$60,000 - $69,999" },
+  { value: "70K-less-than-80K", text: "$70,000 - $79,999" },
+  { value: "80K-less-than-90K", text: "$80,000 - $89,999" },
+  {
+    value: "90K-less-than-100K",
+    text: "$90,000 - $99,999",
+  },
+  {
+    value: "100K-less-than-150K",
+    text: "$100,000 - $149,999",
+  },
+  {
+    value: "more-than-150K",
+    text: "More than $150,000",
+  },
+  {
+    value: "self-describe",
+    text: "Prefer to Self-Describe",
+  },
+];
+
+const educationLevelOptionValues = [
+  { value: "no-formal", text: "No formal qualifications" },
+  { value: "secondary", text: "Secondary (e.g. GED/GCSE)" },
+  { value: "high-school", text: "High school" },
+  { value: "college-no-degree", text: "Some college, no degree" },
+  { value: "associates", text: "Associates degree" },
+  { value: "undergraduate", text: "Bachelor's degree" },
+  { value: "graduate", text: "Master's degree" },
+  { value: "doctorate", text: "Doctorate degree" },
+  {
+    value: "self-describe",
+    text: "Prefer to Self-Describe",
+  },
+];
+
 export function Consent() {
   const dispatch = useDispatch();
-  const [disableSelfDescribe, setDisableSelfDescribe] = React.useState(true);
-  const [disableSelfDescribeEmployment, setDisableSelfDescribeEmployment] =
-    React.useState(true);
 
   const countryOfResidence = useSelector(getCountryOfResidence);
   const vizFamiliarity = useSelector(getVizFamiliarity);
@@ -54,11 +126,29 @@ export function Consent() {
   const [selfDescribeGender, setSelfDescribeGenderState] = useState(
     useSelector(getSelfDescribeGender)
   );
+  const [disableSelfDescribeGender, setDisableSelfDescribe] =
+    React.useState(true);
   const [profession, setProfessionState] = useState(useSelector(getProfession));
   const employment = useSelector(getEmployment);
   const [selfDescribeEmployment, setSelfDescribeEmploymentState] = useState(
     useSelector(getSelfDescribeEmployment)
   );
+  const [disableSelfDescribeEmployment, setDisableSelfDescribeEmployment] =
+    React.useState(true);
+  const householdIncome = useSelector(getHouseholdIncome);
+  const [selfDescribeHouseholdIncome, setSelfDescribeHouseholdIncomeState] =
+    useState(useSelector(getSelfDescribeHouseholdIncome));
+  const [
+    disableSelfDescribeHouseholdIncome,
+    setDisableSelfDescribeHouseholdIncome,
+  ] = React.useState(true);
+  const educationLevel = useSelector(getEducationLevel);
+  const [selfDescribeEducationLevel, setSelfDescribeEducationLevelState] =
+    useState(useSelector(getSelfDescribeEducationLevel));
+  const [
+    disableSelfDescribeEducationLevel,
+    setDisableSelfDescribeEducationLevel,
+  ] = React.useState(true);
   const status = useSelector(getStatus);
 
   const navigate = useNavigate();
@@ -77,30 +167,43 @@ export function Consent() {
   useEffect(() => {
     if (gender === "self-describe") {
       setDisableSelfDescribe(false);
-    } else if (
-      [
-        "female",
-        "male",
-        "transgender",
-        "non-binary",
-        "intersex",
-        "refuse-answer",
-      ].includes(gender)
-    ) {
+    } else {
       setSelfDescribeGenderState("");
       setDisableSelfDescribe(true);
     }
     if (employment === "self-describe") {
       setDisableSelfDescribeEmployment(false);
-    } else if (
-      ["full-time", "part-time", "unemployed", "prefer-not-to-say"].includes(
-        employment
-      )
-    ) {
+    } else {
       setSelfDescribeEmploymentState("");
       setDisableSelfDescribeEmployment(true);
     }
-  }, [gender, selfDescribeGender, employment, selfDescribeEmployment]);
+    if (householdIncome === "self-describe") {
+      setDisableSelfDescribeHouseholdIncome(false);
+    } else {
+      setSelfDescribeHouseholdIncomeState("");
+      setDisableSelfDescribeHouseholdIncome(true);
+    }
+    if (householdIncome === "self-describe") {
+      setDisableSelfDescribeHouseholdIncome(false);
+    } else {
+      setSelfDescribeHouseholdIncomeState("");
+      setDisableSelfDescribeHouseholdIncome(true);
+    }
+    if (educationLevel === "self-describe") {
+      setDisableSelfDescribeEducationLevel(false);
+    } else {
+      setSelfDescribeEducationLevelState("");
+      setDisableSelfDescribeEducationLevel(true);
+    }
+  }, [
+    gender,
+    selfDescribeGender,
+    employment,
+    selfDescribeEmployment,
+    householdIncome,
+    educationLevel,
+    selfDescribeEducationLevel,
+  ]);
 
   const vizFamiliarityLevel = [
     {
@@ -214,7 +317,7 @@ export function Consent() {
                   variant="standard"
                   label="Age"
                   type="number"
-                  id="Age"
+                  id="age"
                   value={age}
                   onBlur={(event) => {
                     if (
@@ -249,7 +352,7 @@ export function Consent() {
                     setProfessionState(event.target.value);
                   }}
                   label="Current Profession"
-                  id="Current-Profession"
+                  id="current-profession"
                 />
               </Grid>
               <Grid item xs={3}>
@@ -266,22 +369,13 @@ export function Consent() {
                     }}
                   >
                     <option> </option>
-                    {[
-                      { value: "female", text: "Female" },
-                      { value: "male", text: "Male" },
-                      { value: "transgender", text: "Transgender" },
-                      { value: "non-binary", text: "Non-binary" },
-                      { value: "intersex", text: "Intersex" },
-                      {
-                        value: "self-describe",
-                        text: "Prefer to Self-Describe",
-                      },
-                    ].map(({ value, text }) => (
+                    {genderOptionValues.map(({ value, text }) => (
                       <option key={value} id={value} value={value}>
                         {text}
                       </option>
                     ))}
                   </NativeSelect>
+                  <FormHelperText>Your gender</FormHelperText>
                 </FormControl>
               </Grid>
               <Grid item xs={3}>
@@ -295,8 +389,8 @@ export function Consent() {
                     dispatch(setSelfDescribeGender(event.target.value));
                   }}
                   label="Self Describe Gender"
-                  id="Self-Describe-Gender"
-                  disabled={disableSelfDescribe}
+                  id="self-describe-gender"
+                  disabled={disableSelfDescribeGender}
                 />
               </Grid>
               <Grid item xs={3}>
@@ -315,21 +409,13 @@ export function Consent() {
                     }}
                   >
                     <option> </option>
-                    {[
-                      { value: "full-time", text: "Full Time" },
-                      { value: "part-time", text: "Part Time" },
-                      { value: "unemployed", text: "Unemployed" },
-                      { value: "retried", text: "Retired" },
-                      {
-                        value: "self-describe",
-                        text: "Prefer to Self-Describe",
-                      },
-                    ].map(({ value, text }) => (
+                    {employmentOptionValues.map(({ value, text }) => (
                       <option key={value} id={value} value={value}>
                         {text}
                       </option>
                     ))}
                   </NativeSelect>
+                  <FormHelperText>Your current employment</FormHelperText>
                 </FormControl>
               </Grid>
               <Grid item xs={3}>
@@ -345,6 +431,86 @@ export function Consent() {
                   label="Describe Employment"
                   id="self-describe-employment"
                   disabled={disableSelfDescribeEmployment}
+                />
+              </Grid>
+              <Grid item xs={3}>
+                <FormControl variant="standard">
+                  <InputLabel htmlFor="householdincome-select-helper">
+                    Household Income
+                  </InputLabel>
+                  <NativeSelect
+                    value={householdIncome}
+                    onChange={(event) => {
+                      dispatch(setHouseholdIncome(event.target.value));
+                    }}
+                    inputProps={{
+                      name: "householdincome",
+                      id: "householdincome-select-helper",
+                    }}
+                  >
+                    <option> </option>
+                    {householdIncomeOptionValues.map(({ value, text }) => (
+                      <option key={value} id={value} value={value}>
+                        {text}
+                      </option>
+                    ))}
+                  </NativeSelect>
+                </FormControl>
+              </Grid>
+              <Grid item xs={3}>
+                <TextField
+                  variant="standard"
+                  value={selfDescribeHouseholdIncome}
+                  onBlur={(event) => {
+                    dispatch(
+                      setSelfDescribeHouseholdIncome(event.target.value)
+                    );
+                  }}
+                  onChange={(event) => {
+                    setSelfDescribeHouseholdIncomeState(event.target.value);
+                  }}
+                  label="Describe Household Income"
+                  id="self-describe-household-income"
+                  disabled={disableSelfDescribeHouseholdIncome}
+                />
+              </Grid>
+              <Grid item xs={3}>
+                <FormControl variant="standard">
+                  <InputLabel htmlFor="education-level-select-helper">
+                    Formal Education Level
+                  </InputLabel>
+                  <NativeSelect
+                    value={educationLevel}
+                    onChange={(event) => {
+                      dispatch(setEducationLevel(event.target.value));
+                    }}
+                    inputProps={{
+                      name: "education-level",
+                      id: "education-level-select-helper",
+                    }}
+                  >
+                    <option> </option>
+                    {educationLevelOptionValues.map(({ value, text }) => (
+                      <option key={value} id={value} value={value}>
+                        {text}
+                      </option>
+                    ))}
+                  </NativeSelect>
+                </FormControl>
+              </Grid>
+              <Grid item xs={3}>
+                <TextField
+                  variant="standard"
+                  value={selfDescribeEducationLevel}
+                  onBlur={(event) => {
+                    dispatch(setSelfDescribeEducationLevel(event.target.value));
+                  }}
+                  onChange={(event) => {
+                    setSelfDescribeEducationLevelState(event.target.value);
+                  }}
+                  label="Highest Education Level Obtained"
+                  id="self-describe-education-level"
+                  disabled={disableSelfDescribeEducationLevel}
                 />
               </Grid>
             </Grid>
