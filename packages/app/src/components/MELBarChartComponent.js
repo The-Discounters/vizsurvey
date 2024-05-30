@@ -1,6 +1,7 @@
 import React from "react";
 import ReactDOMServer from "react-dom/server";
 import { FormControl, FormHelperText } from "@mui/material";
+import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
 import { VegaLite } from "react-vega";
 import vegaTooltipHandler from "vega-tooltip";
 import { useTranslation } from "react-i18next";
@@ -135,29 +136,56 @@ export const MELBarChartComponent = (props) => {
 
   return (
     <FormControl variant="standard" required={false} error={props.error}>
-      <FormHelperText>{props.helperText}</FormHelperText>
-      <VegaLite
-        spec={spec}
-        patch={(spec) => {
-          // usefull links
-          // https://stackoverflow.com/questions/57707494/whats-the-proper-way-to-implement-a-custom-click-handler-in-vega-lite
-          // https://codepen.io/stephenshank/pen/XWJpPxo
-          spec.signals = {
-            name: "barClick",
-            value: 0,
-            on: [{ events: "rect:mousedown", update: "datum" }],
-          };
-          return spec;
-        }}
-        onNewView={(view) =>
-          view.addSignalListener("barClick", (n, v) => {
-            props.onClickCallback(v.barType);
-          })
-        }
-        actions={false}
-        tooltip={(vegaTooltipHandler, tooltipOptions)}
-      />
-      ,
+      <Grid container>
+        <Grid
+          item
+          xs={12}
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          sx={{ fontSize: "24px" }}
+        >
+          {props.instructionText()}
+        </Grid>
+        <Grid
+          item
+          xs={12}
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+        >
+          <FormHelperText id="errorMessage">{props.helperText}</FormHelperText>
+        </Grid>
+        <Grid
+          item
+          xs={12}
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+        >
+          <VegaLite
+            spec={spec}
+            patch={(spec) => {
+              // usefull links
+              // https://stackoverflow.com/questions/57707494/whats-the-proper-way-to-implement-a-custom-click-handler-in-vega-lite
+              // https://codepen.io/stephenshank/pen/XWJpPxo
+              spec.signals = {
+                name: "barClick",
+                value: 0,
+                on: [{ events: "rect:mousedown", update: "datum" }],
+              };
+              return spec;
+            }}
+            onNewView={(view) =>
+              view.addSignalListener("barClick", (n, v) => {
+                props.onClickCallback(v.barType);
+              })
+            }
+            actions={false}
+            tooltip={(vegaTooltipHandler, tooltipOptions)}
+          />
+        </Grid>
+      </Grid>
     </FormControl>
   );
 };

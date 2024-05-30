@@ -262,13 +262,13 @@ export function Consent() {
                     Country of residence
                   </InputLabel>
                   <NativeSelect
-                    value={countryOfResidence}
-                    onChange={(event) => {
-                      dispatch(setCountryOfResidence(event.target.value));
-                    }}
                     inputProps={{
                       name: "country-of-origin",
                       id: "country-select-helper",
+                    }}
+                    value={countryOfResidence}
+                    onChange={(event) => {
+                      dispatch(setCountryOfResidence(event.target.value));
                     }}
                   >
                     <option> </option>
@@ -293,12 +293,14 @@ export function Consent() {
                     Dataviz experience
                   </InputLabel>
                   <NativeSelect
+                    inputProps={{
+                      id: "familiarity-with-viz",
+                    }}
                     value={vizFamiliarity}
                     onChange={(event) => {
                       dispatch(setVizFamiliarity(event.target.value));
                     }}
                     name="familiarity-with-viz"
-                    inputProps={{ "aria-label": "Datavis experience" }}
                   >
                     <option> </option>
                     {vizFamiliarityLevel.map((option) => (
@@ -314,10 +316,10 @@ export function Consent() {
               </Grid>
               <Grid item xs={3}>
                 <TextField
+                  id="age"
                   variant="standard"
                   label="Age"
                   type="number"
-                  id="age"
                   value={age}
                   onBlur={(event) => {
                     if (
@@ -343,6 +345,7 @@ export function Consent() {
               </Grid>
               <Grid item xs={3}>
                 <TextField
+                  id="current-profession"
                   variant="standard"
                   value={profession}
                   onBlur={(event) => {
@@ -352,7 +355,6 @@ export function Consent() {
                     setProfessionState(event.target.value);
                   }}
                   label="Current Profession"
-                  id="current-profession"
                 />
               </Grid>
               <Grid item xs={3}>
@@ -435,7 +437,7 @@ export function Consent() {
               </Grid>
               <Grid item xs={3}>
                 <FormControl variant="standard">
-                  <InputLabel htmlFor="householdincome-select-helper">
+                  <InputLabel htmlFor="household-income-select-helper">
                     Household Income
                   </InputLabel>
                   <NativeSelect
@@ -444,8 +446,8 @@ export function Consent() {
                       dispatch(setHouseholdIncome(event.target.value));
                     }}
                     inputProps={{
-                      name: "householdincome",
-                      id: "householdincome-select-helper",
+                      name: "household-income",
+                      id: "household-income-select-helper",
                     }}
                   >
                     <option> </option>

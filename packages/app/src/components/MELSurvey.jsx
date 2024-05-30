@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
+import { format } from "d3";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { DateTime } from "luxon";
-import { ThemeProvider, StyledEngineProvider, Button } from "@mui/material";
+import { ThemeProvider, StyledEngineProvider } from "@mui/material";
 import { Grid } from "@mui/material";
 import {
   AmountType,
@@ -26,12 +27,10 @@ import {
   nextQuestion,
   answer,
 } from "../features/questionSlice.js";
-import { MELCalendarComponent } from "./MELCalendarComponent.js";
 import { MELBarChartComponent } from "./MELBarChartComponent.js";
 import { MELWordComponent } from "./MELWordComponent.js";
-import { styles, theme } from "./ScreenHelper.js";
+import { theme } from "./ScreenHelper.js";
 import { navigateFromStatus } from "./Navigate.js";
-import { EnterButtonTooltip } from "./EnterButtonTooltip.js";
 
 export function Survey() {
   const dispatch = useDispatch();
@@ -45,7 +44,6 @@ export function Survey() {
   const status = useSelector(getStatus);
   const choice = useSelector(getCurrentChoice);
   const experiment = useSelector(getExperiment);
-  const [disableSubmit, setDisableSubmit] = useState(true);
   const dragAmount = useSelector(getCurrentDragAmount);
 
   const handleKeyDownEvent = (event) => {
@@ -110,9 +108,6 @@ export function Survey() {
     ) {
       setError(false);
       setHelperText(" ");
-      setDisableSubmit(false);
-    } else {
-      setDisableSubmit(true);
     }
   }, [choice, dragAmount, q.treatmentQuestionId]);
 
@@ -141,6 +136,27 @@ export function Survey() {
     setError(true);
   };
 
+  const instructionText = () => {
+    if (choice === AmountType.none) {
+      return t("tooltipEnterNoSelectionSurvey");
+    } else {
+      return t("tryPressEnterToAdvanceSurvey", {
+        choiceText: t("choiceText", {
+          amount:
+            choice === AmountType.earlierAmount
+              ? format("$,.0f")(q.amountEarlier)
+              : format("$,.0f")(q.amountLater),
+          delay:
+            choice === AmountType.earlierAmount ? q.timeEarlier : q.timeLater,
+        }),
+        arrowKey:
+          choice === AmountType.earlierAmount
+            ? t("rightArrow")
+            : t("leftArrow"),
+      });
+    }
+  };
+
   return (
     <StyledEngineProvider injectFirst>
       <ThemeProvider theme={theme}>
@@ -154,17 +170,38 @@ export function Survey() {
           <Grid item xs={12} align="center">
             {(() => {
               switch (q.viewType) {
+                case ViewType.word:
+                  return (
+                    <MELWordComponent
+                      textShort={"MELRadioGroup"}
+                      instructionText={instructionText}
+                      helperText={helperText}
+                      amountEarlier={q.amountEarlier}
+                      timeEarlier={q.timeEarlier}
+                      dateEarlier={q.dateEarlier}
+                      amountLater={q.amountLater}
+                      timeLater={q.timeLater}
+                      dateLater={q.dateLater}
+                      choice={choice}
+                      onClickCallback={(selection) =>
+                        showSelectionHint(selection)
+                      }
+                      error={error}
+                    />
+                  );
                 case ViewType.barchart:
                   return (
                     <MELBarChartComponent
-                      maxTime={q.maxTime}
-                      maxAmount={q.maxAmount}
-                      interaction={q.interaction}
-                      variableAmount={q.variableAmount}
+                      instructionText={instructionText}
+                      helperText={helperText}
                       amountEarlier={q.amountEarlier}
                       timeEarlier={q.timeEarlier}
                       amountLater={q.amountLater}
                       timeLater={q.timeLater}
+                      maxTime={q.maxTime}
+                      maxAmount={q.maxAmount}
+                      interaction={q.interaction}
+                      variableAmount={q.variableAmount}
                       horizontalPixels={q.horizontalPixels}
                       verticalPixels={q.verticalPixels}
                       leftMarginWidthIn={q.leftMarginWidthIn}
@@ -172,64 +209,11 @@ export function Survey() {
                       bottomMarginHeightIn={q.bottomMarginHeightIn}
                       graphHeightIn={q.graphHeightIn}
                       showMinorTicks={q.showMinorTicks}
-                      error={error}
-                      helperText={helperText}
                       choice={choice}
-                      onClickCallback={(selection) => {
-                        showSelectionHint(selection);
-                      }}
-                    />
-                  );
-                case ViewType.word:
-                  return (
-                    <MELWordComponent
-                      textShort={"MELRadioGroup"}
-                      amountEarlier={q.amountEarlier}
-                      timeEarlier={q.timeEarlier}
-                      dateEarlier={q.dateEarlier}
-                      amountLater={q.amountLater}
-                      timeLater={q.timeLater}
-                      dateLater={q.dateLater}
+                      onClickCallback={(selection) =>
+                        showSelectionHint(selection)
+                      }
                       error={error}
-                      helperText={helperText}
-                      choice={choice}
-                      onClickCallback={(value) => {
-                        let errorMsg;
-                        if (value === AmountType.earlierAmount) {
-                          errorMsg = t("leftArrowTooltip");
-                        } else if (value === AmountType.laterAmount) {
-                          errorMsg = t("rightArrowTooltip");
-                        }
-                        setHelperText(errorMsg);
-                        setError(true);
-                      }}
-                    />
-                  );
-                case ViewType.calendarBar:
-                case ViewType.calendarIcon:
-                case ViewType.calendarWord:
-                case ViewType.calendarWordYear:
-                case ViewType.calendarWordYearDual:
-                  return (
-                    <MELCalendarComponent
-                      viewType={q.viewType}
-                      amountEarlier={q.amountEarlier}
-                      dateEarlier={q.dateEarlier}
-                      amountLater={q.amountLater}
-                      dateLater={q.dateLater}
-                      error={error}
-                      helperText={helperText}
-                      choice={choice}
-                      onClickCallback={(value) => {
-                        let errorMsg;
-                        if (value === AmountType.earlierAmount) {
-                          errorMsg = t("leftArrowTooltip");
-                        } else if (value === AmountType.laterAmount) {
-                          errorMsg = t("rightArrowTooltip");
-                        }
-                        setHelperText(errorMsg);
-                        setError(true);
-                      }}
                     />
                   );
                 default:
@@ -244,32 +228,6 @@ export function Survey() {
                 height: 4,
               }}
             />
-          </Grid>
-          <Grid item xs={12} align="center">
-            <EnterButtonTooltip choice={choice}>
-              <Button
-                id="buttonNext"
-                variant="contained"
-                color="secondary"
-                disableRipple
-                disableFocusRipple
-                style={styles.button}
-                disabled={disableSubmit}
-                onClick={() => {
-                  setError(true);
-                  setHelperText(
-                    t("tooltipEnterSelectionInstructions", {
-                      choice:
-                        choice === AmountType.earlierAmount
-                          ? "earlier amount"
-                          : "later amount",
-                    })
-                  );
-                }}
-              >
-                Press Enter to advance to the next question
-              </Button>
-            </EnterButtonTooltip>
           </Grid>
         </Grid>
       </ThemeProvider>

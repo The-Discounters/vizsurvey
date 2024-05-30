@@ -1,16 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { format } from "d3";
 import { useNavigate } from "react-router-dom";
-import {
-  Button,
-  Typography,
-  ThemeProvider,
-  StyledEngineProvider,
-} from "@mui/material";
+import { Typography, ThemeProvider, StyledEngineProvider } from "@mui/material";
 import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
 import { useSelector, useDispatch } from "react-redux";
 import { DateTime } from "luxon";
-import { useD3 } from "../hooks/useD3.js";
 import { useKeyDown } from "../hooks/useKeydown.js";
 import "../App.css";
 import {
@@ -30,15 +24,12 @@ import {
 } from "../features/questionSlice.js";
 import { dateToState } from "@the-discounters/util";
 import { useTranslation } from "react-i18next";
-import { styles, theme } from "./ScreenHelper.js";
+import { theme } from "./ScreenHelper.js";
 import { MELWordComponent } from "./MELWordComponent.js";
 import { MELBarChartComponent } from "./MELBarChartComponent.js";
-import { drawCalendar } from "./CalendarHelper.js";
-import { drawCalendarYear } from "./CalendarYearHelper.js";
 import { ReactComponent as EnterKey } from "../assets/enterKey.svg";
 import { ReactComponent as LeftArrowKey } from "../assets/leftArrowKey.svg";
 import { ReactComponent as RightArrowKey } from "../assets/rightArrowKey.svg";
-import { EnterButtonTooltip } from "./EnterButtonTooltip.js";
 
 const MELQuestionInstructions = () => {
   const dispatch = useDispatch();
@@ -49,10 +40,8 @@ const MELQuestionInstructions = () => {
   const { t } = useTranslation();
 
   const [choice, setChoice] = useState(AmountType.none);
-  const [disableSubmit, setDisableSubmit] = React.useState(true);
   const [error, setError] = React.useState(false);
   const [helperText, setHelperText] = React.useState(" ");
-  const [showNextPrevious, setShowNextPrevious] = useState(false);
   const status = useSelector(getStatus);
 
   useEffect(() => {
@@ -78,11 +67,9 @@ const MELQuestionInstructions = () => {
         break;
       case "ArrowLeft":
         setChoice(AmountType.earlierAmount);
-        setShowNextPrevious(true);
         break;
       case "ArrowRight":
         setChoice(AmountType.laterAmount);
-        setShowNextPrevious(true);
         break;
       default:
     }
@@ -102,9 +89,6 @@ const MELQuestionInstructions = () => {
     ) {
       setError(false);
       setHelperText(" ");
-      setDisableSubmit(false);
-    } else {
-      setDisableSubmit(true);
     }
   }, [choice]);
 
@@ -188,82 +172,9 @@ const MELQuestionInstructions = () => {
           "bar on the right",
           "as a bar chart"
         );
-      case ViewType.calendarBar:
-        return instructions(
-          experiment.type === ExperimentType.betweenSubject
-            ? "as a calendar bar chart"
-            : "in words, as a bar chart, or as a calendar bar chart",
-          "radio button on the left",
-          "radio button on the right",
-          "as bars on a calendar"
-        );
-      case ViewType.calendarWord:
-      case ViewType.calendarWordYear:
-      case ViewType.calendarWordYearDual:
-        return instructions(
-          experiment.type === ExperimentType.betweenSubject
-            ? "as a calendar space"
-            : "in words or as a calendar space",
-          "space on the earlier day",
-          "space on the later day",
-          "as words on a calendar"
-        );
-      case ViewType.calendarIcon:
-        return instructions(
-          experiment.type === ExperimentType.betweenSubject
-            ? "as a calendar icon chart"
-            : "in words or as a calendar icon chart",
-          "icon chart on the earlier day",
-          "icon chart on the later day",
-          "as icon charts on a calendar"
-        );
       default:
         return <React.Fragment>{navigate("/invalidlink")}</React.Fragment>;
     }
-  };
-
-  const DrawCalendar = () => {
-    return (
-      <table
-        id="calendar"
-        style={{ borderCollapse: "collapse", tableLayout: "fixed" }}
-        ref={useD3(
-          (table) => {
-            drawCalendar({
-              table: table,
-              qDateEarlier: instructionTreatment.dateEarlier,
-              qDateLater: instructionTreatment.dateLater,
-              qAmountEarlier: instructionTreatment.amountEarlier,
-              qAmountLater: instructionTreatment.amountLater,
-              choice: choice,
-            });
-          },
-          [choice]
-        )}
-      ></table>
-    );
-  };
-
-  const DrawCalendarYear = () => {
-    return (
-      <table
-        id="calendar"
-        style={{ borderCollapse: "collapse", tableLayout: "fixed" }}
-        ref={useD3(
-          (table) => {
-            drawCalendarYear({
-              table: table,
-              qDateEarlier: instructionTreatment.dateEarlier,
-              qDateLater: instructionTreatment.dateLater,
-              qAmountEarlier: instructionTreatment.amountEarlier,
-              qAmountLater: instructionTreatment.amountLater,
-              choice: choice,
-            });
-          },
-          [choice]
-        )}
-      ></table>
-    );
   };
 
   const showSelectionHint = (selection) => {
@@ -277,47 +188,61 @@ const MELQuestionInstructions = () => {
     setError(true);
   };
 
+  const instructionText = () => {
+    if (choice === AmountType.none) {
+      return t("tooltipEnterNoSelectionInstructions");
+    } else {
+      return t("tryPressEnterToAdvanceInstruction", {
+        choiceText: t("choiceText", {
+          amount:
+            choice === AmountType.earlierAmount
+              ? format("$,.0f")(instructionTreatment.amountEarlier)
+              : format("$,.0f")(instructionTreatment.amountLater),
+          delay:
+            choice === AmountType.earlierAmount
+              ? instructionTreatment.timeEarlier
+              : instructionTreatment.timeLater,
+        }),
+        arrowKey:
+          choice === AmountType.earlierAmount
+            ? t("rightArrow")
+            : t("leftArrow"),
+      });
+    }
+  };
+
   const vizTry = () => {
     switch (instructionTreatment.viewType) {
       case ViewType.word:
         return (
           <MELWordComponent
             textShort={"MELRadioGroup"}
-            error={error}
+            instructionText={instructionText}
+            helperText={helperText}
             amountEarlier={instructionTreatment.amountEarlier}
             timeEarlier={instructionTreatment.timeEarlier}
             dateEarlier={instructionTreatment.dateEarlier}
             amountLater={instructionTreatment.amountLater}
             timeLater={instructionTreatment.timeLater}
             dateLater={instructionTreatment.dateLater}
-            helperText={helperText}
             choice={choice}
-            onClickCallback={(value) => {
-              let errorMsg;
-              if (value === AmountType.earlierAmount) {
-                errorMsg = t("leftArrowTooltip");
-              } else if (value === AmountType.laterAmount) {
-                errorMsg = t("rightArrowTooltip");
-              }
-              setHelperText(errorMsg);
-              setError(true);
-            }}
+            onClickCallback={(selection) => showSelectionHint(selection)}
+            error={error}
           />
         );
       case ViewType.barchart:
         return (
           <MELBarChartComponent
-            error={error}
+            instructionText={instructionText}
             helperText={helperText}
-            maxTime={instructionTreatment.maxTime}
-            maxAmount={instructionTreatment.maxAmount}
-            interaction={instructionTreatment.interaction}
-            variableAmount={instructionTreatment.variableAmount}
             amountEarlier={instructionTreatment.amountEarlier}
             timeEarlier={instructionTreatment.timeEarlier}
             amountLater={instructionTreatment.amountLater}
             timeLater={instructionTreatment.timeLater}
-            choice={choice}
+            maxTime={instructionTreatment.maxTime}
+            maxAmount={instructionTreatment.maxAmount}
+            interaction={instructionTreatment.interaction}
+            variableAmount={instructionTreatment.variableAmount}
             horizontalPixels={instructionTreatment.horizontalPixels}
             verticalPixels={instructionTreatment.verticalPixels}
             leftMarginWidthIn={instructionTreatment.leftMarginWidthIn}
@@ -325,20 +250,11 @@ const MELQuestionInstructions = () => {
             bottomMarginHeightIn={instructionTreatment.bottomMarginHeightIn}
             graphHeightIn={instructionTreatment.graphHeightIn}
             showMinorTicks={instructionTreatment.showMinorTicks}
-            onClickCallback={(selection) => {
-              showSelectionHint(selection);
-            }}
+            choice={choice}
+            onClickCallback={(selection) => showSelectionHint(selection)}
+            error={error}
           />
         );
-      case ViewType.calendarBar:
-        return "";
-      case ViewType.calendarWord:
-        return <DrawCalendar />;
-      case ViewType.calendarWordYear:
-      case ViewType.calendarWordYearDual:
-        return <DrawCalendarYear />;
-      case ViewType.calendarIcon:
-        return "";
       default:
         return "";
     }
@@ -374,71 +290,6 @@ const MELQuestionInstructions = () => {
               }}
             />
             {vizTry()}
-          </Grid>
-          <Grid item xs={12}>
-            {showNextPrevious && (
-              <>
-                <hr
-                  style={{
-                    backgroundColor: "#aaaaaa",
-                    height: 4,
-                  }}
-                />
-                <Typography paragraph>
-                  {t("tryPressEnterToAdvance", {
-                    choiceText: t("choiceText", {
-                      amount:
-                        choice === AmountType.earlierAmount
-                          ? format("$,.0f")(instructionTreatment.amountEarlier)
-                          : format("$,.0f")(instructionTreatment.amountLater),
-                      delay:
-                        choice === AmountType.earlierAmount
-                          ? instructionTreatment.timeEarlier
-                          : instructionTreatment.timeLater,
-                    }),
-                    arrowKey:
-                      choice === AmountType.earlierAmount
-                        ? t("rightArrow")
-                        : t("leftArrow"),
-                  })}
-                </Typography>
-              </>
-            )}
-            <hr
-              style={{
-                backgroundColor: "#aaaaaa",
-                height: 4,
-              }}
-            />
-          </Grid>
-          <Grid item xs={12} align="center">
-            <EnterButtonTooltip choice={choice}>
-              <Button
-                variant="contained"
-                color="secondary"
-                id="buttonNext"
-                disableRipple
-                disableFocusRipple
-                style={styles.button}
-                onClick={() => {
-                  setError(true);
-                  setHelperText(
-                    choice === AmountType.earlierAmount ||
-                      choice === AmountType.laterAmount
-                      ? t("tooltipEnterSelectionInstructions", {
-                          choice:
-                            choice === AmountType.earlierAmount
-                              ? "earlier amount"
-                              : "later amount",
-                        })
-                      : t("tooltipEnterNoSelectionInstructions")
-                  );
-                }}
-                disabled={disableSubmit}
-              >
-                Press Enter to start the survey
-              </Button>
-            </EnterButtonTooltip>
           </Grid>
         </Grid>
       </ThemeProvider>

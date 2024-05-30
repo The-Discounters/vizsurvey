@@ -7,12 +7,8 @@ import {
   RadioGroup,
 } from "@mui/material";
 import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
-import { HTMLTooltip } from "./HTMLTooltip";
-import { useTranslation } from "react-i18next";
 import { format } from "d3";
 import { AmountType } from "@the-discounters/types";
-import { ReactComponent as LeftArrowKey } from "../assets/leftArrowKey.svg";
-import { ReactComponent as RightArrowKey } from "../assets/rightArrowKey.svg";
 
 const todayText = (sooner_time) =>
   sooner_time === 0 ? "today" : `in ${sooner_time} months`;
@@ -38,18 +34,9 @@ export function MEQuestion2ndPartText(amountLater, timeLater) {
 }
 
 export const MELWordComponent = (props) => {
-  const { t } = useTranslation();
-
-  // TODO I can probably refactor this code that builds up the text for choice question into a common place to use in the instructions.
-
   return (
     <form>
-      <FormControl
-        variant="standard"
-        required={false}
-        error={props.error}
-        sx={{ fontSize: "32px" }}
-      >
+      <FormControl variant="standard" required={false} error={props.error}>
         <Grid container>
           <Grid
             item
@@ -57,8 +44,9 @@ export const MELWordComponent = (props) => {
             display="flex"
             justifyContent="center"
             alignItems="center"
+            sx={{ fontSize: "24px" }}
           >
-            <FormHelperText>{props.helperText}</FormHelperText>
+            {props.instructionText()}
           </Grid>
           <Grid
             item
@@ -66,6 +54,18 @@ export const MELWordComponent = (props) => {
             display="flex"
             justifyContent="center"
             alignItems="center"
+          >
+            <FormHelperText id="errorMessage" sx={{ fontSize: "20px" }}>
+              {props.helperText}
+            </FormHelperText>
+          </Grid>
+          <Grid
+            item
+            xs={12}
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+            sx={{ fontSize: "32px" }}
           >
             {MELQuestionText(
               props.amountEarlier,
@@ -108,40 +108,25 @@ export const MELWordComponent = (props) => {
                   ),
                 },
               ].map(({ key, label }, index) => (
-                <HTMLTooltip
-                  key={`tooltip-${key}`}
-                  title={
-                    key === `${AmountType.earlierAmount}` ? (
-                      <React.Fragment>
-                        <LeftArrowKey /> {t("leftArrowTooltip")}
-                      </React.Fragment>
-                    ) : (
-                      <React.Fragment>
-                        <RightArrowKey /> {t("rightArrowTooltip")}
-                      </React.Fragment>
-                    )
-                  }
-                >
-                  <FormControlLabel
-                    sx={{
-                      mr: "100px",
-                      border: 1,
-                      backgroundColor:
-                        props.choice === key ? "lightblue" : "none",
-                      borderRadius: "20px",
-                      borderWidth: "1px",
-                      borderColor: "black",
-                      color: "black",
-                      paddingRight: "10px",
-                    }}
-                    key={key}
-                    id={key}
-                    value={key}
-                    checked={props.choice === key}
-                    control={<Radio />}
-                    label={label}
-                  />
-                </HTMLTooltip>
+                <FormControlLabel
+                  sx={{
+                    mr: "100px",
+                    border: 1,
+                    backgroundColor:
+                      props.choice === key ? "lightblue" : "none",
+                    borderRadius: "20px",
+                    borderWidth: "1px",
+                    borderColor: "black",
+                    color: "black",
+                    paddingRight: "10px",
+                  }}
+                  key={key}
+                  id={key}
+                  value={key}
+                  checked={props.choice === key}
+                  control={<Radio />}
+                  label={label}
+                />
               ))}
             </RadioGroup>
           </Grid>
