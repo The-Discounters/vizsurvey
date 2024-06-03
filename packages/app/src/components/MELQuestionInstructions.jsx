@@ -17,7 +17,7 @@ import { navigateFromStatus } from "./Navigate.js";
 import {
   MCLInstructionsShown,
   MCLInstructionsCompleted,
-  fetchCurrentTreatment,
+  getCurrentQuestion,
   getInstructionTreatment,
   getStatus,
   getExperiment,
@@ -33,7 +33,7 @@ import { ReactComponent as RightArrowKey } from "../assets/rightArrowKey.svg";
 
 const MELQuestionInstructions = () => {
   const dispatch = useDispatch();
-  const treatment = useSelector(fetchCurrentTreatment);
+  const currentQuestion = useSelector(getCurrentQuestion);
   const instructionTreatment = useSelector(getInstructionTreatment);
   const experiment = useSelector(getExperiment);
   const navigate = useNavigate();
@@ -46,7 +46,7 @@ const MELQuestionInstructions = () => {
 
   useEffect(() => {
     dispatch(MCLInstructionsShown(dateToState(DateTime.now())));
-    if (!treatment) navigate("/invalidlink");
+    if (!currentQuestion) navigate("/invalidlink");
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

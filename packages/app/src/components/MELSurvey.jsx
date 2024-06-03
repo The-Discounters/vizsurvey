@@ -115,7 +115,6 @@ export function Survey() {
     const path = navigateFromStatus(status);
     if (
       status !== StatusType.Survey &&
-      status !== StatusType.Attention &&
       experiment.fullScreen === "enabled" &&
       document.fullscreenElement
     ) {

@@ -11,23 +11,25 @@ import { useSelector, useDispatch } from "react-redux";
 import { DateTime } from "luxon";
 import "../App.css";
 import {
-  instructionsShown,
-  instructionsCompleted,
+  breakShown,
+  breakCompleted,
   getStatus,
-  getExperiment,
+  getRemainingTreatmentCount,
+  getCompletedTreatmentCount,
 } from "../features/questionSlice.js";
 import { dateToState } from "@the-discounters/util";
 import { navigateFromStatus } from "./Navigate.js";
 import { styles, theme } from "./ScreenHelper.js";
 
-const Instructions = () => {
+const Break = () => {
   const dispatch = useDispatch();
   const status = useSelector(getStatus);
-  const experiment = useSelector(getExperiment);
+  const remainingTreatments = useSelector(getRemainingTreatmentCount);
+  const completedTreatments = useSelector(getCompletedTreatmentCount);
   const navigate = useNavigate();
 
   useEffect(() => {
-    dispatch(instructionsShown(dateToState(DateTime.now())));
+    dispatch(breakShown(dateToState(DateTime.now())));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -47,7 +49,7 @@ const Instructions = () => {
           alignItems="stretch"
         >
           <Grid item xs={12}>
-            <Typography variant="h4">General Instructions</Typography>
+            <Typography variant="h4">Question Break</Typography>
             <hr
               style={{
                 color: "#ea3433",
@@ -58,28 +60,12 @@ const Instructions = () => {
           </Grid>
           <Grid item xs={12}>
             <Typography paragraph>
-              In the first set of questions, you will be asked to make money
-              choices as instructed in the next screen. You will need to answer
-              all these questions in order to remain in the study.
+              You have completed {completedTreatments}{" "}
+              {completedTreatments === 1 ? "block" : "blocks"} of trials. There
+              are {remainingTreatments} blocks remaining. Please feel free to
+              take a break and press continue when you are ready for the next
+              block.
             </Typography>
-            <Typography paragraph>
-              Then, you will be presented with three short sets of questions
-              about your experience answering the survey, as well as about you
-              in general.
-            </Typography>
-            <Typography paragraph>
-              Finally, you will be presented with a more detailed explanation of
-              the goals behind this research along with an opportunity to submit
-              feedback and a{" "}
-              <b>code you must enter into Prolific to get paid.</b>
-            </Typography>
-            <Typography paragraph>
-              The entire survey will take about {experiment.timeToCompleteMin}{" "}
-              minutes to complete.
-            </Typography>
-            <Typography paragraph>
-              <b>Click the Next button to start.</b>
-            </Typography>{" "}
             <hr
               style={{
                 backgroundColor: "#aaaaaa",
@@ -95,11 +81,11 @@ const Instructions = () => {
               disableFocusRipple
               style={styles.button}
               onClick={() => {
-                dispatch(instructionsCompleted(dateToState(DateTime.now())));
+                dispatch(breakCompleted(dateToState(DateTime.now())));
               }}
             >
               {" "}
-              Next{" "}
+              Continue{" "}
             </Button>
           </Grid>
         </Grid>
@@ -108,4 +94,4 @@ const Instructions = () => {
   );
 };
 
-export default Instructions;
+export default Break;

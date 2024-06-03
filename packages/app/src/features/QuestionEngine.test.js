@@ -20,31 +20,34 @@ describe("QuestionEngine tests", () => {
       status: StatusType.Unitialized,
     };
     const qe = new QuestionEngine();
-    expect((state.status = qe.nextStatus(state, false))).toBe(
+    expect((state.status = qe.nextStatus(state, false, true))).toBe(
       StatusType.Fetching
     );
-    expect((state.status = qe.nextStatus(state, false))).toBe(
+    expect((state.status = qe.nextStatus(state, false, false))).toBe(
       StatusType.Consent
     );
-    expect((state.status = qe.nextStatus(state, false))).toBe(
+    expect((state.status = qe.nextStatus(state, false, false))).toBe(
       StatusType.Instructions
     );
-    expect((state.status = qe.nextStatus(state, false))).toBe(
+    expect((state.status = qe.nextStatus(state, false, false))).toBe(
       StatusType.MELQuestionInstructions
     );
-    expect((state.status = qe.nextStatus(state, false))).toBe(
+    expect((state.status = qe.nextStatus(state, false, false))).toBe(
       StatusType.Survey
     );
-    expect((state.status = qe.nextStatus(state, true))).toBe(
+    expect((state.status = qe.nextStatus(state, true, false))).toBe(
+      StatusType.Break
+    );
+    expect((state.status = qe.nextStatus(state, true, true))).toBe(
       StatusType.ExperienceQuestionaire
     );
-    expect((state.status = qe.nextStatus(state, true))).toBe(
+    expect((state.status = qe.nextStatus(state, true, true))).toBe(
       StatusType.FinancialQuestionaire
     );
-    expect((state.status = qe.nextStatus(state, true))).toBe(
+    expect((state.status = qe.nextStatus(state, true, true))).toBe(
       StatusType.Demographic
     );
-    expect((state.status = qe.nextStatus(state, true))).toBe(
+    expect((state.status = qe.nextStatus(state, true, true))).toBe(
       StatusType.Debrief
     );
     expect(qe.nextStatus(state, true)).toBe(StatusType.Finished);
@@ -125,7 +128,7 @@ describe("QuestionEngine tests", () => {
     qe.incNextQuestion(state);
     expect(state.currentAnswerIdx).toBe(2);
     expect(qe.currentAnswer(state).treatmentId).toBe(2);
-    expect(state.status).toBe(StatusType.Survey);
+    expect(state.status).toBe(StatusType.Break);
     qe.incNextQuestion(state);
     expect(qe.currentAnswer(state).treatmentId).toBe(2);
     expect(state.currentAnswerIdx).toBe(3);
@@ -156,6 +159,44 @@ describe("QuestionEngine tests", () => {
     qe.incNextQuestion(state);
     expect(state.currentAnswerIdx).toBe(2);
     expect(state.status).toBe(StatusType.ExperienceQuestionaire);
+  });
+
+  test("remainingTreatmentCount.", () => {
+    const state = {
+      questions: [
+        createQuestionNoTitrate(1, 1),
+        create2ndQuestionNoTitrate(2, 1),
+        create2ndQuestionNoTitrate(3, 1),
+      ],
+      currentAnswerIdx: 0,
+      status: StatusType.Survey,
+    };
+    const qe = new QuestionEngine();
+    expect(qe.remainingTreatmentCount(state)).toBe(2);
+    qe.incNextQuestion(state);
+    expect(qe.remainingTreatmentCount(state)).toBe(1);
+    qe.incNextQuestion(state);
+    expect(qe.remainingTreatmentCount(state)).toBe(0);
+  });
+
+  test("completedTreatmentCount.", () => {
+    const state = {
+      questions: [
+        createQuestionNoTitrate(1, 1),
+        create2ndQuestionNoTitrate(2, 1),
+        create2ndQuestionNoTitrate(3, 1),
+      ],
+      currentAnswerIdx: 0,
+      status: StatusType.Survey,
+    };
+    const qe = new QuestionEngine();
+    expect(qe.completedTreatmentCount(state)).toBe(0);
+    qe.incNextQuestion(state);
+    expect(qe.completedTreatmentCount(state)).toBe(1);
+    qe.incNextQuestion(state);
+    expect(qe.completedTreatmentCount(state)).toBe(2);
+    qe.incNextQuestion(state);
+    expect(qe.completedTreatmentCount(state)).toBe(2);
   });
 });
 

@@ -16,6 +16,7 @@ import Demographic from "./components/Demographic.jsx";
 import Instructions from "./components/Instructions.jsx";
 import Survey from "./components/MELSurvey.jsx";
 import PostSurveyExperience from "./components/PostSurveyExperience.jsx";
+import Break from "./components/Break.jsx";
 import PostSurveyFinancialLit from "./components/PostSurveyFinancialLit.jsx";
 import Debrief from "./components/Debrief.jsx";
 import Finished from "./components/Finished.jsx";
@@ -75,6 +76,7 @@ const App = () => {
             />
             <Route path="/instruction" element={<Instructions />} />
             <Route path="/survey" element={<Survey />} />
+            <Route path="/break" element={<Break />} />
             <Route
               path="/experiencequestionaire"
               element={<PostSurveyExperience />}

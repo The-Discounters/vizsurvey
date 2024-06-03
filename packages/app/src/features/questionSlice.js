@@ -76,6 +76,9 @@ const initialState = {
     instructionsShownTimestamp: null,
     instructionsCompletedTimestamp: null,
     instructionsTimeSec: null,
+    breakShownTimestamp: [],
+    breakCompletedTimestamp: [],
+    breakTimeSec: [],
     experienceSurveyQuestionsShownTimestamp: null,
     experienceSurveyQuestionsCompletedTimestamp: null,
     experienceSurveyTimeSec: null,
@@ -101,6 +104,121 @@ export const questionSlice = createSlice({
   name: "questions", // I believe the global state is partitioned by the name value thus the terminology "slice"
   initialState: initialState, // the initial state of our global data (under name slice)
   reducers: {
+    consentShown(state, action) {
+      state.timestamps.consentShownTimestamp = action.payload;
+    },
+    consentCompleted(state, action) {
+      //TODO we should refactor all these timestamp set methods into QuestionEngine.
+      //One reason is we won't be calling nexStatus from the slice and in QuestionEngine (we call it in at lesat two methods there)
+      state.consentChecked = true;
+      state.timestamps.consentCompletedTimestamp = action.payload;
+      state.timestamps.consentTimeSec = secondsBetween(
+        state.timestamps.consentShownTimestamp,
+        state.timestamps.consentCompletedTimestamp
+      );
+      state.timezone = SystemZone.instance.name;
+      state.status = qe.nextState(state);
+    },
+    instructionsShown(state, action) {
+      state.timestamps.instructionsShownTimestamp = action.payload;
+    },
+    instructionsCompleted(state, action) {
+      state.timestamps.instructionsCompletedTimestamp = action.payload;
+      state.timestamps.instructionsTimeSec = secondsBetween(
+        state.timestamps.instructionsShownTimestamp,
+        state.timestamps.instructionsCompletedTimestamp
+      );
+      state.status = qe.nextState(state);
+    },
+    MCLInstructionsShown(state, action) {
+      state.timestamps.choiceInstructionShownTimestamp.push({
+        treatmentId: qe.currentAnswer(state).treatmentId,
+        value: action.payload,
+      });
+    },
+    MCLInstructionsCompleted(state, action) {
+      state.timestamps.choiceInstructionCompletedTimestamp.push({
+        treatmentId: qe.currentAnswer(state).treatmentId,
+        value: action.payload,
+      });
+      const shownTimestamp =
+        state.timestamps.choiceInstructionShownTimestamp.find(
+          (cv) => cv.treatmentId === qe.currentAnswer(state).treatmentId
+        ).timestamp;
+      state.timestamps.choiceInstructionTimeSec.push({
+        treatmentId: qe.currentAnswer(state).treatmentId,
+        value: secondsBetween(shownTimestamp, action.payload),
+      });
+      state.status = qe.nextState(state);
+    },
+    breakShown(state, action) {
+      state.timestamps.breakShownTimestamp.push({
+        treatmentId: qe.currentAnswer(state).treatmentId,
+        value: action.payload,
+      });
+    },
+    breakCompleted(state, action) {
+      state.timestamps.breakCompletedTimestamp.push({
+        treatmentId: qe.currentAnswer(state).treatmentId,
+        value: action.payload,
+      });
+      const shownTimestamp = state.timestamps.breakShownTimestamp.find(
+        (cv) => cv.treatmentId === qe.currentAnswer(state).treatmentId
+      ).timestamp;
+      state.timestamps.breakTimeSec.push({
+        treatmentId: qe.currentAnswer(state).treatmentId,
+        value: secondsBetween(shownTimestamp, action.payload),
+      });
+      state.status = qe.nextState(state);
+    },
+    experienceSurveyQuestionsShown(state, action) {
+      state.timestamps.experienceSurveyQuestionsShownTimestamp = action.payload;
+    },
+    experienceSurveyQuestionsCompleted(state, action) {
+      state.timestamps.experienceSurveyQuestionsCompletedTimestamp =
+        action.payload;
+      state.timestamps.experienceSurveyTimeSec = secondsBetween(
+        state.timestamps.experienceSurveyQuestionsShownTimestamp,
+        state.timestamps.experienceSurveyQuestionsCompletedTimestamp
+      );
+      state.status = qe.nextState(state);
+    },
+    initExperienceSurveyQuestion(state, action) {
+      state.experienceSurvey = action.payload;
+    },
+    setExperienceSurveyQuestion(state, action) {
+      state.experienceSurvey[action.payload.key] = action.payload.value;
+    },
+    financialLitSurveyQuestionsShown(state, action) {
+      state.timestamps.financialLitSurveyQuestionsShownTimestamp =
+        action.payload;
+    },
+    financialLitSurveyQuestionsCompleted(state, action) {
+      state.timestamps.financialLitSurveyQuestionsCompletedTimestamp =
+        action.payload;
+      state.timestamps.financialLitSurveyTimeSec = secondsBetween(
+        state.timestamps.financialLitSurveyQuestionsShownTimestamp,
+        state.timestamps.financialLitSurveyQuestionsCompletedTimestamp
+      );
+      state.status = qe.nextState(state);
+    },
+    initFinancialLitSurveyQuestion(state, action) {
+      state.financialLitSurvey = action.payload;
+    },
+    setFinancialLitSurveyQuestion(state, action) {
+      state.financialLitSurvey[action.payload.key] = action.payload.value;
+    },
+    demographicShown(state, action) {
+      state.timestamps.demographicShownTimestamp = action.payload;
+    },
+    demographicCompleted(state, action) {
+      state.timestamps.demographicCompletedTimestamp = action.payload;
+      state.timestamps.demographicTimeSec = secondsBetween(
+        state.timestamps.demographicShownTimestamp,
+        state.timestamps.demographicCompletedTimestamp
+      );
+      state.status = qe.nextState(state);
+    },
     setCountryOfResidence(state, action) {
       state.countryOfResidence = action.payload;
     },
@@ -137,76 +255,6 @@ export const questionSlice = createSlice({
     setSelfDescribeEducationLevel(state, action) {
       state.selfDescribeEducationLevel = action.payload;
     },
-    initExperienceSurveyQuestion(state, action) {
-      state.experienceSurvey = action.payload;
-    },
-    setExperienceSurveyQuestion(state, action) {
-      state.experienceSurvey[action.payload.key] = action.payload.value;
-    },
-    initFinancialLitSurveyQuestion(state, action) {
-      state.financialLitSurvey = action.payload;
-    },
-    setFinancialLitSurveyQuestion(state, action) {
-      state.financialLitSurvey[action.payload.key] = action.payload.value;
-    },
-    consentShown(state, action) {
-      state.timestamps.consentShownTimestamp = action.payload;
-    },
-    consentCompleted(state, action) {
-      //TODO we should refactor all these timestamp set methods into QuestionEngine.
-      //One reason is we won't be calling nexStatus from the slice and in QuestionEngine (we call it in at lesat two methods there)
-      state.consentChecked = true;
-      state.timestamps.consentCompletedTimestamp = action.payload;
-      state.timestamps.consentTimeSec = secondsBetween(
-        state.timestamps.consentShownTimestamp,
-        state.timestamps.consentCompletedTimestamp
-      );
-      state.timezone = SystemZone.instance.name;
-      state.status = qe.nextState(state);
-    },
-    demographicShown(state, action) {
-      state.timestamps.demographicShownTimestamp = action.payload;
-    },
-    demographicCompleted(state, action) {
-      state.timestamps.demographicCompletedTimestamp = action.payload;
-      state.timestamps.demographicTimeSec = secondsBetween(
-        state.timestamps.demographicShownTimestamp,
-        state.timestamps.demographicCompletedTimestamp
-      );
-      state.status = qe.nextState(state);
-    },
-    MCLInstructionsShown(state, action) {
-      state.timestamps.choiceInstructionShownTimestamp.push({
-        treatmentId: qe.currentAnswer(state).treatmentId,
-        value: action.payload,
-      });
-    },
-    MCLInstructionsCompleted(state, action) {
-      state.timestamps.choiceInstructionCompletedTimestamp.push({
-        treatmentId: qe.currentAnswer(state).treatmentId,
-        value: action.payload,
-      });
-      const shownTimestamp =
-        state.timestamps.choiceInstructionShownTimestamp.find(
-          (cv) => cv.treatmentId === qe.currentAnswer(state).treatmentId
-        ).timestamp;
-      state.timestamps.choiceInstructionTimeSec.push({
-        treatmentId: qe.currentAnswer(state).treatmentId,
-        value: secondsBetween(shownTimestamp, action.payload),
-      });
-      state.status = qe.nextState(state);
-    },
-    instructionsShown(state, action) {
-      state.timestamps.instructionsShownTimestamp = action.payload;
-    },
-    instructionsCompleted(state, action) {
-      state.timestamps.instructionsCompletedTimestamp = action.payload;
-      state.timestamps.instructionsTimeSec = secondsBetween(
-        state.timestamps.instructionsShownTimestamp,
-        state.timestamps.instructionsCompletedTimestamp
-      );
-      state.status = qe.nextState(state);
-    },
     setFeedback(state, action) {
       state.feedback = action.payload;
     },
@@ -220,31 +268,6 @@ export const questionSlice = createSlice({
     // we define our actions on the slice of global store data here.
     nextQuestion(state) {
       qe.incNextQuestion(state);
-    },
-    experienceSurveyQuestionsShown(state, action) {
-      state.timestamps.experienceSurveyQuestionsShownTimestamp = action.payload;
-    },
-    experienceSurveyQuestionsCompleted(state, action) {
-      state.timestamps.experienceSurveyQuestionsCompletedTimestamp =
-        action.payload;
-      state.timestamps.experienceSurveyTimeSec = secondsBetween(
-        state.timestamps.experienceSurveyQuestionsShownTimestamp,
-        state.timestamps.experienceSurveyQuestionsCompletedTimestamp
-      );
-      state.status = qe.nextState(state);
-    },
-    financialLitSurveyQuestionsShown(state, action) {
-      state.timestamps.financialLitSurveyQuestionsShownTimestamp =
-        action.payload;
-    },
-    financialLitSurveyQuestionsCompleted(state, action) {
-      state.timestamps.financialLitSurveyQuestionsCompletedTimestamp =
-        action.payload;
-      state.timestamps.financialLitSurveyTimeSec = secondsBetween(
-        state.timestamps.financialLitSurveyQuestionsShownTimestamp,
-        state.timestamps.financialLitSurveyQuestionsCompletedTimestamp
-      );
-      state.status = qe.nextState(state);
     },
     debriefShownTimestamp(state, action) {
       state.timestamps.debriefShownTimestamp = action.payload;
@@ -342,9 +365,6 @@ export const getExperienceSurveyAnswers = (state) =>
 export const getCurrentQuestionIndex = (state) =>
   state.questions.currentAnswerIdx;
 
-export const fetchCurrentTreatment = (state) =>
-  qe.currentAnswer(state.questions);
-
 export const getInstructionTreatment = (state) =>
   qe.currentInstructions(state.questions);
 
@@ -363,6 +383,14 @@ export const getStudyId = (state) => state.questions.studyId;
 export const getConsentChecked = (state) => state.questions.consentChecked;
 
 export const getExperiment = (state) => state.questions.experiment;
+
+export const getRemainingTreatmentCount = (state) => {
+  return qe.remainingTreatmentCount(state.questions);
+};
+
+export const getCompletedTreatmentCount = (state) => {
+  return qe.completedTreatmentCount(state.questions);
+};
 
 // Action creators are generated for each case reducer function
 export const {
@@ -396,6 +424,8 @@ export const {
   instructionsCompleted,
   MCLInstructionsShown,
   MCLInstructionsCompleted,
+  breakShown,
+  breakCompleted,
   experienceSurveyQuestionsShown,
   experienceSurveyQuestionsCompleted,
   financialLitSurveyQuestionsShown,

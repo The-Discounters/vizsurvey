@@ -22,6 +22,22 @@ export class QuestionEngine {
     );
   }
 
+  remainingTreatmentCount(state) {
+    let set = new Set(
+      state.questions
+        .slice(state.currentAnswerIdx + 1)
+        .map((q) => q.treatmentId)
+    );
+    return set.size;
+  }
+
+  completedTreatmentCount(state) {
+    let set = new Set(
+      state.questions.slice(0, state.currentAnswerIdx).map((q) => q.treatmentId)
+    );
+    return set.size;
+  }
+
   currentAnswer(state) {
     return state.questions[state.currentAnswerIdx];
   }
@@ -54,7 +70,11 @@ export class QuestionEngine {
 
   incNextQuestion(state) {
     const isLastQuestion = this.isLastQuestion(state);
-    const nextStatus = this.nextStatus(state, isLastQuestion);
+    const nextStatus = this.nextStatus(
+      state,
+      this.isLastTreatmentQuestion(state),
+      isLastQuestion
+    );
     if (!isLastQuestion) {
       state.currentAnswerIdx++;
     }
@@ -75,10 +95,14 @@ export class QuestionEngine {
   }
 
   nextState(state) {
-    return this.nextStatus(state, this.isLastQuestion(state));
+    return this.nextStatus(
+      state,
+      this.isLastTreatmentQuestion(state),
+      this.isLastQuestion(state)
+    );
   }
 
-  nextStatus(state, onLastQuestion) {
-    return nextStatus(state.status, onLastQuestion);
+  nextStatus(state, onLastTreatmentQuestion, onLastQuestion) {
+    return nextStatus(state.status, onLastQuestion, onLastTreatmentQuestion);
   }
 }
