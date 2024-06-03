@@ -154,7 +154,9 @@ export const MELBarChartComponent = (props) => {
           justifyContent="center"
           alignItems="center"
         >
-          <FormHelperText id="errorMessage">{props.helperText}</FormHelperText>
+          <FormHelperText id="errorMessage" sx={{ fontSize: "24px" }}>
+            {props.helperText}
+          </FormHelperText>
         </Grid>
         <Grid
           item

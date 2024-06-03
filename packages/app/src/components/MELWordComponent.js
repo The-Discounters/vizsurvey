@@ -55,7 +55,7 @@ export const MELWordComponent = (props) => {
             justifyContent="center"
             alignItems="center"
           >
-            <FormHelperText id="errorMessage" sx={{ fontSize: "20px" }}>
+            <FormHelperText id="errorMessage" sx={{ fontSize: "24px" }}>
               {props.helperText}
             </FormHelperText>
           </Grid>

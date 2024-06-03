@@ -58,7 +58,7 @@ const MELQuestionInstructions = () => {
           choice !== AmountType.laterAmount
         ) {
           setError(true);
-          setHelperText(t("tooltipEnterNoSelectionInstructions"));
+          setHelperText(t("enterNoSelectionError"));
         } else {
           setHelperText(" ");
           setError(false);
@@ -190,7 +190,7 @@ const MELQuestionInstructions = () => {
 
   const instructionText = () => {
     if (choice === AmountType.none) {
-      return t("tooltipEnterNoSelectionInstructions");
+      return t("enterNoSelectionInstructions");
     } else {
       return t("tryPressEnterToAdvanceInstruction", {
         choiceText: t("choiceText", {

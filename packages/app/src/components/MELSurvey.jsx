@@ -54,7 +54,7 @@ export function Survey() {
           choice !== AmountType.laterAmount
         ) {
           setError(true);
-          setHelperText(t("tooltipEnterNoSelectionInstructions"));
+          setHelperText(t("enterNoSelectionError"));
         } else {
           setHelperText(" ");
           setError(false);
@@ -137,7 +137,7 @@ export function Survey() {
 
   const instructionText = () => {
     if (choice === AmountType.none) {
-      return t("tooltipEnterNoSelectionSurvey");
+      return t("enterNoSelectionSurvey");
     } else {
       return t("tryPressEnterToAdvanceSurvey", {
         choiceText: t("choiceText", {

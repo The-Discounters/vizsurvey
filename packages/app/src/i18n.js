@@ -25,10 +25,12 @@ i18n
             "Press the left arrow key to choose the left option.",
           rightArrowTooltip:
             "Press the right arrow key to choose the right option.",
-          tooltipEnterNoSelectionInstructions:
+          enterNoSelectionInstructions:
             "Press the left or right arrow key to make a selection, then press the enter key to accept your selection and start the survey.",
-          tooltipEnterNoSelectionSurvey:
+          enterNoSelectionSurvey:
             "Press the left or right arrow key to make a selection, then press the enter key to accept your selection and advance to the next question.",
+          enterNoSelectionError:
+            "Press the left or right arrow key to make a selection.",
           tooltipEnterSelectionInstructions:
             "Press the enter key to accept your selection of {{choice}} and start the survey.",
           tooltipEnterSelectionMELQuestions:
