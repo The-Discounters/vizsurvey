@@ -220,14 +220,6 @@ export function Survey() {
               }
             })()}
           </Grid>
-          <Grid item xs={12}>
-            <hr
-              style={{
-                backgroundColor: "#aaaaaa",
-                height: 4,
-              }}
-            />
-          </Grid>
         </Grid>
       </ThemeProvider>
     </StyledEngineProvider>
