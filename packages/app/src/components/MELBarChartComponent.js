@@ -84,7 +84,7 @@ export const MELBarChartComponent = (props) => {
       y: {
         field: "amount",
         type: "quantitative",
-        scale: { domain: [0, props.maxAmount] },
+        scale: { domain: [0, props.maxAmount], nice: true },
         axis: {
           title: "Amount USD",
           format: "$,.0f",
