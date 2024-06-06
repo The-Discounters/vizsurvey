@@ -13,7 +13,6 @@ export const Treatment = ({
   heightIn,
   showMinorTicks,
   instructionQuestionId,
-  instructionGifPrefix,
   treatmentComment,
 }) =>
   Object.freeze({
@@ -31,6 +30,5 @@ export const Treatment = ({
     heightIn,
     showMinorTicks,
     instructionQuestionId,
-    instructionGifPrefix,
     treatmentComment,
   });

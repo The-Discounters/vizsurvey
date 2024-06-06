@@ -1,7 +1,7 @@
-treatment_id,view_type,interaction,variable_amount,horizontal_pixels,vertical_pixels,left_margin_width_in,bottom_margin_height_in,graph_width_in,graph_height_in,width_in,height_in,show_minor_ticks,instruction_question_id,instruction_gif_prefix,treatment_comment
-1,word,none,none,,,,,,,,,,9,introduction-word,Worded visualization with delays.
-2,barchart,none,none,600,300,,,,,,,no,18,introduction-barchart-no-ticks-none-right,Barchart half screen and no minor ticks.
-3,barchart,none,none,1200,300,,,,,,,no,27,introduction-barchart-no-ticks-right,Barchart full screen and minor ticks.
-4,calendarWord,none,none,750,650,,,,,,,,18,introduction-calendarWord,Single month calendar.
-5,calendarWordYear,none,none,600,510,,,,,,,,19,introduction-calendarWordYear,Single year calendar visualization.
-6,calendarWordYearDual,none,none,750,650,,,,,,,,20,introduction-calendarWord,Not implemented.
+treatment_id,view_type,interaction,variable_amount,horizontal_pixels,vertical_pixels,left_margin_width_in,bottom_margin_height_in,graph_width_in,graph_height_in,width_in,height_in,show_minor_ticks,instruction_question_id,treatment_comment
+1,word,none,none,,,,,,,,,,9,Worded visualization with delays.
+2,barchart,none,none,600,300,,,,,,,no,9,Barchart half screen and no minor ticks.
+3,barchart,none,none,1200,300,,,,,,,no,27,Barchart full screen and minor ticks.
+4,calendarWord,none,none,750,650,,,,,,,,9,Single month calendar.
+5,calendarWordYear,none,none,600,510,,,,,,,,19,Single year calendar visualization.
+6,calendarWordYearDual,none,none,750,650,,,,,,,,20,Not implemented.
