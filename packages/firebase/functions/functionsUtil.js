@@ -133,12 +133,12 @@ export const signupParticipant = async (
   sessionId,
   participantSequence,
   exp,
-  callback
+  callback,
+  requestTreatmentIds = null
 ) => {
-  const treatmentIds = calcTreatmentIds(
-    JSON.parse(exp.latinSquare),
-    participantSequence
-  );
+  const treatmentIds = requestTreatmentIds
+    ? requestTreatmentIds
+    : calcTreatmentIds(JSON.parse(exp.latinSquare), participantSequence);
   callback(
     false,
     `assigned treatment order ${treatmentIds} to ` +

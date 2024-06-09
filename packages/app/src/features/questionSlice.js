@@ -26,7 +26,8 @@ export const initializeSurvey = createAsyncThunk(
         parameters.participantId,
         parameters.studyId,
         parameters.sessionId,
-        parameters.userAgent
+        parameters.userAgent,
+        parameters.treatmentIds
       );
       result.questions = data.survey;
       result.instruction = data.instruction;

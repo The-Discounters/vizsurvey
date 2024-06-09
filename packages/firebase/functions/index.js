@@ -40,7 +40,10 @@ const parseKeyFromQuery = (request) => {
   const participantId = request.query.prolific_pid;
   const studyId = request.query.study_id;
   const sessionId = request.query.session_id;
-  return { participantId, studyId, sessionId };
+  const requestTreatmentIds = request.query.treatment_ids
+    ? JSON.parse(request.query.treatment_ids)
+    : null;
+  return { participantId, studyId, sessionId, requestTreatmentIds };
 };
 
 const parseKeyFromBody = (request) => {
@@ -76,11 +79,17 @@ export const signup = onRequest(
   },
   async (request, response) => {
     logger.info(
-      `signup prolific_pid=${request.query.prolific_pid}, study_id=${request.query.study_id}, session_id=${request.query.session_id}`
+      `signup prolific_pid=${request.query.prolific_pid}, study_id=${request.query.study_id}, session_id=${request.query.session_id}, treatment_ids=${request.query.treatment_ids}`
     );
-    const { participantId, studyId, sessionId } = parseKeyFromQuery(request);
+    const { participantId, studyId, sessionId, requestTreatmentIds } =
+      parseKeyFromQuery(request);
     const userAgent = request.query.user_agent;
     try {
+      if (requestTreatmentIds) {
+        logger.info(
+          `signup REQUEST OVER RODE TREATMENTS IN EXPERIMENT CONFIGURATION WITH TREATMENT IDS ${requestTreatmentIds}`
+        );
+      }
       validateKeyValues({ participantId, studyId, sessionId });
       logger.info(
         `signup fetching experiment for prolificPid=${participantId}, studyId=${studyId}, sessionId=${sessionId}`
@@ -122,7 +131,8 @@ export const signup = onRequest(
               reason: ServerStatusType.error,
             });
           }
-        }
+        },
+        requestTreatmentIds
       );
       signupData.status = ServerStatusType.success;
       signupData.experiment = Experiment(exp);

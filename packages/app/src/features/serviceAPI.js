@@ -107,10 +107,15 @@ export const signupParticipant = async (
   participantId,
   studyId,
   sessionId,
-  userAgentString
+  userAgentString,
+  treatmentIds = null
 ) => {
   const data = await getRequest(
-    `${URLRoot}/signup?key=${app.options.apiKey}&prolific_pid=${participantId}&study_id=${studyId}&session_id=${sessionId}&user_agent=${userAgentString}`
+    `${URLRoot}/signup?key=${
+      app.options.apiKey
+    }&prolific_pid=${participantId}&study_id=${studyId}&session_id=${sessionId}&user_agent=${userAgentString}${
+      treatmentIds ? "&treatment_ids=" + encodeURIComponent(treatmentIds) : ""
+    }`
   );
   return data;
 };

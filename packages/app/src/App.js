@@ -119,6 +119,7 @@ const GenTreatmentId = () => {
         participantId: searchParams.get("participant_id"),
         studyId: searchParams.get("study_id"),
         userAgent: navigator.userAgent,
+        treatmentIds: searchParams.get("treatment_ids"),
       })
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -168,7 +169,7 @@ const DevHome = () => {
           </p>
           <p>
             <Link
-              id="1"
+              id="2"
               to={`/start?participant_id=${getRandomIntInclusive(
                 0,
                 1000000
@@ -179,6 +180,51 @@ const DevHome = () => {
             >
               Within subject bar chart experiment with production values used in
               thesis and CHI paper.
+            </Link>
+          </p>
+          <p>
+            <b>Individual Treatment Links - For testing only.</b>
+          </p>
+          <p>
+            <Link
+              id="3"
+              to={`/start?participant_id=${getRandomIntInclusive(
+                0,
+                1000000
+              )}&study_id=testwithin&session_id=3&treatment_ids=%5B1%5D`}
+              onClick={() => {
+                dispatch(clearState());
+              }}
+            >
+              Worded treatment.
+            </Link>
+          </p>
+          <p>
+            <Link
+              id="4"
+              to={`/start?participant_id=${getRandomIntInclusive(
+                0,
+                1000000
+              )}&study_id=testwithin&session_id=3&treatment_ids=%5B2%5D`}
+              onClick={() => {
+                dispatch(clearState());
+              }}
+            >
+              Bar chart treatment.
+            </Link>
+          </p>
+          <p>
+            <Link
+              id="5"
+              to={`/start?participant_id=${getRandomIntInclusive(
+                0,
+                1000000
+              )}&study_id=testwithin&session_id=3&treatment_ids=%5B3%5D`}
+              onClick={() => {
+                dispatch(clearState());
+              }}
+            >
+              Bar char extended axis treatment.
             </Link>
           </p>
           <p>
