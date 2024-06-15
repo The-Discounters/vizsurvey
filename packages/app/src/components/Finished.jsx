@@ -1,12 +1,8 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { DateTime } from "luxon";
-import {
-  Grid,
-  Typography,
-  ThemeProvider,
-  StyledEngineProvider,
-} from "@mui/material";
+import { Typography, ThemeProvider, StyledEngineProvider } from "@mui/material";
+import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
 import {
   finishedShownTimestamp,
   getExperiment,
@@ -38,7 +34,7 @@ const Finished = () => {
             justifyContent="flex-start"
             alignItems="stretch"
           >
-            <Grid item xs={12}>
+            <Grid xs={12}>
               <Typography variant="h4">Finished</Typography>
               <hr
                 style={{
@@ -48,7 +44,7 @@ const Finished = () => {
                 }}
               />
             </Grid>
-            <Grid item xs={12}>
+            <Grid xs={12}>
               <Typography paragraph>
                 Thank you for your feedback. You have completed the survey and
                 may close the browser. Before you do, please remember to enter

@@ -2,13 +2,13 @@ import React, { useState, useEffect } from "react";
 import { DateTime } from "luxon";
 import { useNavigate } from "react-router-dom";
 import {
-  Grid,
   TextField,
   Button,
   Typography,
   ThemeProvider,
   StyledEngineProvider,
 } from "@mui/material";
+import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
 import InputLabel from "@mui/material/InputLabel";
 import FormHelperText from "@mui/material/FormHelperText";
 import FormControl from "@mui/material/FormControl";
@@ -232,7 +232,7 @@ export function Consent() {
           justifyContent="flex-start"
           alignItems="stretch"
         >
-          <Grid item xs={12}>
+          <Grid xs={12}>
             <Typography variant="h4">Demographic Questions</Typography>
             <hr
               style={{
@@ -242,21 +242,21 @@ export function Consent() {
               }}
             />
           </Grid>
-          <Grid item xs={12}>
+          <Grid xs={12}>
             <Typography>
               Please tell us about yourself by answering the questions below.
               All data collected will be analyzed in aggregate form only and
               will not be used to identify you.{" "}
             </Typography>
           </Grid>
-          <Grid item xs={12}>
+          <Grid xs={12}>
             <Grid
               container
               direction="row"
               rowSpacing={1}
               columnSpacing={{ xs: 1, sm: 2, md: 3 }}
             >
-              <Grid item xs={3}>
+              <Grid xs={3}>
                 <FormControl variant="standard">
                   <InputLabel htmlFor="country-select-helper">
                     Country of residence
@@ -287,7 +287,7 @@ export function Consent() {
                   </FormHelperText>
                 </FormControl>
               </Grid>
-              <Grid item xs={3}>
+              <Grid xs={3}>
                 <FormControl variant="standard">
                   <InputLabel htmlFor="familiarity-with-viz">
                     Dataviz experience
@@ -314,7 +314,7 @@ export function Consent() {
                   </FormHelperText>
                 </FormControl>
               </Grid>
-              <Grid item xs={3}>
+              <Grid xs={3}>
                 <TextField
                   id="age"
                   variant="standard"
@@ -343,7 +343,7 @@ export function Consent() {
                   }}
                 />
               </Grid>
-              <Grid item xs={3}>
+              <Grid xs={3}>
                 <TextField
                   id="current-profession"
                   variant="standard"
@@ -357,7 +357,7 @@ export function Consent() {
                   label="Current Profession"
                 />
               </Grid>
-              <Grid item xs={3}>
+              <Grid xs={3}>
                 <FormControl variant="standard">
                   <InputLabel htmlFor="gender-select-helper">Gender</InputLabel>
                   <NativeSelect
@@ -380,7 +380,7 @@ export function Consent() {
                   <FormHelperText>Your gender</FormHelperText>
                 </FormControl>
               </Grid>
-              <Grid item xs={3}>
+              <Grid xs={3}>
                 <TextField
                   variant="standard"
                   value={selfDescribeGender}
@@ -395,7 +395,7 @@ export function Consent() {
                   disabled={disableSelfDescribeGender}
                 />
               </Grid>
-              <Grid item xs={3}>
+              <Grid xs={3}>
                 <FormControl variant="standard">
                   <InputLabel htmlFor="employment-select-helper">
                     Current Employment
@@ -420,7 +420,7 @@ export function Consent() {
                   <FormHelperText>Your current employment</FormHelperText>
                 </FormControl>
               </Grid>
-              <Grid item xs={3}>
+              <Grid xs={3}>
                 <TextField
                   variant="standard"
                   value={selfDescribeEmployment}
@@ -435,7 +435,7 @@ export function Consent() {
                   disabled={disableSelfDescribeEmployment}
                 />
               </Grid>
-              <Grid item xs={3}>
+              <Grid xs={3}>
                 <FormControl variant="standard">
                   <InputLabel htmlFor="household-income-select-helper">
                     Household Income
@@ -459,7 +459,7 @@ export function Consent() {
                   </NativeSelect>
                 </FormControl>
               </Grid>
-              <Grid item xs={3}>
+              <Grid xs={3}>
                 <TextField
                   variant="standard"
                   value={selfDescribeHouseholdIncome}
@@ -476,7 +476,7 @@ export function Consent() {
                   disabled={disableSelfDescribeHouseholdIncome}
                 />
               </Grid>
-              <Grid item xs={3}>
+              <Grid xs={3}>
                 <FormControl variant="standard">
                   <InputLabel htmlFor="education-level-select-helper">
                     Formal Education Level
@@ -500,7 +500,7 @@ export function Consent() {
                   </NativeSelect>
                 </FormControl>
               </Grid>
-              <Grid item xs={3}>
+              <Grid xs={3}>
                 <TextField
                   variant="standard"
                   value={selfDescribeEducationLevel}
@@ -516,7 +516,7 @@ export function Consent() {
                 />
               </Grid>
             </Grid>
-            <Grid item xs={12}>
+            <Grid xs={12}>
               <hr
                 style={{
                   backgroundColor: "#aaaaaa",
@@ -524,7 +524,7 @@ export function Consent() {
                 }}
               />
             </Grid>
-            <Grid item align="center" xs={12}>
+            <Grid align="center" xs={12}>
               <Button
                 variant="contained"
                 color="secondary"

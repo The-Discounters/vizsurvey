@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { DateTime } from "luxon";
 import { ThemeProvider, StyledEngineProvider } from "@mui/material";
-import { Grid } from "@mui/material";
+import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
 import {
   AmountType,
   WindowAttributes,
@@ -54,7 +54,7 @@ export function Survey() {
           choice !== AmountType.laterAmount
         ) {
           setError(true);
-          setHelperText(t("enterNoSelectionError"));
+          setHelperText(t("chooseSelection"));
         } else {
           setHelperText(" ");
           setError(false);
@@ -135,11 +135,11 @@ export function Survey() {
     setError(true);
   };
 
-  const instructionText = () => {
+  const choiceText = () => {
     if (choice === AmountType.none) {
-      return t("enterNoSelectionSurvey");
+      return " ";
     } else {
-      return t("tryPressEnterToAdvanceSurvey", {
+      return t("selectedChoice", {
         choiceText: t("choiceText", {
           amount:
             choice === AmountType.earlierAmount
@@ -148,6 +148,15 @@ export function Survey() {
           delay:
             choice === AmountType.earlierAmount ? q.timeEarlier : q.timeLater,
         }),
+      });
+    }
+  };
+
+  const changeChoiceText = () => {
+    if (choice === AmountType.none) {
+      return " ";
+    } else {
+      return t("tryPressEnterToAdvanceSurvey", {
         arrowKey:
           choice === AmountType.earlierAmount
             ? t("rightArrow")
@@ -166,14 +175,16 @@ export function Survey() {
           alignItems="stretch"
           sx={{ minHeight: "100vh" }}
         >
-          <Grid item xs={12} align="center">
+          <Grid xs={12} align="center">
             {(() => {
               switch (q.viewType) {
                 case ViewType.word:
                   return (
                     <MELWordComponent
                       textShort={"MELRadioGroup"}
-                      instructionText={instructionText}
+                      instructionText={t("chooseSelection")}
+                      choiceText={choiceText}
+                      changeChoiceText={changeChoiceText}
                       helperText={helperText}
                       amountEarlier={q.amountEarlier}
                       timeEarlier={q.timeEarlier}
@@ -191,7 +202,9 @@ export function Survey() {
                 case ViewType.barchart:
                   return (
                     <MELBarChartComponent
-                      instructionText={instructionText}
+                      instructionText={t("chooseSelection")}
+                      choiceText={choiceText}
+                      changeChoiceText={changeChoiceText}
                       helperText={helperText}
                       amountEarlier={q.amountEarlier}
                       timeEarlier={q.timeEarlier}

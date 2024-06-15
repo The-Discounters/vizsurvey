@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { DateTime } from "luxon";
 import {
-  Grid,
   Button,
   Typography,
   FormLabel,
@@ -14,6 +13,7 @@ import {
   ThemeProvider,
   StyledEngineProvider,
 } from "@mui/material";
+import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
 import {
   getStatus,
   experienceSurveyQuestionsShown,
@@ -74,7 +74,7 @@ export function PostSurvey() {
           justifyContent="flex-start"
           alignItems="stretch"
         >
-          <Grid item xs={12}>
+          <Grid xs={12}>
             <Typography variant="h4">Additional Questions 1 of 2</Typography>
             <hr
               style={{
@@ -84,12 +84,12 @@ export function PostSurvey() {
               }}
             />
           </Grid>
-          <Grid item xs={12}>
+          <Grid xs={12}>
             <Typography paragraph>{surveys.prompt}</Typography>
           </Grid>
           {surveys.questions.map(({ question, options }, index) => (
             <div key={`div-${index}`}>
-              <Grid item xs={12} key={`grid-${index}`}>
+              <Grid xs={12} key={`grid-${index}`}>
                 <FormControl
                   variant="standard"
                   sx={{ fontWeight: "bold" }}
@@ -166,7 +166,7 @@ export function PostSurvey() {
               <br key={`br-${index}`}></br>
             </div>
           ))}
-          <Grid item align="center" xs={12}>
+          <Grid align="center" xs={12}>
             <hr
               style={{
                 backgroundColor: "#aaaaaa",

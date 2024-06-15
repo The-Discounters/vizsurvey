@@ -58,7 +58,7 @@ const MELQuestionInstructions = () => {
           choice !== AmountType.laterAmount
         ) {
           setError(true);
-          setHelperText(t("enterNoSelectionError"));
+          setHelperText(t("chooseSelection"));
         } else {
           setHelperText(" ");
           setError(false);
@@ -188,11 +188,11 @@ const MELQuestionInstructions = () => {
     setError(true);
   };
 
-  const instructionText = () => {
+  const choiceText = () => {
     if (choice === AmountType.none) {
-      return t("enterNoSelectionInstructions");
+      return " ";
     } else {
-      return t("tryPressEnterToAdvanceInstruction", {
+      return t("selectedChoice", {
         choiceText: t("choiceText", {
           amount:
             choice === AmountType.earlierAmount
@@ -203,6 +203,15 @@ const MELQuestionInstructions = () => {
               ? instructionTreatment.timeEarlier
               : instructionTreatment.timeLater,
         }),
+      });
+    }
+  };
+
+  const changeChoiceText = () => {
+    if (choice === AmountType.none) {
+      return " ";
+    } else {
+      return t("tryPressEnterToAdvanceInstruction", {
         arrowKey:
           choice === AmountType.earlierAmount
             ? t("rightArrow")
@@ -217,7 +226,9 @@ const MELQuestionInstructions = () => {
         return (
           <MELWordComponent
             textShort={"MELRadioGroup"}
-            instructionText={instructionText}
+            instructionText={t("chooseSelection")}
+            choiceText={choiceText}
+            changeChoiceText={changeChoiceText}
             helperText={helperText}
             amountEarlier={instructionTreatment.amountEarlier}
             timeEarlier={instructionTreatment.timeEarlier}
@@ -233,7 +244,9 @@ const MELQuestionInstructions = () => {
       case ViewType.barchart:
         return (
           <MELBarChartComponent
-            instructionText={instructionText}
+            instructionText={t("chooseSelection")}
+            choiceText={choiceText}
+            changeChoiceText={changeChoiceText}
             helperText={helperText}
             amountEarlier={instructionTreatment.amountEarlier}
             timeEarlier={instructionTreatment.timeEarlier}
@@ -268,8 +281,9 @@ const MELQuestionInstructions = () => {
           direction="column"
           justifyContent="flex-start"
           alignItems="stretch"
+          sx={{ fontSize: "12px" }}
         >
-          <Grid item xs={12}>
+          <Grid xs={12}>
             <Typography variant="h4">Money Choice Instructions</Typography>
             <hr
               style={{
@@ -279,10 +293,8 @@ const MELQuestionInstructions = () => {
               }}
             />
           </Grid>
-          <Grid item xs={12}>
-            {vizExplanation()}
-          </Grid>
-          <Grid item xs={12} align="center">
+          <Grid xs={12}>{vizExplanation()}</Grid>
+          <Grid xs={12} align="center">
             <hr
               style={{
                 backgroundColor: "#aaaaaa",

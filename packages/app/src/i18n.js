@@ -25,21 +25,19 @@ i18n
             "Press the left arrow key to choose the left option.",
           rightArrowTooltip:
             "Press the right arrow key to choose the right option.",
-          enterNoSelectionInstructions:
-            "Press the left or right arrow key to make a selection, then press the enter key to accept your selection and start the survey.",
-          enterNoSelectionSurvey:
-            "Press the left or right arrow key to make a selection, then press the enter key to accept your selection and advance to the next question.",
-          enterNoSelectionError:
+          chooseSelection:
             "Press the left or right arrow key to make a selection.",
           tooltipEnterSelectionInstructions:
             "Press the enter key to accept your selection of {{choice}} and start the survey.",
           tooltipEnterSelectionMELQuestions:
             "Press the enter key to accept your selection of {{choice}} and advance to the next question.",
+          selectedChoice:
+            "You have made your selection to receive {{choiceText}}.",
           tryPressEnterToAdvanceInstruction:
-            "You have made your selection to receive {{choiceText}}.  You can press the {{arrowKey}} key to change your selection or press the enter key to accept it and advance to the survey questions.",
-          choiceText: "{{amount}} in {{delay}} months",
+            "You can press the {{arrowKey}} key to change your selection or press the enter key to accept it and advance to the survey questions.",
           tryPressEnterToAdvanceSurvey:
-            "You have made your selection to receive {{choiceText}}.  You can press the {{arrowKey}} key to change your selection or press the enter key to accept it and advance to the next survey question.",
+            "You can press the {{arrowKey}} key to change your selection or press the enter key to accept it and advance to the next survey question.",
+          choiceText: "{{amount}} in {{delay}} months",
         },
       },
     },

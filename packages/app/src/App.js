@@ -191,7 +191,7 @@ const DevHome = () => {
               to={`/start?participant_id=${getRandomIntInclusive(
                 0,
                 1000000
-              )}&study_id=testwithin&session_id=3&treatment_ids=%5B1%5D`}
+              )}&study_id=testbetween&session_id=3&treatment_ids=%5B1%5D`}
               onClick={() => {
                 dispatch(clearState());
               }}
@@ -205,7 +205,7 @@ const DevHome = () => {
               to={`/start?participant_id=${getRandomIntInclusive(
                 0,
                 1000000
-              )}&study_id=testwithin&session_id=3&treatment_ids=%5B2%5D`}
+              )}&study_id=testbetween&session_id=3&treatment_ids=%5B2%5D`}
               onClick={() => {
                 dispatch(clearState());
               }}
@@ -219,7 +219,7 @@ const DevHome = () => {
               to={`/start?participant_id=${getRandomIntInclusive(
                 0,
                 1000000
-              )}&study_id=testwithin&session_id=3&treatment_ids=%5B3%5D`}
+              )}&study_id=testbetween&session_id=3&treatment_ids=%5B3%5D`}
               onClick={() => {
                 dispatch(clearState());
               }}
@@ -243,7 +243,9 @@ const DevHome = () => {
           <p>
             Example URLs for the different environments are listed below where
             participant_id must be unique for the study_id production:
-            <table style={{ border: "1px solid black" }}>
+          </p>
+          <table style={{ border: "1px solid black" }}>
+            <tbody>
               <tr style={{ border: "1px solid black" }}>
                 <th style={{ border: "1px solid black" }}>Environment</th>
                 <th style={{ border: "1px solid black" }}>Treatment</th>
@@ -305,8 +307,8 @@ const DevHome = () => {
                   https://localhost:3000/start?participant_id=1&study_id=testwithin&session_id=1
                 </td>
               </tr>
-            </table>
-          </p>
+            </tbody>
+          </table>
         </div>
       </div>
     </div>

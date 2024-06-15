@@ -2,11 +2,11 @@ import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Button,
-  Grid,
   Typography,
   ThemeProvider,
   StyledEngineProvider,
 } from "@mui/material";
+import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
 import { useSelector, useDispatch } from "react-redux";
 import { DateTime } from "luxon";
 import "../App.css";
@@ -48,7 +48,7 @@ const Break = () => {
           justifyContent="flex-start"
           alignItems="stretch"
         >
-          <Grid item xs={12}>
+          <Grid xs={12}>
             <Typography variant="h4">Question Break</Typography>
             <hr
               style={{
@@ -58,7 +58,7 @@ const Break = () => {
               }}
             />
           </Grid>
-          <Grid item xs={12}>
+          <Grid xs={12}>
             <Typography paragraph>
               You have completed {completedTreatments}{" "}
               {completedTreatments === 1 ? "block" : "blocks"} of trials. There
@@ -74,7 +74,7 @@ const Break = () => {
               }}
             />
           </Grid>
-          <Grid item align="center" xs={12}>
+          <Grid align="center" xs={12}>
             <Button
               variant="contained"
               color="secondary"

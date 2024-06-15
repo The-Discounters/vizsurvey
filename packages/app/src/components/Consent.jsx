@@ -2,13 +2,13 @@ import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { DateTime } from "luxon";
 import {
-  Grid,
   Button,
   Typography,
   ThemeProvider,
   StyledEngineProvider,
   FormControlLabel,
 } from "@mui/material";
+import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
 import FormGroup from "@mui/material/FormGroup";
 import Checkbox from "@mui/material/Checkbox";
 import { useSelector, useDispatch } from "react-redux";
@@ -214,14 +214,14 @@ export function Consent() {
           justifyContent="flex-start"
           alignItems="stretch"
         >
-          <Grid item xs={12}>
+          <Grid xs={12}>
             <img
               style={{ maxHeight: "240px" }}
               src="generic-questionaire-icon.svg"
               alt="Question mark."
             ></img>
           </Grid>
-          <Grid item xs={12}>
+          <Grid xs={12}>
             <Typography variant="h4">Informed Consent</Typography>
             <hr
               style={{
@@ -231,7 +231,7 @@ export function Consent() {
               }}
             />
           </Grid>
-          <Grid item xs={12}>
+          <Grid xs={12}>
             <Typography paragraph>
               <br />
               <i>
@@ -250,7 +250,7 @@ export function Consent() {
             </Typography>
             <ConsentTextEn />
           </Grid>
-          <Grid item xs={12}>
+          <Grid xs={12}>
             <FormGroup>
               <FormControlLabel
                 control={
@@ -288,7 +288,7 @@ export function Consent() {
               }}
             />
           </Grid>
-          <Grid item align="center" xs={12}>
+          <Grid align="center" xs={12}>
             <Button
               variant="contained"
               color="secondary"

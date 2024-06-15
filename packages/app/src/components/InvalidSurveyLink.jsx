@@ -1,5 +1,6 @@
 import React from "react";
-import { Grid, Typography } from "@mui/material";
+import { Typography } from "@mui/material";
+import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
 
 const InvalidSurveyLink = () => {
   return (
@@ -10,7 +11,7 @@ const InvalidSurveyLink = () => {
         justifyContent="flex-start"
         alignItems="stretch"
       >
-        <Grid item xs={12}>
+        <Grid xs={12}>
           <Typography variant="h4">Error!</Typography>
           <hr
             style={{
@@ -20,7 +21,7 @@ const InvalidSurveyLink = () => {
             }}
           />
         </Grid>
-        <Grid item xs={12}>
+        <Grid xs={12}>
           <Typography variant="h6" paragraph>
             There has been an error in the application. You may have been
             provided an invalid survey link. Please click&nbsp;

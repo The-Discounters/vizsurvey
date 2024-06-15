@@ -2,11 +2,11 @@ import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Button,
-  Grid,
   Typography,
   ThemeProvider,
   StyledEngineProvider,
 } from "@mui/material";
+import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
 import { useSelector, useDispatch } from "react-redux";
 import { DateTime } from "luxon";
 import "../App.css";
@@ -46,7 +46,7 @@ const Instructions = () => {
           justifyContent="flex-start"
           alignItems="stretch"
         >
-          <Grid item xs={12}>
+          <Grid xs={12}>
             <Typography variant="h4">General Instructions</Typography>
             <hr
               style={{
@@ -56,7 +56,7 @@ const Instructions = () => {
               }}
             />
           </Grid>
-          <Grid item xs={12}>
+          <Grid xs={12}>
             <Typography paragraph>
               In the first set of questions, you will be asked to make money
               choices as instructed in the next screen. You will need to answer
@@ -87,7 +87,7 @@ const Instructions = () => {
               }}
             />
           </Grid>
-          <Grid item align="center" xs={12}>
+          <Grid align="center" xs={12}>
             <Button
               variant="contained"
               color="secondary"

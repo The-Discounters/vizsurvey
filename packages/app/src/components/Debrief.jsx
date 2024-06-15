@@ -3,12 +3,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { DateTime } from "luxon";
 import { useNavigate } from "react-router-dom";
 import {
-  Grid,
   Button,
   Typography,
   ThemeProvider,
   StyledEngineProvider,
 } from "@mui/material";
+import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
 import TextField from "@mui/material/TextField";
 import { ViewType } from "@the-discounters/types";
 import {
@@ -86,7 +86,7 @@ const Debrief = () => {
             justifyContent="flex-start"
             alignItems="stretch"
           >
-            <Grid item xs={12}>
+            <Grid xs={12}>
               <Typography variant="h4">Study Explanation</Typography>
               <hr
                 style={{
@@ -96,7 +96,7 @@ const Debrief = () => {
                 }}
               />
             </Grid>
-            <Grid item xs={12}>
+            <Grid xs={12}>
               <Typography paragraph>
                 <b>Your answers have been recorded.</b>
               </Typography>
@@ -162,7 +162,7 @@ const Debrief = () => {
                 </b>
               </Typography>
             </Grid>
-            <Grid item xs={12}>
+            <Grid xs={12}>
               <Typography paragraph>
                 We hope you have enjoyed taking this survey and welcome any
                 feedback or questions by filling out the text box below and
@@ -171,7 +171,7 @@ const Debrief = () => {
                 choices you did.
               </Typography>
             </Grid>
-            <Grid item xs={12}>
+            <Grid xs={12}>
               <TextField
                 id="Feedback"
                 fullWidth
@@ -184,7 +184,7 @@ const Debrief = () => {
                 label="Feedback"
               />
             </Grid>
-            <Grid item xs={12}>
+            <Grid xs={12}>
               <hr
                 style={{
                   backgroundColor: "#aaaaaa",
@@ -192,7 +192,7 @@ const Debrief = () => {
                 }}
               />
             </Grid>
-            <Grid item align="center" xs={12}>
+            <Grid align="center" xs={12}>
               <Button
                 variant="contained"
                 color="secondary"

@@ -138,17 +138,6 @@ export const MELBarChartComponent = (props) => {
     <FormControl variant="standard" required={false} error={props.error}>
       <Grid container>
         <Grid
-          item
-          xs={12}
-          display="flex"
-          justifyContent="center"
-          alignItems="center"
-          sx={{ fontSize: "24px" }}
-        >
-          {props.instructionText()}
-        </Grid>
-        <Grid
-          item
           xs={12}
           display="flex"
           justifyContent="center"
@@ -159,7 +148,6 @@ export const MELBarChartComponent = (props) => {
           </FormHelperText>
         </Grid>
         <Grid
-          item
           xs={12}
           display="flex"
           justifyContent="center"
@@ -186,6 +174,42 @@ export const MELBarChartComponent = (props) => {
             actions={false}
             tooltip={(vegaTooltipHandler, tooltipOptions)}
           />
+        </Grid>
+        <Grid
+          xs={12}
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          sx={{ fontSize: "24px" }}
+        >
+          {props.instructionText}
+        </Grid>
+        <Grid
+          xs={12}
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          sx={{ fontSize: "24px" }}
+        >
+          &nbsp;
+        </Grid>
+        <Grid
+          xs={12}
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          sx={{ fontSize: "24px" }}
+        >
+          {props.choiceText()}
+        </Grid>
+        <Grid
+          xs={12}
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          sx={{ fontSize: "24px" }}
+        >
+          {props.changeChoiceText()}
         </Grid>
       </Grid>
     </FormControl>
