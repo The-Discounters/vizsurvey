@@ -32,7 +32,7 @@ import { MELWordComponent } from "./MELWordComponent.js";
 import { theme } from "./ScreenHelper.js";
 import { navigateFromStatus } from "./Navigate.js";
 
-export function Survey() {
+export function MELSurvey() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { t } = useTranslation();
@@ -166,77 +166,81 @@ export function Survey() {
   };
 
   return (
-    <StyledEngineProvider injectFirst>
-      <ThemeProvider theme={theme}>
-        <Grid
-          container
-          direction="column"
-          justifyContent="center"
-          alignItems="stretch"
-          sx={{ minHeight: "100vh" }}
-        >
-          <Grid xs={12} align="center">
-            {(() => {
-              switch (q.viewType) {
-                case ViewType.word:
-                  return (
-                    <MELWordComponent
-                      textShort={"MELRadioGroup"}
-                      instructionText={t("chooseSelection")}
-                      choiceText={choiceText}
-                      changeChoiceText={changeChoiceText}
-                      helperText={helperText}
-                      amountEarlier={q.amountEarlier}
-                      timeEarlier={q.timeEarlier}
-                      dateEarlier={q.dateEarlier}
-                      amountLater={q.amountLater}
-                      timeLater={q.timeLater}
-                      dateLater={q.dateLater}
-                      choice={choice}
-                      onClickCallback={(selection) =>
-                        showSelectionHint(selection)
-                      }
-                      error={error}
-                    />
-                  );
-                case ViewType.barchart:
-                  return (
-                    <MELBarChartComponent
-                      instructionText={t("chooseSelection")}
-                      choiceText={choiceText}
-                      changeChoiceText={changeChoiceText}
-                      helperText={helperText}
-                      amountEarlier={q.amountEarlier}
-                      timeEarlier={q.timeEarlier}
-                      amountLater={q.amountLater}
-                      timeLater={q.timeLater}
-                      maxTime={q.maxTime}
-                      maxAmount={q.maxAmount}
-                      interaction={q.interaction}
-                      variableAmount={q.variableAmount}
-                      horizontalPixels={q.horizontalPixels}
-                      verticalPixels={q.verticalPixels}
-                      leftMarginWidthIn={q.leftMarginWidthIn}
-                      graphWidthIn={q.graphWidthIn}
-                      bottomMarginHeightIn={q.bottomMarginHeightIn}
-                      graphHeightIn={q.graphHeightIn}
-                      showMinorTicks={q.showMinorTicks}
-                      choice={choice}
-                      onClickCallback={(selection) =>
-                        showSelectionHint(selection)
-                      }
-                      error={error}
-                    />
-                  );
-                default:
-                  return "";
-              }
-            })()}
+    <div>
+      <StyledEngineProvider injectFirst>
+        <ThemeProvider theme={theme}>
+          <Grid
+            container
+            direction="column"
+            justifyContent="center"
+            alignItems="stretch"
+            sx={{ minHeight: "100vh" }}
+            maxWidth="false"
+            disableGutters="true"
+          >
+            <Grid xs={12} align="center">
+              {(() => {
+                switch (q.viewType) {
+                  case ViewType.word:
+                    return (
+                      <MELWordComponent
+                        textShort={"MELRadioGroup"}
+                        instructionText={t("chooseSelection")}
+                        choiceText={choiceText}
+                        changeChoiceText={changeChoiceText}
+                        helperText={helperText}
+                        amountEarlier={q.amountEarlier}
+                        timeEarlier={q.timeEarlier}
+                        dateEarlier={q.dateEarlier}
+                        amountLater={q.amountLater}
+                        timeLater={q.timeLater}
+                        dateLater={q.dateLater}
+                        choice={choice}
+                        onClickCallback={(selection) =>
+                          showSelectionHint(selection)
+                        }
+                        error={error}
+                      />
+                    );
+                  case ViewType.barchart:
+                    return (
+                      <MELBarChartComponent
+                        instructionText={t("chooseSelection")}
+                        choiceText={choiceText}
+                        changeChoiceText={changeChoiceText}
+                        helperText={helperText}
+                        amountEarlier={q.amountEarlier}
+                        timeEarlier={q.timeEarlier}
+                        amountLater={q.amountLater}
+                        timeLater={q.timeLater}
+                        maxTime={q.maxTime}
+                        maxAmount={q.maxAmount}
+                        interaction={q.interaction}
+                        variableAmount={q.variableAmount}
+                        horizontalPixels={q.horizontalPixels}
+                        verticalPixels={q.verticalPixels}
+                        leftMarginWidthIn={q.leftMarginWidthIn}
+                        graphWidthIn={q.graphWidthIn}
+                        bottomMarginHeightIn={q.bottomMarginHeightIn}
+                        graphHeightIn={q.graphHeightIn}
+                        showMinorTicks={q.showMinorTicks}
+                        choice={choice}
+                        onClickCallback={(selection) =>
+                          showSelectionHint(selection)
+                        }
+                        error={error}
+                      />
+                    );
+                  default:
+                    return "";
+                }
+              })()}
+            </Grid>
           </Grid>
-        </Grid>
-      </ThemeProvider>
-    </StyledEngineProvider>
+        </ThemeProvider>
+      </StyledEngineProvider>
+    </div>
   );
 }
 
-export default Survey;
+export default MELSurvey;

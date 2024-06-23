@@ -43,156 +43,131 @@ export const MELWordComponent = (props) => {
   return (
     <form>
       <FormControl variant="standard" required={false} error={props.error}>
-        <Grid container>
-          <Grid
-            xs={12}
-            display="flex"
-            justifyContent="center"
-            alignItems="center"
+        <Grid
+          xs={12}
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          height="50px"
+        >
+          <FormHelperText id="errorMessage" sx={{ fontSize: "22px" }}>
+            {props.helperText}
+          </FormHelperText>
+        </Grid>
+        <Grid
+          xs={12}
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          height="50px"
+          sx={{ fontSize: "32px" }}
+        >
+          {MELQuestionText(
+            props.amountEarlier,
+            props.timeEarlier,
+            props.amountLater,
+            props.timeLater
+          )}
+        </Grid>
+        <Grid
+          xs={12}
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          height="50px"
+        >
+          <RadioGroup
+            row
+            aria-labelledby={props.textShort + "-row-radio-buttons-group-label"}
+            name={"question-radio-buttons-group"}
+            onClick={(event) => {
+              props.onClickCallback(event.target.value);
+            }}
+            value={props.choice}
           >
-            <FormHelperText id="errorMessage" sx={{ fontSize: "24px" }}>
-              {props.helperText}
-            </FormHelperText>
-          </Grid>
-          <Grid
-            xs={12}
-            display="flex"
-            justifyContent="center"
-            alignItems="center"
-            sx={{ fontSize: "32px" }}
-          >
-            {MELQuestionText(
-              props.amountEarlier,
-              props.timeEarlier,
-              props.amountLater,
-              props.timeLater
-            )}
-          </Grid>
-          <Grid
-            xs={12}
-            display="flex"
-            justifyContent="center"
-            alignItems="center"
-            sx={{ fontSize: "24px" }}
-          >
-            &nbsp;
-          </Grid>
-          <Grid
-            xs={12}
-            display="flex"
-            justifyContent="center"
-            alignItems="center"
-          >
-            <RadioGroup
-              row
-              aria-labelledby={
-                props.textShort + "-row-radio-buttons-group-label"
-              }
-              name={"question-radio-buttons-group"}
-              onClick={(event) => {
-                props.onClickCallback(event.target.value);
-              }}
-              value={props.choice}
-            >
-              {[
-                {
-                  key: `${AmountType.earlierAmount}`,
-                  label: MELQuestion1stPartText(
-                    props.amountEarlier,
-                    props.timeEarlier
-                  ),
-                },
-                {
-                  key: `${AmountType.laterAmount}`,
-                  label: MEQuestion2ndPartText(
-                    props.amountLater,
-                    props.timeLater
-                  ),
-                },
-              ].map(({ key, label }) => (
-                <HTMLTooltip
-                  key={`tooltip-${key}`}
-                  title={
-                    key === `${AmountType.earlierAmount}` ? (
-                      <React.Fragment>
-                        <LeftArrowKey /> {t("leftArrowTooltip")}
-                      </React.Fragment>
-                    ) : (
-                      <React.Fragment>
-                        <RightArrowKey /> {t("rightArrowTooltip")}
-                      </React.Fragment>
-                    )
-                  }
-                >
-                  <FormControlLabel
-                    sx={{
-                      mr: "100px",
-                      border: 1,
-                      backgroundColor:
-                        props.choice === key ? "lightblue" : "none",
-                      borderRadius: "20px",
-                      borderWidth: "1px",
-                      borderColor: "black",
-                      color: "black",
-                      paddingRight: "10px",
-                      cursor: "default",
-                    }}
-                    key={key}
-                    id={key}
-                    value={key}
-                    checked={props.choice === key}
-                    control={<Radio />}
-                    label={label}
-                  />
-                </HTMLTooltip>
-              ))}
-            </RadioGroup>
-          </Grid>
-          <Grid
-            xs={12}
-            display="flex"
-            justifyContent="center"
-            alignItems="center"
-            sx={{ fontSize: "24px" }}
-          >
-            &nbsp;
-          </Grid>
-          <Grid
-            xs={12}
-            display="flex"
-            justifyContent="center"
-            alignItems="center"
-            sx={{ fontSize: "24px" }}
-          >
-            {props.instructionText}
-          </Grid>
-          <Grid
-            xs={12}
-            display="flex"
-            justifyContent="center"
-            alignItems="center"
-            sx={{ fontSize: "24px" }}
-          >
-            &nbsp;
-          </Grid>
-          <Grid
-            xs={12}
-            display="flex"
-            justifyContent="center"
-            alignItems="center"
-            sx={{ fontSize: "24px" }}
-          >
-            {props.choiceText()}
-          </Grid>
-          <Grid
-            xs={12}
-            display="flex"
-            justifyContent="center"
-            alignItems="center"
-            sx={{ fontSize: "24px" }}
-          >
-            {props.changeChoiceText()}
-          </Grid>
+            {[
+              {
+                key: `${AmountType.earlierAmount}`,
+                label: MELQuestion1stPartText(
+                  props.amountEarlier,
+                  props.timeEarlier
+                ),
+              },
+              {
+                key: `${AmountType.laterAmount}`,
+                label: MEQuestion2ndPartText(
+                  props.amountLater,
+                  props.timeLater
+                ),
+              },
+            ].map(({ key, label }) => (
+              <HTMLTooltip
+                key={`tooltip-${key}`}
+                title={
+                  key === `${AmountType.earlierAmount}` ? (
+                    <React.Fragment>
+                      <LeftArrowKey /> {t("leftArrowTooltip")}
+                    </React.Fragment>
+                  ) : (
+                    <React.Fragment>
+                      <RightArrowKey /> {t("rightArrowTooltip")}
+                    </React.Fragment>
+                  )
+                }
+              >
+                <FormControlLabel
+                  sx={{
+                    mr: "100px",
+                    border: 1,
+                    backgroundColor:
+                      props.choice === key ? "lightblue" : "none",
+                    borderRadius: "20px",
+                    borderWidth: "1px",
+                    borderColor: "black",
+                    color: "black",
+                    paddingRight: "10px",
+                    cursor: "default",
+                  }}
+                  key={key}
+                  id={key}
+                  value={key}
+                  checked={props.choice === key}
+                  control={<Radio />}
+                  label={label}
+                />
+              </HTMLTooltip>
+            ))}
+          </RadioGroup>
+        </Grid>
+        <Grid
+          xs={12}
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          height="50px"
+          sx={{ fontSize: "22px" }}
+        >
+          {props.instructionText}
+        </Grid>
+        <Grid
+          xs={12}
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          height="50px"
+          sx={{ fontSize: "22px" }}
+        >
+          {props.choiceText()}
+        </Grid>
+        <Grid
+          xs={12}
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          height="50px"
+          sx={{ fontSize: "22px" }}
+        >
+          {props.changeChoiceText()}
         </Grid>
       </FormControl>
     </form>

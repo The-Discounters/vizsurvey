@@ -31,12 +31,11 @@ i18n
             "Press the enter key to accept your selection of {{choice}} and start the survey.",
           tooltipEnterSelectionMELQuestions:
             "Press the enter key to accept your selection of {{choice}} and advance to the next question.",
-          selectedChoice:
-            "You have made your selection to receive {{choiceText}}.",
+          selectedChoice: "You selected to receive {{choiceText}}.",
           tryPressEnterToAdvanceInstruction:
-            "You can press the {{arrowKey}} key to change your selection or press the enter key to accept it and advance to the survey questions.",
+            "Press the enter key to accept your selection and start the survey or the {{arrowKey}} to change it.",
           tryPressEnterToAdvanceSurvey:
-            "You can press the {{arrowKey}} key to change your selection or press the enter key to accept it and advance to the next survey question.",
+            "Press the enter key to accept your selection and go to the next question or the {{arrowKey}} key to change it.",
           choiceText: "{{amount}} in {{delay}} months",
         },
       },

@@ -142,8 +142,9 @@ export const MELBarChartComponent = (props) => {
           display="flex"
           justifyContent="center"
           alignItems="center"
+          height="50px"
         >
-          <FormHelperText id="errorMessage" sx={{ fontSize: "24px" }}>
+          <FormHelperText id="errorMessage" sx={{ fontSize: "22px" }}>
             {props.helperText}
           </FormHelperText>
         </Grid>
@@ -180,7 +181,8 @@ export const MELBarChartComponent = (props) => {
           display="flex"
           justifyContent="center"
           alignItems="center"
-          sx={{ fontSize: "24px" }}
+          sx={{ fontSize: "22px" }}
+          height="50px"
         >
           {props.instructionText}
         </Grid>
@@ -189,16 +191,8 @@ export const MELBarChartComponent = (props) => {
           display="flex"
           justifyContent="center"
           alignItems="center"
-          sx={{ fontSize: "24px" }}
-        >
-          &nbsp;
-        </Grid>
-        <Grid
-          xs={12}
-          display="flex"
-          justifyContent="center"
-          alignItems="center"
-          sx={{ fontSize: "24px" }}
+          sx={{ fontSize: "22px" }}
+          height="50px"
         >
           {props.choiceText()}
         </Grid>
@@ -207,7 +201,8 @@ export const MELBarChartComponent = (props) => {
           display="flex"
           justifyContent="center"
           alignItems="center"
-          sx={{ fontSize: "24px" }}
+          sx={{ fontSize: "22px" }}
+          height="50px"
         >
           {props.changeChoiceText()}
         </Grid>
