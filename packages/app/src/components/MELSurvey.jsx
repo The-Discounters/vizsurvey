@@ -140,14 +140,12 @@ export function MELSurvey() {
       return " ";
     } else {
       return t("selectedChoice", {
-        choiceText: t("choiceText", {
-          amount:
-            choice === AmountType.earlierAmount
-              ? format("$,.0f")(q.amountEarlier)
-              : format("$,.0f")(q.amountLater),
-          delay:
-            choice === AmountType.earlierAmount ? q.timeEarlier : q.timeLater,
-        }),
+        amount:
+          choice === AmountType.earlierAmount
+            ? format("$,.0f")(q.amountEarlier)
+            : format("$,.0f")(q.amountLater),
+        delay:
+          choice === AmountType.earlierAmount ? q.timeEarlier : q.timeLater,
       });
     }
   };

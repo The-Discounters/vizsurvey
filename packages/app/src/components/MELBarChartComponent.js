@@ -153,6 +153,16 @@ export const MELBarChartComponent = (props) => {
           display="flex"
           justifyContent="center"
           alignItems="center"
+          height="75px"
+          sx={{ fontSize: "22px" }}
+        >
+          {t("MELChoicePromptBar")}
+        </Grid>
+        <Grid
+          xs={12}
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
         >
           <VegaLite
             spec={spec}

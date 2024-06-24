@@ -14,31 +14,19 @@ import { AmountType } from "@the-discounters/types";
 import { ReactComponent as LeftArrowKey } from "../assets/leftArrowKey.svg";
 import { ReactComponent as RightArrowKey } from "../assets/rightArrowKey.svg";
 
-const todayText = (sooner_time) =>
-  sooner_time === 0 ? "today" : `in ${sooner_time} months`;
-
-export function MELQuestionText(
-  amountEarlier,
-  timeEarlier,
-  amountLater,
-  timeLater
-) {
-  return `Make a choice to receive ${MELQuestion1stPartText(
-    amountEarlier,
-    timeEarlier
-  )} or ${MEQuestion2ndPartText(amountLater, timeLater)}.`;
-}
-
-export function MELQuestion1stPartText(amountEarlier, timeEarlier) {
-  return `${format("$,.0f")(amountEarlier)} ${todayText(timeEarlier)}`;
-}
-
-export function MEQuestion2ndPartText(amountLater, timeLater) {
-  return `${format("$,.0f")(amountLater)} in ${timeLater} months`;
-}
-
 export const MELWordComponent = (props) => {
   const { t } = useTranslation();
+
+  const todayText = (sooner_time) =>
+    sooner_time === 0 ? "today" : `in ${sooner_time} months`;
+
+  const MELQuestion1stPartText = (amountEarlier, timeEarlier) => {
+    return `${format("$,.0f")(amountEarlier)} ${todayText(timeEarlier)}`;
+  };
+
+  const MEQuestion2ndPartText = (amountLater, timeLater) => {
+    return `${format("$,.0f")(amountLater)} in ${timeLater} months`;
+  };
 
   return (
     <form>
@@ -48,7 +36,6 @@ export const MELWordComponent = (props) => {
           display="flex"
           justifyContent="center"
           alignItems="center"
-          height="50px"
         >
           <FormHelperText id="errorMessage" sx={{ fontSize: "22px" }}>
             {props.helperText}
@@ -60,21 +47,15 @@ export const MELWordComponent = (props) => {
           justifyContent="center"
           alignItems="center"
           height="50px"
-          sx={{ fontSize: "32px" }}
+          sx={{ fontSize: "22px" }}
         >
-          {MELQuestionText(
-            props.amountEarlier,
-            props.timeEarlier,
-            props.amountLater,
-            props.timeLater
-          )}
+          {t("MELChoicePromptWord")}
         </Grid>
         <Grid
           xs={12}
           display="flex"
           justifyContent="center"
           alignItems="center"
-          height="50px"
         >
           <RadioGroup
             row

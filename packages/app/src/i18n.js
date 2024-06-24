@@ -31,12 +31,16 @@ i18n
             "Press the enter key to accept your selection of {{choice}} and start the survey.",
           tooltipEnterSelectionMELQuestions:
             "Press the enter key to accept your selection of {{choice}} and advance to the next question.",
-          selectedChoice: "You selected to receive {{choiceText}}.",
+          selectedChoice:
+            "You selected to receive {{amount}} in {{delay}} months from today.",
           tryPressEnterToAdvanceInstruction:
             "Press the enter key to accept your selection and start the survey or the {{arrowKey}} to change it.",
           tryPressEnterToAdvanceSurvey:
             "Press the enter key to accept your selection and go to the next question or the {{arrowKey}} key to change it.",
-          choiceText: "{{amount}} in {{delay}} months",
+          MELChoicePromptWord:
+            "Choose the option that represents the timing from today and amount that you prefer receiving.",
+          MELChoicePromptBar:
+            "Choose the bar that represents the timing from today and amount that you prefer receiving.",
         },
       },
     },

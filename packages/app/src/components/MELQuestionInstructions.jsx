@@ -193,16 +193,14 @@ const MELQuestionInstructions = () => {
       return " ";
     } else {
       return t("selectedChoice", {
-        choiceText: t("choiceText", {
-          amount:
-            choice === AmountType.earlierAmount
-              ? format("$,.0f")(instructionTreatment.amountEarlier)
-              : format("$,.0f")(instructionTreatment.amountLater),
-          delay:
-            choice === AmountType.earlierAmount
-              ? instructionTreatment.timeEarlier
-              : instructionTreatment.timeLater,
-        }),
+        amount:
+          choice === AmountType.earlierAmount
+            ? format("$,.0f")(instructionTreatment.amountEarlier)
+            : format("$,.0f")(instructionTreatment.amountLater),
+        delay:
+          choice === AmountType.earlierAmount
+            ? instructionTreatment.timeEarlier
+            : instructionTreatment.timeLater,
       });
     }
   };
