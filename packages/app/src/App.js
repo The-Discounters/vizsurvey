@@ -164,152 +164,6 @@ const DevHome = () => {
                 <th style={{ border: "1px solid black" }}>Barchart Extended</th>
               </tr>
               <tr style={{ border: "1px solid black" }}>
-                <td style={{ border: "1px solid black" }}>production</td>
-                <td style={{ border: "1px solid black" }}>
-                  <Link
-                    id="1"
-                    to={`https://release.d2ptxb5fbsc082.amplifyapp.com/start?participant_id=${getRandomIntInclusive(
-                      0,
-                      1000000
-                    )}&study_id=testwithin&session_id=3`}
-                    onClick={() => {
-                      dispatch(clearState());
-                    }}
-                  >
-                    Within Subject.
-                  </Link>
-                </td>
-                <td style={{ border: "1px solid black" }}>
-                  <Link
-                    id="2"
-                    to={`https://release.d2ptxb5fbsc082.amplifyapp.com/start?participant_id=${getRandomIntInclusive(
-                      0,
-                      1000000
-                    )}&study_id=testbetween&session_id=3`}
-                    onClick={() => {
-                      dispatch(clearState());
-                    }}
-                  >
-                    Between Subject.
-                  </Link>
-                </td>
-                <td style={{ border: "1px solid black" }}>
-                  <Link
-                    id="3"
-                    to={`https://release.d2ptxb5fbsc082.amplifyapp.com/start?participant_id=${getRandomIntInclusive(
-                      0,
-                      1000000
-                    )}&study_id=testbetween&session_id=3&treatment_ids=%5B1%5D`}
-                    onClick={() => {
-                      dispatch(clearState());
-                    }}
-                  >
-                    Word
-                  </Link>
-                </td>
-                <td style={{ border: "1px solid black" }}>
-                  <Link
-                    id="4"
-                    to={`https://release.d2ptxb5fbsc082.amplifyapp.com/start?participant_id=${getRandomIntInclusive(
-                      0,
-                      1000000
-                    )}&study_id=testbetween&session_id=3&treatment_ids=%5B2%5D`}
-                    onClick={() => {
-                      dispatch(clearState());
-                    }}
-                  >
-                    Bar Chart
-                  </Link>
-                </td>
-                <td style={{ border: "1px solid black" }}>
-                  <Link
-                    id="5"
-                    to={`https://release.d2ptxb5fbsc082.amplifyapp.com/start?participant_id=${getRandomIntInclusive(
-                      0,
-                      1000000
-                    )}&study_id=testbetween&session_id=3&treatment_ids=%5B3%5D`}
-                    onClick={() => {
-                      dispatch(clearState());
-                    }}
-                  >
-                    Bar Chart Extended
-                  </Link>
-                </td>
-              </tr>
-              <tr style={{ border: "1px solid black" }}>
-                <td style={{ border: "1px solid black" }}>staging</td>
-                <td style={{ border: "1px solid black" }}>
-                  <Link
-                    id="1"
-                    to={`https://staging.d2ptxb5fbsc082.amplifyapp.com/start?participant_id=${getRandomIntInclusive(
-                      0,
-                      1000000
-                    )}&study_id=testwithin&session_id=3`}
-                    onClick={() => {
-                      dispatch(clearState());
-                    }}
-                  >
-                    Within Subject.
-                  </Link>
-                </td>
-                <td style={{ border: "1px solid black" }}>
-                  <Link
-                    id="2"
-                    to={`https://staging.d2ptxb5fbsc082.amplifyapp.com/start?participant_id=${getRandomIntInclusive(
-                      0,
-                      1000000
-                    )}&study_id=testbetween&session_id=3`}
-                    onClick={() => {
-                      dispatch(clearState());
-                    }}
-                  >
-                    Between Subject.
-                  </Link>
-                </td>
-                <td style={{ border: "1px solid black" }}>
-                  <Link
-                    id="3"
-                    to={`https://staging.d2ptxb5fbsc082.amplifyapp.com/start?participant_id=${getRandomIntInclusive(
-                      0,
-                      1000000
-                    )}&study_id=testbetween&session_id=3&treatment_ids=%5B1%5D`}
-                    onClick={() => {
-                      dispatch(clearState());
-                    }}
-                  >
-                    Word
-                  </Link>
-                </td>
-                <td style={{ border: "1px solid black" }}>
-                  <Link
-                    id="4"
-                    to={`https://staging.d2ptxb5fbsc082.amplifyapp.com/start?participant_id=${getRandomIntInclusive(
-                      0,
-                      1000000
-                    )}&study_id=testbetween&session_id=3&treatment_ids=%5B2%5D`}
-                    onClick={() => {
-                      dispatch(clearState());
-                    }}
-                  >
-                    Bar Chart
-                  </Link>
-                </td>
-                <td style={{ border: "1px solid black" }}>
-                  <Link
-                    id="5"
-                    to={`https://staging.d2ptxb5fbsc082.amplifyapp.com/start?participant_id=${getRandomIntInclusive(
-                      0,
-                      1000000
-                    )}&study_id=testbetween&session_id=3&treatment_ids=%5B3%5D`}
-                    onClick={() => {
-                      dispatch(clearState());
-                    }}
-                  >
-                    Bar Chart Extended
-                  </Link>
-                </td>
-              </tr>
-              <tr style={{ border: "1px solid black" }}>
                 <td style={{ border: "1px solid black" }}>development</td>
                 <td style={{ border: "1px solid black" }}>
                   <Link
@@ -444,6 +298,152 @@ const DevHome = () => {
                   <Link
                     id="5"
                     to={`https:localhost:3000/start?participant_id=${getRandomIntInclusive(
+                      0,
+                      1000000
+                    )}&study_id=testbetween&session_id=3&treatment_ids=%5B3%5D`}
+                    onClick={() => {
+                      dispatch(clearState());
+                    }}
+                  >
+                    Bar Chart Extended
+                  </Link>
+                </td>
+              </tr>
+              <tr style={{ border: "1px solid black" }}>
+                <td style={{ border: "1px solid black" }}>staging</td>
+                <td style={{ border: "1px solid black" }}>
+                  <Link
+                    id="1"
+                    to={`https://staging.d2ptxb5fbsc082.amplifyapp.com/start?participant_id=${getRandomIntInclusive(
+                      0,
+                      1000000
+                    )}&study_id=testwithin&session_id=3`}
+                    onClick={() => {
+                      dispatch(clearState());
+                    }}
+                  >
+                    Within Subject.
+                  </Link>
+                </td>
+                <td style={{ border: "1px solid black" }}>
+                  <Link
+                    id="2"
+                    to={`https://staging.d2ptxb5fbsc082.amplifyapp.com/start?participant_id=${getRandomIntInclusive(
+                      0,
+                      1000000
+                    )}&study_id=testbetween&session_id=3`}
+                    onClick={() => {
+                      dispatch(clearState());
+                    }}
+                  >
+                    Between Subject.
+                  </Link>
+                </td>
+                <td style={{ border: "1px solid black" }}>
+                  <Link
+                    id="3"
+                    to={`https://staging.d2ptxb5fbsc082.amplifyapp.com/start?participant_id=${getRandomIntInclusive(
+                      0,
+                      1000000
+                    )}&study_id=testbetween&session_id=3&treatment_ids=%5B1%5D`}
+                    onClick={() => {
+                      dispatch(clearState());
+                    }}
+                  >
+                    Word
+                  </Link>
+                </td>
+                <td style={{ border: "1px solid black" }}>
+                  <Link
+                    id="4"
+                    to={`https://staging.d2ptxb5fbsc082.amplifyapp.com/start?participant_id=${getRandomIntInclusive(
+                      0,
+                      1000000
+                    )}&study_id=testbetween&session_id=3&treatment_ids=%5B2%5D`}
+                    onClick={() => {
+                      dispatch(clearState());
+                    }}
+                  >
+                    Bar Chart
+                  </Link>
+                </td>
+                <td style={{ border: "1px solid black" }}>
+                  <Link
+                    id="5"
+                    to={`https://staging.d2ptxb5fbsc082.amplifyapp.com/start?participant_id=${getRandomIntInclusive(
+                      0,
+                      1000000
+                    )}&study_id=testbetween&session_id=3&treatment_ids=%5B3%5D`}
+                    onClick={() => {
+                      dispatch(clearState());
+                    }}
+                  >
+                    Bar Chart Extended
+                  </Link>
+                </td>
+              </tr>
+              <tr style={{ border: "1px solid black" }}>
+                <td style={{ border: "1px solid black" }}>production</td>
+                <td style={{ border: "1px solid black" }}>
+                  <Link
+                    id="1"
+                    to={`https://release.d2ptxb5fbsc082.amplifyapp.com/start?participant_id=${getRandomIntInclusive(
+                      0,
+                      1000000
+                    )}&study_id=testwithin&session_id=3`}
+                    onClick={() => {
+                      dispatch(clearState());
+                    }}
+                  >
+                    Within Subject.
+                  </Link>
+                </td>
+                <td style={{ border: "1px solid black" }}>
+                  <Link
+                    id="2"
+                    to={`https://release.d2ptxb5fbsc082.amplifyapp.com/start?participant_id=${getRandomIntInclusive(
+                      0,
+                      1000000
+                    )}&study_id=testbetween&session_id=3`}
+                    onClick={() => {
+                      dispatch(clearState());
+                    }}
+                  >
+                    Between Subject.
+                  </Link>
+                </td>
+                <td style={{ border: "1px solid black" }}>
+                  <Link
+                    id="3"
+                    to={`https://release.d2ptxb5fbsc082.amplifyapp.com/start?participant_id=${getRandomIntInclusive(
+                      0,
+                      1000000
+                    )}&study_id=testbetween&session_id=3&treatment_ids=%5B1%5D`}
+                    onClick={() => {
+                      dispatch(clearState());
+                    }}
+                  >
+                    Word
+                  </Link>
+                </td>
+                <td style={{ border: "1px solid black" }}>
+                  <Link
+                    id="4"
+                    to={`https://release.d2ptxb5fbsc082.amplifyapp.com/start?participant_id=${getRandomIntInclusive(
+                      0,
+                      1000000
+                    )}&study_id=testbetween&session_id=3&treatment_ids=%5B2%5D`}
+                    onClick={() => {
+                      dispatch(clearState());
+                    }}
+                  >
+                    Bar Chart
+                  </Link>
+                </td>
+                <td style={{ border: "1px solid black" }}>
+                  <Link
+                    id="5"
+                    to={`https://release.d2ptxb5fbsc082.amplifyapp.com/start?participant_id=${getRandomIntInclusive(
                       0,
                       1000000
                     )}&study_id=testbetween&session_id=3&treatment_ids=%5B3%5D`}
