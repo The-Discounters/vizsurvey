@@ -38,9 +38,9 @@ i18n
           tryPressEnterToAdvanceSurvey:
             "Press the enter key to accept your selection and go to the next question or the {{arrowKey}} key to change it.",
           MELChoicePromptWord:
-            "Choose the option that represents the timing from today and amount that you prefer receiving.",
+            "Choose the option that represents the timing from today and amount that you would prefer receiving.",
           MELChoicePromptBar:
-            "Choose the bar that represents the timing from today and amount that you prefer receiving.",
+            "Choose the bar that represents the timing from today and amount that you would prefer receiving.",
         },
       },
     },
