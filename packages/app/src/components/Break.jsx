@@ -45,19 +45,10 @@ const Break = () => {
         <Grid
           container
           direction="column"
-          justifyContent="flex-start"
+          justifyContent="center"
+          sx={{ minHeight: "100vh" }}
           alignItems="stretch"
         >
-          <Grid xs={12}>
-            <Typography variant="h4">Question Break</Typography>
-            <hr
-              style={{
-                color: "#ea3433",
-                backgroundColor: "#ea3433",
-                height: 4,
-              }}
-            />
-          </Grid>
           <Grid xs={12}>
             <Typography paragraph>
               You have completed {completedTreatments}{" "}
