@@ -7,7 +7,6 @@ import {
   StyledEngineProvider,
   Container,
 } from "@mui/material";
-import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
 import {
   finishedShownTimestamp,
   getExperiment,
@@ -34,31 +33,20 @@ const Finished = () => {
       <StyledEngineProvider injectFirst>
         <ThemeProvider theme={theme}>
           <Container maxWidth="lg" disableGutters={false}>
-            <Grid
-              container
-              direction="column"
-              justifyContent="flex-start"
-              alignItems="stretch"
-            >
-              <Grid xs={12}>
-                <Typography variant="h4">Finished</Typography>
-                <hr
-                  style={{
-                    color: "#ea3433",
-                    backgroundColor: "#ea3433",
-                    height: 4,
-                  }}
-                />
-              </Grid>
-              <Grid xs={12}>
-                <Typography paragraph>
-                  Thank you for your feedback. You have completed the survey and
-                  may close the browser. Before you do, please remember to enter
-                  the code {experiment.prolificCode} into Prolific so that you
-                  will be paid {experiment.paymentAmount}.
-                </Typography>
-              </Grid>
-            </Grid>
+            <Typography variant="h4">Finished</Typography>
+            <hr
+              style={{
+                color: "#ea3433",
+                backgroundColor: "#ea3433",
+                height: 4,
+              }}
+            />
+            <Typography paragraph>
+              Thank you for your feedback. You have completed the survey and may
+              close the browser. Before you do, please remember to enter the
+              code {experiment.prolificCode} into Prolific so that you will be
+              paid {experiment.paymentAmount}.
+            </Typography>
           </Container>
         </ThemeProvider>
       </StyledEngineProvider>
