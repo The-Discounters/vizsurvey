@@ -12,6 +12,7 @@ import {
   RadioGroup,
   ThemeProvider,
   StyledEngineProvider,
+  Container,
 } from "@mui/material";
 import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
 import {
@@ -68,130 +69,132 @@ export function PostSurvey() {
   return (
     <StyledEngineProvider injectFirst>
       <ThemeProvider theme={theme}>
-        <Grid
-          container
-          direction="column"
-          justifyContent="flex-start"
-          alignItems="stretch"
-        >
-          <Grid xs={12}>
-            <Typography variant="h4">Additional Questions 2 of 2</Typography>
-            <hr
-              style={{
-                color: "#ea3433",
-                backgroundColor: "#ea3433",
-                height: 4,
-              }}
-            />
-          </Grid>
-          <Grid xs={12}>
-            <Typography paragraph>{surveys.prompt}</Typography>
-          </Grid>
-          {surveys.questions.map(({ question, options }, index) => (
-            <div key={`div-${index}`}>
-              <Grid xs={12} key={`grid-${index}`}>
-                <FormControl
-                  variant="standard"
-                  key={`form-control-${index}`}
-                  sx={{ fontWeight: "bold" }}
-                  required
-                >
-                  <FormLabel
-                    id={question.textShort}
+        <Container maxWidth="lg" disableGutters={false}>
+          <Grid
+            container
+            direction="column"
+            justifyContent="flex-start"
+            alignItems="stretch"
+          >
+            <Grid xs={12}>
+              <Typography variant="h4">Additional Questions 2 of 2</Typography>
+              <hr
+                style={{
+                  color: "#ea3433",
+                  backgroundColor: "#ea3433",
+                  height: 4,
+                }}
+              />
+            </Grid>
+            <Grid xs={12}>
+              <Typography paragraph>{surveys.prompt}</Typography>
+            </Grid>
+            {surveys.questions.map(({ question, options }, index) => (
+              <div key={`div-${index}`}>
+                <Grid xs={12} key={`grid-${index}`}>
+                  <FormControl
+                    variant="standard"
+                    key={`form-control-${index}`}
                     sx={{ fontWeight: "bold" }}
+                    required
                   >
-                    {question.textFull}
-                  </FormLabel>
-                  <RadioGroup
-                    row
-                    aria-labelledby={
-                      question.textShort + "-row-radio-buttons-group-label"
-                    }
-                    name={question.textShort + "-radio-buttons-group"}
-                  >
-                    {surveys.questionsType === "multiple choice"
-                      ? options.map((option, index1) => (
-                          <FormControlLabel
-                            key={`radio-${index1}`}
-                            value={option.textShort}
-                            checked={qList[index] === option.textShort}
-                            style={{
-                              width: "100%",
-                            }}
-                            control={<Radio />}
-                            label={option.textFull}
-                            onChange={(event) => {
-                              dispatch(
-                                setFinancialLitSurveyQuestion({
-                                  key: surveys.questions[index].question
-                                    .textShort,
-                                  value: event.target.value,
-                                })
-                              );
-                            }}
-                          />
-                        ))
-                      : [
-                          "strongly-disagree",
-                          "disagree",
-                          "neutral",
-                          "agree",
-                          "strongly-agree",
-                        ].map((option, index1) => (
-                          <FormControlLabel
-                            key={`radio-${index1}`}
-                            value={option}
-                            id={question.textShort + "-" + option}
-                            checked={qList[index] === option}
-                            style={{
-                              width: "100%",
-                            }}
-                            control={<Radio />}
-                            label={option.replace("-", " ")}
-                            onChange={(event) => {
-                              dispatch(
-                                setFinancialLitSurveyQuestion({
-                                  key: surveys.questions[index].question
-                                    .textShort,
-                                  value: event.target.value,
-                                })
-                              );
-                            }}
-                          />
-                        ))}
-                  </RadioGroup>
-                </FormControl>
-              </Grid>
-              <br key={`br-${index}`}></br>
-            </div>
-          ))}
-          <Grid align="center" xs={12}>
-            <hr
-              style={{
-                backgroundColor: "#aaaaaa",
-                height: 4,
-              }}
-            />
-            <Button
-              variant="contained"
-              color="secondary"
-              disableRipple
-              disableFocusRipple
-              style={styles.button}
-              onClick={() => {
-                setTimeout(() => {
-                  dispatch(
-                    financialLitSurveyQuestionsCompleted(
-                      dateToState(DateTime.now())
-                    )
-                  );
-                }, 400);
-              }}
-            >
-              Next
-            </Button>
+                    <FormLabel
+                      id={question.textShort}
+                      sx={{ fontWeight: "bold" }}
+                    >
+                      {question.textFull}
+                    </FormLabel>
+                    <RadioGroup
+                      row
+                      aria-labelledby={
+                        question.textShort + "-row-radio-buttons-group-label"
+                      }
+                      name={question.textShort + "-radio-buttons-group"}
+                    >
+                      {surveys.questionsType === "multiple choice"
+                        ? options.map((option, index1) => (
+                            <FormControlLabel
+                              key={`radio-${index1}`}
+                              value={option.textShort}
+                              checked={qList[index] === option.textShort}
+                              style={{
+                                width: "100%",
+                              }}
+                              control={<Radio />}
+                              label={option.textFull}
+                              onChange={(event) => {
+                                dispatch(
+                                  setFinancialLitSurveyQuestion({
+                                    key: surveys.questions[index].question
+                                      .textShort,
+                                    value: event.target.value,
+                                  })
+                                );
+                              }}
+                            />
+                          ))
+                        : [
+                            "strongly-disagree",
+                            "disagree",
+                            "neutral",
+                            "agree",
+                            "strongly-agree",
+                          ].map((option, index1) => (
+                            <FormControlLabel
+                              key={`radio-${index1}`}
+                              value={option}
+                              id={question.textShort + "-" + option}
+                              checked={qList[index] === option}
+                              style={{
+                                width: "100%",
+                              }}
+                              control={<Radio />}
+                              label={option.replace("-", " ")}
+                              onChange={(event) => {
+                                dispatch(
+                                  setFinancialLitSurveyQuestion({
+                                    key: surveys.questions[index].question
+                                      .textShort,
+                                    value: event.target.value,
+                                  })
+                                );
+                              }}
+                            />
+                          ))}
+                    </RadioGroup>
+                  </FormControl>
+                </Grid>
+                <br key={`br-${index}`}></br>
+              </div>
+            ))}
+            <Grid align="center" xs={12}>
+              <hr
+                style={{
+                  backgroundColor: "#aaaaaa",
+                  height: 4,
+                }}
+              />
+              <Button
+                variant="contained"
+                color="secondary"
+                disableRipple
+                disableFocusRipple
+                style={styles.button}
+                onClick={() => {
+                  setTimeout(() => {
+                    dispatch(
+                      financialLitSurveyQuestionsCompleted(
+                        dateToState(DateTime.now())
+                      )
+                    );
+                  }, 400);
+                }}
+              >
+                Next
+              </Button>
+            </Grid>
           </Grid>
-        </Grid>
+        </Container>
       </ThemeProvider>
     </StyledEngineProvider>
   );

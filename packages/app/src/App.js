@@ -63,45 +63,43 @@ const App = () => {
     )
   );
   return (
-    <div>
-      <Container>
-        <ErrorBoundary>
-          <Routes>
-            <Route path="/start" element={<GenTreatmentId />} />
-            <Route path="/consent" element={<Consent />} />
-            <Route path="/demographic" element={<Demographic />} />
-            <Route
-              path="/melquestioninstructions"
-              element={<MELQuestionInstructions />}
-            />
-            <Route path="/instruction" element={<Instructions />} />
-            <Route path="/survey" element={<MELSurvey />} />
-            <Route path="/break" element={<Break />} />
-            <Route
-              path="/experiencequestionaire"
-              element={<PostSurveyExperience />}
-            />
-            <Route
-              path="/financialquestionaire"
-              element={<PostSurveyFinancialLit />}
-            />
-            <Route path="/debrief" element={<Debrief />} />
-            <Route path="/finished" element={<Finished />} />
-            <Route path="/invalidlink" element={<InvalidSurveyLink />} />
-            <Route
-              path="*"
-              element={
-                process.env.REACT_APP_ENV !== "production" ? (
-                  <DevHome />
-                ) : (
-                  <InvalidSurveyLink />
-                )
-              }
-            />
-          </Routes>
-        </ErrorBoundary>
-      </Container>
-    </div>
+    <Container maxWidth={false} disableGutters>
+      <ErrorBoundary>
+        <Routes>
+          <Route path="/start" element={<GenTreatmentId />} />
+          <Route path="/consent" element={<Consent />} />
+          <Route path="/demographic" element={<Demographic />} />
+          <Route
+            path="/melquestioninstructions"
+            element={<MELQuestionInstructions />}
+          />
+          <Route path="/instruction" element={<Instructions />} />
+          <Route path="/survey" element={<MELSurvey />} />
+          <Route path="/break" element={<Break />} />
+          <Route
+            path="/experiencequestionaire"
+            element={<PostSurveyExperience />}
+          />
+          <Route
+            path="/financialquestionaire"
+            element={<PostSurveyFinancialLit />}
+          />
+          <Route path="/debrief" element={<Debrief />} />
+          <Route path="/finished" element={<Finished />} />
+          <Route path="/invalidlink" element={<InvalidSurveyLink />} />
+          <Route
+            path="*"
+            element={
+              process.env.REACT_APP_ENV !== "production" ? (
+                <DevHome />
+              ) : (
+                <InvalidSurveyLink />
+              )
+            }
+          />
+        </Routes>
+      </ErrorBoundary>
+    </Container>
   );
 };
 

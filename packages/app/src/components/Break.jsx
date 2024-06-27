@@ -5,6 +5,7 @@ import {
   Typography,
   ThemeProvider,
   StyledEngineProvider,
+  Container,
 } from "@mui/material";
 import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
 import { useSelector, useDispatch } from "react-redux";
@@ -42,45 +43,47 @@ const Break = () => {
   return (
     <StyledEngineProvider injectFirst>
       <ThemeProvider theme={theme}>
-        <Grid
-          container
-          direction="column"
-          justifyContent="center"
-          sx={{ minHeight: "100vh" }}
-          alignItems="stretch"
-        >
-          <Grid xs={12}>
-            <Typography paragraph>
-              You have completed {completedTreatments}{" "}
-              {completedTreatments === 1 ? "block" : "blocks"} of trials. There
-              are {remainingTreatments}{" "}
-              {remainingTreatments === 1 ? "block" : "blocks"} remaining. Please
-              feel free to take a break and press continue when you are ready
-              for the next block.
-            </Typography>
-            <hr
-              style={{
-                backgroundColor: "#aaaaaa",
-                height: 4,
-              }}
-            />
+        <Container maxWidth="lg" disableGutters={false}>
+          <Grid
+            container
+            direction="column"
+            justifyContent="center"
+            sx={{ minHeight: "100vh" }}
+            alignItems="stretch"
+          >
+            <Grid xs={12}>
+              <Typography paragraph>
+                You have completed {completedTreatments}{" "}
+                {completedTreatments === 1 ? "block" : "blocks"} of trials.
+                There are {remainingTreatments}{" "}
+                {remainingTreatments === 1 ? "block" : "blocks"} remaining.
+                Please feel free to take a break and press continue when you are
+                ready for the next block.
+              </Typography>
+              <hr
+                style={{
+                  backgroundColor: "#aaaaaa",
+                  height: 4,
+                }}
+              />
+            </Grid>
+            <Grid align="center" xs={12}>
+              <Button
+                variant="contained"
+                color="secondary"
+                disableRipple
+                disableFocusRipple
+                style={styles.button}
+                onClick={() => {
+                  dispatch(breakCompleted(dateToState(DateTime.now())));
+                }}
+              >
+                {" "}
+                Continue{" "}
+              </Button>
+            </Grid>
           </Grid>
-          <Grid align="center" xs={12}>
-            <Button
-              variant="contained"
-              color="secondary"
-              disableRipple
-              disableFocusRipple
-              style={styles.button}
-              onClick={() => {
-                dispatch(breakCompleted(dateToState(DateTime.now())));
-              }}
-            >
-              {" "}
-              Continue{" "}
-            </Button>
-          </Grid>
-        </Grid>
+        </Container>
       </ThemeProvider>
     </StyledEngineProvider>
   );

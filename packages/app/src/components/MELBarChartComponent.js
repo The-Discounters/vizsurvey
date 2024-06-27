@@ -1,7 +1,6 @@
 import React from "react";
 import ReactDOMServer from "react-dom/server";
-import { FormControl, FormHelperText } from "@mui/material";
-import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
+import { FormControl, FormHelperText, Box } from "@mui/material";
 import { VegaLite } from "react-vega";
 import vegaTooltipHandler from "vega-tooltip";
 import { useTranslation } from "react-i18next";
@@ -136,87 +135,75 @@ export const MELBarChartComponent = (props) => {
 
   return (
     <FormControl variant="standard" required={false} error={props.error}>
-      <Grid container>
-        <Grid
-          xs={12}
-          display="flex"
-          justifyContent="center"
-          alignItems="center"
-          height="50px"
-        >
-          <FormHelperText id="errorMessage" sx={{ fontSize: "22px" }}>
-            {props.helperText}
-          </FormHelperText>
-        </Grid>
-        <Grid
-          xs={12}
-          display="flex"
-          justifyContent="center"
-          alignItems="center"
-          height="75px"
-          sx={{ fontSize: "22px" }}
-        >
-          {t("MELChoicePromptBar")}
-        </Grid>
-        <Grid
-          xs={12}
-          display="flex"
-          justifyContent="center"
-          alignItems="center"
-        >
-          <VegaLite
-            spec={spec}
-            patch={(spec) => {
-              // usefull links
-              // https://stackoverflow.com/questions/57707494/whats-the-proper-way-to-implement-a-custom-click-handler-in-vega-lite
-              // https://codepen.io/stephenshank/pen/XWJpPxo
-              spec.signals = {
-                name: "barClick",
-                value: 0,
-                on: [{ events: "rect:mousedown", update: "datum" }],
-              };
-              return spec;
-            }}
-            onNewView={(view) =>
-              view.addSignalListener("barClick", (n, v) => {
-                props.onClickCallback(v.barType);
-              })
-            }
-            actions={false}
-            tooltip={(vegaTooltipHandler, tooltipOptions)}
-          />
-        </Grid>
-        <Grid
-          xs={12}
-          display="flex"
-          justifyContent="center"
-          alignItems="center"
-          sx={{ fontSize: "22px" }}
-          height="50px"
-        >
-          {props.instructionText}
-        </Grid>
-        <Grid
-          xs={12}
-          display="flex"
-          justifyContent="center"
-          alignItems="center"
-          sx={{ fontSize: "22px" }}
-          height="50px"
-        >
-          {props.choiceText()}
-        </Grid>
-        <Grid
-          xs={12}
-          display="flex"
-          justifyContent="center"
-          alignItems="center"
-          sx={{ fontSize: "22px" }}
-          height="50px"
-        >
-          {props.changeChoiceText()}
-        </Grid>
-      </Grid>
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        height="50px"
+      >
+        <FormHelperText id="errorMessage" sx={{ fontSize: "22px" }}>
+          {props.helperText}
+        </FormHelperText>
+      </Box>
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        height="75px"
+        sx={{ fontSize: "22px" }}
+      >
+        {t("MELChoicePromptBar")}
+      </Box>
+      <Box display="flex" justifyContent="center" alignItems="center">
+        <VegaLite
+          spec={spec}
+          patch={(spec) => {
+            // usefull links
+            // https://stackoverflow.com/questions/57707494/whats-the-proper-way-to-implement-a-custom-click-handler-in-vega-lite
+            // https://codepen.io/stephenshank/pen/XWJpPxo
+            spec.signals = {
+              name: "barClick",
+              value: 0,
+              on: [{ events: "rect:mousedown", update: "datum" }],
+            };
+            return spec;
+          }}
+          onNewView={(view) =>
+            view.addSignalListener("barClick", (n, v) => {
+              props.onClickCallback(v.barType);
+            })
+          }
+          actions={false}
+          tooltip={(vegaTooltipHandler, tooltipOptions)}
+        />
+      </Box>
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        sx={{ fontSize: "22px" }}
+        height="50px"
+      >
+        {props.instructionText}
+      </Box>
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        sx={{ fontSize: "22px" }}
+        height="50px"
+      >
+        {props.choiceText()}
+      </Box>
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        sx={{ fontSize: "22px" }}
+        height="50px"
+      >
+        {props.changeChoiceText()}
+      </Box>
     </FormControl>
   );
 };

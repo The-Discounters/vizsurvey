@@ -1,8 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { format } from "d3";
 import { useNavigate } from "react-router-dom";
-import { Typography, ThemeProvider, StyledEngineProvider } from "@mui/material";
-import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
+import {
+  Typography,
+  ThemeProvider,
+  StyledEngineProvider,
+  Container,
+  Box,
+} from "@mui/material";
 import { useSelector, useDispatch } from "react-redux";
 import { DateTime } from "luxon";
 import { useKeyDown } from "../hooks/useKeydown.js";
@@ -274,34 +279,28 @@ const MELQuestionInstructions = () => {
   return (
     <StyledEngineProvider injectFirst>
       <ThemeProvider theme={theme}>
-        <Grid
-          container
-          direction="column"
-          justifyContent="flex-start"
-          alignItems="stretch"
-          sx={{ fontSize: "12px" }}
-        >
-          <Grid xs={12}>
-            <Typography variant="h4">Money Choice Instructions</Typography>
-            <hr
-              style={{
-                color: "#ea3433",
-                backgroundColor: "#ea3433",
-                height: 4,
-              }}
-            />
-          </Grid>
-          <Grid xs={12}>{vizExplanation()}</Grid>
-          <Grid xs={12} align="center">
-            <hr
-              style={{
-                backgroundColor: "#aaaaaa",
-                height: 4,
-              }}
-            />
+        <Container maxWidth="lg" disableGutters={false}>
+          <Typography variant="h4">Money Choice Instructions</Typography>
+          <hr
+            style={{
+              color: "#ea3433",
+              backgroundColor: "#ea3433",
+              height: 4,
+            }}
+          />
+          {vizExplanation()}
+          <hr
+            style={{
+              backgroundColor: "#aaaaaa",
+              height: 4,
+            }}
+          />
+        </Container>
+        <Container maxWidth={false} disableGutters>
+          <Box display="flex" justifyContent="center">
             {vizTry()}
-          </Grid>
-        </Grid>
+          </Box>
+        </Container>
       </ThemeProvider>
     </StyledEngineProvider>
   );

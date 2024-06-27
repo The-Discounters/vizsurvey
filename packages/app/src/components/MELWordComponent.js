@@ -5,8 +5,8 @@ import {
   FormHelperText,
   Radio,
   RadioGroup,
+  Box,
 } from "@mui/material";
-import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
 import { HTMLTooltip } from "./HTMLTooltip";
 import { useTranslation } from "react-i18next";
 import { format } from "d3";
@@ -31,18 +31,12 @@ export const MELWordComponent = (props) => {
   return (
     <form>
       <FormControl variant="standard" required={false} error={props.error}>
-        <Grid
-          xs={12}
-          display="flex"
-          justifyContent="center"
-          alignItems="center"
-        >
+        <Box display="flex" justifyContent="center" alignItems="center">
           <FormHelperText id="errorMessage" sx={{ fontSize: "22px" }}>
             {props.helperText}
           </FormHelperText>
-        </Grid>
-        <Grid
-          xs={12}
+        </Box>
+        <Box
           display="flex"
           justifyContent="center"
           alignItems="center"
@@ -50,13 +44,8 @@ export const MELWordComponent = (props) => {
           sx={{ fontSize: "22px" }}
         >
           {t("MELChoicePromptWord")}
-        </Grid>
-        <Grid
-          xs={12}
-          display="flex"
-          justifyContent="center"
-          alignItems="center"
-        >
+        </Box>
+        <Box display="flex" justifyContent="center" alignItems="center">
           <RadioGroup
             row
             aria-labelledby={props.textShort + "-row-radio-buttons-group-label"}
@@ -119,9 +108,8 @@ export const MELWordComponent = (props) => {
               </HTMLTooltip>
             ))}
           </RadioGroup>
-        </Grid>
-        <Grid
-          xs={12}
+        </Box>
+        <Box
           display="flex"
           justifyContent="center"
           alignItems="center"
@@ -129,9 +117,8 @@ export const MELWordComponent = (props) => {
           sx={{ fontSize: "22px" }}
         >
           {props.instructionText}
-        </Grid>
-        <Grid
-          xs={12}
+        </Box>
+        <Box
           display="flex"
           justifyContent="center"
           alignItems="center"
@@ -139,9 +126,8 @@ export const MELWordComponent = (props) => {
           sx={{ fontSize: "22px" }}
         >
           {props.choiceText()}
-        </Grid>
-        <Grid
-          xs={12}
+        </Box>
+        <Box
           display="flex"
           justifyContent="center"
           alignItems="center"
@@ -149,7 +135,7 @@ export const MELWordComponent = (props) => {
           sx={{ fontSize: "22px" }}
         >
           {props.changeChoiceText()}
-        </Grid>
+        </Box>
       </FormControl>
     </form>
   );

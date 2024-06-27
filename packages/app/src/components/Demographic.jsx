@@ -7,6 +7,7 @@ import {
   Typography,
   ThemeProvider,
   StyledEngineProvider,
+  Container,
 } from "@mui/material";
 import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
 import InputLabel from "@mui/material/InputLabel";
@@ -226,320 +227,326 @@ export function Consent() {
   return (
     <StyledEngineProvider injectFirst>
       <ThemeProvider theme={theme}>
-        <Grid
-          container
-          direction="column"
-          justifyContent="flex-start"
-          alignItems="stretch"
-        >
-          <Grid xs={12}>
-            <Typography variant="h4">Demographic Questions</Typography>
-            <hr
-              style={{
-                color: "#ea3433",
-                backgroundColor: "#ea3433",
-                height: 4,
-              }}
-            />
-          </Grid>
-          <Grid xs={12}>
-            <Typography>
-              Please tell us about yourself by answering the questions below.
-              All data collected will be analyzed in aggregate form only and
-              will not be used to identify you.{" "}
-            </Typography>
-          </Grid>
-          <Grid xs={12}>
-            <Grid
-              container
-              direction="row"
-              rowSpacing={1}
-              columnSpacing={{ xs: 1, sm: 2, md: 3 }}
-            >
-              <Grid xs={3}>
-                <FormControl variant="standard">
-                  <InputLabel htmlFor="country-select-helper">
-                    Country of residence
-                  </InputLabel>
-                  <NativeSelect
-                    inputProps={{
-                      name: "country-of-origin",
-                      id: "country-select-helper",
-                    }}
-                    value={countryOfResidence}
-                    onChange={(event) => {
-                      dispatch(setCountryOfResidence(event.target.value));
-                    }}
-                  >
-                    <option> </option>
-                    {countries.default.map((option) => (
-                      <option
-                        key={option.alpha3}
-                        id={option.alpha3}
-                        value={option.alpha3}
-                      >
-                        {option.name}
-                      </option>
-                    ))}
-                  </NativeSelect>
-                  <FormHelperText>
-                    The country you are living in now
-                  </FormHelperText>
-                </FormControl>
-              </Grid>
-              <Grid xs={3}>
-                <FormControl variant="standard">
-                  <InputLabel htmlFor="familiarity-with-viz">
-                    Dataviz experience
-                  </InputLabel>
-                  <NativeSelect
-                    inputProps={{
-                      id: "familiarity-with-viz",
-                    }}
-                    value={vizFamiliarity}
-                    onChange={(event) => {
-                      dispatch(setVizFamiliarity(event.target.value));
-                    }}
-                    name="familiarity-with-viz"
-                  >
-                    <option> </option>
-                    {vizFamiliarityLevel.map((option) => (
-                      <option key={option.id} value={option.id}>
-                        {option["name"]}
-                      </option>
-                    ))}
-                  </NativeSelect>
-                  <FormHelperText>
-                    Your experience with data visualizations and charts
-                  </FormHelperText>
-                </FormControl>
-              </Grid>
-              <Grid xs={3}>
-                <TextField
-                  id="age"
-                  variant="standard"
-                  label="Age"
-                  type="number"
-                  value={age}
-                  onBlur={(event) => {
-                    if (
-                      event.target.value.length !== 0 &&
-                      +event.target.value <= 0
-                    ) {
-                      event.target.value = age;
-                    } else {
-                      dispatch(setAge(event.target.value));
-                    }
-                  }}
-                  onChange={(event) => {
-                    if (
-                      event.target.value.length !== 0 &&
-                      +event.target.value <= 0
-                    ) {
-                      event.target.value = age;
-                    } else {
-                      setAgeState(event.target.value);
-                    }
-                  }}
-                />
-              </Grid>
-              <Grid xs={3}>
-                <TextField
-                  id="current-profession"
-                  variant="standard"
-                  value={profession}
-                  onBlur={(event) => {
-                    dispatch(setProfession(event.target.value));
-                  }}
-                  onChange={(event) => {
-                    setProfessionState(event.target.value);
-                  }}
-                  label="Current Profession"
-                />
-              </Grid>
-              <Grid xs={3}>
-                <FormControl variant="standard">
-                  <InputLabel htmlFor="gender-select-helper">Gender</InputLabel>
-                  <NativeSelect
-                    value={gender}
-                    onChange={(event) => {
-                      dispatch(setGender(event.target.value));
-                    }}
-                    inputProps={{
-                      name: "gender",
-                      id: "gender-select-helper",
-                    }}
-                  >
-                    <option> </option>
-                    {genderOptionValues.map(({ value, text }) => (
-                      <option key={value} id={value} value={value}>
-                        {text}
-                      </option>
-                    ))}
-                  </NativeSelect>
-                  <FormHelperText>Your gender</FormHelperText>
-                </FormControl>
-              </Grid>
-              <Grid xs={3}>
-                <TextField
-                  variant="standard"
-                  value={selfDescribeGender}
-                  onChange={(event) => {
-                    setSelfDescribeGenderState(event.target.value);
-                  }}
-                  onBlur={(event) => {
-                    dispatch(setSelfDescribeGender(event.target.value));
-                  }}
-                  label="Self Describe Gender"
-                  id="self-describe-gender"
-                  disabled={disableSelfDescribeGender}
-                />
-              </Grid>
-              <Grid xs={3}>
-                <FormControl variant="standard">
-                  <InputLabel htmlFor="employment-select-helper">
-                    Current Employment
-                  </InputLabel>
-                  <NativeSelect
-                    value={employment}
-                    onChange={(event) => {
-                      dispatch(setEmployment(event.target.value));
-                    }}
-                    inputProps={{
-                      name: "employment",
-                      id: "employment-select-helper",
-                    }}
-                  >
-                    <option> </option>
-                    {employmentOptionValues.map(({ value, text }) => (
-                      <option key={value} id={value} value={value}>
-                        {text}
-                      </option>
-                    ))}
-                  </NativeSelect>
-                  <FormHelperText>Your current employment</FormHelperText>
-                </FormControl>
-              </Grid>
-              <Grid xs={3}>
-                <TextField
-                  variant="standard"
-                  value={selfDescribeEmployment}
-                  onBlur={(event) => {
-                    dispatch(setSelfDescribeEmployment(event.target.value));
-                  }}
-                  onChange={(event) => {
-                    setSelfDescribeEmploymentState(event.target.value);
-                  }}
-                  label="Describe Employment"
-                  id="self-describe-employment"
-                  disabled={disableSelfDescribeEmployment}
-                />
-              </Grid>
-              <Grid xs={3}>
-                <FormControl variant="standard">
-                  <InputLabel htmlFor="household-income-select-helper">
-                    Household Income
-                  </InputLabel>
-                  <NativeSelect
-                    value={householdIncome}
-                    onChange={(event) => {
-                      dispatch(setHouseholdIncome(event.target.value));
-                    }}
-                    inputProps={{
-                      name: "household-income",
-                      id: "household-income-select-helper",
-                    }}
-                  >
-                    <option> </option>
-                    {householdIncomeOptionValues.map(({ value, text }) => (
-                      <option key={value} id={value} value={value}>
-                        {text}
-                      </option>
-                    ))}
-                  </NativeSelect>
-                </FormControl>
-              </Grid>
-              <Grid xs={3}>
-                <TextField
-                  variant="standard"
-                  value={selfDescribeHouseholdIncome}
-                  onBlur={(event) => {
-                    dispatch(
-                      setSelfDescribeHouseholdIncome(event.target.value)
-                    );
-                  }}
-                  onChange={(event) => {
-                    setSelfDescribeHouseholdIncomeState(event.target.value);
-                  }}
-                  label="Describe Household Income"
-                  id="self-describe-household-income"
-                  disabled={disableSelfDescribeHouseholdIncome}
-                />
-              </Grid>
-              <Grid xs={3}>
-                <FormControl variant="standard">
-                  <InputLabel htmlFor="education-level-select-helper">
-                    Formal Education Level
-                  </InputLabel>
-                  <NativeSelect
-                    value={educationLevel}
-                    onChange={(event) => {
-                      dispatch(setEducationLevel(event.target.value));
-                    }}
-                    inputProps={{
-                      name: "education-level",
-                      id: "education-level-select-helper",
-                    }}
-                  >
-                    <option> </option>
-                    {educationLevelOptionValues.map(({ value, text }) => (
-                      <option key={value} id={value} value={value}>
-                        {text}
-                      </option>
-                    ))}
-                  </NativeSelect>
-                </FormControl>
-              </Grid>
-              <Grid xs={3}>
-                <TextField
-                  variant="standard"
-                  value={selfDescribeEducationLevel}
-                  onBlur={(event) => {
-                    dispatch(setSelfDescribeEducationLevel(event.target.value));
-                  }}
-                  onChange={(event) => {
-                    setSelfDescribeEducationLevelState(event.target.value);
-                  }}
-                  label="Highest Education Level Obtained"
-                  id="self-describe-education-level"
-                  disabled={disableSelfDescribeEducationLevel}
-                />
-              </Grid>
-            </Grid>
+        <Container maxWidth="lg" disableGutters={false}>
+          <Grid
+            container
+            direction="column"
+            justifyContent="flex-start"
+            alignItems="stretch"
+          >
             <Grid xs={12}>
+              <Typography variant="h4">Demographic Questions</Typography>
               <hr
                 style={{
-                  backgroundColor: "#aaaaaa",
+                  color: "#ea3433",
+                  backgroundColor: "#ea3433",
                   height: 4,
                 }}
               />
             </Grid>
-            <Grid align="center" xs={12}>
-              <Button
-                variant="contained"
-                color="secondary"
-                disableRipple
-                disableFocusRipple
-                style={styles.button}
-                onClick={() => {
-                  dispatch(demographicCompleted(dateToState(DateTime.now())));
-                }}
+            <Grid xs={12}>
+              <Typography>
+                Please tell us about yourself by answering the questions below.
+                All data collected will be analyzed in aggregate form only and
+                will not be used to identify you.{" "}
+              </Typography>
+            </Grid>
+            <Grid xs={12}>
+              <Grid
+                container
+                direction="row"
+                rowSpacing={1}
+                columnSpacing={{ xs: 1, sm: 2, md: 3 }}
               >
-                Next
-              </Button>
+                <Grid xs={3}>
+                  <FormControl variant="standard">
+                    <InputLabel htmlFor="country-select-helper">
+                      Country of residence
+                    </InputLabel>
+                    <NativeSelect
+                      inputProps={{
+                        name: "country-of-origin",
+                        id: "country-select-helper",
+                      }}
+                      value={countryOfResidence}
+                      onChange={(event) => {
+                        dispatch(setCountryOfResidence(event.target.value));
+                      }}
+                    >
+                      <option> </option>
+                      {countries.default.map((option) => (
+                        <option
+                          key={option.alpha3}
+                          id={option.alpha3}
+                          value={option.alpha3}
+                        >
+                          {option.name}
+                        </option>
+                      ))}
+                    </NativeSelect>
+                    <FormHelperText>
+                      The country you are living in now
+                    </FormHelperText>
+                  </FormControl>
+                </Grid>
+                <Grid xs={3}>
+                  <FormControl variant="standard">
+                    <InputLabel htmlFor="familiarity-with-viz">
+                      Dataviz experience
+                    </InputLabel>
+                    <NativeSelect
+                      inputProps={{
+                        id: "familiarity-with-viz",
+                      }}
+                      value={vizFamiliarity}
+                      onChange={(event) => {
+                        dispatch(setVizFamiliarity(event.target.value));
+                      }}
+                      name="familiarity-with-viz"
+                    >
+                      <option> </option>
+                      {vizFamiliarityLevel.map((option) => (
+                        <option key={option.id} value={option.id}>
+                          {option["name"]}
+                        </option>
+                      ))}
+                    </NativeSelect>
+                    <FormHelperText>
+                      Your experience with data visualizations and charts
+                    </FormHelperText>
+                  </FormControl>
+                </Grid>
+                <Grid xs={3}>
+                  <TextField
+                    id="age"
+                    variant="standard"
+                    label="Age"
+                    type="number"
+                    value={age}
+                    onBlur={(event) => {
+                      if (
+                        event.target.value.length !== 0 &&
+                        +event.target.value <= 0
+                      ) {
+                        event.target.value = age;
+                      } else {
+                        dispatch(setAge(event.target.value));
+                      }
+                    }}
+                    onChange={(event) => {
+                      if (
+                        event.target.value.length !== 0 &&
+                        +event.target.value <= 0
+                      ) {
+                        event.target.value = age;
+                      } else {
+                        setAgeState(event.target.value);
+                      }
+                    }}
+                  />
+                </Grid>
+                <Grid xs={3}>
+                  <TextField
+                    id="current-profession"
+                    variant="standard"
+                    value={profession}
+                    onBlur={(event) => {
+                      dispatch(setProfession(event.target.value));
+                    }}
+                    onChange={(event) => {
+                      setProfessionState(event.target.value);
+                    }}
+                    label="Current Profession"
+                  />
+                </Grid>
+                <Grid xs={3}>
+                  <FormControl variant="standard">
+                    <InputLabel htmlFor="gender-select-helper">
+                      Gender
+                    </InputLabel>
+                    <NativeSelect
+                      value={gender}
+                      onChange={(event) => {
+                        dispatch(setGender(event.target.value));
+                      }}
+                      inputProps={{
+                        name: "gender",
+                        id: "gender-select-helper",
+                      }}
+                    >
+                      <option> </option>
+                      {genderOptionValues.map(({ value, text }) => (
+                        <option key={value} id={value} value={value}>
+                          {text}
+                        </option>
+                      ))}
+                    </NativeSelect>
+                    <FormHelperText>Your gender</FormHelperText>
+                  </FormControl>
+                </Grid>
+                <Grid xs={3}>
+                  <TextField
+                    variant="standard"
+                    value={selfDescribeGender}
+                    onChange={(event) => {
+                      setSelfDescribeGenderState(event.target.value);
+                    }}
+                    onBlur={(event) => {
+                      dispatch(setSelfDescribeGender(event.target.value));
+                    }}
+                    label="Self Describe Gender"
+                    id="self-describe-gender"
+                    disabled={disableSelfDescribeGender}
+                  />
+                </Grid>
+                <Grid xs={3}>
+                  <FormControl variant="standard">
+                    <InputLabel htmlFor="employment-select-helper">
+                      Current Employment
+                    </InputLabel>
+                    <NativeSelect
+                      value={employment}
+                      onChange={(event) => {
+                        dispatch(setEmployment(event.target.value));
+                      }}
+                      inputProps={{
+                        name: "employment",
+                        id: "employment-select-helper",
+                      }}
+                    >
+                      <option> </option>
+                      {employmentOptionValues.map(({ value, text }) => (
+                        <option key={value} id={value} value={value}>
+                          {text}
+                        </option>
+                      ))}
+                    </NativeSelect>
+                    <FormHelperText>Your current employment</FormHelperText>
+                  </FormControl>
+                </Grid>
+                <Grid xs={3}>
+                  <TextField
+                    variant="standard"
+                    value={selfDescribeEmployment}
+                    onBlur={(event) => {
+                      dispatch(setSelfDescribeEmployment(event.target.value));
+                    }}
+                    onChange={(event) => {
+                      setSelfDescribeEmploymentState(event.target.value);
+                    }}
+                    label="Describe Employment"
+                    id="self-describe-employment"
+                    disabled={disableSelfDescribeEmployment}
+                  />
+                </Grid>
+                <Grid xs={3}>
+                  <FormControl variant="standard">
+                    <InputLabel htmlFor="household-income-select-helper">
+                      Household Income
+                    </InputLabel>
+                    <NativeSelect
+                      value={householdIncome}
+                      onChange={(event) => {
+                        dispatch(setHouseholdIncome(event.target.value));
+                      }}
+                      inputProps={{
+                        name: "household-income",
+                        id: "household-income-select-helper",
+                      }}
+                    >
+                      <option> </option>
+                      {householdIncomeOptionValues.map(({ value, text }) => (
+                        <option key={value} id={value} value={value}>
+                          {text}
+                        </option>
+                      ))}
+                    </NativeSelect>
+                  </FormControl>
+                </Grid>
+                <Grid xs={3}>
+                  <TextField
+                    variant="standard"
+                    value={selfDescribeHouseholdIncome}
+                    onBlur={(event) => {
+                      dispatch(
+                        setSelfDescribeHouseholdIncome(event.target.value)
+                      );
+                    }}
+                    onChange={(event) => {
+                      setSelfDescribeHouseholdIncomeState(event.target.value);
+                    }}
+                    label="Describe Household Income"
+                    id="self-describe-household-income"
+                    disabled={disableSelfDescribeHouseholdIncome}
+                  />
+                </Grid>
+                <Grid xs={3}>
+                  <FormControl variant="standard">
+                    <InputLabel htmlFor="education-level-select-helper">
+                      Formal Education Level
+                    </InputLabel>
+                    <NativeSelect
+                      value={educationLevel}
+                      onChange={(event) => {
+                        dispatch(setEducationLevel(event.target.value));
+                      }}
+                      inputProps={{
+                        name: "education-level",
+                        id: "education-level-select-helper",
+                      }}
+                    >
+                      <option> </option>
+                      {educationLevelOptionValues.map(({ value, text }) => (
+                        <option key={value} id={value} value={value}>
+                          {text}
+                        </option>
+                      ))}
+                    </NativeSelect>
+                  </FormControl>
+                </Grid>
+                <Grid xs={3}>
+                  <TextField
+                    variant="standard"
+                    value={selfDescribeEducationLevel}
+                    onBlur={(event) => {
+                      dispatch(
+                        setSelfDescribeEducationLevel(event.target.value)
+                      );
+                    }}
+                    onChange={(event) => {
+                      setSelfDescribeEducationLevelState(event.target.value);
+                    }}
+                    label="Highest Education Level Obtained"
+                    id="self-describe-education-level"
+                    disabled={disableSelfDescribeEducationLevel}
+                  />
+                </Grid>
+              </Grid>
+              <Grid xs={12}>
+                <hr
+                  style={{
+                    backgroundColor: "#aaaaaa",
+                    height: 4,
+                  }}
+                />
+              </Grid>
+              <Grid align="center" xs={12}>
+                <Button
+                  variant="contained"
+                  color="secondary"
+                  disableRipple
+                  disableFocusRipple
+                  style={styles.button}
+                  onClick={() => {
+                    dispatch(demographicCompleted(dateToState(DateTime.now())));
+                  }}
+                >
+                  Next
+                </Button>
+              </Grid>
             </Grid>
           </Grid>
-        </Grid>
+        </Container>
       </ThemeProvider>
     </StyledEngineProvider>
   );

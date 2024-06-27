@@ -7,6 +7,7 @@ import {
   ThemeProvider,
   StyledEngineProvider,
   FormControlLabel,
+  Container,
 } from "@mui/material";
 import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
 import FormGroup from "@mui/material/FormGroup";
@@ -206,107 +207,112 @@ export function Consent() {
   };
 
   return (
-    <StyledEngineProvider injectFirst>
-      <ThemeProvider theme={theme}>
-        <Grid
-          container
-          direction="column"
-          justifyContent="flex-start"
-          alignItems="stretch"
-        >
-          <Grid xs={12}>
-            <img
-              style={{ maxHeight: "240px" }}
-              src="generic-questionaire-icon.svg"
-              alt="Question mark."
-            ></img>
-          </Grid>
-          <Grid xs={12}>
-            <Typography variant="h4">Informed Consent</Typography>
-            <hr
-              style={{
-                color: "#ea3433",
-                backgroundColor: "#ea3433",
-                height: 4,
-              }}
-            />
-          </Grid>
-          <Grid xs={12}>
-            <Typography paragraph>
-              <br />
-              <i>
-                {" "}
-                <u>
-                  Before you proceed, please read the following consent form
-                  carefully:{" "}
-                </u>{" "}
-              </i>
-            </Typography>
-            <Typography paragraph>
-              <b>
-                This survey is not designed to render on a mobile device and
-                should be taken on a laptop or desktop computer.
-              </b>
-            </Typography>
-            <ConsentTextEn />
-          </Grid>
-          <Grid xs={12}>
-            <FormGroup>
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={checked}
-                    onChange={handleChange}
-                    name="checkConsent"
-                    id="checkConsent"
-                    color="primary"
-                  />
-                }
-                label={
-                  <Typography>
-                    I agree that any information provided in this survey can be
-                    used for the purpose(s) mentioned in the Consent Form.
-                  </Typography>
-                }
+    <Container maxWidth="lg" disableGutters={false}>
+      <StyledEngineProvider injectFirst>
+        <ThemeProvider theme={theme}>
+          <Grid
+            container
+            direction="column"
+            justifyContent="flex-start"
+            alignItems="stretch"
+          >
+            <Grid xs={12}>
+              <img
+                style={{ maxHeight: "240px" }}
+                src="generic-questionaire-icon.svg"
+                alt="Question mark."
+              ></img>
+            </Grid>
+            <Grid xs={12}>
+              <Typography variant="h4">Informed Consent</Typography>
+              <hr
+                style={{
+                  color: "#ea3433",
+                  backgroundColor: "#ea3433",
+                  height: 4,
+                }}
               />
+            </Grid>
+            <Grid xs={12}>
               <Typography paragraph>
-                <b>By selecting the checkbox and clicking &ldquo;Next&ldquo;</b>
-                , you acknowledge that you have been informed about and consent
-                to be a participant in the study described above. Make sure that
-                your questions are answered to your satisfaction before signing.
-                You are entitled to retain a copy of this consent agreement.
+                <br />
+                <i>
+                  {" "}
+                  <u>
+                    Before you proceed, please read the following consent form
+                    carefully:{" "}
+                  </u>{" "}
+                </i>
               </Typography>
               <Typography paragraph>
-                I also confirm that I am on a reliable internet connection for
-                completing the survey.
+                <b>
+                  This survey is not designed to render on a mobile device and
+                  should be taken on a laptop or desktop computer.
+                </b>
               </Typography>
-            </FormGroup>
-            <hr
-              style={{
-                backgroundColor: "#aaaaaa",
-                height: 4,
-              }}
-            />
+              <ConsentTextEn />
+            </Grid>
+            <Grid xs={12}>
+              <FormGroup>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={checked}
+                      onChange={handleChange}
+                      name="checkConsent"
+                      id="checkConsent"
+                      color="primary"
+                    />
+                  }
+                  label={
+                    <Typography>
+                      I agree that any information provided in this survey can
+                      be used for the purpose(s) mentioned in the Consent Form.
+                    </Typography>
+                  }
+                />
+                <Typography paragraph>
+                  <b>
+                    By selecting the checkbox and clicking &ldquo;Next&ldquo;
+                  </b>
+                  , you acknowledge that you have been informed about and
+                  consent to be a participant in the study described above. Make
+                  sure that your questions are answered to your satisfaction
+                  before signing. You are entitled to retain a copy of this
+                  consent agreement.
+                </Typography>
+                <Typography paragraph>
+                  I also confirm that I am on a reliable internet connection for
+                  completing the survey.
+                </Typography>
+              </FormGroup>
+              <hr
+                style={{
+                  backgroundColor: "#aaaaaa",
+                  height: 4,
+                }}
+              />
+            </Grid>
+            <Grid align="center" xs={12}>
+              <Button
+                variant="contained"
+                color="secondary"
+                disableRipple
+                disableFocusRipple
+                style={styles.button}
+                onClick={() => {
+                  dispatch(consentCompleted(dateToState(DateTime.now())));
+                }}
+                disabled={disableSubmit}
+              >
+                {" "}
+                Next{" "}
+              </Button>
+            </Grid>
           </Grid>
-          <Grid align="center" xs={12}>
-            <Button
-              variant="contained"
-              color="secondary"
-              disableRipple
-              disableFocusRipple
-              style={styles.button}
-              onClick={() => {
-                dispatch(consentCompleted(dateToState(DateTime.now())));
-              }}
-              disabled={disableSubmit}
-            >
-              {" "}
-              Next{" "}
-            </Button>
-          </Grid>
-        </Grid>
-      </ThemeProvider>
-    </StyledEngineProvider>
+        </ThemeProvider>
+      </StyledEngineProvider>
+    </Container>
   );
 }
 

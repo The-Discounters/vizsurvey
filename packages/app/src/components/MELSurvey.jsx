@@ -3,8 +3,7 @@ import { format } from "d3";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { DateTime } from "luxon";
-import { ThemeProvider, StyledEngineProvider } from "@mui/material";
-import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
+import { ThemeProvider, StyledEngineProvider, Box } from "@mui/material";
 import {
   AmountType,
   WindowAttributes,
@@ -164,80 +163,75 @@ export function MELSurvey() {
   };
 
   return (
-    <div>
+    <Box>
       <StyledEngineProvider injectFirst>
         <ThemeProvider theme={theme}>
-          <Grid
-            container
-            direction="column"
+          <Box
+            display="flex"
+            alignItems="center"
             justifyContent="center"
-            alignItems="stretch"
             sx={{ minHeight: "100vh" }}
-            maxWidth="false"
-            disableGutters="true"
           >
-            <Grid xs={12} align="center">
-              {(() => {
-                switch (q.viewType) {
-                  case ViewType.word:
-                    return (
-                      <MELWordComponent
-                        textShort={"MELRadioGroup"}
-                        instructionText={t("chooseSelection")}
-                        choiceText={choiceText}
-                        changeChoiceText={changeChoiceText}
-                        helperText={helperText}
-                        amountEarlier={q.amountEarlier}
-                        timeEarlier={q.timeEarlier}
-                        dateEarlier={q.dateEarlier}
-                        amountLater={q.amountLater}
-                        timeLater={q.timeLater}
-                        dateLater={q.dateLater}
-                        choice={choice}
-                        onClickCallback={(selection) =>
-                          showSelectionHint(selection)
-                        }
-                        error={error}
-                      />
-                    );
-                  case ViewType.barchart:
-                    return (
-                      <MELBarChartComponent
-                        instructionText={t("chooseSelection")}
-                        choiceText={choiceText}
-                        changeChoiceText={changeChoiceText}
-                        helperText={helperText}
-                        amountEarlier={q.amountEarlier}
-                        timeEarlier={q.timeEarlier}
-                        amountLater={q.amountLater}
-                        timeLater={q.timeLater}
-                        maxTime={q.maxTime}
-                        maxAmount={q.maxAmount}
-                        interaction={q.interaction}
-                        variableAmount={q.variableAmount}
-                        horizontalPixels={q.horizontalPixels}
-                        verticalPixels={q.verticalPixels}
-                        leftMarginWidthIn={q.leftMarginWidthIn}
-                        graphWidthIn={q.graphWidthIn}
-                        bottomMarginHeightIn={q.bottomMarginHeightIn}
-                        graphHeightIn={q.graphHeightIn}
-                        showMinorTicks={q.showMinorTicks}
-                        choice={choice}
-                        onClickCallback={(selection) =>
-                          showSelectionHint(selection)
-                        }
-                        error={error}
-                      />
-                    );
-                  default:
-                    return "";
-                }
-              })()}
-            </Grid>
-          </Grid>
+            {(() => {
+              switch (q.viewType) {
+                case ViewType.word:
+                  return (
+                    <MELWordComponent
+                      textShort={"MELRadioGroup"}
+                      instructionText={t("chooseSelection")}
+                      choiceText={choiceText}
+                      changeChoiceText={changeChoiceText}
+                      helperText={helperText}
+                      amountEarlier={q.amountEarlier}
+                      timeEarlier={q.timeEarlier}
+                      dateEarlier={q.dateEarlier}
+                      amountLater={q.amountLater}
+                      timeLater={q.timeLater}
+                      dateLater={q.dateLater}
+                      choice={choice}
+                      onClickCallback={(selection) =>
+                        showSelectionHint(selection)
+                      }
+                      error={error}
+                    />
+                  );
+                case ViewType.barchart:
+                  return (
+                    <MELBarChartComponent
+                      instructionText={t("chooseSelection")}
+                      choiceText={choiceText}
+                      changeChoiceText={changeChoiceText}
+                      helperText={helperText}
+                      amountEarlier={q.amountEarlier}
+                      timeEarlier={q.timeEarlier}
+                      amountLater={q.amountLater}
+                      timeLater={q.timeLater}
+                      maxTime={q.maxTime}
+                      maxAmount={q.maxAmount}
+                      interaction={q.interaction}
+                      variableAmount={q.variableAmount}
+                      horizontalPixels={q.horizontalPixels}
+                      verticalPixels={q.verticalPixels}
+                      leftMarginWidthIn={q.leftMarginWidthIn}
+                      graphWidthIn={q.graphWidthIn}
+                      bottomMarginHeightIn={q.bottomMarginHeightIn}
+                      graphHeightIn={q.graphHeightIn}
+                      showMinorTicks={q.showMinorTicks}
+                      choice={choice}
+                      onClickCallback={(selection) =>
+                        showSelectionHint(selection)
+                      }
+                      error={error}
+                    />
+                  );
+                default:
+                  return "";
+              }
+            })()}
+          </Box>
         </ThemeProvider>
       </StyledEngineProvider>
-    </div>
+    </Box>
   );
 }
 
