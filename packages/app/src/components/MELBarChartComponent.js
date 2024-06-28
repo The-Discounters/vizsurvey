@@ -135,12 +135,7 @@ export const MELBarChartComponent = (props) => {
 
   return (
     <FormControl variant="standard" required={false} error={props.error}>
-      <Box
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
-        height="50px"
-      >
+      <Box display="flex" justifyContent="center" alignItems="center">
         <FormHelperText id="errorMessage" sx={{ fontSize: "22px" }}>
           {props.helperText}
         </FormHelperText>
@@ -149,12 +144,12 @@ export const MELBarChartComponent = (props) => {
         display="flex"
         justifyContent="center"
         alignItems="center"
-        height="75px"
+        height="22px"
         sx={{ fontSize: "22px" }}
       >
         {t("MELChoicePromptBar")}
       </Box>
-      <Box display="flex" justifyContent="center" alignItems="center">
+      <Box display="flex" justifyContent="center" alignItems="center" p="2em">
         <VegaLite
           spec={spec}
           patch={(spec) => {
@@ -182,7 +177,7 @@ export const MELBarChartComponent = (props) => {
         justifyContent="center"
         alignItems="center"
         sx={{ fontSize: "22px" }}
-        height="50px"
+        height="22px"
       >
         {props.instructionText}
       </Box>
@@ -191,7 +186,8 @@ export const MELBarChartComponent = (props) => {
         justifyContent="center"
         alignItems="center"
         sx={{ fontSize: "22px" }}
-        height="50px"
+        height="22px"
+        p="1em"
       >
         {props.choiceText()}
       </Box>
@@ -200,7 +196,7 @@ export const MELBarChartComponent = (props) => {
         justifyContent="center"
         alignItems="center"
         sx={{ fontSize: "22px" }}
-        height="50px"
+        height="22px"
       >
         {props.changeChoiceText()}
       </Box>

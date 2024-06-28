@@ -40,12 +40,12 @@ export const MELWordComponent = (props) => {
           display="flex"
           justifyContent="center"
           alignItems="center"
-          height="50px"
+          height="22px"
           sx={{ fontSize: "22px" }}
         >
           {t("MELChoicePromptWord")}
         </Box>
-        <Box display="flex" justifyContent="center" alignItems="center">
+        <Box display="flex" justifyContent="center" alignItems="center" p="2em">
           <RadioGroup
             row
             aria-labelledby={props.textShort + "-row-radio-buttons-group-label"}
@@ -113,8 +113,8 @@ export const MELWordComponent = (props) => {
           display="flex"
           justifyContent="center"
           alignItems="center"
-          height="50px"
           sx={{ fontSize: "22px" }}
+          height="22px"
         >
           {props.instructionText}
         </Box>
@@ -122,8 +122,9 @@ export const MELWordComponent = (props) => {
           display="flex"
           justifyContent="center"
           alignItems="center"
-          height="50px"
           sx={{ fontSize: "22px" }}
+          height="22px"
+          p="1em"
         >
           {props.choiceText()}
         </Box>
@@ -131,8 +132,8 @@ export const MELWordComponent = (props) => {
           display="flex"
           justifyContent="center"
           alignItems="center"
-          height="50px"
           sx={{ fontSize: "22px" }}
+          height="22px"
         >
           {props.changeChoiceText()}
         </Box>
