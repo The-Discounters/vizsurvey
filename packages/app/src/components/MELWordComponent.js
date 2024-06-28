@@ -45,7 +45,7 @@ export const MELWordComponent = (props) => {
         >
           {t("MELChoicePromptWord")}
         </Box>
-        <Box display="flex" justifyContent="center" alignItems="center" p="2em">
+        <Box display="flex" justifyContent="center" p="2em">
           <RadioGroup
             row
             aria-labelledby={props.textShort + "-row-radio-buttons-group-label"}
@@ -55,58 +55,69 @@ export const MELWordComponent = (props) => {
             }}
             value={props.choice}
           >
-            {[
-              {
-                key: `${AmountType.earlierAmount}`,
-                label: MELQuestion1stPartText(
+            <HTMLTooltip
+              key={`tooltip-${AmountType.earlierAmount}`}
+              title=<React.Fragment>
+                <LeftArrowKey /> {t("leftArrowTooltip")}
+              </React.Fragment>
+            >
+              <FormControlLabel
+                sx={{
+                  mr: "100px",
+                  border: 1,
+                  backgroundColor:
+                    props.choice === AmountType.earlierAmount
+                      ? "lightblue"
+                      : "none",
+                  borderRadius: "20px",
+                  borderWidth: "1px",
+                  borderColor: "black",
+                  color: "black",
+                  paddingRight: "10px",
+                  cursor: "default",
+                }}
+                key={AmountType.earlierAmount}
+                id={AmountType.earlierAmount}
+                value={AmountType.earlierAmount}
+                checked={props.choice === AmountType.earlierAmount}
+                control={<Radio />}
+                label={MELQuestion1stPartText(
                   props.amountEarlier,
                   props.timeEarlier
-                ),
-              },
-              {
-                key: `${AmountType.laterAmount}`,
-                label: MEQuestion2ndPartText(
+                )}
+              />
+            </HTMLTooltip>
+            <HTMLTooltip
+              key={`tooltip-${AmountType.laterAmount}`}
+              title=<React.Fragment>
+                <RightArrowKey /> {t("rightArrowTooltip")}
+              </React.Fragment>
+            >
+              <FormControlLabel
+                sx={{
+                  border: 1,
+                  backgroundColor:
+                    props.choice === AmountType.laterAmount
+                      ? "lightblue"
+                      : "none",
+                  borderRadius: "20px",
+                  borderWidth: "1px",
+                  borderColor: "black",
+                  color: "black",
+                  paddingRight: "10px",
+                  cursor: "default",
+                }}
+                key={AmountType.laterAmount}
+                id={AmountType.laterAmount}
+                value={AmountType.laterAmount}
+                checked={props.choice === AmountType.laterAmount}
+                control={<Radio />}
+                label={MEQuestion2ndPartText(
                   props.amountLater,
                   props.timeLater
-                ),
-              },
-            ].map(({ key, label }) => (
-              <HTMLTooltip
-                key={`tooltip-${key}`}
-                title={
-                  key === `${AmountType.earlierAmount}` ? (
-                    <React.Fragment>
-                      <LeftArrowKey /> {t("leftArrowTooltip")}
-                    </React.Fragment>
-                  ) : (
-                    <React.Fragment>
-                      <RightArrowKey /> {t("rightArrowTooltip")}
-                    </React.Fragment>
-                  )
-                }
-              >
-                <FormControlLabel
-                  sx={{
-                    mr: "100px",
-                    border: 1,
-                    backgroundColor:
-                      props.choice === key ? "lightblue" : "none",
-                    borderRadius: "20px",
-                    borderWidth: "1px",
-                    borderColor: "black",
-                    color: "black",
-                    paddingRight: "10px",
-                    cursor: "default",
-                  }}
-                  key={key}
-                  id={key}
-                  value={key}
-                  checked={props.choice === key}
-                  control={<Radio />}
-                  label={label}
-                />
-              </HTMLTooltip>
-            ))}
+                )}
+              />
+            </HTMLTooltip>
           </RadioGroup>
         </Box>
         <Box
