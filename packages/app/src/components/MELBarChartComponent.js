@@ -149,7 +149,7 @@ export const MELBarChartComponent = (props) => {
       >
         {t("MELChoicePromptBar")}
       </Box>
-      <Box display="flex" justifyContent="center" alignItems="center" p="2em">
+      <Box display="flex" justifyContent="center" alignItems="center" p="1em">
         <VegaLite
           spec={spec}
           patch={(spec) => {
@@ -178,18 +178,9 @@ export const MELBarChartComponent = (props) => {
         alignItems="center"
         sx={{ fontSize: "22px" }}
         height="22px"
-      >
-        {props.instructionText}
-      </Box>
-      <Box
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
-        sx={{ fontSize: "22px" }}
-        height="22px"
         p="1em"
       >
-        {props.choiceText()}
+        {props.instructionText}
       </Box>
       <Box
         display="flex"

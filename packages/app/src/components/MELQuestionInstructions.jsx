@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { format } from "d3";
 import { useNavigate } from "react-router-dom";
 import {
   Typography,
@@ -193,23 +192,6 @@ const MELQuestionInstructions = () => {
     setError(true);
   };
 
-  const choiceText = () => {
-    if (choice === AmountType.none) {
-      return " ";
-    } else {
-      return t("selectedChoice", {
-        amount:
-          choice === AmountType.earlierAmount
-            ? format("$,.0f")(instructionTreatment.amountEarlier)
-            : format("$,.0f")(instructionTreatment.amountLater),
-        delay:
-          choice === AmountType.earlierAmount
-            ? instructionTreatment.timeEarlier
-            : instructionTreatment.timeLater,
-      });
-    }
-  };
-
   const changeChoiceText = () => {
     if (choice === AmountType.none) {
       return " ";
@@ -230,7 +212,6 @@ const MELQuestionInstructions = () => {
           <MELWordComponent
             textShort={"MELRadioGroup"}
             instructionText={t("chooseSelection")}
-            choiceText={choiceText}
             changeChoiceText={changeChoiceText}
             helperText={helperText}
             amountEarlier={instructionTreatment.amountEarlier}
@@ -248,7 +229,6 @@ const MELQuestionInstructions = () => {
         return (
           <MELBarChartComponent
             instructionText={t("chooseSelection")}
-            choiceText={choiceText}
             changeChoiceText={changeChoiceText}
             helperText={helperText}
             amountEarlier={instructionTreatment.amountEarlier}

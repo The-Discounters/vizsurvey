@@ -126,18 +126,9 @@ export const MELWordComponent = (props) => {
           alignItems="center"
           sx={{ fontSize: "22px" }}
           height="22px"
-        >
-          {props.instructionText}
-        </Box>
-        <Box
-          display="flex"
-          justifyContent="center"
-          alignItems="center"
-          sx={{ fontSize: "22px" }}
-          height="22px"
           p="1em"
         >
-          {props.choiceText()}
+          {props.instructionText}
         </Box>
         <Box
           display="flex"

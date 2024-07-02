@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { format } from "d3";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { DateTime } from "luxon";
@@ -134,21 +133,6 @@ export function MELSurvey() {
     setError(true);
   };
 
-  const choiceText = () => {
-    if (choice === AmountType.none) {
-      return " ";
-    } else {
-      return t("selectedChoice", {
-        amount:
-          choice === AmountType.earlierAmount
-            ? format("$,.0f")(q.amountEarlier)
-            : format("$,.0f")(q.amountLater),
-        delay:
-          choice === AmountType.earlierAmount ? q.timeEarlier : q.timeLater,
-      });
-    }
-  };
-
   const changeChoiceText = () => {
     if (choice === AmountType.none) {
       return " ";
@@ -179,7 +163,6 @@ export function MELSurvey() {
                     <MELWordComponent
                       textShort={"MELRadioGroup"}
                       instructionText={t("chooseSelection")}
-                      choiceText={choiceText}
                       changeChoiceText={changeChoiceText}
                       helperText={helperText}
                       amountEarlier={q.amountEarlier}
@@ -199,7 +182,6 @@ export function MELSurvey() {
                   return (
                     <MELBarChartComponent
                       instructionText={t("chooseSelection")}
-                      choiceText={choiceText}
                       changeChoiceText={changeChoiceText}
                       helperText={helperText}
                       amountEarlier={q.amountEarlier}
