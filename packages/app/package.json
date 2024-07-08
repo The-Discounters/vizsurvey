@@ -47,7 +47,7 @@
     "test": "craco test",
     "kill": "kill -9 $(ps | grep -e 'node\\|npm' | sed -e 's/^\\([0-9]*\\).*/\\1/')",
     "cypress-open": "../../node_modules/.bin/cypress open",
-    "cypress-run": "../../node_modules/.bin/cypress run --spec cypress/integration/vizsurvey.spec.js --browser chrome",
+    "cypress-run": "../../node_modules/.bin/cypress run --spec cypress/e2e/vizsurvey.cy.js --browser chrome",
     "cypress-auto": "yarn run start & cd test && yarn start & yarn run cypress-run && yarn run kill",
     "format": "./node_modules/prettier/bin-prettier.js --write '**/*.js' '**/*.jsx'",
     "eject": "craco eject"

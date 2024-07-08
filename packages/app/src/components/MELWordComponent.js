@@ -56,7 +56,7 @@ export const MELWordComponent = (props) => {
             value={props.choice}
           >
             <HTMLTooltip
-              key={`tooltip-${AmountType.earlierAmount}`}
+              id={`tooltip-${AmountType.earlierAmount}`}
               title=<React.Fragment>
                 <LeftArrowKey /> {t("leftArrowTooltip")}
               </React.Fragment>

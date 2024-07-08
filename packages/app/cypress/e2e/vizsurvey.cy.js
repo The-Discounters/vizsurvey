@@ -1,537 +1,269 @@
 /* eslint-disable no-undef */
 /// <reference types="cypress" />
+const BASE_URL = "https://localhost:3000/start";
+const WAIT_TIME_SIGNUP = 5000;
+const WAIT_TIME = 1000;
+const PARTICIPANT_NUM_MAX = 1000000;
+const PARTICIPANT_NUM_MIN = 1;
+const BETWEEN_STUDY_ID = "testbetween";
 
-let baseURL = "https://localhost:3000/start";
+const SELECTED_BG_COLOR = "rgb(173, 216, 230)";
+const UNSELECTED_BG_COLOR = "rgba(0, 0, 0, 0)";
 
-let participantId = 1;
-let studyId = 1;
+// TODO can we reuse type from common package
+export const SelectionType = {
+  none: "none",
+  earlierAmount: "earlierAmount",
+  laterAmount: "laterAmount",
+};
 
-let fetching = true;
-let fetching1 = true;
-function postsurveyaboutsurvey() {
-  cy.get("#experience_survey_enjoy-moderately").click();
-  cy.get("#experience_survey_clear-moderately").click();
-  cy.get("#experience_survey_understand-moderately").click();
-  cy.get("#experience_survey_present-moderately").click();
-  cy.get("#experience_survey_imagine-moderately").click();
-  cy.get("#experience_survey_easy-moderately").click();
-  cy.get("#experience_survey_format-moderately").click();
-  cy.get("#experience_survey_mental-moderately").click();
-  cy.tick(1000);
-  cy.get("button").contains("Next").click();
-  cy.tick(1000);
-}
+Object.freeze(SelectionType);
 
-function postsurveyfinancial() {
-  cy.get("#financial_lit_survey_numeracy-gt102").click();
-  cy.get("button").contains("Next").click();
-  cy.tick(1000);
-}
+const MEL_ANSWER = [
+  SelectionType.earlierAmount,
+  SelectionType.laterAmount,
+  SelectionType.earlierAmount,
+  SelectionType.laterAmount,
+  SelectionType.earlierAmount,
+  SelectionType.laterAmount,
+  SelectionType.earlierAmount,
+  SelectionType.laterAmount,
+];
 
-function postsurveysenseofpurpose() {
-  cy.get("#purpose_survey_difference-strongly-disagree").click();
-  cy.get("button").contains("Next").click();
-  cy.tick(1000);
-}
+// needs to match treatment ids in experiment configuration.  TODO maybe we should type this.
+const TreatmentType = {
+  word: 1,
+  barChart: 2,
+  barChartExtended: 3,
+};
+Object.freeze(TreatmentType);
 
-function postsurvey(expects) {
-  cy.wait(1000);
-  cy.get("h4").contains("Submit Your Answers").should("exist");
-  cy.get("button").contains("Submit Your Answers").click();
-  cy.get("h4").contains("Study Explanation").should("exist");
-  cy.get("#Feedback").type("had trouble seeing numbers");
-  cy.get("button")
-    .contains("Exit")
-    .click()
-    .then(() => {
-      cy.wait(1000).then(() => {
-        let file = `http://localhost:3001/answers-${participantId}-${studyId}-.csv`;
-        console.log("fetching file: " + file);
-        fetch(file).then((response) => {
-          response.text().then((text) => {
-            console.log("file text: " + text);
-            expects.forEach((expectStr) => {
-              expect(text).to.contain(expectStr);
-              fetching = false;
-            });
-          });
-        });
-        let file1 = `http://localhost:3001/post-survey-answers-${participantId}.json`;
-        console.log("fetching file1: " + file1);
-        fetch(file1).then((response) => {
-          response.text().then((text) => {
-            console.log("file1 text: " + text);
-            expect(JSON.parse(text)).to.deep.equal({
-              financialLitSurvey: {
-                qdoublediscount: "v1360",
-                qsinglediscount: "v1350",
-                qfinddiscount: "v20p",
-              },
-              demographics: {
-                countryOfResidence: "usa",
-                vizFamiliarity: "3",
-                age: "26",
-                gender: "male",
-                selfDescribeGender: "",
-                profession: "Software Developer",
-              },
-              consentChecked: true,
-              attentionCheck: "strongly-disagree",
-              timestamps: {
-                consentShownTimestamp: 500,
-                consentCompletedTimestamp: 1000,
-                choiceInstructionShownTimestamp: 1500,
-                choiceInstructionCompletedTimestamp: 2000,
-                demographicShownTimestamp: 2000,
-                demographicCompletedTimestamp: 4000,
-                instructionsShownTimestamp: 4000,
-                instructionsCompletedTimestamp: 5000,
-                financialLitSurveyQuestionsShownTimestamp: 6000,
-                debriefShownTimestamp: null, // TODO
-                debriefCompletedTimestamp: null, // TODO
-                theEndShownTimestamp: 10000,
-              },
-              feedback: "",
-              // feedback: "had trouble seeing numbers",
-            });
-            fetching1 = false;
-          });
-        });
-      });
-    });
-  waitingForFetch();
-}
-
-function waitingForFetch(waitTime = 1000) {
-  cy.wait(waitTime).then(() => {
-    if (fetching || fetching1) {
-      waitingForFetch(waitTime * 2);
+function answerMELForm(treatmentType, choice) {
+  if (choice === SelectionType.earlierAmount) {
+    cy.get("#earlierAmount").type("{leftArrow}");
+    if (treatmentType === TreatmentType.word) {
+      cy.get("#earlierAmount").should(
+        "have.css",
+        "backgroundColor",
+        SELECTED_BG_COLOR
+      );
+    } else {
+      // bar
+      cy.get("#earlierAmount").should("have.attr", "fill", SELECTED_BG_COLOR);
     }
-    fetching = true;
-    fetching1 = true;
-    participantId++;
+  } else if (choice === SelectionType.laterAmount) {
+    cy.get("#laterAmount").type("{rightArrow}");
+    if (treatmentType === TreatmentType.word) {
+      cy.get("#laterAmount").should(
+        "have.css",
+        "backgroundColor",
+        SELECTED_BG_COLOR
+      );
+    } else {
+      // bar
+      cy.get("#laterAmount").should("have.attr", "fill", SELECTED_BG_COLOR);
+    }
+  }
+}
+
+function visitConsent() {
+  cy.get("#checkConsent").click();
+  cy.get("button").contains("Next").click();
+}
+
+function visitGeneralInstruction() {
+  cy.get("button").contains("Next").click();
+}
+
+function visitMCLInstructions(treatmentType) {
+  visitMELQuestion(treatmentType, SelectionType.earlierAmount);
+  cy.wait(WAIT_TIME);
+  cy.realPress("Enter");
+}
+
+function visitMELQuestion(treatmentType, choice) {
+  function checkMELFormBeforeClickOrHover(treatmentType, id) {
+    if (treatmentType === TreatmentType.word) {
+      cy.get(id).should("have.css", "backgroundColor", UNSELECTED_BG_COLOR);
+    } else {
+      // bar
+      cy.get(id).should("have.attr", "fill", UNSELECTED_BG_COLOR);
+    }
+  }
+
+  function checkMELFormDuringHover(id, treatmentType) {
+    cy.get(id).realHover();
+    cy.get(
+      treatmentType === TreatmentType.word
+        ? "#tooltip-earlierAmount"
+        : "#vg-tooltip-element"
+    ).should("be.visible");
+  }
+
+  function checkMELFormClick(id, errorText) {
+    cy.get(id).click();
+    cy.get("#errorMessage").contains(new RegExp(errorText, "g"));
+  }
+
+  checkMELFormBeforeClickOrHover(treatmentType, "#earlierAmount");
+  cy.wait(WAIT_TIME);
+  checkMELFormBeforeClickOrHover(treatmentType, "#laterAmount");
+  cy.wait(WAIT_TIME);
+  checkMELFormDuringHover("#earlierAmount", treatmentType);
+  cy.wait(WAIT_TIME);
+  checkMELFormDuringHover("#laterAmount", treatmentType);
+  cy.wait(WAIT_TIME);
+  checkMELFormClick(
+    "#earlierAmount",
+    "Press the left arrow key to choose the left option."
+  );
+  cy.wait(WAIT_TIME);
+  checkMELFormClick(
+    "#laterAmount",
+    "Press the right arrow key to choose the right option."
+  );
+  cy.wait(WAIT_TIME);
+  answerMELForm(treatmentType, choice);
+  cy.realPress("Enter");
+}
+
+function visitMELQuestions(treatmentType) {
+  MEL_ANSWER.forEach((choice) => {
+    visitMELQuestion(treatmentType, choice);
+    cy.wait(WAIT_TIME);
   });
 }
 
-function demographic() {
+function visitExperience(answerOptional) {
+  if (answerOptional) {
+    cy.get("#experience_survey_enjoy-moderately").click();
+    cy.get("#experience_survey_clear-moderately").click();
+    cy.get("#experience_survey_understand-moderately").click();
+    cy.get("#experience_survey_present-moderately").click();
+    cy.get("#experience_survey_imagine-moderately").click();
+    cy.get("#experience_survey_easy-moderately").click();
+    cy.get("#experience_survey_format-moderately").click();
+    cy.get("#experience_survey_mental-moderately").click();
+  }
+  cy.wait(WAIT_TIME);
+  cy.get("button").contains("Next").click();
+}
+
+function visitFinancial(answerOptional) {
+  if (answerOptional) {
+    cy.get("#gt102").click();
+  }
+  cy.get("button").contains("Next").click();
+}
+
+function answerDemographicCommon() {
   cy.get("#country-select-helper").select("United States of America");
-  cy.get("[name=familiarity-with-viz]").select("3");
-  cy.get("#Age").type("26");
-  cy.get("#Current-Profession").type("Software Developer");
+  cy.get("#familiarity-with-viz").select("3");
+  cy.get("#age").type("26");
+  cy.get("#current-profession").type("Software Developer");
+}
+
+function answerDemographicSelfDescribeFieldsSelectOption() {
   cy.get("#gender-select-helper").select("Male");
   cy.get("#employment-select-helper").select("Full Time");
-  cy.tick(500);
+  cy.get("#household-income-select-helper").select("$50,000 - $59,999");
+  cy.get("#education-level-select-helper").select("Master's degree");
+}
+
+function answerDemographicSelfDescribeFieldsSelfDescribe() {
+  cy.get("#gender-select-helper").select("Prefer to Self-Describe");
+  cy.get("#self-describe-gender").type("Self Described");
+  cy.get("#employment-select-helper").select("Prefer to Self-Describe");
+  cy.get("#self-describe-employment").type("Self Described");
+  cy.get("#household-income-select-helper").select("Prefer to Self-Describe");
+  cy.get("#self-describe-household-income").type("Self Described");
+  cy.get("#education-level-select-helper").select("Prefer to Self-Describe");
+  cy.get("#self-describe-education-level").type("Self Described");
+}
+
+function answerDemographicNonSelfDescribe() {
+  answerDemographicCommon();
+  answerDemographicSelfDescribeFieldsSelectOption();
+}
+
+function answerDemographicSelfDescribe() {
+  answerDemographicCommon();
+  answerDemographicSelfDescribeFieldsSelfDescribe();
+}
+
+function visitDemographic(answer, selfDescribe) {
+  if (answer) {
+    if (selfDescribe) {
+      answerDemographicSelfDescribe();
+    } else {
+      answerDemographicNonSelfDescribe();
+    }
+  }
   cy.get("button").contains("Next").click();
 }
 
-let steelblueRGB = "rgb(70, 130, 180)";
-let lightblueRGB = "rgb(173, 216, 230)";
-let waitAmount = 10;
-
-function checkMELFormBeforeClickOrHover(word, id = "#earlierAmount") {
-  if (word) {
-    cy.get(id).should("have.css", "backgroundColor", steelblueRGB);
-  } else {
-    // bar
-    cy.get(id).should("have.attr", "fill", "steelblue");
+function visitStudyExplanation(answerOptional) {
+  if (answerOptional) {
+    cy.get("#Feedback").type("survey was good");
   }
-  cy.wait(waitAmount);
-  /*
-  cy.get("#earlierAmount").should(
-    "have.css",
-    "borderColor",
-    "rgb(255, 255, 255)"
-  );
-*/
-  cy.wait(waitAmount);
+  cy.get("button").contains("Submit Feedback").click();
 }
 
-function checkMELFormDuringClickOrHover(word, id = "#earlierAmount") {
-  if (word) {
-    cy.get(id)
-      //.realHover()
-      //.should("have.css", "backgroundColor", "rgb(173, 216, 230)")
-      .click();
-  } else {
-    // bar
-    cy.get(id).click();
-    cy.get(id).should("have.attr", "fill", "lightblue");
-  }
-  cy.wait(waitAmount);
-  if (word) {
-    cy.get(id)
-      //.realHover()
-      .should("have.css", "backgroundColor", lightblueRGB);
-  }
-  //cy.get("#earlierAmount").should("have.css", "borderColor", "rgb(0, 0, 0)");
-  cy.wait(waitAmount);
+function visitFinished() {
+  cy.contains("h4", "Finished");
 }
 
-function clickMELFormNextButton(
-  word,
-  id = "#earlierAmount",
-  tickAmount = 1000
+function vaidateAnswers(expects) {}
+
+function visitStudy(
+  studyId,
+  treatmentType,
+  answerOptional,
+  answerSelfDescribe = false,
+  width = 1280,
+  height = 720
 ) {
-  cy.get("button").contains("Next").realHover();
-  if (word) {
-    cy.get(id)
-      //.realHover()
-      .should("have.css", "backgroundColor", lightblueRGB);
-  }
-  cy.get("button")
-    .contains("Next")
-    .realHover()
-    .should("not.be.disabled")
-    .click();
-  cy.tick(tickAmount);
-}
-
-function answerMELForm(word = true, tickAmount = 1000) {
-  cy.get("#buttonNext").should("be.disabled");
-  cy.tick(500);
-
-  cy.get("#earlierAmount").should("have.css", "backgroundColor", steelblueRGB);
-  checkMELFormBeforeClickOrHover(word);
-  checkMELFormDuringClickOrHover(word);
-
-  cy.get("#laterAmount").should("have.css", "backgroundColor", steelblueRGB);
-  checkMELFormBeforeClickOrHover(word, "#laterAmount");
-  checkMELFormDuringClickOrHover(word, "#laterAmount");
-  cy.get("#earlierAmount").should("have.css", "backgroundColor", steelblueRGB);
-  cy.get("#earlierAmount").realHover();
-  cy.get("#earlierAmount").should("have.css", "backgroundColor", steelblueRGB);
-
-  clickMELFormNextButton(word, "#laterAmount", tickAmount);
-}
-
-function introduction(treatmentId) {
-  answerMELForm(treatmentId === 1 || treatmentId === 20 || treatmentId === 5);
-}
-
-function instruction() {
-  cy.tick(1000);
-  cy.get("button").contains("Next").click();
-}
-
-function visitTreatment(treatmentId, width = 1280, height = 720) {
-  let participantId = 1;
-  cy.clock();
+  const participantId = Math.floor(
+    Math.random() * (PARTICIPANT_NUM_MAX - PARTICIPANT_NUM_MIN + 1) +
+      PARTICIPANT_NUM_MIN
+  );
   cy.viewport(width, height);
   cy.visit(
-    baseURL +
-      `?treatment_id=${treatmentId}&session_id=1&participant_id=${participantId}`
+    BASE_URL +
+      `?participant_id=${participantId}&study_id=${studyId}&session_id=1&treatment_ids=%5B${treatmentType}%5D`
   );
-  cy.tick(500);
-  cy.get("#checkConsent").click();
-  cy.tick(500);
-  cy.get("button").contains("Next").click();
-  instruction();
-
-  function simpleEarlierAmount(buttonText = "Next") {
-    cy.get("#buttonNext").should("be.disabled");
-    cy.tick(500);
-
-    cy.get("#earlierAmount").click({ force: true });
-    // cy.get("#laterAmount").should("have.css", "backgroundColor", steelblueRGB);
-    cy.get("button").contains(buttonText).should("not.be.disabled").click();
-  }
-  simpleEarlierAmount("Start");
-  for (let i = 0; i < 8; i++) {
-    simpleEarlierAmount();
-  }
-  cy.get("#attention-check-strongly-disagree").click();
-  cy.get("button").contains("Next").click();
-  postsurveyaboutsurvey();
-  postsurveyfinancial();
-  postsurveysenseofpurpose();
-  demographic();
-  cy.get("#Feedback").type("survey was good");
-  cy.get("button").contains("Submit Feedback & Exit").click();
+  cy.wait(WAIT_TIME_SIGNUP);
+  visitConsent();
+  cy.wait(WAIT_TIME);
+  visitGeneralInstruction();
+  cy.wait(WAIT_TIME);
+  visitMCLInstructions(treatmentType);
+  cy.wait(WAIT_TIME);
+  visitMELQuestions(treatmentType);
+  cy.wait(WAIT_TIME);
+  visitExperience(answerOptional);
+  cy.wait(WAIT_TIME);
+  visitFinancial(answerOptional);
+  cy.wait(WAIT_TIME);
+  visitDemographic(answerOptional, answerSelfDescribe);
+  cy.wait(WAIT_TIME);
+  visitStudyExplanation(answerOptional);
+  cy.wait(WAIT_TIME);
+  visitFinished();
+  cy.wait(WAIT_TIME);
+  vaidateAnswers();
 }
+
 describe("vizsurvey", () => {
-  it("word prod", () => {
-    visitTreatment(1);
+  it("test worded treatment answer optional questions with no self describe on demographics.", () => {
+    visitStudy(BETWEEN_STUDY_ID, TreatmentType.word, true, false);
   });
-  it("bar prod", () => {
-    visitTreatment(2);
-  });
-  /*
-  it("word dev", () => {
-    visitTreatment(1);
-    answerMELForm();
 
-    cy.get("#attention-check-strongly-disagree").click();
-    cy.get("button").contains("Next").click();
+  // it("test bar chart treatment answer optional questions with no self describe on demographics.", () => {
+  //   visitStudy(BETWEEN_STUDY_ID, TreatmentType.barChart, true, false);
+  // });
 
-    answerMELForm();
-    answerMELForm();
-    cy.tick(1000);
-
-    postsurvey([
-      "1,1,word,none,none,500,2,,1000,5",
-      "1,2,word,none,none,50,2,,300,7",
-      "1,3,word,none,none,250,2,,1000,3",
-    ]);
-  });
-  it("bar dev", () => {
-    visitTreatment(2);
-    answerMELForm(false); // bar
-
-    cy.get("#attention-check-strongly-disagree").click();
-    cy.get("button").contains("Next").click();
-
-    answerMELForm(false); // bar
-    answerMELForm(false); // bar
-    cy.tick(1000);
-
-    postsurvey([
-      "2,1,barchart,none,none,300,2,,700,5",
-      "2,2,barchart,none,none,500,2,,800,7",
-      "2,3,barchart,none,none,300,2,,1000,7",
-    ]);
-  });
-  [
-    {
-      width: 800,
-      height: 600,
-    },
-    {
-      width: 1280,
-      height: 720,
-    },
-    {
-      width: 1920,
-      height: 1080,
-    },
-    {
-      width: 2560,
-      height: 1440,
-    },
-  ].forEach(({ width, height }) => {
-    it(
-      "bar very wide but short in height (" + width + ", " + height + ")",
-      () => {
-        visitTreatment(3, width, height);
-
-        answerMELForm(false); // bar
-        answerMELForm(false, 980); // bar
-
-        cy.get("#attention-check-strongly-disagree").click();
-        cy.get("button").contains("Next").click();
-
-        answerMELForm(false, 10); // bar
-        answerMELForm(false, 10); // bar
-        answerMELForm(false, 10); // bar
-
-        // TODO: fix timing
-        postsurvey([
-          "3,1,barchart,none,none,300,2,,700,5",
-          "3,2,barchart,none,none,300,2,,700,5",
-          "3,3,barchart,none,none,500,2,,800,7",
-          "3,4,barchart,none,none,500,2,,800,7",
-          "3,5,barchart,none,none,300,2,,1000,7",
-        ]);
-      }
-    );
-  });
-  it("calendar bar", () => {
-    visitTreatment(4);
-    cy.tick(4000);
-    calendar("day", "4", "Bar");
-  });*/
-  /*
-  it("random", () => {
-    let calendarWordChartCount = 0;
-    let radioButtonsCount = 0;
-    let otherCount = 0;
-    for (let j = 0; j < 100; j++) {
-      let width = 1280;
-      let height = 720;
-      let participantId = 1;
-      cy.clock();
-      cy.viewport(width, height);
-      cy.visit(baseURL + `?session_id=1&participant_id=${participantId}`);
-      cy.tick(500);
-      cy.get("#checkConsent").click();
-      cy.tick(500);
-      cy.get("button").contains("Next").click();
-      instruction();
-
-      function checkForParagraphText(regex, tCallback, fCallback) {
-        cy.get("body").then((body) => {
-          let res = body.find("p");
-          let resB = false;
-          //cy.log("reslen: " + res.length);
-          for (let i = 0; i < res.length; i++) {
-            let one = res[i];
-            //cy.log('innerhtml: ' + i + " " + one.innerHTML);
-            resB = resB || one.innerHTML.match(regex);
-          }
-          if (resB) {
-            tCallback();
-          } else {
-            fCallback();
-          }
-        });
-      }
-      checkForParagraphText(
-        /calendar word chart/,
-        () => {
-          calendarWordChartCount = calendarWordChartCount + 1;
-          //cy.log("increment");
-          cy.log("calworchar: " + calendarWordChartCount);
-        },
-        () => {
-          checkForParagraphText(
-            /radio buttons/,
-            () => {
-              radioButtonsCount++;
-              cy.log("radiobutton: " + radioButtonsCount);
-            },
-            () => {
-              otherCount++;
-              cy.log("other: " + otherCount);
-            }
-          );
-        }
-      );
-    }
-    cy.wait(10000);
-  });
-*/
-  it("calendar word single year", () => {
-    visitTreatment(5);
-  });
-  it("word date", () => {
-    visitTreatment(7);
-  });
-  /*
-  it("calendar word single month", () => {
-    //visitTreatment(5, 1280, 720);
-    //cy.tick(4000);
-    //answerMELForm();
-    let width = 1280;
-    let height = 720;
-    let treatmentId = 4;
-    let participantId = 1;
-    cy.clock();
-    cy.viewport(width, height);
-    cy.visit(
-      baseURL +
-        `?treatment_id=${treatmentId}&session_id=1&participant_id=${participantId}`
-    );
-    cy.tick(500);
-    cy.get("#checkConsent").click();
-    cy.tick(500);
-    cy.get("button").contains("Next").click();
-    demographic();
-
-    function simpleEarlierAmount() {
-      cy.get("#buttonNext").should("be.disabled");
-      cy.tick(500);
-
-      cy.get("#earlierAmount").click();
-      // cy.get("#laterAmount").should("have.css", "backgroundColor", steelblueRGB);
-      cy.get("button").contains("Next").should("not.be.disabled").click();
-    }
-    simpleEarlierAmount();
-    instruction();
-    for (let i = 0; i < 4; i++) {
-      simpleEarlierAmount();
-    }
-    cy.get("#attention-check-strongly-disagree").click();
-    cy.get("button").contains("Next").click();
-    for (let i = 0; i < 4; i++) {
-      simpleEarlierAmount();
-    }
-    postsurvey([
-      "5,1,calendarWord,none,none,500,2,,1000,5",
-      "5,2,calendarWord,none,none,50,2,,300,7",
-      "5,3,calendarWord,none,none,250,2,,1000,3",
-    ]);
-  });
-  it("calendar word dual year", () => {
-    //visitTreatment(5, 1280, 720);
-    //cy.tick(4000);
-    //answerMELForm();
-    let width = 1280;
-    let height = 720;
-    let treatmentId = 6;
-    let participantId = 1;
-    cy.clock();
-    cy.viewport(width, height);
-    cy.visit(
-      baseURL +
-        `?treatment_id=${treatmentId}&session_id=1&participant_id=${participantId}`
-    );
-    cy.tick(500);
-    cy.get("#checkConsent").click();
-    cy.tick(500);
-    cy.get("button").contains("Next").click();
-    demographic();
-
-    function simpleEarlierAmount() {
-      cy.get("#buttonNext").should("be.disabled");
-      cy.tick(500);
-
-      cy.get("#earlierAmount").click();
-      // cy.get("#laterAmount").should("have.css", "backgroundColor", steelblueRGB);
-      cy.get("button").contains("Next").should("not.be.disabled").click();
-    }
-    simpleEarlierAmount();
-    instruction();
-    for (let i = 0; i < 4; i++) {
-      simpleEarlierAmount();
-    }
-    cy.get("#attention-check-strongly-disagree").click();
-    cy.get("button").contains("Next").click();
-    for (let i = 0; i < 4; i++) {
-      simpleEarlierAmount();
-    }
-  });
-*/
-  /*
-  it("survey invalid", () => {
-    cy.viewport(1200, 700);
-    cy.visit(baseURL + "?treatment_id=100&session_id=1&participant_id=1");
-    cy.wait(150);
-    cy.get("button").contains("Next").click();
-    demographic();
-    cy.get("p")
-      .contains("You have been provided an invalid survey link")
-      .should("exist");
-  });
-  it("survey random", () => {
-    for (let i = 0; i < 10; i++) {
-      cy.clock();
-      cy.viewport(1200, 700);
-      cy.visit(baseURL + "?session_id=1&participant_id=1");
-      cy.tick(1000);
-      cy.wait(1000);
-      cy.get("#checkConsent").click();
-      cy.get("button").contains("Next").click();
-      demographic();
-      cy.get("button").contains("Next").should("exist");
-    }
-  });
-*/
+  // it("test bar chart with extended axis treatment answer optional questions with no self describe on demographics.", () => {
+  //   visitStudy(BETWEEN_STUDY_ID, TreatmentType.barChart, true, false);
+  // });
 });
-
-function calendar(id, treatmentNum, treatmentName) {
-  cy.get("#earlierAmount").click();
-  cy.get("#laterAmount").click();
-  postsurvey([
-    treatmentNum +
-      ",1,calendar" +
-      treatmentName +
-      ",none,none,300,undefined,2022-02-01T00:00:00.000Z,700,undefined,2022-02-22T00:00:00.000Z,1100",
-    treatmentNum +
-      ",2,calendar" +
-      treatmentName +
-      ",none,none,500,undefined,2022-03-01T00:00:00.000Z,800,undefined,2022-03-12T00:00:00.000Z,1100",
-    treatmentNum +
-      ",3,calendar" +
-      treatmentName +
-      ",none,none,300,undefined,2022-04-01T00:00:00.000Z,1000,undefined,2022-04-15T00:00:00.000Z,1100",
-  ]);
-}

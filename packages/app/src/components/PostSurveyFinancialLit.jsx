@@ -101,6 +101,7 @@ export function PostSurvey() {
                     ? options.map((option, index1) => (
                         <FormControlLabel
                           key={`radio-${index1}`}
+                          id={option.textShort}
                           value={option.textShort}
                           checked={qList[index] === option.textShort}
                           style={{
