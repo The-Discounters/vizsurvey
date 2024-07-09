@@ -55,10 +55,10 @@ const Break = () => {
               <Typography paragraph>
                 You have completed {completedTreatments}{" "}
                 {completedTreatments === 1 ? "block" : "blocks"} of trials.
-                There are {remainingTreatments}{" "}
+                There {remainingTreatments === 1 ? "is" : "are"}{" "}
+                {remainingTreatments}{" "}
                 {remainingTreatments === 1 ? "block" : "blocks"} remaining.
-                Please feel free to take a break and press continue when you are
-                ready for the next block.
+                Please press continue when you are ready for the next block.
               </Typography>
               <hr
                 style={{

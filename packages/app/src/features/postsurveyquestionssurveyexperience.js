@@ -49,14 +49,6 @@ export const POST_SURVEY_QUESTIONS = {
     },
     {
       question: {
-        textFull:
-          "Would you like real life money decisions to be presented to you in this format?",
-        textShort: "experience_survey_format",
-        disabled: false,
-      },
-    },
-    {
-      question: {
         textFull: "Did you invest mental effort in the choice questions?",
         textShort: "experience_survey_mental",
         disabled: false,

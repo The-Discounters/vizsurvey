@@ -157,7 +157,7 @@ const Debrief = () => {
               feedback or questions by filling out the text box below and
               clicking the submit feedback button. We particularly appreciate
               any feedback about your thought process in making the money
-              choices you did.
+              choices.
             </Typography>
             <TextField
               id="Feedback"

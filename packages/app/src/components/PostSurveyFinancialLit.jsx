@@ -85,7 +85,6 @@ export function PostSurvey() {
                 variant="standard"
                 key={`form-control-${index}`}
                 sx={{ fontWeight: "bold" }}
-                required
               >
                 <FormLabel id={question.textShort} sx={{ fontWeight: "bold" }}>
                   {question.textFull}

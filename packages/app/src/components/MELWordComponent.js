@@ -43,7 +43,7 @@ export const MELWordComponent = (props) => {
           height="22px"
           sx={{ fontSize: "22px" }}
         >
-          {t("MELChoicePromptWord")}
+          {t("MELChoicePrompt")}
         </Box>
         <Box display="flex" justifyContent="center" p="2em">
           <RadioGroup

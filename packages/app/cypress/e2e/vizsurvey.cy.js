@@ -255,13 +255,13 @@ function visitStudy(
 }
 
 describe("vizsurvey", () => {
-  it("test worded treatment answer optional questions with no self describe on demographics.", () => {
-    visitStudy(BETWEEN_STUDY_ID, TreatmentType.word, true, false);
-  });
-
-  // it("test bar chart treatment answer optional questions with no self describe on demographics.", () => {
-  //   visitStudy(BETWEEN_STUDY_ID, TreatmentType.barChart, true, false);
+  // it("test worded treatment answer optional questions with no self describe on demographics.", () => {
+  //   visitStudy(BETWEEN_STUDY_ID, TreatmentType.word, true, false);
   // });
+
+  it("test bar chart treatment answer optional questions with no self describe on demographics.", () => {
+    visitStudy(BETWEEN_STUDY_ID, TreatmentType.barChart, true, false);
+  });
 
   // it("test bar chart with extended axis treatment answer optional questions with no self describe on demographics.", () => {
   //   visitStudy(BETWEEN_STUDY_ID, TreatmentType.barChart, true, false);

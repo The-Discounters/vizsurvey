@@ -239,7 +239,7 @@ const DevHome = () => {
                 <td style={{ border: "1px solid black" }}>
                   <Link
                     id="1"
-                    to={`https:localhost:3000/start?participant_id=${getRandomIntInclusive(
+                    to={`/start?participant_id=${getRandomIntInclusive(
                       0,
                       1000000
                     )}&study_id=testwithin&session_id=3`}
@@ -253,7 +253,7 @@ const DevHome = () => {
                 <td style={{ border: "1px solid black" }}>
                   <Link
                     id="2"
-                    to={`https:localhost:3000/start?participant_id=${getRandomIntInclusive(
+                    to={`/start?participant_id=${getRandomIntInclusive(
                       0,
                       1000000
                     )}&study_id=testbetween&session_id=3`}
@@ -267,7 +267,7 @@ const DevHome = () => {
                 <td style={{ border: "1px solid black" }}>
                   <Link
                     id="3"
-                    to={`https:localhost:3000/start?participant_id=${getRandomIntInclusive(
+                    to={`/start?participant_id=${getRandomIntInclusive(
                       0,
                       1000000
                     )}&study_id=testbetween&session_id=3&treatment_ids=%5B1%5D`}
@@ -281,7 +281,7 @@ const DevHome = () => {
                 <td style={{ border: "1px solid black" }}>
                   <Link
                     id="4"
-                    to={`https:localhost:3000/start?participant_id=${getRandomIntInclusive(
+                    to={`/start?participant_id=${getRandomIntInclusive(
                       0,
                       1000000
                     )}&study_id=testbetween&session_id=3&treatment_ids=%5B2%5D`}
@@ -295,7 +295,7 @@ const DevHome = () => {
                 <td style={{ border: "1px solid black" }}>
                   <Link
                     id="5"
-                    to={`https:localhost:3000/start?participant_id=${getRandomIntInclusive(
+                    to={`/start?participant_id=${getRandomIntInclusive(
                       0,
                       1000000
                     )}&study_id=testbetween&session_id=3&treatment_ids=%5B3%5D`}

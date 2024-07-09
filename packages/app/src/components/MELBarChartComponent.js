@@ -97,6 +97,7 @@ export const MELBarChartComponent = (props) => {
       {
         mark: {
           type: "bar",
+          name: "bars",
         },
         encoding: {
           fill: {
@@ -109,6 +110,7 @@ export const MELBarChartComponent = (props) => {
             value: 0,
           },
           tooltip: [{ field: "tooltipHTML", type: "nominal" }],
+          id: { value: "datum.barType" },
         },
       },
       {
@@ -147,10 +149,11 @@ export const MELBarChartComponent = (props) => {
         height="22px"
         sx={{ fontSize: "22px" }}
       >
-        {t("MELChoicePromptBar")}
+        {t("MELChoicePrompt")}
       </Box>
       <Box display="flex" justifyContent="center" alignItems="center" p="1em">
         <VegaLite
+          renderer={"svg"}
           spec={spec}
           patch={(spec) => {
             // usefull links

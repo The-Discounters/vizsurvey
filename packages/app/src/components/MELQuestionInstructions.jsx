@@ -149,8 +149,8 @@ const MELQuestionInstructions = () => {
           In the example below the amounts and times are represented {tryView}.
           The {tryLeftDesc} represents the choice of receiving $300 two months
           from now and the {tryRightDesc} receiving $700 seven months from now.
-          Select the earlier amount by pressing the left arrow key or later
-          amount by pressing the right arrow key.
+          Select the left-side amount by pressing the left arrow key or
+          right-side amount by pressing the right arrow key.
         </Typography>
       </React.Fragment>
     );
