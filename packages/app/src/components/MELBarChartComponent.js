@@ -110,7 +110,6 @@ export const MELBarChartComponent = (props) => {
             value: 0,
           },
           tooltip: [{ field: "tooltipHTML", type: "nominal" }],
-          id: { value: "datum.barType" },
         },
       },
       {
