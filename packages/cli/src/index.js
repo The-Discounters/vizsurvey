@@ -7,6 +7,7 @@ import fs from "fs";
 import { DateTime } from "luxon";
 import readline from "readline";
 import isValid from "is-valid-path";
+
 import { parseCSV } from "@the-discounters/util";
 import {
   initFirestore,
@@ -477,7 +478,15 @@ program
           );
           console.log(
             result.reduce((acc, issue) => {
-              return acc + issue.message;
+              return (
+                acc +
+                issue.level +
+                "\t" +
+                issue.type +
+                "\t" +
+                issue.message +
+                "\n"
+              );
             }, "")
           );
         }

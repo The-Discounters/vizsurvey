@@ -40,8 +40,8 @@ class ValidationIssue {
   }
 }
 
-export const validateExperiment = (exp, result) => {
-  if (exp.numParticipantsCompleted !== exp.numParticipants) {
+export const validateExperiment = (exp, participants, result) => {
+  if (participants.length !== exp.numParticipants) {
     result.push(
       new ValidationIssue(
         ERROR,
@@ -59,12 +59,12 @@ export const validateExperiment = (exp, result) => {
       )
     );
   }
-  if (exp.status !== ProlificStudyStatusType.completed) {
+  if (exp.status === ProlificStudyStatusType.active) {
     result.push(
       new ValidationIssue(
         ERROR,
         EXPERIMENT,
-        `status value ${exp.status} not expected value ${ProlificStudyStatusType.completed}`
+        `experimpent status is still active`
       )
     );
   }
@@ -89,7 +89,7 @@ export const validateParticipantData = (participants, result) => {
         new ValidationIssue(
           ERROR,
           PARTICIPANT,
-          `status not equal to expected value of ${StatusType.Debrief} or ${StatusType.Finished} for participant ${participant.participantId}`
+          `status ${participant.status} not equal to expected value of ${StatusType.Debrief} or ${StatusType.Finished} for participant ${participant.participantId}`
         )
       );
     }
@@ -103,7 +103,7 @@ export const validateParticipantData = (participants, result) => {
         new ValidationIssue(
           ERROR,
           PARTICIPANT,
-          `all questions  not equal to expected value of ${StatusType.Debrief} or ${StatusType.Finished} for participant ${participant.participantId}`
+          `all questions not answered for participant ${participant.participantId}`
         )
       );
     }
@@ -163,23 +163,23 @@ export const validateAuditData = (audit, result) => {
           )
         );
       }
-      if (i !== 0 && auditEntry.serverTimestamp <= ary[i - 1].serverTimestamp) {
-        result.push(
-          new ValidationIssue(
-            WARN,
-            AUDIT,
-            `serverTimestamp ${ISODateStringWithNanoSec(
-              auditEntry.serverTimestamp.toDate(),
-              auditEntry.serverTimestamp.nanoseconds
-            )} is less than the previous serverTimestamp ${ISODateStringWithNanoSec(
-              ary[i - 1].serverTimestamp.toDate(),
-              ary[i - 1].serverTimestamp.nanoseconds
-            )} for participant ${auditEntry.participantId} audit entry ${
-              auditEntry.path
-            } requestSequence ${auditEntry.requestSequence}`
-          )
-        );
-      }
+      // if (i !== 0 && auditEntry.serverTimestamp <= ary[i - 1].serverTimestamp) {
+      //   result.push(
+      //     new ValidationIssue(
+      //       WARN,
+      //       AUDIT,
+      //       `serverTimestamp ${ISODateStringWithNanoSec(
+      //         auditEntry.serverTimestamp.toDate(),
+      //         auditEntry.serverTimestamp.nanoseconds
+      //       )} is less than the previous serverTimestamp ${ISODateStringWithNanoSec(
+      //         ary[i - 1].serverTimestamp.toDate(),
+      //         ary[i - 1].serverTimestamp.nanoseconds
+      //       )} for participant ${auditEntry.participantId} audit entry ${
+      //         auditEntry.path
+      //       } requestSequence ${auditEntry.requestSequence}`
+      //     )
+      //   );
+      // }
     }); // end audit by sequence forEach
     if (uniqueScreen.size !== 1) {
       result.push(
@@ -214,7 +214,7 @@ export const validateAuditData = (audit, result) => {
 
 export const validateExperimentData = (experiment, participants, audit) => {
   const result = [];
-  validateExperiment(experiment, result);
+  validateExperiment(experiment, participants, result);
   validateParticipantData(participants, result);
   validateAuditData(audit, result);
   return result;

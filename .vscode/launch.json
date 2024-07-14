@@ -307,6 +307,38 @@
             }             
         },
         {
+            "name": "Debug CLI export data to CSV production",
+            "type": "node",
+            "request": "launch",
+            "runtimeExecutable": "/Users/pete/.nvm/versions/node/v18.17.0/bin/node",
+            "program": "${workspaceFolder}/packages/cli/src/index.js",
+            "args": ["export", "../../temp/data-7-10-24.csv", "-e", "6685e0aae211360468e28eb4", "-t", "data", "-f", "csv"],
+            "cwd": "${workspaceRoot}/packages/cli",
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen",
+            "env": {
+                "GOOGLE_APPLICATION_CREDENTIALS": "/Users/pete/vizsurvey/packages/firebase/functions/admin-credentials-prod.json",
+                "FIRESTORE_PROJECT_ID": "vizsurvey-production",
+                "FIRESTORE_DATABASE_URL": "https://vizsurvey-production.firebaseio.com"
+            }           
+        },
+        {
+            "name": "Debug CLI export data to JSON production",
+            "type": "node",
+            "request": "launch",
+            "runtimeExecutable": "/Users/pete/.nvm/versions/node/v18.17.0/bin/node",
+            "program": "${workspaceFolder}/packages/cli/src/index.js",
+            "args": ["export", "../../temp/data-7-10-24.json", "-e", "6685e0aae211360468e28eb4", "-t", "data", "-f", "json"],
+            "cwd": "${workspaceRoot}/packages/cli",
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen",
+            "env": {
+                "GOOGLE_APPLICATION_CREDENTIALS": "/Users/pete/vizsurvey/packages/firebase/functions/admin-credentials-prod.json",
+                "FIRESTORE_PROJECT_ID": "vizsurvey-production",
+                "FIRESTORE_DATABASE_URL": "https://vizsurvey-production.firebaseio.com"
+            }              
+        },        
+        {
             "name": "Debug CLI export audit to JSON",
             "type": "node",
             "request": "launch",
@@ -372,6 +404,22 @@
                 "FIRESTORE_EMULATOR_HOST": "127.0.0.1:8080",
                 "FIRESTORE_PROJECT_ID": "vizsurvey-staging",
                 "FIRESTORE_DATABASE_URL": "https://vizsurvey-staging.firebaseio.com/"
+            }             
+        },
+        {
+            "name": "Debug CLI validate production",
+            "type": "node",
+            "request": "launch",
+            "runtimeExecutable": "/Users/pete/.nvm/versions/node/v18.17.0/bin/node",
+            "program": "${workspaceFolder}/packages/cli/src/index.js",
+            "args": ["validate", "6685e0aae211360468e28eb4"],
+            "cwd": "${workspaceRoot}/packages/cli",
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen",
+            "env": {
+                "GOOGLE_APPLICATION_CREDENTIALS": "/Users/pete/vizsurvey/packages/firebase/functions/admin-credentials-prod.json",
+                "FIRESTORE_PROJECT_ID": "vizsurvey-production",
+                "FIRESTORE_DATABASE_URL": "https://vizsurvey-production.firebaseio.com"
             }             
         },
     ]
