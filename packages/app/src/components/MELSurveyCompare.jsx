@@ -81,6 +81,7 @@ export function MELSurveyCompare() {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        console.log("about to call initFirestore.");
         initFirestore({
           apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
           authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
@@ -89,17 +90,43 @@ export function MELSurveyCompare() {
           appId: process.env.REACT_APP_FIREBASE_APP_ID,
           measurementId: process.env.REACT_APP_FIREBASE_MEASUREMENT_ID,
         });
+        console.log("initFirestore returned.");
+        console.log(
+          `about to call readExperimentConfigurations with ${
+            process.env.REACT_APP_FIREBASE_SERVER_URL
+          }, ${searchParams.get("study_ids")}, ${searchParams.get(
+            "study_ids"
+          )}, ${searchParams.get("treatment_ids")}, ${searchParams.get(
+            "question_order_ids"
+          )}`
+        );
         const data = await readExperimentConfigurations(
           process.env.REACT_APP_FIREBASE_SERVER_URL,
           searchParams.get("study_ids"),
           searchParams.get("treatment_ids"),
           searchParams.get("question_order_ids")
         );
+        console.log(
+          `readExperimentConfigurations returned with experiments=${JSON.stringify(
+            data.experiments
+          )}`
+        );
+        console.log(
+          `readExperimentConfigurations returned with surveys=${JSON.stringify(
+            data.surveys
+          )}`
+        );
+        console.log(
+          `readExperimentConfigurations returned with instructions=${JSON.stringify(
+            data.instructions
+          )}`
+        );
         setExperiments(data.experiments);
         setSurveys(data.surveys);
         setInstructions(data.instructions);
         setStatus("loaded");
       } catch (err) {
+        console.log(err);
         throw Error(err);
       }
     };
@@ -134,6 +161,8 @@ export function MELSurveyCompare() {
       });
     }
   };
+
+  console.log(`status=${status}`);
 
   if (status !== "loaded") {
     return <Spinner text="Your answers are being saved..." />;
