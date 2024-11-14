@@ -27,6 +27,17 @@ export const setUndefinedPropertiesNull = (obj) => {
   return _.mapValues(obj, (value) => (value == undefined ? null : value));
 };
 
+export const renameKeys = (obj, keyFunc, valueFunc) => {
+  let result = _.mapValues(obj, (value, key, object) => {
+    return valueFunc(key, value, object);
+  });
+  // eslint-disable-next-line no-undef
+  result = _.mapKeys(obj, (value, key, object) => {
+    return keyFunc(key, value, object);
+  });
+  return result;
+};
+
 export const flattenArrayToObject = (array, keyFunc, valueFunc) => {
   const result = array.reduce((acc, current) => {
     let obj = _.mapValues(current, (value, key, object) => {

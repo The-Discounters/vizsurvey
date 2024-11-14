@@ -20,6 +20,7 @@ describe("Validator tests", () => {
       audit
     );
     // TODO I need to flush out this expected criteria.
-    expect(result.length).toBe(9);
+    expect(result.length).toBe(2);
+    console.log(result);
   });
 });

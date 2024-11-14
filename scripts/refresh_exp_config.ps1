@@ -1,4 +1,5 @@
 #!/usr/bin/env pwsh
+Write-Output "FIRESTORE_EMULATOR_HOST=$env:FIRESTORE_EMULATOR_HOST" 
 $DeleteDecision = Read-Host "I am about to delete all firestore data.  Type delete to continue"
 if ($DeleteDecision -ne "delete") {
     Write-Output "!!!delete not typed.  Exiting without making changes!!!"

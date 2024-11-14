@@ -15,6 +15,7 @@ import MELQuestionInstructions from "./components/MELQuestionInstructions.jsx";
 import Demographic from "./components/Demographic.jsx";
 import Instructions from "./components/Instructions.jsx";
 import MELSurvey from "./components/MELSurvey.jsx";
+import MELSurveyCompare from "./components/MELSurveyCompare.jsx";
 import PostSurveyExperience from "./components/PostSurveyExperience.jsx";
 import Break from "./components/Break.jsx";
 import PostSurveyFinancialLit from "./components/PostSurveyFinancialLit.jsx";
@@ -30,6 +31,12 @@ import {
 import { StatusType } from "@the-discounters/types";
 import { Consent } from "./components/Consent.jsx";
 import { getRandomIntInclusive } from "@the-discounters/util";
+
+const TEST_LINKS_STUDY_ID = "xxxxxxxxxxxxxxxxxxxxxxxx"; // The prolificId of the study to lauch into from the test links.
+const TEST_LINKS_COMPARE_1_STUDY_ID = "6685e0aae211360468e28eb4"; // The prolificId of the study to lauch into for compare page.
+const TEST_LINKS_COMPARE_2_STUDY_ID = "xxxxxxxxxxxxxxxxxxxxxxxx"; // The prolificId of the study to lauch into for compare page.
+const TEST_LINKS_COMPARE_STUDY_DESC =
+  "Trial within experiment with extended 2x and 3x axis."; // The description of the experiment above.
 
 class ErrorBoundary extends React.Component {
   constructor(props) {
@@ -86,6 +93,7 @@ const App = () => {
           />
           <Route path="/debrief" element={<Debrief />} />
           <Route path="/finished" element={<Finished />} />
+          <Route path="/comparesurveys" element={<MELSurveyCompare />} />
           <Route path="/invalidlink" element={<InvalidSurveyLink />} />
           <Route
             path="*"
@@ -150,7 +158,6 @@ const DevHome = () => {
           <p>
             <b>Test Links</b>
           </p>
-
           <table style={{ border: "1px solid black" }}>
             <tbody>
               <tr style={{ border: "1px solid black" }}>
@@ -197,7 +204,7 @@ const DevHome = () => {
                     to={`https://main.d2ptxb5fbsc082.amplifyapp.com/start?participant_id=${getRandomIntInclusive(
                       0,
                       1000000
-                    )}&study_id=testbetween&session_id=3&treatment_ids=%5B1%5D`}
+                    )}&study_id=${TEST_LINKS_STUDY_ID}&session_id=3&treatment_ids=%5B1%5D`}
                     onClick={() => {
                       dispatch(clearState());
                     }}
@@ -211,7 +218,7 @@ const DevHome = () => {
                     to={`https://main.d2ptxb5fbsc082.amplifyapp.com/start?participant_id=${getRandomIntInclusive(
                       0,
                       1000000
-                    )}&study_id=testbetween&session_id=3&treatment_ids=%5B2%5D`}
+                    )}&study_id=${TEST_LINKS_STUDY_ID}&session_id=3&treatment_ids=%5B2%5D`}
                     onClick={() => {
                       dispatch(clearState());
                     }}
@@ -225,7 +232,7 @@ const DevHome = () => {
                     to={`https://main.d2ptxb5fbsc082.amplifyapp.com/start?participant_id=${getRandomIntInclusive(
                       0,
                       1000000
-                    )}&study_id=testbetween&session_id=3&treatment_ids=%5B3%5D`}
+                    )}&study_id=${TEST_LINKS_STUDY_ID}&session_id=3&treatment_ids=%5B3%5D`}
                     onClick={() => {
                       dispatch(clearState());
                     }}
@@ -242,7 +249,7 @@ const DevHome = () => {
                     to={`/start?participant_id=${getRandomIntInclusive(
                       0,
                       1000000
-                    )}&study_id=testwithin&session_id=3`}
+                    )}&study_id=${TEST_LINKS_STUDY_ID}&session_id=3`}
                     onClick={() => {
                       dispatch(clearState());
                     }}
@@ -270,7 +277,7 @@ const DevHome = () => {
                     to={`/start?participant_id=${getRandomIntInclusive(
                       0,
                       1000000
-                    )}&study_id=testbetween&session_id=3&treatment_ids=%5B1%5D`}
+                    )}&study_id=${TEST_LINKS_STUDY_ID}&session_id=3&treatment_ids=%5B1%5D`}
                     onClick={() => {
                       dispatch(clearState());
                     }}
@@ -284,7 +291,7 @@ const DevHome = () => {
                     to={`/start?participant_id=${getRandomIntInclusive(
                       0,
                       1000000
-                    )}&study_id=testbetween&session_id=3&treatment_ids=%5B2%5D`}
+                    )}&study_id=${TEST_LINKS_STUDY_ID}&session_id=3&treatment_ids=%5B2%5D`}
                     onClick={() => {
                       dispatch(clearState());
                     }}
@@ -298,7 +305,7 @@ const DevHome = () => {
                     to={`/start?participant_id=${getRandomIntInclusive(
                       0,
                       1000000
-                    )}&study_id=testbetween&session_id=3&treatment_ids=%5B3%5D`}
+                    )}&study_id=${TEST_LINKS_STUDY_ID}&session_id=3&treatment_ids=%5B3%5D`}
                     onClick={() => {
                       dispatch(clearState());
                     }}
@@ -343,7 +350,7 @@ const DevHome = () => {
                     to={`https://staging.d2ptxb5fbsc082.amplifyapp.com/start?participant_id=${getRandomIntInclusive(
                       0,
                       1000000
-                    )}&study_id=testbetween&session_id=3&treatment_ids=%5B1%5D`}
+                    )}&study_id=${TEST_LINKS_STUDY_ID}&session_id=3&treatment_ids=%5B1%5D`}
                     onClick={() => {
                       dispatch(clearState());
                     }}
@@ -357,7 +364,7 @@ const DevHome = () => {
                     to={`https://staging.d2ptxb5fbsc082.amplifyapp.com/start?participant_id=${getRandomIntInclusive(
                       0,
                       1000000
-                    )}&study_id=testbetween&session_id=3&treatment_ids=%5B2%5D`}
+                    )}&study_id=${TEST_LINKS_STUDY_ID}&session_id=3&treatment_ids=%5B2%5D`}
                     onClick={() => {
                       dispatch(clearState());
                     }}
@@ -371,7 +378,7 @@ const DevHome = () => {
                     to={`https://staging.d2ptxb5fbsc082.amplifyapp.com/start?participant_id=${getRandomIntInclusive(
                       0,
                       1000000
-                    )}&study_id=testbetween&session_id=3&treatment_ids=%5B3%5D`}
+                    )}&study_id=${TEST_LINKS_STUDY_ID}&session_id=3&treatment_ids=%5B3%5D`}
                     onClick={() => {
                       dispatch(clearState());
                     }}
@@ -416,7 +423,7 @@ const DevHome = () => {
                     to={`https://release.d2ptxb5fbsc082.amplifyapp.com/start?participant_id=${getRandomIntInclusive(
                       0,
                       1000000
-                    )}&study_id=testbetween&session_id=3&treatment_ids=%5B1%5D`}
+                    )}&study_id=${TEST_LINKS_STUDY_ID}&session_id=3&treatment_ids=%5B1%5D`}
                     onClick={() => {
                       dispatch(clearState());
                     }}
@@ -430,7 +437,7 @@ const DevHome = () => {
                     to={`https://release.d2ptxb5fbsc082.amplifyapp.com/start?participant_id=${getRandomIntInclusive(
                       0,
                       1000000
-                    )}&study_id=testbetween&session_id=3&treatment_ids=%5B2%5D`}
+                    )}&study_id=${TEST_LINKS_STUDY_ID}&session_id=3&treatment_ids=%5B2%5D`}
                     onClick={() => {
                       dispatch(clearState());
                     }}
@@ -444,7 +451,7 @@ const DevHome = () => {
                     to={`https://release.d2ptxb5fbsc082.amplifyapp.com/start?participant_id=${getRandomIntInclusive(
                       0,
                       1000000
-                    )}&study_id=testbetween&session_id=3&treatment_ids=%5B3%5D`}
+                    )}&study_id=${TEST_LINKS_STUDY_ID}&session_id=3&treatment_ids=%5B3%5D`}
                     onClick={() => {
                       dispatch(clearState());
                     }}
@@ -455,6 +462,77 @@ const DevHome = () => {
               </tr>
             </tbody>
           </table>
+        </div>
+        <br></br>
+        <div key="testlinks-list-experiment-compare">
+          <p>
+            <b>Test Links Comparing Experiment Configurations</b>
+          </p>
+          <table style={{ border: "1px solid black" }}>
+            <tbody>
+              <tr style={{ border: "1px solid black" }}>
+                <th style={{ border: "1px solid black" }}>Environment</th>
+                <th style={{ border: "1px solid black" }}>Barchart Extended</th>
+              </tr>
+              <tr style={{ border: "1px solid black" }}>
+                <td style={{ border: "1px solid black" }}>development</td>
+                <td style={{ border: "1px solid black" }}>
+                  <Link
+                    id="1"
+                    to={`https://main.d2ptxb5fbsc082.amplifyapp.com/comparesurveys?study_ids=%5B%22${TEST_LINKS_COMPARE_1_STUDY_ID}%22%2C%22${TEST_LINKS_COMPARE_2_STUDY_ID}%22%5D&treatment_ids=%5B3%5D&question_order_ids=%5B1%2C2%2C3%2C4%2C5%2C6%2C7%2C8%5D`}
+                    onClick={() => {
+                      dispatch(clearState());
+                    }}
+                  >
+                    {TEST_LINKS_COMPARE_STUDY_DESC}
+                  </Link>
+                </td>
+              </tr>
+              <tr style={{ border: "1px solid black" }}>
+                <td style={{ border: "1px solid black" }}>localhost</td>
+                <td style={{ border: "1px solid black" }}>
+                  <Link
+                    id="1"
+                    to={`/comparesurveys?study_ids=%5B%22${TEST_LINKS_COMPARE_1_STUDY_ID}%22%2C%22${TEST_LINKS_COMPARE_2_STUDY_ID}%22%5D&treatment_ids=%5B3%5D&question_order_ids=%5B1%2C2%2C3%2C4%2C5%2C6%2C7%2C8%5D`}
+                    onClick={() => {
+                      dispatch(clearState());
+                    }}
+                  >
+                    {TEST_LINKS_COMPARE_STUDY_DESC}
+                  </Link>
+                </td>
+              </tr>
+              <tr style={{ border: "1px solid black" }}>
+                <td style={{ border: "1px solid black" }}>staging</td>
+                <td style={{ border: "1px solid black" }}>
+                  <Link
+                    id="1"
+                    to={`https://staging.d2ptxb5fbsc082.amplifyapp.com/comparesurveys?study_ids=%5B%22${TEST_LINKS_COMPARE_1_STUDY_ID}%22%2C%22${TEST_LINKS_COMPARE_2_STUDY_ID}%22%5D&treatment_ids=%5B3%5D&question_order_ids=%5B1%2C2%2C3%2C4%2C5%2C6%2C7%2C8%5D`}
+                    onClick={() => {
+                      dispatch(clearState());
+                    }}
+                  >
+                    {TEST_LINKS_COMPARE_STUDY_DESC}
+                  </Link>
+                </td>
+              </tr>
+              <tr style={{ border: "1px solid black" }}>
+                <td style={{ border: "1px solid black" }}>production</td>
+                <td style={{ border: "1px solid black" }}>
+                  <Link
+                    id="1"
+                    to={`https://release.d2ptxb5fbsc082.amplifyapp.com/comparesurveys?study_ids=%5B%22${TEST_LINKS_COMPARE_1_STUDY_ID}%22%2C%22${TEST_LINKS_COMPARE_2_STUDY_ID}%22%5D&treatment_ids=%5B3%5D&question_order_ids=%5B1%2C2%2C3%2C4%2C5%2C6%2C7%2C8%5D`}
+                    onClick={() => {
+                      dispatch(clearState());
+                    }}
+                  >
+                    {TEST_LINKS_COMPARE_STUDY_DESC}
+                  </Link>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <br></br>
           <p>
             <b>Reference Information</b>
           </p>

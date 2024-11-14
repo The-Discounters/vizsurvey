@@ -7,6 +7,7 @@ import fs from "fs";
 import { DateTime } from "luxon";
 import readline from "readline";
 import isValid from "is-valid-path";
+import { validateExperimentData } from "./Validator.js";
 
 import { parseCSV } from "@the-discounters/util";
 import {
@@ -42,7 +43,6 @@ import {
   exportAuditToCSV,
   exportExperimentParticipantsAndAuditToJSON,
 } from "./FileIOAdapter.js";
-import { validateExperimentData } from "./Validator.js";
 
 const validateInt = (value, dummyPrevious) => {
   const parsedValue = parseInt(value, 10);

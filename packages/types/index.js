@@ -30,6 +30,7 @@ import {
   convertKeysUnderscoreToCamelCase,
   clientSurveyQuestionFields,
   flattenArrayToObject,
+  renameKeys,
   removeUndefinedOrNullProperties,
   convertFields,
 } from "./src/ObjectUtil.js";
@@ -65,6 +66,7 @@ export {
   stateFormatFilename,
   clientSurveyQuestionFields,
   flattenArrayToObject,
+  renameKeys,
   removeUndefinedOrNullProperties,
   injectKey,
   StatusError,

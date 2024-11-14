@@ -70,6 +70,7 @@ export const validateExperiment = (exp, participants, result) => {
   }
 };
 
+// TODO validate windowAttributes
 export const validateParticipantData = (participants, result) => {
   participants.forEach((participant) => {
     if (!participant.consentChecked) {
@@ -107,6 +108,60 @@ export const validateParticipantData = (participants, result) => {
         )
       );
     }
+    const sortedQuestions = [...participant.questions].sort(
+      (a, b) => a.sequenceId - b.sequenceId
+    );
+    for (var i = 1; i < sortedQuestions.length; i++) {
+      if (
+        sortedQuestions[i].treatmentId !== sortedQuestions[i - 1].treatmentId
+      ) {
+        // break in treatment ids should only be at increments of 8 questions
+        if (i % 8 !== 0) {
+          result.push(
+            new ValidationIssue(
+              ERROR,
+              PARTICIPANT,
+              `question id ${
+                sortedQuestions[i].questionid
+              } doesn't have expected treatment id ${
+                sortedQuestions[i - 1].treatmentId
+              } for ${participant.participantId}`
+            )
+          );
+        }
+      }
+    }
+    // const treatmentOrder = Array.from(
+    //   sortedQuestions.reduce((pv, cv) => {
+    //     return pv.add(cv.treatmentId);
+    //   }, new Set())
+    // ).toString();
+    const uniqueScreen = participant.questions.reduce(
+      (pv, cv) => pv.add(JSON.stringify(cv.screenAttributes)),
+      new Set()
+    );
+    const uniqueWindow = participant.questions.reduce(
+      (pv, cv) => pv.add(JSON.stringify(cv.windowAttributes)),
+      new Set()
+    );
+    if (uniqueScreen.size !== 1) {
+      result.push(
+        new ValidationIssue(
+          ERROR,
+          PARTICIPANT,
+          `screenAttributes found ${uniqueScreen.size} values and was expecting 1, ${uniqueScreen} values for participant ${participant.participantId}`
+        )
+      );
+    }
+    if (uniqueWindow.size !== 1) {
+      result.push(
+        new ValidationIssue(
+          ERROR,
+          PARTICIPANT,
+          `windowAttributes found ${uniqueWindow.size} values and was expecting 1, ${uniqueWindow} values for participant ${participant.participantId}`
+        )
+      );
+    }
   });
 };
 
@@ -116,8 +171,9 @@ export const validateAuditData = (audit, result) => {
       maxSeqNum: 0,
     };
     const uniqueScreen = new Set();
+    const uniqueWindow = new Set();
     let lastStatus = null;
-    const auditsForParticipantBySequence = auditList.sort((a, b) =>
+    const auditsForParticipantBySequence = [...auditList].sort((a, b) =>
       +a.requestSequence < +b.requestSequence
         ? -1
         : +a.requestSequence > +b.requestSequence
@@ -130,6 +186,7 @@ export const validateAuditData = (audit, result) => {
         auditEntry.requestSequence
       );
       uniqueScreen.add(JSON.stringify(auditEntry.screenAttributes));
+      uniqueWindow.add(JSON.stringify(auditEntry.windowAttributes));
       if (lastStatus) {
         const onLastQuestion =
           auditEntry.questions.slice(0, -1).choice !== AmountType.none;
@@ -187,6 +244,15 @@ export const validateAuditData = (audit, result) => {
           ERROR,
           AUDIT,
           `screenAttributes found ${uniqueScreen.size} values and was expecting 1, ${uniqueScreen} values for participant ${partcipantId}`
+        )
+      );
+    }
+    if (uniqueWindow.size !== 1) {
+      result.push(
+        new ValidationIssue(
+          ERROR,
+          AUDIT,
+          `windowAttributes found ${uniqueWindow.size} values and was expecting 1, ${uniqueWindow} values for participant ${partcipantId}`
         )
       );
     }

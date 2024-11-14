@@ -71,9 +71,9 @@ const initialState = {
     demographicShownTimestamp: null,
     demographicCompletedTimestamp: null,
     demographicTimeSec: null,
-    choiceInstructionShownTimestamp: [],
-    choiceInstructionCompletedTimestamp: [],
-    choiceInstructionTimeSec: [],
+    choiceInstructionShownTimestamp: null,
+    choiceInstructionCompletedTimestamp: null,
+    choiceInstructionTimeSec: null,
     instructionsShownTimestamp: null,
     instructionsCompletedTimestamp: null,
     instructionsTimeSec: null,
@@ -132,24 +132,14 @@ export const questionSlice = createSlice({
       state.status = qe.nextState(state);
     },
     MCLInstructionsShown(state, action) {
-      state.timestamps.choiceInstructionShownTimestamp.push({
-        treatmentId: qe.currentAnswer(state).treatmentId,
-        value: action.payload,
-      });
+      state.timestamps.choiceInstructionShownTimestamp = action.payload;
     },
     MCLInstructionsCompleted(state, action) {
-      state.timestamps.choiceInstructionCompletedTimestamp.push({
-        treatmentId: qe.currentAnswer(state).treatmentId,
-        value: action.payload,
-      });
-      const shownTimestamp =
-        state.timestamps.choiceInstructionShownTimestamp.find(
-          (cv) => cv.treatmentId === qe.currentAnswer(state).treatmentId
-        ).timestamp;
-      state.timestamps.choiceInstructionTimeSec.push({
-        treatmentId: qe.currentAnswer(state).treatmentId,
-        value: secondsBetween(shownTimestamp, action.payload),
-      });
+      state.timestamps.choiceInstructionCompletedTimestamp = action.payload;
+      state.timestamps.choiceInstructionTimeSec = secondsBetween(
+        state.timestamps.choiceInstructionShownTimestamp,
+        state.timestamps.choiceInstructionCompletedTimestamp
+      );
       state.status = qe.nextState(state);
     },
     breakShown(state, action) {
@@ -165,7 +155,7 @@ export const questionSlice = createSlice({
       });
       const shownTimestamp = state.timestamps.breakShownTimestamp.find(
         (cv) => cv.treatmentId === qe.currentAnswer(state).treatmentId
-      ).timestamp;
+      ).value;
       state.timestamps.breakTimeSec.push({
         treatmentId: qe.currentAnswer(state).treatmentId,
         value: secondsBetween(shownTimestamp, action.payload),

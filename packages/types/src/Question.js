@@ -1,5 +1,6 @@
 export const Question = ({
   questionId,
+  derivedFromQuestionId,
   amountEarlier,
   timeEarlier,
   dateEarlier,
@@ -12,6 +13,7 @@ export const Question = ({
 }) =>
   Object.freeze({
     questionId,
+    derivedFromQuestionId,
     amountEarlier,
     timeEarlier,
     dateEarlier,

@@ -34,13 +34,34 @@ export const parseQuestions = (treatmentQuestions) => {
   return { instruction: grouped.get(true), survey: grouped.get(false) };
 };
 
-export const orderQuestions = (questions, treatmentIds) => {
-  questions.sort((a, b) => {
-    const tsr =
-      treatmentIds.indexOf(a.treatmentId) - treatmentIds.indexOf(b.treatmentId);
-    const psr = a.sequenceId - b.sequenceId;
-    return tsr != 0 ? tsr : psr;
-  });
+export const orderQuestions = (
+  questions,
+  treatmentIds,
+  requestQuestionIdsOrder = null
+) => {
+  if (requestQuestionIdsOrder) {
+    const ordered = [];
+    for (let orderedId of requestQuestionIdsOrder) {
+      const question = questions.find(
+        (v) => v.derivedFromQuestionId === orderedId
+      );
+      if (question === undefined) {
+        return undefined;
+      } else {
+        ordered.push(question);
+      }
+    }
+    return ordered;
+  } else {
+    questions.sort((a, b) => {
+      const tsr =
+        treatmentIds.indexOf(a.treatmentId) -
+        treatmentIds.indexOf(b.treatmentId);
+      const psr = a.sequenceId - b.sequenceId;
+      return tsr != 0 ? tsr : psr;
+    });
+    return questions;
+  }
 };
 
 /**
@@ -126,6 +147,20 @@ export const assignParticipantSequenceNumberXaction = async (db, studyId) => {
 //   return result;
 // };
 
+/**
+ *
+ * @param {*} db
+ * @param {*} participantId
+ * @param {*} studyId - Study Id of the experiment.
+ * @param {*} sessionId
+ * @param {*} participantSequence
+ * @param {*} exp
+ * @param {*} callback
+ * @param {*} requestTreatmentIds - array that overrides experiments treatment ids for testing.
+ * @param {*} requestQuestionIdsOrder - array that overrides experiments order of the questions for testing.
+ *                                      Ids should be derived question id.
+ * @returns
+ */
 export const signupParticipant = async (
   db,
   participantId,
@@ -134,7 +169,8 @@ export const signupParticipant = async (
   participantSequence,
   exp,
   callback,
-  requestTreatmentIds = null
+  requestTreatmentIds = null,
+  requestQuestionIdsOrder = null
 ) => {
   const treatmentIds = requestTreatmentIds
     ? requestTreatmentIds
@@ -152,7 +188,9 @@ export const signupParticipant = async (
   let { instruction, survey } = parseQuestions(treatmentQuestions);
   survey = clientSurveyQuestionFields(survey);
   survey = survey.map((v) => setUndefinedPropertiesNull(v));
-  if (exp.questionOrder === "random") {
+  if (requestQuestionIdsOrder) {
+    // don't do anything since we overrode experiment question order in the request URL
+  } else if (exp.questionOrder === "random") {
     randomizeQuestionSequence(survey);
   } else if (exp.questionOrder !== "fixed") {
     callback(
@@ -160,7 +198,13 @@ export const signupParticipant = async (
       `Experiment not setup correctly.  Was expecting a value of "fixed" or "random" for questionOrder and experiment was setup with "${exp.questionOrder}" for experiment id ${exp.experimentId} for participant id ${participantId}, study id ${studyId}, session id ${sessionId}`
     );
   }
-  orderQuestions(survey, treatmentIds);
+  survey = orderQuestions(survey, treatmentIds, requestQuestionIdsOrder);
+  if (survey === undefined) {
+    callback(
+      true,
+      "Invalid id passed in request to override.  Id's passed in request are ${requestQuestionIdsOrder} for experiment id ${exp.experimentId} for participant id ${participantId}, study id ${studyId}, session id ${sessionId}"
+    );
+  }
   await createParticipant(
     db,
     exp.path,

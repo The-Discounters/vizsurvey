@@ -48,6 +48,7 @@ describe("importUtil test ", () => {
   it("Test typeQuestionObj valid fields.", async () => {
     const input = {
       question_id: "1",
+      derived_from_question_id: "2",
       amount_earlier: "100",
       time_earlier: "1",
       date_earlier: "1/1/2023",
@@ -60,6 +61,7 @@ describe("importUtil test ", () => {
     const result = typeQuestionObj(input);
     expect(result).toEqual({
       question_id: 1,
+      derived_from_question_id: 2,
       amount_earlier: 100,
       time_earlier: 1,
       date_earlier: admin.firestore.Timestamp.fromDate(

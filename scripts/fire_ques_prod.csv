@@ -1,54 +1,62 @@
-question_id,amount_earlier,time_earlier,date_earlier,amount_later,time_later,date_later,max_amount,max_time,question_comment
-1,350,4,,430,13,,500,14,Experiment 1 date/delay paper between and within subject.
-2,490,2,,700,18,,900,19,Experiment 1 date/delay paper between and within subject.
-3,720,6,,1390,24,,1600,25,Experiment 1 date/delay paper between and within subject.
-4,840,3,,1120,16,,1400,17,Experiment 1 date/delay paper between and within subject.
-5,32,4,,39,13,,50,14,Experiment 1 date/delay paper between and within subject.
-6,45,2,,70,18,,90,19,Experiment 1 date/delay paper between and within subject.
-7,66,6,,110,24,,140,25,Experiment 1 date/delay paper between and within subject.
-8,77,3,,118,16,,140,17,Experiment 1 date/delay paper between and within subject.
-9,300,2,,700,7,,900,8,Instruction question
-10,350,4,,430,13,,500,14,Experiment 1 date/delay paper between subject.
-11,490,2,,700,18,,900,19,Experiment 1 date/delay paper between subject.
-12,720,6,,1390,24,,1600,25,Experiment 1 date/delay paper between subject.
-13,840,3,,1120,16,,1400,17,Experiment 1 date/delay paper between subject.
-14,32,4,,39,13,,50,14,Experiment 1 date/delay paper between subject.
-15,45,2,,70,18,,90,19,Experiment 1 date/delay paper between subject.
-16,66,6,,110,24,,140,25,Experiment 1 date/delay paper between subject.
-17,77,3,,118,16,,140,17,Experiment 1 date/delay paper between subject.
-18,350,4,,430,13,,500,27,Experiment 1 date/delay paper between subject.
-19,490,2,,700,18,,900,37,Experiment 1 date/delay paper between subject.
-20,720,6,,1390,24,,1600,49,Experiment 1 date/delay paper between subject.
-21,840,3,,1120,16,,1400,33,Experiment 1 date/delay paper between subject.
-22,32,4,,39,13,,50,27,Experiment 1 date/delay paper between subject.
-23,45,2,,70,18,,90,37,Experiment 1 date/delay paper between subject.
-24,66,6,,110,24,,140,49,Experiment 1 date/delay paper between subject.
-25,77,3,,118,16,,140,33,Experiment 1 date/delay paper between subject.
-26,300,2,,700,7,,900,15,Instruction question
-27,350,,01/04/2023,430,,01/13/2023,500,,Worded MEL question experiment 1 date / delay paper TODO fix dates here so that it represent weeks to match up with MEL Word version.
-28,490,,01/02/2023,700,,01/18/2023,900,,Experiment 1 date/delay paper.
-29,720,,01/06/2023,1390,,01/24/2023,1600,,Experiment 1 date/delay paper.
-30,840,,01/03/2023,1120,,01/16/2023,1400,,Experiment 1 date/delay paper.
-31,32,,01/04/2023,39,,01/13/2023,50,,Experiment 3 of date/delay paper.
-32,45,,01/02/2023,70,,01/18/2023,90,,Experiment 3 of date/delay paper.
-33,66,,01/06/2023,110,,01/24/2023,140,,Experiment 3 of date/delay paper.
-34,77,,01/03/2023,118,,01/16/2023,140,,Experiment 3 of date/delay paper.
-35,300,,01/02/2023,700,,01/07/2023,900,,Instruction question
-36,300,,05/07/2023,700,,10/02/2023,900,,Instruction question
-37,300,,10/02/2023,700,,01/07/2023,900,,Instruction question
-38,346,4,,430,13,,500,14,Experiment 1 date/delay paper within subject.
-39,486,2,,700,18,,900,19,Experiment 1 date/delay paper within subject.
-40,722,6,,1390,24,,1600,25,Experiment 1 date/delay paper within subject.
-41,844,3,,1120,16,,1400,17,Experiment 1 date/delay paper within subject.
-42,33,4,,39,13,,50,14,Experiment 1 date/delay paper within subject.
-43,43,2,,70,18,,90,19,Experiment 1 date/delay paper within subject.
-44,65,6,,110,24,,140,25,Experiment 1 date/delay paper within subject.
-45,80,3,,118,16,,140,17,Experiment 1 date/delay paper within subject.
-46,348,4,,428,13,,500,27,Experiment 1 date/delay paper within subject.
-47,492,2,,702,18,,900,37,Experiment 1 date/delay paper within subject.
-48,723,6,,1393,24,,1600,49,Experiment 1 date/delay paper within subject.
-49,836,3,,1116,16,,1400,33,Experiment 1 date/delay paper within subject.
-50,36,4,,43,13,,50,27,Experiment 1 date/delay paper within subject.
-51,41,2,,66,18,,90,37,Experiment 1 date/delay paper within subject.
-52,67,6,,111,24,,140,49,Experiment 1 date/delay paper within subject.
-53,76,3,,117,16,,140,33,Experiment 1 date/delay paper within subject.
+question_id,amount_earlier,time_earlier,date_earlier,amount_later,time_later,date_later,max_amount,max_time,derived_from_question_id,question_comment
+1,350,4,,430,13,,500,14,1,Experiment 1 date/delay paper between and within subject.
+2,490,2,,700,18,,900,19,2,Experiment 1 date/delay paper between and within subject.
+3,720,6,,1390,24,,1600,25,3,Experiment 1 date/delay paper between and within subject.
+4,840,3,,1120,16,,1400,17,4,Experiment 1 date/delay paper between and within subject.
+5,32,4,,39,13,,50,14,5,Experiment 1 date/delay paper between and within subject.
+6,45,2,,70,18,,90,19,6,Experiment 1 date/delay paper between and within subject.
+7,66,6,,110,24,,140,25,7,Experiment 1 date/delay paper between and within subject.
+8,77,3,,118,16,,140,17,8,Experiment 1 date/delay paper between and within subject.
+9,300,2,,700,7,,900,8,,Instruction question
+10,350,4,,430,13,,500,14,1,Experiment 1 date/delay paper between subject.
+11,490,2,,700,18,,900,19,2,Experiment 1 date/delay paper between subject.
+12,720,6,,1390,24,,1600,25,3,Experiment 1 date/delay paper between subject.
+13,840,3,,1120,16,,1400,17,4,Experiment 1 date/delay paper between subject.
+14,32,4,,39,13,,50,14,5,Experiment 1 date/delay paper between subject.
+15,45,2,,70,18,,90,19,6,Experiment 1 date/delay paper between subject.
+16,66,6,,110,24,,140,25,7,Experiment 1 date/delay paper between subject.
+17,77,3,,118,16,,140,17,8,Experiment 1 date/delay paper between subject.
+18,350,4,,430,13,,500,27,1,Experiment 1 date/delay paper between subject.
+19,490,2,,700,18,,900,37,2,Experiment 1 date/delay paper between subject.
+20,720,6,,1390,24,,1600,49,3,Experiment 1 date/delay paper between subject.
+21,840,3,,1120,16,,1400,33,4,Experiment 1 date/delay paper between subject.
+22,32,4,,39,13,,50,27,5,Experiment 1 date/delay paper between subject.
+23,45,2,,70,18,,90,37,6,Experiment 1 date/delay paper between subject.
+24,66,6,,110,24,,140,49,7,Experiment 1 date/delay paper between subject.
+25,77,3,,118,16,,140,33,8,Experiment 1 date/delay paper between subject.
+26,300,2,,700,7,,900,15,,Instruction question
+27,350,,01/04/2023,430,,01/13/2023,500,,1,Worded MEL question experiment 1 date / delay paper TODO fix dates here so that it represent weeks to match up with MEL Word version.
+28,490,,01/02/2023,700,,01/18/2023,900,,2,Experiment 1 date/delay paper.
+29,720,,01/06/2023,1390,,01/24/2023,1600,,3,Experiment 1 date/delay paper.
+30,840,,01/03/2023,1120,,01/16/2023,1400,,4,Experiment 1 date/delay paper.
+31,32,,01/04/2023,39,,01/13/2023,50,,5,Experiment 3 of date/delay paper.
+32,45,,01/02/2023,70,,01/18/2023,90,,6,Experiment 3 of date/delay paper.
+33,66,,01/06/2023,110,,01/24/2023,140,,7,Experiment 3 of date/delay paper.
+34,77,,01/03/2023,118,,01/16/2023,140,,8,Experiment 3 of date/delay paper.
+35,300,,01/02/2023,700,,01/07/2023,900,,,Instruction question
+36,300,,05/07/2023,700,,10/02/2023,900,,,Instruction question
+37,300,,10/02/2023,700,,01/07/2023,900,,,Instruction question
+38,346,4,,430,13,,500,14,1,Experiment 1 date/delay paper within subject.
+39,486,2,,700,18,,900,19,2,Experiment 1 date/delay paper within subject.
+40,722,6,,1390,24,,1600,25,3,Experiment 1 date/delay paper within subject.
+41,844,3,,1120,16,,1400,17,4,Experiment 1 date/delay paper within subject.
+42,33,4,,39,13,,50,14,5,Experiment 1 date/delay paper within subject.
+43,43,2,,70,18,,90,19,6,Experiment 1 date/delay paper within subject.
+44,65,6,,110,24,,140,25,7,Experiment 1 date/delay paper within subject.
+45,80,3,,118,16,,140,17,8,Experiment 1 date/delay paper within subject.
+46,348,4,,428,13,,500,27,1,Experiment 1 date/delay paper within subject.
+47,492,2,,702,18,,900,37,2,Experiment 1 date/delay paper within subject.
+48,723,6,,1393,24,,1600,49,3,Experiment 1 date/delay paper within subject.
+49,836,3,,1116,16,,1400,33,4,Experiment 1 date/delay paper within subject.
+50,36,4,,43,13,,50,27,5,Experiment 1 date/delay paper within subject.
+51,41,2,,66,18,,90,37,6,Experiment 1 date/delay paper within subject.
+52,67,6,,111,24,,140,49,7,Experiment 1 date/delay paper within subject.
+53,76,3,,117,16,,140,33,8,Experiment 1 date/delay paper within subject.
+54,348,4,,428,13,,500,41,1,Experiment 1 date/delay paper within subject.
+55,492,2,,702,18,,900,56,2,Experiment 1 date/delay paper within subject.
+56,723,6,,1393,24,,1600,74,3,Experiment 1 date/delay paper within subject.
+57,836,3,,1116,16,,1400,50,4,Experiment 1 date/delay paper within subject.
+58,36,4,,43,13,,50,41,5,Experiment 1 date/delay paper within subject.
+59,41,2,,66,18,,90,56,6,Experiment 1 date/delay paper within subject.
+60,67,6,,111,24,,140,74,7,Experiment 1 date/delay paper within subject.
+61,76,3,,117,16,,140,50,8,Experiment 1 date/delay paper within subject.

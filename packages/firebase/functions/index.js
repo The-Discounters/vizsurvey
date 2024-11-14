@@ -15,6 +15,8 @@ import {
   Experiment,
   ServerStatusType,
   StatusError,
+  clientSurveyQuestionFields,
+  setUndefinedPropertiesNull,
 } from "@the-discounters/types";
 import {
   readParticipant,
@@ -27,6 +29,9 @@ import {
   signupParticipant,
   validateExperiment,
   assignParticipantSequenceNumberXaction,
+  filterQuestions,
+  parseQuestions,
+  orderQuestions,
   //incParticipantCompletedXaction,
 } from "./functionsUtil.js";
 import pkgJSON from "./package.json" assert { type: "json" };
@@ -34,24 +39,7 @@ import pkgJSON from "./package.json" assert { type: "json" };
 initializeApp();
 const db = getFirestore();
 
-//const CORS_URLS = process.env.CORS_URLS ? process.env.CORS_URLS.split(",") : [];
-
-const parseKeyFromQuery = (request) => {
-  const participantId = request.query.prolific_pid;
-  const studyId = request.query.study_id;
-  const sessionId = request.query.session_id;
-  const requestTreatmentIds = request.query.treatment_ids
-    ? JSON.parse(request.query.treatment_ids)
-    : null;
-  return { participantId, studyId, sessionId, requestTreatmentIds };
-};
-
-const parseKeyFromBody = (request) => {
-  const participantId = request.body.prolific_pid;
-  const studyId = request.body.study_id;
-  const sessionId = request.body.session_id;
-  return { participantId, studyId, sessionId };
-};
+//const CORS_URLS = process.env.CORS_URLS ? process.env.CORS_URLS.split(",") : [];;
 
 const validateKeyValues = ({ participantId, studyId, sessionId }) => {
   if (!participantId || !studyId) {
@@ -81,13 +69,25 @@ export const signup = onRequest(
     logger.info(
       `signup prolific_pid=${request.query.prolific_pid}, study_id=${request.query.study_id}, session_id=${request.query.session_id}, treatment_ids=${request.query.treatment_ids}`
     );
-    const { participantId, studyId, sessionId, requestTreatmentIds } =
-      parseKeyFromQuery(request);
+    const participantId = request.query.prolific_pid;
+    const studyId = request.query.study_id;
+    const sessionId = request.query.session_id;
+    const requestTreatmentIds = request.query.treatment_ids
+      ? JSON.parse(request.query.treatment_ids)
+      : null;
+    const requestQuestionIdsOrder = request.query.question_order_ids
+      ? JSON.parse(request.query.question_order_ids)
+      : null;
     const userAgent = request.query.user_agent;
     try {
       if (requestTreatmentIds) {
         logger.info(
           `signup REQUEST OVER RODE TREATMENTS IN EXPERIMENT CONFIGURATION WITH TREATMENT IDS ${requestTreatmentIds}`
+        );
+      }
+      if (requestQuestionIdsOrder) {
+        logger.info(
+          `signup REQUEST OVER RODE QUESTION ORDER IN EXPERIMENT CONFIGURATION WITH QUESTION IDS IN ORDER ${requestQuestionIdsOrder}`
         );
       }
       validateKeyValues({ participantId, studyId, sessionId });
@@ -132,7 +132,8 @@ export const signup = onRequest(
             });
           }
         },
-        requestTreatmentIds
+        requestTreatmentIds,
+        requestQuestionIdsOrder
       );
       signupData.status = ServerStatusType.success;
       signupData.experiment = Experiment(exp);
@@ -168,7 +169,9 @@ export const updateState = onRequest(
     logger.info(
       `updateState prolific_pid=${request.body.prolific_pid}, study_id=${request.body.study_id}, session_id=${request.body.session_id}`
     );
-    const { participantId, studyId, sessionId } = parseKeyFromBody(request);
+    const participantId = request.body.prolific_pid;
+    const studyId = request.body.study_id;
+    const sessionId = request.body.session_id;
     let requestSequence;
     try {
       validateKeyValues({ participantId, studyId, sessionId });
@@ -272,6 +275,103 @@ export const version = onRequest(
       });
     } catch (err) {
       logger.error(`version ${err.message}, httpstatus=${err.httpstatus}`);
+      response
+        .status(err.httpstatus ? err.httpstatus : 500)
+        .json({ status: err.reason ? err.reason : ServerStatusType.error });
+    }
+  }
+);
+
+export const readExperimentConfigurations = onRequest(
+  {
+    cors: [
+      "https://localhost:3000",
+      "https://main.d2ptxb5fbsc082.amplifyapp.com",
+      "https://staging.d2ptxb5fbsc082.amplifyapp.com",
+      "https://release.d2ptxb5fbsc082.amplifyapp.com",
+    ],
+  },
+  async (request, response) => {
+    logger.info(
+      `readExperimentConfigurations study_ids=${request.query.study_ids}, treatment_ids=${request.query.treatment_ids}`
+    );
+    const studyIds = request.query.study_ids
+      ? JSON.parse(request.query.study_ids)
+      : null;
+    const requestTreatmentIds = request.query.treatment_ids
+      ? JSON.parse(request.query.treatment_ids)
+      : null;
+    1;
+    const requestQuestionIdsOrder = request.query.question_order_ids
+      ? JSON.parse(request.query.question_order_ids)
+      : null;
+    try {
+      if (requestQuestionIdsOrder) {
+        logger.info(
+          `readExperimentConfigurations REQUEST OVER RODE QUESTION ORDER IN EXPERIMENT CONFIGURATION WITH QUESTION IDS IN ORDER ${requestQuestionIdsOrder}`
+        );
+      }
+      if (!studyIds || !requestTreatmentIds) {
+        throw new StatusError({
+          message: `Error with request parameters. study_ids or treatment_ids not in request.`,
+          httpstatus: 400,
+          reason: ServerStatusType.invalid,
+          participantId: null,
+          studyId: studyIds,
+          sessionId: null,
+        });
+      }
+      const result = {
+        experiments: [],
+        surveys: [],
+        instructions: [],
+      };
+      for (let studyId of studyIds) {
+        logger.info(
+          `readExperimentConfigurations fetching experiment for studyId=${studyId}`
+        );
+        const exp = await readExperimentAndQuestions(db, studyId);
+        if (!exp) {
+          throw new StatusError({
+            message: "tried to access experiment that was not found",
+            httpstatus: 400,
+            reason: ServerStatusType.invalid,
+          });
+        }
+        result.experiments.push(Experiment(exp));
+        let treatmentQuestions = filterQuestions(
+          requestTreatmentIds,
+          exp.treatmentQuestions
+        );
+        let { instruction, survey } = parseQuestions(treatmentQuestions);
+        survey = clientSurveyQuestionFields(survey);
+        survey = survey.map((v) => setUndefinedPropertiesNull(v));
+        survey = orderQuestions(
+          survey,
+          requestTreatmentIds,
+          requestQuestionIdsOrder
+        );
+        if (survey === undefined) {
+          throw new StatusError({
+            message: `readExperimentConfigurations could not order questions for ${exp.experimentId}`,
+            httpstatus: 500,
+            reason: ServerStatusType.error,
+          });
+        }
+        result.surveys.push(survey);
+        result.instructions.push(instruction);
+      }
+      logger.info(
+        `readExperimentConfigurations Senging back singup data ${JSON.stringify(
+          result
+        )} for studIds ${studyIds}`
+      );
+      result.status = ServerStatusType.success;
+      response.status(200).json(result);
+    } catch (err) {
+      logger.error(
+        `readExperimentConfigurations ${err.message}, studyIds=${studyIds}`
+      );
       response
         .status(err.httpstatus ? err.httpstatus : 500)
         .json({ status: err.reason ? err.reason : ServerStatusType.error });

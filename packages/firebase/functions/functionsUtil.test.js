@@ -378,22 +378,22 @@ describe("functionsUtil test ", () => {
               }
               if (results.length === NO_REQUESTS) {
                 console.log(`All results returned.`);
-                const sorted = results.sort((a, b) =>
+                results.sort((a, b) =>
                   a.sequenceNumber < b.sequenceNumber
                     ? -1
                     : a.sequenceNumber > b.sequenceNumber
                     ? 1
                     : 0
                 );
-                for (let k = 0; k < sorted.length; k++) {
+                for (let k = 0; k < results.length; k++) {
                   if (
-                    sorted[k].sequenceNumber !==
+                    results[k].sequenceNumber !==
                     beforeNumParticipantsStarted + 1 + k
                   ) {
                     reject(
                       `Entry ${k} with value ${
-                        sorted[k].sequenceNumber
-                      } is not expected next in the sequence.  Starting value was ${beforeNumParticipantsStarted} and returned values are ${sorted.map(
+                        results[k].sequenceNumber
+                      } is not expected next in the sequence.  Starting value was ${beforeNumParticipantsStarted} and returned values are ${results.map(
                         (v) => v.sequenceNumber
                       )}}`
                     );

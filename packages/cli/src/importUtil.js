@@ -39,6 +39,7 @@ export const typeExperimentObj = (obj) => {
 
 export const typeQuestionObj = (obj) => {
   obj.question_id = +obj.question_id;
+  obj.derived_from_question_id = +obj.derived_from_question_id;
   obj.amount_earlier = +obj.amount_earlier;
   obj.time_earlier = +obj.time_earlier;
   obj.date_earlier = obj.date_earlier

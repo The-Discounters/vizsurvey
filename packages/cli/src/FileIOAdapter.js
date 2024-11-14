@@ -4,17 +4,23 @@ import fs from "fs";
 import {
   convertKeysCamelCaseToUnderscore,
   flattenArrayToObject,
-  removeUndefinedOrNullProperties,
+  renameKeys,
   convertFields,
 } from "@the-discounters/types";
-import { convertToCSV, ISODateStringWithNanoSec } from "@the-discounters/util";
-import { writeFile } from "./files.js";
+import {
+  ISODateStringWithNanoSec,
+  stateToDate,
+  secondsBetween,
+} from "@the-discounters/util";
 import {
   readExperiment,
   readExperimentAndParticipants,
   readExperimentAndAudit,
   readExperimentParticipantsAndAudit,
 } from "@the-discounters/firebase-shared";
+import { writeFile } from "./files.js";
+import { ParticipantCSV } from "./ParticipantCSV.js";
+import { QuestionCSV } from "./QuestionCSV.js";
 
 /**
  * Converts array objects with treatmentId and value  properties like
@@ -46,6 +52,7 @@ export const convertValue = (key, value) => {
   }
 };
 
+//TODO what do we do with this?  Export audit to CSV is still using it but it needs to be changed to incorporate export participant to CSV which doesn't use it and is doing a lot of data patchup based on the bugs with sequence id.
 export const flattenState = (obj) => {
   let result = {};
   Object.keys(obj).forEach((key) => {
@@ -70,6 +77,7 @@ export const flattenState = (obj) => {
             value.choiceInstructionShownTimestamp
           ),
         };
+        // TODO this code can be removed for the next experiment.
         delete flattened.choiceInstructionTimeSec;
         flattened = {
           ...flattened,
@@ -185,6 +193,32 @@ export const exportAuditToCSV = async (db, studyId, filename) => {
   });
 };
 
+// TODO hack - copied from functions package to get around sequenceId bug.
+const orderQuestions = (questions, treatmentIds) => {
+  questions.sort((a, b) => {
+    const tsr =
+      treatmentIds.indexOf(a.treatmentId) - treatmentIds.indexOf(b.treatmentId);
+    const psr = a.sequenceId - b.sequenceId;
+    return tsr != 0 ? tsr : psr;
+  });
+  return questions;
+};
+
+const orderByTreatmentIdThenDerivedFromId = (questions) => {
+  questions.sort((a, b) => {
+    const tsr = a.treatmentId - b.treatmentId;
+    const psr = a.derivedFromQuestionId - b.derivedFromQuestionId;
+    return tsr != 0 ? tsr : psr;
+  });
+  return questions;
+};
+
+// TODO hack delete this - copied from functions pacakge to get around sequenceId bug.
+export const calcTreatmentIds = (latinSquare, participantCount) => {
+  const index = participantCount % latinSquare.length;
+  return latinSquare[index];
+};
+
 export const exportParticipantsToCSV = async (db, studyId, filename) => {
   console.log("...exporting participants to CSV.");
   const { experiment, participants } = await readExperimentAndParticipants(
@@ -192,15 +226,165 @@ export const exportParticipantsToCSV = async (db, studyId, filename) => {
     studyId
   );
   const array = [];
-  participants.forEach((cv) => {
-    console.log(`...exporting participant ${cv.participantId}.`);
-    delete cv.experiment;
-    const combined = {
-      ...experiment,
-      ...cv,
+  // MAP map to patchup newly added field derivedFromQuestionId for 7/10/24 experiment.  Removed for next experiment
+  const derivedFieldsMap = {
+    1: 1,
+    2: 2,
+    3: 3,
+    4: 4,
+    5: 5,
+    6: 6,
+    7: 7,
+    8: 8,
+    38: 1,
+    39: 2,
+    40: 3,
+    41: 4,
+    42: 5,
+    43: 6,
+    44: 7,
+    45: 8,
+    46: 1,
+    47: 2,
+    48: 3,
+    49: 4,
+    50: 5,
+    51: 6,
+    52: 7,
+    53: 8,
+  };
+  participants.forEach((participant) => {
+    console.log(`...exporting participant ${participant.participantId}.`);
+    let screenWindowAttributes;
+    if (participant.questions > 0) {
+      screenWindowAttributes = {
+        ...participant.questions[0].screenAttributes,
+        ...participant.questions[0].windowAttributes,
+      };
+    } else {
+      screenWindowAttributes = {};
+    }
+    var flattenedParticipant = {
+      ...ParticipantCSV({
+        ...participant,
+        ...participant.experienceSurvey,
+        ...participant.financialLitSurvey,
+        ...participant.timestamps,
+        ...screenWindowAttributes,
+      }),
+      // TODO this code can be removed for next experiment since we only show first treatment in MEL instructions.
+      // TODO this code can be removed for next experiment since we only show first treatment in MEL instructions.
+      choiceInstructionShownTimestamp:
+        participant.timestamps.choiceInstructionShownTimestamp.length !== 0
+          ? participant.timestamps.choiceInstructionShownTimestamp[0].value
+          : "",
+      // TODO this code can be removed for next experiment since we only show first treatment in MEL instructions and it was put here to fix the bug on calcuating time in seconds.
+      choiceInstructionCompletedTimestamp:
+        participant.timestamps.choiceInstructionCompletedTimestamp.length !== 0
+          ? participant.timestamps.choiceInstructionCompletedTimestamp[0].value
+          : "",
+      // TODO this code can be removed for next experiment since we only show first treatment in MEL instructions and it was put here to fix the bug on calculating time in seconds.
+      choiceInstructionTimeSec:
+        participant.timestamps.choiceInstructionShownTimestamp.length !== 0 &&
+        participant.timestamps.choiceInstructionCompletedTimestamp.length !== 0
+          ? secondsBetween(
+              stateToDate(
+                participant.timestamps.choiceInstructionShownTimestamp[0].value
+              ),
+              stateToDate(
+                participant.timestamps.choiceInstructionCompletedTimestamp[0]
+                  .value
+              )
+            )
+          : "",
+      ...flattenTreatmentValueAry(
+        "breakShownTimestamp",
+        participant.timestamps.breakShownTimestamp
+      ),
+      ...flattenTreatmentValueAry(
+        "breakCompletedTimestamp",
+        participant.timestamps.breakCompletedTimestamp
+      ),
     };
-    const flattened = removeUndefinedOrNullProperties(flattenState(combined));
-    const underscore = convertKeysCamelCaseToUnderscore(flattened);
+
+    const sortedQuestions = orderQuestions(
+      // TODO this can be removed for the next experiment since we added derivedFromQuestionId to the question configuration
+      participant.questions.map((q) => {
+        q.derivedFromQuestionId = derivedFieldsMap[q.questionId];
+        console.log(
+          `...... participant ${participant.participantId} assigning questionId ${q.questionId} derivedFromQuestionId ${q.derivedFromQuestionId}`
+        );
+        return QuestionCSV(q);
+      }),
+      calcTreatmentIds(
+        JSON.parse(experiment.latinSquare),
+        participant.participantSequence
+      )
+    );
+    const MELQuestionsAnswerTime = sortedQuestions.reduce(
+      (pv, cv) => pv + cv.choiceTimeSec,
+      0
+    );
+    const MELQuestionBreakTime =
+      participant.timestamps.breakShownTimestamp.reduce((pv, bst) => {
+        const breakCompletedTimestamp =
+          participant.timestamps.breakCompletedTimestamp.find(
+            (bct) => bct.treatmentId === bst.treatmentId
+          ).value;
+        if (!bst.value || !breakCompletedTimestamp) {
+          return pv;
+        }
+        const before = stateToDate(bst.value);
+        const after = stateToDate(breakCompletedTimestamp);
+        const breakTime = secondsBetween(before, after);
+        return pv + breakTime;
+      }, 0);
+    flattenedParticipant.totalMoneyQuestionTime = (
+      Number(MELQuestionsAnswerTime) + Number(MELQuestionBreakTime)
+    ).toFixed(3);
+    const patchedQuestions = sortedQuestions.map((q, i) => {
+      const result = { ...q, derivedSequenceId: i + 1 };
+      console.log(
+        `...... participant ${participant.participantId} assigning questionId ${result.questionId} treatmentId ${result.treatmentId} sequenceId ${result.sequenceId} derivedSequenceId ${result.derivedSequenceId}`
+      );
+      return result;
+    });
+    flattenedParticipant.totalSurveyTime = (
+      Number(flattenedParticipant.consentTimeSec) +
+      Number(flattenedParticipant.instructionsTimeSec) +
+      Number(flattenedParticipant.choiceInstructionTimeSec) +
+      Number(flattenedParticipant.experienceSurveyTimeSec) +
+      Number(flattenedParticipant.financialLitSurveyTimeSec) +
+      Number(flattenedParticipant.demographicTimeSec) +
+      Number(flattenedParticipant.debriefTimeSec) +
+      Number(flattenedParticipant.totalMoneyQuestionTime)
+    ).toFixed(3);
+
+    orderByTreatmentIdThenDerivedFromId(patchedQuestions);
+    const flattenedQuestions = patchedQuestions.reduce((acc, q) => {
+      const renamed = renameKeys(
+        q,
+        (key, value, obj) =>
+          `${key}_${obj.treatmentId}_${obj.derivedFromQuestionId}`,
+        (key, value, obj) => convertValue(key, value).result
+      );
+      const mappedObj = {
+        ...acc,
+        ...renamed,
+      };
+      return mappedObj;
+    }, {});
+    const treatmentOrder = [...participant.questions]
+      .sort((a, b) => a.sequenceId - b.sequenceId)
+      .reduce((pv, cv) => {
+        return pv.add(cv.treatmentId);
+      }, new Set());
+    flattenedParticipant = {
+      ...flattenedParticipant,
+      treatmentOrder: Array.from(treatmentOrder).toString(),
+      ...flattenedQuestions,
+    };
+    const underscore = convertKeysCamelCaseToUnderscore(flattenedParticipant);
     array.push(underscore);
   });
   let columns = new Set();
@@ -209,9 +393,6 @@ export const exportParticipantsToCSV = async (db, studyId, filename) => {
   });
   columns = Array.from(columns);
   console.log("...converting participants to CSV.");
-  // const CSVData = convertToCSV(array);
-  // writeFile(filename, CSVData);
-  // console.log(`...data written to CSV file ${filename}`);
   stringify(array, { header: true, columns: columns }, (err, output) => {
     if (err) throw err;
     fs.writeFile(filename, output, (err) => {

@@ -147,3 +147,21 @@ export const updateState = async (
   };
   putRequest(`${URLRoot}/updateState`, JSON.stringify(data));
 };
+
+export const readExperimentConfigurations = async (
+  URLRoot,
+  studyIds,
+  treatmentIds,
+  questionOrderIds
+) => {
+  const data = await getRequest(
+    `${URLRoot}/readExperimentConfigurations?key=${
+      app.options.apiKey
+    }&study_ids=${encodeURIComponent(
+      studyIds
+    )}&treatment_ids=${encodeURIComponent(
+      treatmentIds
+    )}&question_order_ids=${encodeURIComponent(questionOrderIds)}`
+  );
+  return data;
+};
