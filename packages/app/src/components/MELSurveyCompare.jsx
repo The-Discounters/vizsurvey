@@ -25,7 +25,7 @@ export function MELSurveyCompare() {
   const [helperText, setHelperText] = useState(" ");
   const [experiments, setExperiments] = useState([]);
   const [surveys, setSurveys] = useState([]);
-  const [instructions, setInstructions] = useState([]);
+  //const [instructions, setInstructions] = useState([]);
   const [status, setStatus] = useState("uninitialized");
 
   const handleKeyDownEvent = (event) => {
@@ -123,7 +123,7 @@ export function MELSurveyCompare() {
         );
         setExperiments(data.experiments);
         setSurveys(data.surveys);
-        setInstructions(data.instructions);
+        //setInstructions(data.instructions);
         setStatus("loaded");
       } catch (err) {
         console.log(err);
@@ -136,6 +136,7 @@ export function MELSurveyCompare() {
         questionIndex + 1
       }.`
     );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const showSelectionHint = (selection) => {
@@ -165,7 +166,7 @@ export function MELSurveyCompare() {
   console.log(`status=${status}`);
 
   if (status !== "loaded") {
-    return <Spinner text="Your answers are being saved..." />;
+    return <Spinner text="Experiments are being loaded..." />;
   } else {
     return (
       <Box>

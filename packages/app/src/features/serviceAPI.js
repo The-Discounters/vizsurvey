@@ -154,14 +154,13 @@ export const readExperimentConfigurations = async (
   treatmentIds,
   questionOrderIds
 ) => {
-  const data = await getRequest(
-    `${URLRoot}/readExperimentConfigurations?key=${
-      app.options.apiKey
-    }&study_ids=${encodeURIComponent(
-      studyIds
-    )}&treatment_ids=${encodeURIComponent(
-      treatmentIds
-    )}&question_order_ids=${encodeURIComponent(questionOrderIds)}`
-  );
+  const URL = `${URLRoot}/readExperimentConfigurations?key=${
+    app.options.apiKey
+  }&study_ids=${encodeURIComponent(
+    studyIds
+  )}&treatment_ids=${encodeURIComponent(
+    treatmentIds
+  )}&question_order_ids=${encodeURIComponent(questionOrderIds)}`;
+  const data = await getRequest(URL);
   return data;
 };

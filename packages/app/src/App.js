@@ -1,12 +1,6 @@
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import {
-  useNavigate,
-  useSearchParams,
-  Route,
-  Routes,
-  Link,
-} from "react-router-dom";
+import { useNavigate, useSearchParams, Route, Routes } from "react-router-dom";
 import { Container } from "@mui/material";
 import chalk from "chalk";
 import "./App.css";
@@ -32,11 +26,13 @@ import { StatusType } from "@the-discounters/types";
 import { Consent } from "./components/Consent.jsx";
 import { getRandomIntInclusive } from "@the-discounters/util";
 
-const TEST_LINKS_STUDY_ID = "xxxxxxxxxxxxxxxxxxxxxxxx"; // The prolificId of the study to lauch into from the test links.
-const TEST_LINKS_COMPARE_1_STUDY_ID = "6685e0aae211360468e28eb4"; // The prolificId of the study to lauch into for compare page.
-const TEST_LINKS_COMPARE_2_STUDY_ID = "xxxxxxxxxxxxxxxxxxxxxxxx"; // The prolificId of the study to lauch into for compare page.
+const TEST_LINKS_STUDY_ID = "xxxxxxxxxxxxxxxxxxxxxxx"; // The prolificId of the study to lauch into from the test links.
+const TEST_COMPARE_STUDY_IDS =
+  "6685e0aae211360468e28eb4,xxxxxxxxxxxxxxxxxxxxxxxx"; // The prolific study ids to compare on the compare page.
 const TEST_LINKS_COMPARE_STUDY_DESC =
   "Trial within experiment with extended 2x and 3x axis."; // The description of the experiment above.
+const TEST_COMPARE_TREATMENT_IDS = "3";
+const QUESTION_ORDER_IDS = "1,2,3,4,5,6,7,8";
 
 class ErrorBoundary extends React.Component {
   constructor(props) {
@@ -171,23 +167,23 @@ const DevHome = () => {
               <tr style={{ border: "1px solid black" }}>
                 <td style={{ border: "1px solid black" }}>development</td>
                 <td style={{ border: "1px solid black" }}>
-                  <Link
-                    id="1"
-                    to={`https://main.d2ptxb5fbsc082.amplifyapp.com/start?participant_id=${getRandomIntInclusive(
+                  <a
+                    href={`https://main.d2ptxb5fbsc082.amplifyapp.com/start?participant_id=${getRandomIntInclusive(
                       0,
                       1000000
                     )}&study_id=testwithin&session_id=3`}
                     onClick={() => {
                       dispatch(clearState());
                     }}
+                    id="1"
                   >
                     Within Subject.
-                  </Link>
+                  </a>
                 </td>
                 <td style={{ border: "1px solid black" }}>
-                  <Link
+                  <a
                     id="2"
-                    to={`https://main.d2ptxb5fbsc082.amplifyapp.com/start?participant_id=${getRandomIntInclusive(
+                    href={`https://main.d2ptxb5fbsc082.amplifyapp.com/start?participant_id=${getRandomIntInclusive(
                       0,
                       1000000
                     )}&study_id=testbetween&session_id=3`}
@@ -196,12 +192,12 @@ const DevHome = () => {
                     }}
                   >
                     Between Subject.
-                  </Link>
+                  </a>
                 </td>
                 <td style={{ border: "1px solid black" }}>
-                  <Link
+                  <a
                     id="3"
-                    to={`https://main.d2ptxb5fbsc082.amplifyapp.com/start?participant_id=${getRandomIntInclusive(
+                    href={`https://main.d2ptxb5fbsc082.amplifyapp.com/start?participant_id=${getRandomIntInclusive(
                       0,
                       1000000
                     )}&study_id=${TEST_LINKS_STUDY_ID}&session_id=3&treatment_ids=%5B1%5D`}
@@ -210,12 +206,12 @@ const DevHome = () => {
                     }}
                   >
                     Word
-                  </Link>
+                  </a>
                 </td>
                 <td style={{ border: "1px solid black" }}>
-                  <Link
+                  <a
                     id="4"
-                    to={`https://main.d2ptxb5fbsc082.amplifyapp.com/start?participant_id=${getRandomIntInclusive(
+                    href={`https://main.d2ptxb5fbsc082.amplifyapp.com/start?participant_id=${getRandomIntInclusive(
                       0,
                       1000000
                     )}&study_id=${TEST_LINKS_STUDY_ID}&session_id=3&treatment_ids=%5B2%5D`}
@@ -224,12 +220,12 @@ const DevHome = () => {
                     }}
                   >
                     Bar Chart
-                  </Link>
+                  </a>
                 </td>
                 <td style={{ border: "1px solid black" }}>
-                  <Link
+                  <a
                     id="5"
-                    to={`https://main.d2ptxb5fbsc082.amplifyapp.com/start?participant_id=${getRandomIntInclusive(
+                    href={`https://main.d2ptxb5fbsc082.amplifyapp.com/start?participant_id=${getRandomIntInclusive(
                       0,
                       1000000
                     )}&study_id=${TEST_LINKS_STUDY_ID}&session_id=3&treatment_ids=%5B3%5D`}
@@ -238,15 +234,15 @@ const DevHome = () => {
                     }}
                   >
                     Bar Chart Extended
-                  </Link>
+                  </a>
                 </td>
               </tr>
               <tr style={{ border: "1px solid black" }}>
                 <td style={{ border: "1px solid black" }}>localhost</td>
                 <td style={{ border: "1px solid black" }}>
-                  <Link
+                  <a
                     id="1"
-                    to={`/start?participant_id=${getRandomIntInclusive(
+                    href={`/start?participant_id=${getRandomIntInclusive(
                       0,
                       1000000
                     )}&study_id=${TEST_LINKS_STUDY_ID}&session_id=3`}
@@ -255,12 +251,12 @@ const DevHome = () => {
                     }}
                   >
                     Within Subject.
-                  </Link>
+                  </a>
                 </td>
                 <td style={{ border: "1px solid black" }}>
-                  <Link
+                  <a
                     id="2"
-                    to={`/start?participant_id=${getRandomIntInclusive(
+                    href={`/start?participant_id=${getRandomIntInclusive(
                       0,
                       1000000
                     )}&study_id=testbetween&session_id=3`}
@@ -269,12 +265,12 @@ const DevHome = () => {
                     }}
                   >
                     Between Subject.
-                  </Link>
+                  </a>
                 </td>
                 <td style={{ border: "1px solid black" }}>
-                  <Link
+                  <a
                     id="3"
-                    to={`/start?participant_id=${getRandomIntInclusive(
+                    href={`/start?participant_id=${getRandomIntInclusive(
                       0,
                       1000000
                     )}&study_id=${TEST_LINKS_STUDY_ID}&session_id=3&treatment_ids=%5B1%5D`}
@@ -283,12 +279,12 @@ const DevHome = () => {
                     }}
                   >
                     Word
-                  </Link>
+                  </a>
                 </td>
                 <td style={{ border: "1px solid black" }}>
-                  <Link
+                  <a
                     id="4"
-                    to={`/start?participant_id=${getRandomIntInclusive(
+                    href={`/start?participant_id=${getRandomIntInclusive(
                       0,
                       1000000
                     )}&study_id=${TEST_LINKS_STUDY_ID}&session_id=3&treatment_ids=%5B2%5D`}
@@ -297,12 +293,12 @@ const DevHome = () => {
                     }}
                   >
                     Bar Chart
-                  </Link>
+                  </a>
                 </td>
                 <td style={{ border: "1px solid black" }}>
-                  <Link
+                  <a
                     id="5"
-                    to={`/start?participant_id=${getRandomIntInclusive(
+                    href={`/start?participant_id=${getRandomIntInclusive(
                       0,
                       1000000
                     )}&study_id=${TEST_LINKS_STUDY_ID}&session_id=3&treatment_ids=%5B3%5D`}
@@ -311,15 +307,15 @@ const DevHome = () => {
                     }}
                   >
                     Bar Chart Extended
-                  </Link>
+                  </a>
                 </td>
               </tr>
               <tr style={{ border: "1px solid black" }}>
                 <td style={{ border: "1px solid black" }}>staging</td>
                 <td style={{ border: "1px solid black" }}>
-                  <Link
+                  <a
                     id="1"
-                    to={`https://staging.d2ptxb5fbsc082.amplifyapp.com/start?participant_id=${getRandomIntInclusive(
+                    href={`https://staging.d2ptxb5fbsc082.amplifyapp.com/start?participant_id=${getRandomIntInclusive(
                       0,
                       1000000
                     )}&study_id=testwithin&session_id=3`}
@@ -328,12 +324,12 @@ const DevHome = () => {
                     }}
                   >
                     Within Subject.
-                  </Link>
+                  </a>
                 </td>
                 <td style={{ border: "1px solid black" }}>
-                  <Link
+                  <a
                     id="2"
-                    to={`https://staging.d2ptxb5fbsc082.amplifyapp.com/start?participant_id=${getRandomIntInclusive(
+                    href={`https://staging.d2ptxb5fbsc082.amplifyapp.com/start?participant_id=${getRandomIntInclusive(
                       0,
                       1000000
                     )}&study_id=testbetween&session_id=3`}
@@ -342,12 +338,12 @@ const DevHome = () => {
                     }}
                   >
                     Between Subject.
-                  </Link>
+                  </a>
                 </td>
                 <td style={{ border: "1px solid black" }}>
-                  <Link
+                  <a
                     id="3"
-                    to={`https://staging.d2ptxb5fbsc082.amplifyapp.com/start?participant_id=${getRandomIntInclusive(
+                    href={`https://staging.d2ptxb5fbsc082.amplifyapp.com/start?participant_id=${getRandomIntInclusive(
                       0,
                       1000000
                     )}&study_id=${TEST_LINKS_STUDY_ID}&session_id=3&treatment_ids=%5B1%5D`}
@@ -356,12 +352,12 @@ const DevHome = () => {
                     }}
                   >
                     Word
-                  </Link>
+                  </a>
                 </td>
                 <td style={{ border: "1px solid black" }}>
-                  <Link
+                  <a
                     id="4"
-                    to={`https://staging.d2ptxb5fbsc082.amplifyapp.com/start?participant_id=${getRandomIntInclusive(
+                    href={`https://staging.d2ptxb5fbsc082.amplifyapp.com/start?participant_id=${getRandomIntInclusive(
                       0,
                       1000000
                     )}&study_id=${TEST_LINKS_STUDY_ID}&session_id=3&treatment_ids=%5B2%5D`}
@@ -370,12 +366,12 @@ const DevHome = () => {
                     }}
                   >
                     Bar Chart
-                  </Link>
+                  </a>
                 </td>
                 <td style={{ border: "1px solid black" }}>
-                  <Link
+                  <a
                     id="5"
-                    to={`https://staging.d2ptxb5fbsc082.amplifyapp.com/start?participant_id=${getRandomIntInclusive(
+                    href={`https://staging.d2ptxb5fbsc082.amplifyapp.com/start?participant_id=${getRandomIntInclusive(
                       0,
                       1000000
                     )}&study_id=${TEST_LINKS_STUDY_ID}&session_id=3&treatment_ids=%5B3%5D`}
@@ -384,15 +380,15 @@ const DevHome = () => {
                     }}
                   >
                     Bar Chart Extended
-                  </Link>
+                  </a>
                 </td>
               </tr>
               <tr style={{ border: "1px solid black" }}>
                 <td style={{ border: "1px solid black" }}>production</td>
                 <td style={{ border: "1px solid black" }}>
-                  <Link
+                  <a
                     id="1"
-                    to={`https://release.d2ptxb5fbsc082.amplifyapp.com/start?participant_id=${getRandomIntInclusive(
+                    href={`https://release.d2ptxb5fbsc082.amplifyapp.com/start?participant_id=${getRandomIntInclusive(
                       0,
                       1000000
                     )}&study_id=testwithin&session_id=3`}
@@ -401,12 +397,12 @@ const DevHome = () => {
                     }}
                   >
                     Within Subject.
-                  </Link>
+                  </a>
                 </td>
                 <td style={{ border: "1px solid black" }}>
-                  <Link
+                  <a
                     id="2"
-                    to={`https://release.d2ptxb5fbsc082.amplifyapp.com/start?participant_id=${getRandomIntInclusive(
+                    href={`https://release.d2ptxb5fbsc082.amplifyapp.com/start?participant_id=${getRandomIntInclusive(
                       0,
                       1000000
                     )}&study_id=testbetween&session_id=3`}
@@ -415,12 +411,12 @@ const DevHome = () => {
                     }}
                   >
                     Between Subject.
-                  </Link>
+                  </a>
                 </td>
                 <td style={{ border: "1px solid black" }}>
-                  <Link
+                  <a
                     id="3"
-                    to={`https://release.d2ptxb5fbsc082.amplifyapp.com/start?participant_id=${getRandomIntInclusive(
+                    href={`https://release.d2ptxb5fbsc082.amplifyapp.com/start?participant_id=${getRandomIntInclusive(
                       0,
                       1000000
                     )}&study_id=${TEST_LINKS_STUDY_ID}&session_id=3&treatment_ids=%5B1%5D`}
@@ -429,12 +425,12 @@ const DevHome = () => {
                     }}
                   >
                     Word
-                  </Link>
+                  </a>
                 </td>
                 <td style={{ border: "1px solid black" }}>
-                  <Link
+                  <a
                     id="4"
-                    to={`https://release.d2ptxb5fbsc082.amplifyapp.com/start?participant_id=${getRandomIntInclusive(
+                    href={`https://release.d2ptxb5fbsc082.amplifyapp.com/start?participant_id=${getRandomIntInclusive(
                       0,
                       1000000
                     )}&study_id=${TEST_LINKS_STUDY_ID}&session_id=3&treatment_ids=%5B2%5D`}
@@ -443,12 +439,12 @@ const DevHome = () => {
                     }}
                   >
                     Bar Chart
-                  </Link>
+                  </a>
                 </td>
                 <td style={{ border: "1px solid black" }}>
-                  <Link
+                  <a
                     id="5"
-                    to={`https://release.d2ptxb5fbsc082.amplifyapp.com/start?participant_id=${getRandomIntInclusive(
+                    href={`https://release.d2ptxb5fbsc082.amplifyapp.com/start?participant_id=${getRandomIntInclusive(
                       0,
                       1000000
                     )}&study_id=${TEST_LINKS_STUDY_ID}&session_id=3&treatment_ids=%5B3%5D`}
@@ -457,7 +453,7 @@ const DevHome = () => {
                     }}
                   >
                     Bar Chart Extended
-                  </Link>
+                  </a>
                 </td>
               </tr>
             </tbody>
@@ -477,57 +473,78 @@ const DevHome = () => {
               <tr style={{ border: "1px solid black" }}>
                 <td style={{ border: "1px solid black" }}>development</td>
                 <td style={{ border: "1px solid black" }}>
-                  <Link
+                  <a
                     id="1"
-                    to={`https://main.d2ptxb5fbsc082.amplifyapp.com/comparesurveys?study_ids=%5B%22${TEST_LINKS_COMPARE_1_STUDY_ID}%22%2C%22${TEST_LINKS_COMPARE_2_STUDY_ID}%22%5D&treatment_ids=%5B3%5D&question_order_ids=%5B1%2C2%2C3%2C4%2C5%2C6%2C7%2C8%5D`}
-                    onClick={() => {
-                      dispatch(clearState());
-                    }}
+                    href={`https://main.d2ptxb5fbsc082.amplifyapp.com/comparesurveys?study_ids=${encodeURIComponent(
+                      TEST_COMPARE_STUDY_IDS
+                    )}&treatment_ids=${encodeURIComponent(
+                      TEST_COMPARE_TREATMENT_IDS
+                    )}&question_order_ids=${encodeURIComponent(
+                      QUESTION_ORDER_IDS
+                    )}`}
                   >
                     {TEST_LINKS_COMPARE_STUDY_DESC}
-                  </Link>
+                  </a>
                 </td>
               </tr>
               <tr style={{ border: "1px solid black" }}>
                 <td style={{ border: "1px solid black" }}>localhost</td>
                 <td style={{ border: "1px solid black" }}>
-                  <Link
+                  <a
                     id="1"
-                    to={`/comparesurveys?study_ids=%5B%22${TEST_LINKS_COMPARE_1_STUDY_ID}%22%2C%22${TEST_LINKS_COMPARE_2_STUDY_ID}%22%5D&treatment_ids=%5B3%5D&question_order_ids=%5B1%2C2%2C3%2C4%2C5%2C6%2C7%2C8%5D`}
+                    href={`/comparesurveys?study_ids=${encodeURIComponent(
+                      TEST_COMPARE_STUDY_IDS
+                    )}&treatment_ids=${encodeURIComponent(
+                      TEST_COMPARE_TREATMENT_IDS
+                    )}&question_order_ids=${encodeURIComponent(
+                      QUESTION_ORDER_IDS
+                    )}`}
                     onClick={() => {
                       dispatch(clearState());
                     }}
                   >
                     {TEST_LINKS_COMPARE_STUDY_DESC}
-                  </Link>
+                  </a>
                 </td>
               </tr>
               <tr style={{ border: "1px solid black" }}>
                 <td style={{ border: "1px solid black" }}>staging</td>
                 <td style={{ border: "1px solid black" }}>
-                  <Link
+                  <a
                     id="1"
-                    to={`https://staging.d2ptxb5fbsc082.amplifyapp.com/comparesurveys?study_ids=%5B%22${TEST_LINKS_COMPARE_1_STUDY_ID}%22%2C%22${TEST_LINKS_COMPARE_2_STUDY_ID}%22%5D&treatment_ids=%5B3%5D&question_order_ids=%5B1%2C2%2C3%2C4%2C5%2C6%2C7%2C8%5D`}
+                    href={`https://staging.d2ptxb5fbsc082.amplifyapp.com/comparesurveys?study_ids=${encodeURIComponent(
+                      TEST_COMPARE_STUDY_IDS
+                    )}&treatment_ids=${encodeURIComponent(
+                      TEST_COMPARE_TREATMENT_IDS
+                    )}&question_order_ids=${encodeURIComponent(
+                      QUESTION_ORDER_IDS
+                    )}`}
                     onClick={() => {
                       dispatch(clearState());
                     }}
                   >
                     {TEST_LINKS_COMPARE_STUDY_DESC}
-                  </Link>
+                  </a>
                 </td>
               </tr>
               <tr style={{ border: "1px solid black" }}>
                 <td style={{ border: "1px solid black" }}>production</td>
                 <td style={{ border: "1px solid black" }}>
-                  <Link
+                  <a
                     id="1"
-                    to={`https://release.d2ptxb5fbsc082.amplifyapp.com/comparesurveys?study_ids=%5B%22${TEST_LINKS_COMPARE_1_STUDY_ID}%22%2C%22${TEST_LINKS_COMPARE_2_STUDY_ID}%22%5D&treatment_ids=%5B3%5D&question_order_ids=%5B1%2C2%2C3%2C4%2C5%2C6%2C7%2C8%5D`}
+                    href={`https://release.d2ptxb5fbsc082.amplifyapp.com/comparesurveys?study_ids=${encodeURIComponent(
+                      TEST_COMPARE_STUDY_IDS
+                    )}&treatment_ids=${encodeURIComponent(
+                      TEST_COMPARE_TREATMENT_IDS
+                    )}&question_order_ids=${encodeURIComponent(
+                      QUESTION_ORDER_IDS
+                    )}`}
                     onClick={() => {
                       dispatch(clearState());
                     }}
                   >
                     {TEST_LINKS_COMPARE_STUDY_DESC}
-                  </Link>
+                  </a>
                 </td>
               </tr>
             </tbody>

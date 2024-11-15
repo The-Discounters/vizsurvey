@@ -293,17 +293,17 @@ export const readExperimentConfigurations = onRequest(
   },
   async (request, response) => {
     logger.info(
-      `readExperimentConfigurations study_ids=${request.query.study_ids}, treatment_ids=${request.query.treatment_ids}`
+      `readExperimentConfigurations study_ids=${request.query.study_ids}, treatment_ids=${request.query.treatment_ids}, question_order_ids=${request.query.question_order_ids}`
     );
     const studyIds = request.query.study_ids
-      ? JSON.parse(request.query.study_ids)
+      ? request.query.study_ids.split(",")
       : null;
     const requestTreatmentIds = request.query.treatment_ids
-      ? JSON.parse(request.query.treatment_ids)
+      ? request.query.treatment_ids.split(",").map((v) => +v)
       : null;
     1;
     const requestQuestionIdsOrder = request.query.question_order_ids
-      ? JSON.parse(request.query.question_order_ids)
+      ? request.query.question_order_ids.split(",").map((v) => +v)
       : null;
     try {
       if (requestQuestionIdsOrder) {

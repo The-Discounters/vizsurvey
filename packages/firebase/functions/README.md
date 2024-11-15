@@ -1,5 +1,9 @@
 # Manual Testing
 
+## Adding a new function
+
+When you add a new function, be sure to make it's permissions public https://cloud.google.com/run/docs/authenticating/public
+
 To manually test the google function, form the URL like below. Be sure to URL encode the parameters.
 `http://127.0.0.1:5001/vizsurvey-staging/us-central1/readExperimentConfigurations?study_ids=%5B%226685e0aae211360468e28eb4%22%2C%22xxxxxxxxxxxxxxxxxxxxxxxx%22%5D&treatment_ids=%5B2%5D&question_order_ids=%5B1%2C2%2C3%2C4%2C5%2C6%2C7%2C8%5D`
 
