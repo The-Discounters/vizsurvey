@@ -5,10 +5,12 @@
     "lerna": "^4.0.0"
   },
   "scripts": {
-    "start": "lerna exec --scope @the-discounters/vizsurvey -- yarn start"
+    "start": "lerna exec --scope @the-discounters/vizsurvey -- yarn start",
+    "build:app": "yarn --cwd packages/app run build",
+    "start:app:prod": "yarn --cwd packages/app run start:prod"
   },
   "workspaces": [
     "packages/**"
   ],
-  "packageManager": "yarn@4.0.2"
+  "packageManager": "yarn@4.5.2"
 }
