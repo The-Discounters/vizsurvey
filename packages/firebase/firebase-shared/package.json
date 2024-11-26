@@ -17,11 +17,11 @@
     "download:int": "rm -r ../import/* && gsutil -m cp -r \"gs://${0}\" ../import"
   },
   "dependencies": {
-    "firebase": "^10.7.2",
+    "firebase": "^11.0.2",
     "firebase-admin": "^12.0.0"
   },
   "devDependencies": {
-    "@firebase/rules-unit-testing": "^3.0.1",
+    "@firebase/rules-unit-testing": "^4.0.1",
     "@firebase/testing": "^0.20.11",
     "@the-discounters/firebase-test-shared": "*",
     "eslint": "^8.57.0",
