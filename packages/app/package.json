@@ -101,6 +101,7 @@
     "prettier": "^2.3.2",
     "react-test-renderer": "^18.2.0",
     "redux-immutable-state-invariant": "^2.1.0",
+    "typescript": "^4.0.0",
     "webpack": "^4.44.2",
     "webpack-cli": "^4.8.0",
     "webpack-dev-server": "^3.11.1"
