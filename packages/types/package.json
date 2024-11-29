@@ -12,10 +12,6 @@
     "lodash": "^4.17.21"
   },
   "devDependencies": {
-    "@babel/core": "^7.26.0",
-    "@babel/plugin-syntax-import-assertions": "^7.26.0",
-    "@babel/plugin-syntax-import-attributes": "^7.26.0",
-    "@babel/preset-env": "^7.26.0",
     "@the-discounters/test-shared": "*",
     "eslint": "^8.57.0"
   },
