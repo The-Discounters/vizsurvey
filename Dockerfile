@@ -1,5 +1,5 @@
 # Use the slim version of the node 14 image as our base
-FROM node:18-slim
+FROM node:22.11.0
 
 # Create a directory for our application in the container 
 RUN mkdir -p /vizsurvey
@@ -12,10 +12,10 @@ COPY . .
 
 
 # Install dependencies
-#RUN yarn workspaces focus --production
+RUN yarn workspaces focus --production
 #RUN yarn workspaces focus --all
 #RUN yarn install --immutable
-RUN yarn install
+#RUN yarn install
 
 # Build the SPA
 RUN yarn build:app

@@ -1,15 +1,27 @@
 # What is VizSurvey
 
-We created VizSurvey out of a need to have a tool with survey questions with an accompanying visualization that could be data driven for our masters thesis reasearch. We originally investigated using survey monkey and other online survey tools; however, they lacked the ability to embed visualizations and we could't find any with a REST API that would allow the visualizations to be driven off the survey questions, so we wrote VizSurvey.
+We created VizSurvey out of a need for a survey tool that could visualize interactive survey questions for our masters thesis reasearch in visualization. We originally investigated using survey monkey and other online survey tools; however, they lacked the ability to embed visualizations.
 
-The application is written in javascript with react using redux and uses firestore to retrieve treatment definitions, store survey answers, and assign survey treatments across participants. The application loads the treatments for the survey questionaire data, and renders the questions in a click through format making the data avialable to the react component that wraps the D3 visualization. The app connects
-to a google function to have treatment questions assigned to the participant and calls another google function to record answers.
+The application is written in javascript with react using redux and calls a firestore function to retrieve treatment definitions, assign survey questions to a participant, and store survey answers. The application loads the questions assigned to a participant from experiment configurations stored in firestore database. Experimental confighurations support both between and within subject study designs. Visualizations are rendered from the experiment question configurations using vega lite visualization library.
 
 We hope you find it useful.
 
 # Architecture
 
-Architecture is straight forward as a React SPA with redux using react router. The next buttons on each page update a status redux field and routing is driven in the react component off of the value of that field. A single redux slice currently contains all the application logic. We integrated the application with Prolific and treatment configurations and survey results are read from and written to firestore.
+Architecture is a React SPA with redux using react router. The next buttons on each page update a status redux field and routing is driven of of that field value. A single redux slice currently contains all the application logic. Survey results are read from and written to a firestore database.
+
+Complete redux state is written to a google function each time the user posts a response or navigates to the next page. We chose this approach since it allows reproduction of the front end application as seen by the user and our main concernt is optimizing what the user is experiencing (vs performance since volume of transactions is low).
+
+# Google functions
+
+The following google functions were implemented:
+
+1. Versioning - go to a URL like below (uses localhost)
+   `http://127.0.0.1:5001/vizsurvey-staging/us-central1/version`
+
+and the document returned contain the function version as well as the git commit id of the code.
+
+`{"version":"1.1","commitId":"54a4765570f6d06ad854ecddbcb75200638b702e"}`
 
 # Reference
 

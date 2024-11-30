@@ -34,7 +34,6 @@ import {
   orderQuestions,
   //incParticipantCompletedXaction,
 } from "./functionsUtil.js";
-import pkgJSON from "./package.json" assert { type: "json" };
 
 initializeApp();
 const db = getFirestore();
@@ -267,10 +266,10 @@ export const version = onRequest(
     ],
   },
   async (request, response) => {
-    logger.info(`version ${pkgJSON.version}`);
+    logger.info(`version ${process.env.npm_package_version}`);
     try {
       response.status(200).json({
-        version: pkgJSON.version,
+        version: process.env.npm_package_version,
         commitId: `${process.env.GIT_COMMIT_HASH}`,
       });
     } catch (err) {
