@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "../hooks/useNavigation.js";
 import {
   Typography,
   ThemeProvider,
@@ -47,6 +47,11 @@ const MELQuestionInstructions = () => {
   const [error, setError] = React.useState(false);
   const [helperText, setHelperText] = React.useState(" ");
   const status = useSelector(getStatus);
+
+  // Early return for SSR/prerendering when state is not initialized
+  if (!instructionTreatment || !currentQuestion || !experiment) {
+    return <div>Loading...</div>;
+  }
 
   useEffect(() => {
     dispatch(MCLInstructionsShown(dateToState(DateTime.now())));

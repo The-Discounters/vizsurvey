@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "../hooks/useNavigation.js";
 import { useSelector, useDispatch } from "react-redux";
 import { DateTime } from "luxon";
 import { ThemeProvider, StyledEngineProvider, Box } from "@mui/material";
@@ -43,6 +43,11 @@ export function MELSurvey() {
   const choice = useSelector(getCurrentChoice);
   const experiment = useSelector(getExperiment);
   const dragAmount = useSelector(getCurrentDragAmount);
+
+  // Early return for SSR/prerendering when state is not initialized
+  if (!q || !experiment) {
+    return <div>Loading...</div>;
+  }
 
   const handleKeyDownEvent = (event) => {
     switch (event.code) {

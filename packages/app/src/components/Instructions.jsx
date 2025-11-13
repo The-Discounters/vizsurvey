@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "../hooks/useNavigation.js";
 import {
   Button,
   Typography,
@@ -26,6 +26,11 @@ const Instructions = () => {
   const status = useSelector(getStatus);
   const experiment = useSelector(getExperiment);
   const navigate = useNavigate();
+
+  // Early return for SSR/prerendering when state is not initialized
+  if (!experiment) {
+    return <div>Loading...</div>;
+  }
 
   useEffect(() => {
     dispatch(instructionsShown(dateToState(DateTime.now())));

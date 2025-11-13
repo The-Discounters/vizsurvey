@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams } from "next/navigation";
 import { ThemeProvider, StyledEngineProvider, Box } from "@mui/material";
 import { AmountType } from "@the-discounters/types";
 import { useTranslation } from "react-i18next";
@@ -83,17 +83,17 @@ export function MELSurveyCompare() {
       try {
         console.log("about to call initFirestore.");
         initFirestore({
-          apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
-          authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
-          projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
-          messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
-          appId: process.env.REACT_APP_FIREBASE_APP_ID,
-          measurementId: process.env.REACT_APP_FIREBASE_MEASUREMENT_ID,
+          apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+          authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+          projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+          messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+          appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
+          measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
         });
         console.log("initFirestore returned.");
         console.log(
           `about to call readExperimentConfigurations with ${
-            process.env.REACT_APP_FIREBASE_SERVER_URL
+            process.env.NEXT_PUBLIC_FIREBASE_SERVER_URL
           }, ${searchParams.get("study_ids")}, ${searchParams.get(
             "study_ids"
           )}, ${searchParams.get("treatment_ids")}, ${searchParams.get(
@@ -101,7 +101,7 @@ export function MELSurveyCompare() {
           )}`
         );
         const data = await readExperimentConfigurations(
-          process.env.REACT_APP_FIREBASE_SERVER_URL,
+          process.env.NEXT_PUBLIC_FIREBASE_SERVER_URL,
           searchParams.get("study_ids"),
           searchParams.get("treatment_ids"),
           searchParams.get("question_order_ids")

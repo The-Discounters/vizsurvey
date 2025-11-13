@@ -53,25 +53,20 @@ Create a .env.dev, .env.prod, and .env.staging file in packages/app so that the 
 Modify the settings to the appropriate values.
 
 ```
-REACT_APP_ENV=<development or production>
-REACT_APP_VERSION=<product version>
-REACT_APP_FIREBASE_SERVER_URL=<from firebaseConfig template code in web app settings in firebase console>
-REACT_APP_FIREBASE_API_KEY=<from firebaseConfig template code in web app settings in firebase console>
-REACT_APP_FIREBASE_AUTH_DOMAIN=<from firebaseConfig template code in web app settings in firebase console>
-REACT_APP_FIREBASE_PROJECT_ID=<from firebaseConfig template code in web app settings in firebase console>
-REACT_APP_FIREBASE_MESSAGING_SENDER_ID=<from firebaseConfig template code in web app settings in firebase console>
-REACT_APP_FIREBASE_APP_ID=<from firebaseConfig template code in web app settings in firebase console>
-REACT_APP_FIREBASE_MEASUREMENT_ID=<from firebaseConfig template code in web app settings in firebase console>
-REACT_APP_SPONSOR_PHONE=<consent sponsor phone>
+NEXT_PUBLIC_ENV=<development or production>
+NEXT_PUBLIC_VERSION=<product version>
+NEXT_PUBLIC_FIREBASE_SERVER_URL=<from firebaseConfig template code in web app settings in firebase console>
+NEXT_PUBLIC_FIREBASE_API_KEY=<from firebaseConfig template code in web app settings in firebase console>
+NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=<from firebaseConfig template code in web app settings in firebase console>
+NEXT_PUBLIC_FIREBASE_PROJECT_ID=<from firebaseConfig template code in web app settings in firebase console>
+NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=<from firebaseConfig template code in web app settings in firebase console>
+NEXT_PUBLIC_FIREBASE_APP_ID=<from firebaseConfig template code in web app settings in firebase console>
+NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID=<from firebaseConfig template code in web app settings in firebase console>
+NEXT_PUBLIC_SPONSOR_PHONE=<consent sponsor phone>
 ```
 
 From https://stackoverflow.com/questions/42458434/how-to-set-build-env-variables-when-running-create-react-app-build-script
 npm start will set REACT_APP_NODE_ENV to development, and so it will automatically use the .env.development file, and npm run build sets REACT_APP_NODE_ENV to production, and so it will automatically use .env.production. Values set in these will override the values in your .env.
-
-### Installing Learna
-
-See https://lerna.js.org/.
-TODO add better instructions here.
 
 ### Installing yarn
 

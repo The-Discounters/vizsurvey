@@ -12,21 +12,21 @@
     "start": "yarn run shell",
     "test": "mocha './src/**/*.test.js' --timeout 5s",
     "test:watch": "mocha './src/**/*.test.js' --watch --parallel --timeout 5s",
-    "emulator:start": "echo \"Be sure to run source ../../../setenv.sh so that firebase SDK can find admin creds for live tests.  Set FIRESTORE_EMULATOR_HOST if using the emulator!\" && firebase emulators:start --project=vizsurvey-staging --inspect-functions --import ../import",
-    "emulator:dstart": "echo \"Be sure to run source ../../../setenv.sh so that firebase SDK can find admin creds for live tests.  Set FIRESTORE_EMULATOR_HOST if using the emulator!\" && firebase emulators:start --project=vizsurvey-staging --inspect-functions --import ../import",
+    "emulator:start": "echo \"Be sure to run source ../../../setenv<dev|staging|prod>.sh so that firebase SDK can find admin creds for live tests.  Set FIRESTORE_EMULATOR_HOST if using the emulator!\" && firebase emulators:start --project=vizsurvey-staging --inspect-functions --import ../import",
+    "emulator:dstart": "echo \"Be sure to run source ../../../setenv<dev|staging|prod>.sh so that firebase SDK can find admin creds for live tests.  Set FIRESTORE_EMULATOR_HOST if using the emulator!\" && firebase emulators:start --project=vizsurvey-staging --inspect-functions --import ../import",
     "download:int": "rm  -rf ../import/* || true && gsutil -m cp -r \"gs://${0}\" ../import && mv ../import/$(basename ${0})/* ../import && rmdir ../import/$(basename ${0})"
   },
   "dependencies": {
     "firebase": "^11.0.2",
-    "firebase-admin": "^12.0.0"
+    "firebase-admin": "^13.0.1"
   },
   "devDependencies": {
     "@firebase/rules-unit-testing": "^4.0.1",
     "@firebase/testing": "^0.20.11",
     "@the-discounters/firebase-test-shared": "*",
-    "eslint": "^8.57.0",
+    "eslint": "^9.16.0",
     "eslint-config-google": "^0.14.0",
     "jest": "^29.7.0",
-    "mocha": "^10.2.0"
+    "mocha": "^10.8.2"
   }
 }

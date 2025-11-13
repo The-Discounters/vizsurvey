@@ -10,18 +10,16 @@ WORKDIR /vizsurvey
 # Copy all files in the current directory into the container
 COPY . .
 
-
 # Install dependencies
 RUN yarn workspaces focus --production
-#RUN yarn workspaces focus --all
 #RUN yarn install --immutable
-#RUN yarn install
+RUN yarn install
 
 # Build the SPA
 RUN yarn build:app
 
 # Expose the port your SPA runs on
-EXPOSE 8080
+EXPOSE 3000
 #EXPOSE 443
 
 # Start the application

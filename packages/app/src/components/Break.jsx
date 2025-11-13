@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "../hooks/useNavigation.js";
 import {
   Button,
   Typography,
@@ -7,7 +7,7 @@ import {
   StyledEngineProvider,
   Container,
 } from "@mui/material";
-import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
+import Grid from "@mui/material/Grid2";
 import { useSelector, useDispatch } from "react-redux";
 import { DateTime } from "luxon";
 import "../App.css";
