@@ -7,7 +7,6 @@
   "scripts": {
     "lint": "eslint",
     "emulator:start": "echo \"Be sure to run source ../../../setenv<dev|staging|prod>.sh so that firebase SDK can find admin creds for live tests.  Set FIRESTORE_EMULATOR_HOST if using the emulator!\" && firebase emulators:start --project=vizsurvey-staging --inspect-functions --import ../import",
-    "emulator:dstart": "echo \"Be sure to run source ../../../setenv<dev|staging|prod>.sh so that firebase SDK can find admin creds for live tests.  Set FIRESTORE_EMULATOR_HOST if using the emulator!\" && firebase emulators:start --project=vizsurvey-staging --inspect-functions --import ../import",
     "shell": "firebase functions:shell",
     "start": "npm run shell",
     "deploy:staging": "firebase deploy -P staging --only functions --debug",

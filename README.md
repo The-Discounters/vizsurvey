@@ -2,30 +2,15 @@
 
 We created VizSurvey out of a need for a survey tool that could visualize interactive survey questions for our masters thesis reasearch in visualization. We originally investigated using survey monkey and other online survey tools; however, they lacked the ability to embed visualizations.
 
-The application is written in javascript with react using redux and calls a firestore function to retrieve treatment definitions, assign survey questions to a participant, and store survey answers. The application loads the questions assigned to a participant from experiment configurations stored in firestore database. Experimental confighurations support both between and within subject study designs. Visualizations are rendered from the experiment question configurations using vega lite visualization library.
+The application is written in javascript with react using redux and calls a firestore function to retrieve treatment definitions, assign survey questions to a participant, and store survey answers. The application loads the questions assigned to a participant from experiment configurations stored in a firestore database. Experimental confighurations support both between and within subject study designs. Visualizations are rendered from the experiment question configurations using vega lite visualization library.
 
 We hope you find it useful.
 
 # Architecture
 
-Architecture is a React SPA with redux using react router. The next buttons on each page update a status redux field and routing is driven of of that field value. A single redux slice currently contains all the application logic. Survey results are read from and written to a firestore database.
+Architecture is a React SPA with redux and nextjs. The next buttons on each page update a status redux field and routing is driven of of that field value. A single redux slice currently contains all the application logic. Survey results are read from and written to a firestore database.
 
 Complete redux state is written to a google function each time the user posts a response or navigates to the next page. We chose this approach since it allows reproduction of the front end application as seen by the user and our main concernt is optimizing what the user is experiencing (vs performance since volume of transactions is low).
-
-# Google functions
-
-The following google functions were implemented:
-
-1. Versioning - go to a URL like below (uses localhost)
-   `http://127.0.0.1:5001/vizsurvey-staging/us-central1/version`
-
-and the document returned contain the function version as well as the git commit id of the code.
-
-`{"version":"1.1","commitId":"54a4765570f6d06ad854ecddbcb75200638b702e"}`
-
-# Reference
-
-We looked at code from https://supp-exp-en.netlify.app/ for examples of how to style and implement the application.
 
 # Setup
 
@@ -80,8 +65,6 @@ In the root folder of the project run
 yarn install
 ```
 
-It's not clear to me if you have to run yarn install in each mono repo (folder under packages). Or maybe this is where lerna is relevant.
-
 Open a bash terminal and run
 
 ```console
@@ -124,10 +107,10 @@ To run the web app create a bash terminal and run
 
 ```console
 cd packages/app
-yarn run
+yarn start:dev or yarn start:prod
 ```
 
-A browswer should launch and then go to [https://localhost:3000/dev] and you will see a list of predefined
+A browswer should launch and then go to [https://localhost:3000] and you will see a list of predefined
 experiments you can launch into on the app.
 
 If you want to re-import the data, go to the emulator and click the "Clear all data" button. Then
@@ -148,14 +131,12 @@ You can also run the command below to install the CLI globally so you can run it
 npm install -g
 ```
 
-# Getting Started with Create React App
-
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Other scripts
 
 ## Available Scripts
 
 Runs the app in the development mode.\
-Open [https://localhost:3000/dev] to view it in the browser.
+Open [https://localhost:3000] to view it in the browser.
 
 The page will reload if you make edits.\
 You will also see any lint errors in the console.
@@ -164,7 +145,7 @@ To run using .env.production use
 
 ### Running file server (needed for Cypress tests)
 
-THIS IS GOING TO BE DELETED SINCE DATA IS READ FROM AND WRITTEN TO GOOGLE FUNCTIONS.
+TODO THIS IS GOING TO BE DELETED SINCE DATA IS READ FROM AND WRITTEN TO GOOGLE FUNCTIONS.
 cd into the test folder and also run `yarn start` in a separate terminal if you want the file server to run. This is needed to run cypres tests. If this is the first time then you need to run `yarn install` from the test folder.
 
 ### `yarn build; serve -s build`
@@ -182,17 +163,7 @@ Your app is ready to be deployed!
 
 See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
 
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-### Production URLs
+### Production URLs - TODO update there when I get hosting on google cloud working.
 
 Below are the production urls for each treatment.
 
@@ -263,6 +234,29 @@ $ffmpeg -i in.mov -pix_fmt rgb8 -r 10 output.gif && gifsicle -O3 output.gif -o o
 ```
 
 `&& gifsicle` ended up not being installed, but it seems to only optimize the gif which I did not need
+
+# Google functions
+
+The following google functions were implemented:
+
+1. Versioning - go to a URL like below (uses localhost)
+   `http://127.0.0.1:5001/vizsurvey-staging/us-central1/version`
+
+and the document returned contain the function version as well as the git commit id of the code.
+
+`{"version":"1.1","commitId":"54a4765570f6d06ad854ecddbcb75200638b702e"}`
+
+2. signup - signs up a participant for an experiment.  Distributes treatments with latin square design for between subject studies.
+
+3. updateState - ustores the redux state in firestore.
+
+4. version - returns the version and git commit of the google functions code.
+
+5. readExperimentConfigurations - returns the experiment configurations from firestore.  Used for side by side comparison of configurations.
+
+# Reference
+
+We looked at code from https://supp-exp-en.netlify.app/ for examples of how to style and implement the application.
 
 ### links I found useful while developing
 

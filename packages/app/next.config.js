@@ -15,8 +15,36 @@ const nextConfig = {
     NEXT_PUBLIC_ENV: process.env.NEXT_PUBLIC_ENV,
     NEXT_PUBLIC_VERSION: process.env.NEXT_PUBLIC_VERSION,
   },
-  webpack: (config, { isServer }) => {
-    // Handle any special webpack configurations if needed
+  webpack: (config) => {
+    // Allow ReactComponent-style SVG imports (parity with CRA)
+    const fileLoaderRule = config.module.rules.find((rule) =>
+      rule.test?.test?.('.svg')
+    );
+
+    if (fileLoaderRule) {
+      fileLoaderRule.exclude = /\.svg$/i;
+    }
+
+    config.module.rules.push({
+      test: /\.svg$/i,
+      issuer: /\.[jt]sx?$/,
+      use: [
+        {
+          loader: '@svgr/webpack',
+          options: {
+            titleProp: true,
+            exportType: 'named',
+            namedExport: 'ReactComponent',
+          },
+        },
+      ],
+    });
+
+    config.resolve.alias = {
+      ...(config.resolve.alias || {}),
+      canvas: false,
+    };
+
     return config;
   },
 };

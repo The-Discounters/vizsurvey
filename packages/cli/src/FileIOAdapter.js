@@ -126,6 +126,7 @@ export const exportParticipantsToJSON = async (db, studyId, filename) => {
     db,
     studyId
   );
+    if (!experiment) throw Error(`experiment for studyId ${studyId} not found`);
   const fileData = convertFields(
     {
       ...experiment,
@@ -138,6 +139,7 @@ export const exportParticipantsToJSON = async (db, studyId, filename) => {
 
 export const exportAuditToJSON = async (db, studyId, filename) => {
   const { experiment, audit } = await readExperimentAndAudit(db, studyId);
+  if (!experiment) throw Error(`experiment for studyId ${studyId} not found`);
   const fileData = convertFields(
     {
       ...experiment,
@@ -175,6 +177,7 @@ export const exportExperimentParticipantsAndAuditToJSON = async (
 export const exportAuditToCSV = async (db, studyId, filename) => {
   console.log("...exporting audit to CSV.");
   const { experiment, audit } = await readExperimentAndAudit(db, studyId);
+  if (!experiment) throw Error(`experiment for studyId ${studyId} not found`);
   const array = [];
   audit.forEach((cv) => {
     console.log(`...exporting audit ${cv.participantId}.`);
@@ -225,6 +228,7 @@ export const exportParticipantsToCSV = async (db, studyId, filename) => {
     db,
     studyId
   );
+  if (!experiment) throw Error(`experiment for studyId ${studyId} not found`);
   const array = [];
   // MAP map to patchup newly added field derivedFromQuestionId for 7/10/24 experiment.  Removed for next experiment
   const derivedFieldsMap = {
