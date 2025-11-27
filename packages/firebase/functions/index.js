@@ -34,7 +34,6 @@ import {
   orderQuestions,
   //incParticipantCompletedXaction,
 } from "./functionsUtil.js";
-import pkgJSON from "./package.json" assert { type: "json" };
 
 initializeApp();
 const db = getFirestore();
@@ -67,7 +66,7 @@ export const signup = onRequest(
   },
   async (request, response) => {
     logger.info(
-      `signup prolific_pid=${request.query.prolific_pid}, study_id=${request.query.study_id}, session_id=${request.query.session_id}, treatment_ids=${request.query.treatment_ids}`
+      `signup request prolific_pid=${request.query.prolific_pid}, study_id=${request.query.study_id}, session_id=${request.query.session_id}, treatment_ids=${request.query.treatment_ids}`
     );
     const participantId = request.query.prolific_pid;
     const studyId = request.query.study_id;
@@ -102,7 +101,7 @@ export const signup = onRequest(
       logger.info(
         `signup reading back experiment for prolificPid=${participantId}, studyId=${studyId}, sessionId=${sessionId}`
       );
-      const exp = validateExperiment(
+      const exp =  validateExperiment(
         await readExperimentAndQuestions(db, studyId)
       );
       // It's possible other participants signed up and the count increased so we can't check equal to
@@ -149,9 +148,15 @@ export const signup = onRequest(
       logger.error(
         `signup ${err.message} participantId=${participantId}, studyId=${studyId}, sessionId=${sessionId}`
       );
-      response
-        .status(err.httpstatus ? err.httpstatus : 500)
-        .json({ status: err.reason ? err.reason : ServerStatusType.error });
+      if (err.message == `Experiment not found for studyId ${studyId}`) {
+        response
+          .status(404)
+          .json({ status: ServerStatusType.notfound });
+      } else {
+        response
+          .status(err.httpstatus ? err.httpstatus : 500)
+          .json({ status: err.reason ? err.reason : ServerStatusType.error });
+      }
     }
   }
 );
@@ -184,7 +189,7 @@ export const updateState = onRequest(
           reason: ServerStatusType.invalid,
         });
       }
-      const exp = await validateExperiment(await readExperiment(db, studyId));
+      const exp = validateExperiment(await readExperiment(db, studyId));
       logger.info(
         `updateState requestSequence=${requestSequence} fetched experiment ${exp.experimentId} for studyId=${studyId}, numParticipantsStarted = ${exp.numParticipantsStarted}, numParticipants = ${exp.numParticipants}, status = ${exp.status}, prolificPid = ${participantId}, sessionId = ${sessionId}`
       );
@@ -250,9 +255,15 @@ export const updateState = onRequest(
       logger.error(
         `updateState requestSequence=${requestSequence}, ${err.message}, httpstatus=${err.httpstatus} participantId=${participantId}, studyId=${studyId}, sessionId=${sessionId}`
       );
+      if (err.message == `Experiment not found for studyId ${studyId}`) {
+        response
+          .status(404)
+          .json({ status: ServerStatusType.notfound });
+      } else {
       response
         .status(err.httpstatus ? err.httpstatus : 500)
         .json({ status: err.reason ? err.reason : ServerStatusType.error });
+      }
     }
   }
 );
@@ -267,10 +278,10 @@ export const version = onRequest(
     ],
   },
   async (request, response) => {
-    logger.info(`version ${pkgJSON.version}`);
+    logger.info(`version ${process.env.npm_package_version}`);
     try {
       response.status(200).json({
-        version: pkgJSON.version,
+        version: process.env.npm_package_version,
         commitId: `${process.env.GIT_COMMIT_HASH}`,
       });
     } catch (err) {
@@ -372,9 +383,15 @@ export const readExperimentConfigurations = onRequest(
       logger.error(
         `readExperimentConfigurations ${err.message}, studyIds=${studyIds}`
       );
+      if (err.message == `Experiment not found for studyId ${studyId}`) {
+        response
+          .status(404)
+          .json({ status: ServerStatusType.notfound });
+      } else {
       response
         .status(err.httpstatus ? err.httpstatus : 500)
         .json({ status: err.reason ? err.reason : ServerStatusType.error });
+      }
     }
   }
 );

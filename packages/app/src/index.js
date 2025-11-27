@@ -1,6 +1,5 @@
 import React from "react";
 import { createRoot } from "react-dom/client";
-import { enableAllPlugins } from "immer";
 import { Provider } from "react-redux";
 import { BrowserRouter } from "react-router-dom";
 import { store } from "./app/store.js";
@@ -10,8 +9,6 @@ import App from "./App.js";
 import reportWebVitals from "./reportWebVitals.js";
 // import i18n (needs to be bundled ;))
 import "./i18n";
-
-enableAllPlugins();
 
 const container = document.getElementById("root");
 const root = createRoot(container); // createRoot(container!) if you use TypeScript

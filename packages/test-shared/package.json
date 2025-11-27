@@ -11,7 +11,7 @@
   },
   "devDependencies": {
     "@the-discounters/util": "workspace:^",
-    "eslint": "^8.57.0",
+    "eslint": "^9.16.0",
     "eslint-config-google": "^0.14.0"
   }
 }

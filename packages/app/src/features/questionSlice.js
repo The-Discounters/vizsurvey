@@ -14,15 +14,15 @@ export const initializeSurvey = createAsyncThunk(
     const result = { ...parameters };
     try {
       initFirestore({
-        apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
-        authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
-        projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
-        messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
-        appId: process.env.REACT_APP_FIREBASE_APP_ID,
-        measurementId: process.env.REACT_APP_FIREBASE_MEASUREMENT_ID,
+        apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+        authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+        projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+        messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+        appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
+        measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
       });
       const data = await signupParticipant(
-        process.env.REACT_APP_FIREBASE_SERVER_URL,
+        process.env.NEXT_PUBLIC_FIREBASE_SERVER_URL,
         parameters.participantId,
         parameters.studyId,
         parameters.sessionId,
@@ -356,16 +356,25 @@ export const getExperienceSurveyAnswers = (state) =>
 export const getCurrentQuestionIndex = (state) =>
   state.questions.currentAnswerIdx;
 
-export const getInstructionTreatment = (state) =>
-  qe.currentInstructions(state.questions);
+export const getInstructionTreatment = (state) => {
+  try {
+    return qe.currentInstructions(state.questions);
+  } catch {
+    return null;
+  }
+};
 
 export const getCurrentQuestion = (state) => qe.currentAnswer(state.questions);
 
-export const getCurrentChoice = (state) =>
-  qe.currentAnswer(state.questions).choice;
+export const getCurrentChoice = (state) => {
+  const current = qe.currentAnswer(state.questions);
+  return current?.choice;
+};
 
-export const getCurrentDragAmount = (state) =>
-  qe.currentAnswer(state.questions).dragAmount;
+export const getCurrentDragAmount = (state) => {
+  const current = qe.currentAnswer(state.questions);
+  return current?.dragAmount;
+};
 
 export const getStatus = (state) => state.questions.status;
 

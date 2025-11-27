@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "../hooks/useNavigation.js";
 import { DateTime } from "luxon";
 import {
   Button,
@@ -33,6 +33,11 @@ export function Consent() {
   const experiment = useSelector(getExperiment);
 
   const navigate = useNavigate();
+
+  // Early return for SSR/prerendering when state is not initialized
+  if (!experiment) {
+    return <div>Loading...</div>;
+  }
 
   const handleChange = (event) => {
     setChecked(event.target.checked);

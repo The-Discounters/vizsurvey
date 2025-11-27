@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { DateTime } from "luxon";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "../hooks/useNavigation.js";
 import {
   TextField,
   Button,
@@ -9,7 +9,7 @@ import {
   StyledEngineProvider,
   Container,
 } from "@mui/material";
-import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
+import Grid from "@mui/material/Grid2";
 import InputLabel from "@mui/material/InputLabel";
 import FormHelperText from "@mui/material/FormHelperText";
 import FormControl from "@mui/material/FormControl";

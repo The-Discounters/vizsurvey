@@ -21,6 +21,9 @@ export const initFirestore = (projectId, databaseURL, adminCred) => {
 const readTreatmentQuestions = async (db, expPath) => {
   const result = [];
   const tqds = await db.collection(`${expPath}/treatmentQuestions`).get();
+  // if (tqds.empty) {
+  //   throw Error(`Experiment questions not found for path ${expPath}`);
+  // }
   for (let j = 0; j < tqds.size; j++) {
     const tqd = tqds.docs[j];
     const treatmentSnapshot = await tqd.data().treatmentId.get();
@@ -38,6 +41,11 @@ const readTreatmentQuestions = async (db, expPath) => {
 const readCollection = async (db, path) => {
   const result = [];
   const col = await db.collection(path).get();
+  if (col.empty) {
+  if (tqds.empty) {
+    throw Error(`Experiment not found for path ${path}`);
+  }
+  }
   col.forEach((doc) => {
     result.push({ path: doc.ref.path, ...doc.data() });
   });
@@ -57,7 +65,7 @@ export const readExperimentDocXaction = async (db, transaction, studyId) => {
   const q = expRef.where("prolificStudyId", "==", studyId);
   const expSnapshot = await transaction.get(q);
   if (expSnapshot.docs.length != 1) {
-    return null;
+    throw Error(`Experiment not found for studyId ${studyId}`);
   }
   return expSnapshot.docs[0];
 };
@@ -67,7 +75,7 @@ export const readExperimentDoc = async (db, studyId) => {
   const q = expRef.where("prolificStudyId", "==", studyId);
   const expSnapshot = await q.get(q);
   if (expSnapshot.docs.length != 1) {
-    return null;
+    throw Error(`Experiment not found for studyId ${studyId}`);
   }
   return expSnapshot.docs[0];
 };

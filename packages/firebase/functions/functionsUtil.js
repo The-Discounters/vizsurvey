@@ -89,13 +89,7 @@ export const randomizeQuestionSequence = (questions) => {
 };
 
 export const validateExperiment = (exp) => {
-  if (!exp) {
-    throw new StatusError({
-      message: "tried to access experiment that was not found",
-      httpstatus: 400,
-      reason: ServerStatusType.invalid,
-    });
-  } else if (exp.status !== ProlificSumbissionStatusType.active) {
+if (exp.status !== ProlificSumbissionStatusType.active) {
     throw new StatusError({
       message: `tried to access experiment that is not active (${exp.status})`,
       httpstatus: 400,

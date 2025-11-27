@@ -261,6 +261,10 @@ program
     const { db } = initializeDB();
     readExperimentAndQuestions(db, studyId)
       .then((exp) => {
+        if (!exp) {
+          console.log(chalk.red(`Experiment ${studyId} not found.`));
+          return;
+        }
         let treatmentIds = exp.treatmentQuestions
           .filter((question) => !question.instructionQuestion)
           .sort((a, b) => a.treatmentId - b.treatmentId)
@@ -339,6 +343,7 @@ const importWithoutParent = (db, collection, data) => {
 
 const importWithParent = async (db, collection, data, linkFields) => {
   const experiments = await readExperimentsAndQuestions(db);
+  if (!experiments) throw Error(`no experiments found in database`);
   for (const exp of experiments) {
     const dataToWrite = data.filter(
       (v) => v[linkFields.rightField] === exp[linkFields.leftField]
@@ -471,6 +476,7 @@ program
       const { db } = initializeDB();
       readExperimentParticipantsAndAudit(db, experiment).then(
         ({ experiment, participants, audit }) => {
+          if (!experiment) throw Error(`experiment for studyId ${experiment} not found`);
           const result = validateExperimentData(
             experiment,
             participants,
