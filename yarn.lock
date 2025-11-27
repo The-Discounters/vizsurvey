@@ -9218,12 +9218,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"build-be2f3e@workspace:packages/app/build":
-  version: 0.0.0-use.local
-  resolution: "build-be2f3e@workspace:packages/app/build"
-  languageName: unknown
-  linkType: soft
-
 "bundle-name@npm:^4.1.0":
   version: 4.1.0
   resolution: "bundle-name@npm:4.1.0"
@@ -11511,12 +11505,6 @@ __metadata:
   checksum: 10c0/f039f601790f2e9d4654e499913259a798b1f5246ae24f86ab5e8bd4aaf3bce50484234c494f11fb00aecb0c6e2733aa7b1cf3f530865640b65fbbd65b2c4e09
   languageName: node
   linkType: hard
-
-"dev-7ff811@workspace:packages/app/build/dev":
-  version: 0.0.0-use.local
-  resolution: "dev-7ff811@workspace:packages/app/build/dev"
-  languageName: unknown
-  linkType: soft
 
 "devalue@npm:^4.3.2":
   version: 4.3.3
@@ -23657,12 +23645,6 @@ __metadata:
   checksum: 10c0/4ac5b7a93d604edabf3ac58d3a2f7e07487e9f6e98195a080e81dbffdc4127817f470f219d794a843b87052cedef102b53ac9b539855380b8c2172054b7d5027
   languageName: node
   linkType: hard
-
-"types-a90e2b@workspace:packages/app/build/types":
-  version: 0.0.0-use.local
-  resolution: "types-a90e2b@workspace:packages/app/build/types"
-  languageName: unknown
-  linkType: soft
 
 "typescript@npm:^5.7.2":
   version: 5.7.2

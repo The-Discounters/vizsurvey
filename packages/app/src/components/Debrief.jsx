@@ -11,7 +11,7 @@ import {
   Box,
 } from "@mui/material";
 import TextField from "@mui/material/TextField";
-import { ViewType } from "@the-discounters/types";
+import { ViewType, StatusType } from "@the-discounters/types";
 import {
   getStatus,
   getInstructionTreatment,
@@ -46,6 +46,9 @@ const Debrief = () => {
   }, []);
 
   useEffect(() => {
+    if (status === StatusType.Debrief) {
+      return;
+    }
     const path = navigateFromStatus(status);
     navigate(path);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -160,7 +163,7 @@ const Debrief = () => {
             <Typography paragraph>
               We hope you have enjoyed taking this survey and welcome any
               feedback or questions by filling out the text box below and
-              clicking the submit feedback button. We particularly appreciate
+              clicking the Next button. We particularly appreciate
               any feedback about your thought process in making the money
               choices.
             </Typography>
@@ -193,7 +196,7 @@ const Debrief = () => {
                   dispatch(debriefCompleted(dateToState(DateTime.now())));
                 }}
               >
-                Submit Feedback
+                Next
               </Button>
             </Box>
           </Container>

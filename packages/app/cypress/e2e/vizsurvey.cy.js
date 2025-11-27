@@ -206,7 +206,7 @@ function visitStudyExplanation(answerOptional) {
   if (answerOptional) {
     cy.get("#Feedback").type("survey was good");
   }
-  cy.get("button").contains("Submit Feedback").click();
+  cy.get("button").contains("Next").click();
 }
 
 function visitFinished() {
