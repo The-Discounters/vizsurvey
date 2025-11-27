@@ -32,6 +32,11 @@ packages/test/public
 /build
 /packages/firebase/functions/temp
 
+# Next.js
+.next/
+out/
+next-env.d.ts
+
 # misc
 .DS_Store
 
@@ -88,3 +93,4 @@ amplifytools.xcconfig
 !.yarn/versions
 
 backups/**
+scripts/set-env-vars.sh

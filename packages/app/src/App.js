@@ -26,7 +26,7 @@ import { StatusType } from "@the-discounters/types";
 import { Consent } from "./components/Consent.jsx";
 import { getRandomIntInclusive } from "@the-discounters/util";
 
-const TEST_LINKS_STUDY_ID = "xxxxxxxxxxxxxxxxxxxxxxx"; // The prolificId of the study to lauch into from the test links.
+const TEST_LINKS_STUDY_ID = "xxxxxxxxxxxxxxxxxxxxxxxx"; // The prolificId of the study to lauch into from the test links.
 const TEST_COMPARE_STUDY_IDS =
   "6685e0aae211360468e28eb4,xxxxxxxxxxxxxxxxxxxxxxxx"; // The prolific study ids to compare on the compare page.
 const TEST_LINKS_COMPARE_STUDY_DESC =
@@ -62,7 +62,7 @@ class ErrorBoundary extends React.Component {
 const App = () => {
   console.log(
     chalk.yellow(
-      `Running for ${process.env.REACT_APP_ENV}, app version ${process.env.REACT_APP_VERSION}`
+      `Running for ${process.env.NEXT_PUBLIC_ENV}, app version ${process.env.NEXT_PUBLIC_VERSION}`
     )
   );
   return (
@@ -94,7 +94,7 @@ const App = () => {
           <Route
             path="*"
             element={
-              process.env.REACT_APP_ENV !== "production" ? (
+              process.env.NEXT_PUBLIC_ENV !== "production" ? (
                 <DevHome />
               ) : (
                 <InvalidSurveyLink />

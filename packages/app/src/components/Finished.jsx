@@ -21,6 +21,11 @@ const Finished = () => {
   const experiment = useSelector(getExperiment);
   const processingRequests = React.useContext(Context);
 
+  // Early return for SSR/prerendering when state is not initialized
+  if (!experiment) {
+    return <div>Loading...</div>;
+  }
+
   useEffect(() => {
     dispatch(finishedShownTimestamp(dateToState(DateTime.now())));
     // eslint-disable-next-line react-hooks/exhaustive-deps

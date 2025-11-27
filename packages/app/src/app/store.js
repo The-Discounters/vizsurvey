@@ -6,7 +6,7 @@ import { StatusType } from "@the-discounters/types";
 export const saveStateAsync = async (state) => {
   try {
     updateState(
-      process.env.REACT_APP_FIREBASE_SERVER_URL,
+      process.env.NEXT_PUBLIC_FIREBASE_SERVER_URL,
       state.participantId,
       state.studyId,
       state.sessionId,

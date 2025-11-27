@@ -49,7 +49,7 @@ const resetExperiments = async (db) => {
 // This function with the corresponding test was created to validate without a transaction, the code would generate duplicate sequence ids.
 // const assignParticipantSequenceNumber = async (db, studyId) => {
 //   const expDoc = await readExperimentDoc(db, studyId);
-//   validateExperiment(expDoc.data());
+//   validateExperiment(expDoc);
 //   if (expDoc.data().numParticipantsStarted === expDoc.data().numParticipants) {
 //     throw new StatusError({
 //       message: `participant tried starting survey after the number of participants (${

@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useContext } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { DateTime } from "luxon";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "../hooks/useNavigation.js";
 import {
   Button,
   Typography,
@@ -34,6 +34,11 @@ const Debrief = () => {
   const instructionTreatment = useSelector(getInstructionTreatment);
   const [comment, setComment] = useState("");
   const processingRequests = useContext(Context);
+
+  // Early return for SSR/prerendering when state is not initialized
+  if (!instructionTreatment || !experiment) {
+    return <div>Loading...</div>;
+  }
 
   useEffect(() => {
     dispatch(debriefShownTimestamp(dateToState(DateTime.now())));

@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "../hooks/useNavigation.js";
 import { useDispatch, useSelector } from "react-redux";
 import { DateTime } from "luxon";
 import {
