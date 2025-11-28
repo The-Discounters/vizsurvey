@@ -50,9 +50,16 @@ const Debrief = () => {
       return;
     }
     const path = navigateFromStatus(status);
+    if (typeof window !== "undefined" && path === window.location.pathname) {
+      return;
+    }
     navigate(path);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status]);
+
+  if (processingRequests || status !== StatusType.Debrief) {
+    return <Spinner text="Your answers are being saved..." />;
+  }
 
   const handleFieldChange = (event, setter) => {
     setter(event.target.value);
@@ -83,13 +90,11 @@ const Debrief = () => {
         return "*** SHOULD NOT SEE THIS TEXT ***";
     }
   };
-  if (processingRequests) {
-    return <Spinner text="Your answers are being saved..." />;
-  } else {
-    return (
-      <StyledEngineProvider injectFirst>
-        <ThemeProvider theme={theme}>
-          <Container maxWidth="lg" disableGutters={false}>
+
+  return (
+    <StyledEngineProvider injectFirst>
+      <ThemeProvider theme={theme}>
+        <Container maxWidth="lg" disableGutters={false}>
             <Typography variant="h4">Study Explanation</Typography>
             <hr
               style={{
@@ -199,11 +204,10 @@ const Debrief = () => {
                 Next
               </Button>
             </Box>
-          </Container>
-        </ThemeProvider>
-      </StyledEngineProvider>
-    );
-  }
+        </Container>
+      </ThemeProvider>
+    </StyledEngineProvider>
+  );
 };
 
 export default Debrief;
