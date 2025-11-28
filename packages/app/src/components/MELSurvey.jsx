@@ -29,6 +29,7 @@ import { MELBarChartComponent } from "./MELBarChartComponent.js";
 import { MELWordComponent } from "./MELWordComponent.js";
 import { theme } from "./ScreenHelper.js";
 import { navigateFromStatus } from "./Navigate.js";
+import Spinner from "../components/Spinner.js";
 
 export function MELSurvey() {
   const dispatch = useDispatch();
@@ -126,6 +127,10 @@ export function MELSurvey() {
     navigate(path);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status]);
+
+  if (status !== StatusType.Survey) {
+    return <Spinner text="Preparing the next set of questions..." />;
+  }
 
   const showSelectionHint = (selection) => {
     let errorMsg;

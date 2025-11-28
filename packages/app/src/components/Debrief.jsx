@@ -35,15 +35,13 @@ const Debrief = () => {
   const [comment, setComment] = useState("");
   const processingRequests = useContext(Context);
 
-  // Early return for SSR/prerendering when state is not initialized
-  if (!instructionTreatment || !experiment) {
-    return <div>Loading...</div>;
-  }
-
   useEffect(() => {
+    if (!instructionTreatment || !experiment) {
+      return;
+    }
     dispatch(debriefShownTimestamp(dateToState(DateTime.now())));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [instructionTreatment, experiment]);
 
   useEffect(() => {
     if (status === StatusType.Debrief) {
@@ -56,6 +54,10 @@ const Debrief = () => {
     navigate(path);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status]);
+
+  if (!instructionTreatment || !experiment) {
+    return <Spinner text="Loading..." />;
+  }
 
   if (processingRequests || status !== StatusType.Debrief) {
     return <Spinner text="Your answers are being saved..." />;
