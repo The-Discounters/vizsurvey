@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { DateTime } from "luxon";
 import { useNavigate } from "../hooks/useNavigation.js";
@@ -13,7 +13,6 @@ import {
 import TextField from "@mui/material/TextField";
 import { ViewType, StatusType } from "@the-discounters/types";
 import {
-  getStatus,
   getInstructionTreatment,
   getExperiment,
   setFeedback,
@@ -23,17 +22,20 @@ import {
 import { dateToState } from "@the-discounters/util";
 import { styles, theme } from "./ScreenHelper.js";
 import { navigateFromStatus } from "./Navigate.js";
-import Spinner from "../components/Spinner.js";
-import { Context } from "../app/ReactContext.js";
+import { useScreenGuard } from "../hooks/useScreenGuard.js";
 
 const Debrief = () => {
   const dispatch = useDispatch();
-  const status = useSelector(getStatus);
   const experiment = useSelector(getExperiment);
   const navigate = useNavigate();
   const instructionTreatment = useSelector(getInstructionTreatment);
   const [comment, setComment] = useState("");
-  const processingRequests = useContext(Context);
+  const { isReady, spinner, status } = useScreenGuard({
+    expectedStatus: StatusType.Debrief,
+    isDataReady: Boolean(instructionTreatment && experiment),
+    loadingText: "Loading...",
+    savingText: "Your answers are being saved...",
+  });
 
   useEffect(() => {
     if (!instructionTreatment || !experiment) {
@@ -55,12 +57,8 @@ const Debrief = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status]);
 
-  if (!instructionTreatment || !experiment) {
-    return <Spinner text="Loading..." />;
-  }
-
-  if (processingRequests || status !== StatusType.Debrief) {
-    return <Spinner text="Your answers are being saved..." />;
+  if (!isReady) {
+    return spinner;
   }
 
   const handleFieldChange = (event, setter) => {

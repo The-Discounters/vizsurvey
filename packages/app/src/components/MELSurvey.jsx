@@ -19,7 +19,6 @@ import {
   getCurrentChoice,
   getCurrentDragAmount,
   getCurrentQuestionIndex,
-  getStatus,
   getExperiment,
   setQuestionShownTimestamp,
   nextQuestion,
@@ -29,7 +28,7 @@ import { MELBarChartComponent } from "./MELBarChartComponent.js";
 import { MELWordComponent } from "./MELWordComponent.js";
 import { theme } from "./ScreenHelper.js";
 import { navigateFromStatus } from "./Navigate.js";
-import Spinner from "../components/Spinner.js";
+import { useScreenGuard } from "../hooks/useScreenGuard.js";
 
 export function MELSurvey() {
   const dispatch = useDispatch();
@@ -40,15 +39,16 @@ export function MELSurvey() {
   const [helperText, setHelperText] = useState(" ");
   const q = useSelector(getCurrentQuestion);
   const qi = useSelector(getCurrentQuestionIndex);
-  const status = useSelector(getStatus);
   const choice = useSelector(getCurrentChoice);
   const experiment = useSelector(getExperiment);
   const dragAmount = useSelector(getCurrentDragAmount);
-
-  // Early return for SSR/prerendering when state is not initialized
-  if (!q || !experiment) {
-    return <div>Loading...</div>;
-  }
+  const { isReady, spinner, status } = useScreenGuard({
+    expectedStatus: StatusType.Survey,
+    isDataReady: Boolean(q && experiment),
+    loadingText: "Loading...",
+    savingText: "Preparing the next set of questions...",
+    suppressSavingOnMatch: true,
+  });
 
   const handleKeyDownEvent = (event) => {
     switch (event.code) {
@@ -128,8 +128,8 @@ export function MELSurvey() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status]);
 
-  if (status !== StatusType.Survey) {
-    return <Spinner text="Preparing the next set of questions..." />;
+  if (!isReady) {
+    return spinner;
   }
 
   const showSelectionHint = (selection) => {

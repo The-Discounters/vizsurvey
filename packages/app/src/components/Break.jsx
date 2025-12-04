@@ -14,20 +14,26 @@ import "../App.css";
 import {
   breakShown,
   breakCompleted,
-  getStatus,
   getRemainingTreatmentCount,
   getCompletedTreatmentCount,
 } from "../features/questionSlice.js";
 import { dateToState } from "@the-discounters/util";
 import { navigateFromStatus } from "./Navigate.js";
 import { styles, theme } from "./ScreenHelper.js";
+import { useScreenGuard } from "../hooks/useScreenGuard.js";
+import { StatusType } from "@the-discounters/types";
 
 const Break = () => {
   const dispatch = useDispatch();
-  const status = useSelector(getStatus);
   const remainingTreatments = useSelector(getRemainingTreatmentCount);
   const completedTreatments = useSelector(getCompletedTreatmentCount);
   const navigate = useNavigate();
+  const { isReady, spinner, status } = useScreenGuard({
+    expectedStatus: StatusType.Break,
+    isDataReady:
+      typeof remainingTreatments === "number" &&
+      typeof completedTreatments === "number",
+  });
 
   useEffect(() => {
     dispatch(breakShown(dateToState(DateTime.now())));
@@ -39,6 +45,10 @@ const Break = () => {
     navigate(path);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status]);
+
+  if (!isReady) {
+    return spinner;
+  }
 
   return (
     <StyledEngineProvider injectFirst>

@@ -16,28 +16,28 @@ import { useSelector, useDispatch } from "react-redux";
 import {
   consentShown,
   consentCompleted,
-  getStatus,
   getExperiment,
 } from "../features/questionSlice.js";
 import { dateToState } from "@the-discounters/util";
 import { navigateFromStatus } from "./Navigate.js";
 import { styles, theme } from "./ScreenHelper.js";
 import "../App.css";
+import { StatusType } from "@the-discounters/types";
+import { useScreenGuard } from "../hooks/useScreenGuard.js";
 
 export function Consent() {
   const dispatch = useDispatch();
 
   const [disableSubmit, setDisableSubmit] = React.useState(true);
   const [checked, setChecked] = React.useState(false);
-  const status = useSelector(getStatus);
   const experiment = useSelector(getExperiment);
 
   const navigate = useNavigate();
 
-  // Early return for SSR/prerendering when state is not initialized
-  if (!experiment) {
-    return <div>Loading...</div>;
-  }
+  const { isReady, spinner, status } = useScreenGuard({
+    expectedStatus: StatusType.Consent,
+    isDataReady: Boolean(experiment),
+  });
 
   const handleChange = (event) => {
     setChecked(event.target.checked);
@@ -54,6 +54,10 @@ export function Consent() {
     navigate(path);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status]);
+
+  if (!isReady) {
+    return spinner;
+  }
 
   const ConsentTextEn = () => {
     return (

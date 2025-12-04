@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { DateTime } from "luxon";
 import { useNavigate } from "../hooks/useNavigation.js";
 import {
@@ -16,6 +16,8 @@ import FormControl from "@mui/material/FormControl";
 import NativeSelect from "@mui/material/NativeSelect";
 import { useSelector, useDispatch } from "react-redux";
 import { navigateFromStatus } from "./Navigate.js";
+import { useScreenGuard } from "../hooks/useScreenGuard.js";
+import { StatusType } from "@the-discounters/types";
 import * as countries from "./countries.json";
 import {
   getCountryOfResidence,
@@ -154,6 +156,15 @@ export function Consent() {
 
   const navigate = useNavigate();
 
+  const isDataReady = useMemo(() => {
+    return Boolean(countryOfResidence !== undefined && vizFamiliarity !== undefined);
+  }, [countryOfResidence, vizFamiliarity]);
+
+  const { isReady, spinner } = useScreenGuard({
+    expectedStatus: StatusType.Demographic,
+    isDataReady,
+  });
+
   useEffect(() => {
     dispatch(demographicShown(dateToState(DateTime.now())));
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -223,6 +234,10 @@ export function Consent() {
       value: 7,
     },
   ];
+
+  if (!isReady) {
+    return spinner;
+  }
 
   return (
     <StyledEngineProvider injectFirst>

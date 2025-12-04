@@ -13,50 +13,50 @@ import {
 } from "../features/questionSlice.js";
 import { dateToState } from "@the-discounters/util";
 import { theme } from "./ScreenHelper.js";
-import Spinner from "../components/Spinner.js";
-import { Context } from "../app/ReactContext.js";
+import { StatusType } from "@the-discounters/types";
+import { useScreenGuard } from "../hooks/useScreenGuard.js";
 
 const Finished = () => {
   const dispatch = useDispatch();
   const experiment = useSelector(getExperiment);
-  const processingRequests = React.useContext(Context);
-
-  // Early return for SSR/prerendering when state is not initialized
-  if (!experiment) {
-    return <div>Loading...</div>;
-  }
+  const { isReady, spinner } = useScreenGuard({
+    expectedStatus: StatusType.Finished,
+    isDataReady: Boolean(experiment),
+    savingText: "Your answers are being saved...",
+  });
 
   useEffect(() => {
     dispatch(finishedShownTimestamp(dateToState(DateTime.now())));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  if (processingRequests) {
-    return <Spinner text="Your answers are being saved..." />;
-  } else {
-    return (
-      <StyledEngineProvider injectFirst>
-        <ThemeProvider theme={theme}>
-          <Container maxWidth="lg" disableGutters={false}>
-            <Typography variant="h4">Finished</Typography>
-            <hr
-              style={{
-                color: "#ea3433",
-                backgroundColor: "#ea3433",
-                height: 4,
-              }}
-            />
-            <Typography paragraph>
-              Thank you for your feedback. You have completed the survey and may
-              close the browser. Before you do, please remember to enter the
-              code {experiment.prolificCode} into Prolific so that you will be
-              paid {experiment.paymentAmount}.
-            </Typography>
-          </Container>
-        </ThemeProvider>
-      </StyledEngineProvider>
-    );
+  if (!isReady) {
+    return spinner;
   }
+
+  return (
+    <StyledEngineProvider injectFirst>
+      <ThemeProvider theme={theme}>
+        <Container maxWidth="lg" disableGutters={false}>
+          <Typography variant="h4">Finished</Typography>
+          <hr
+            style={{
+              color: "#ea3433",
+              backgroundColor: "#ea3433",
+              height: 4,
+            }}
+          />
+          <Typography paragraph>
+            Thank you for your feedback. You have completed the survey and may
+            close the browser. Before you do, please remember to enter the
+            code {experiment.prolificCode} into Prolific so that you will be
+            paid {experiment.paymentAmount}.
+          </Typography>
+        </Container>
+      </ThemeProvider>
+    </StyledEngineProvider>
+  );
 };
 
 export default Finished;
+

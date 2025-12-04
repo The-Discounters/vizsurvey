@@ -34,6 +34,7 @@ import { MELBarChartComponent } from "./MELBarChartComponent.js";
 import { ReactComponent as EnterKey } from "../assets/enterKey.svg";
 import { ReactComponent as LeftArrowKey } from "../assets/leftArrowKey.svg";
 import { ReactComponent as RightArrowKey } from "../assets/rightArrowKey.svg";
+import { useScreenGuard } from "../hooks/useScreenGuard.js";
 
 const MELQuestionInstructions = () => {
   const dispatch = useDispatch();
@@ -46,12 +47,10 @@ const MELQuestionInstructions = () => {
   const [choice, setChoice] = useState(AmountType.none);
   const [error, setError] = React.useState(false);
   const [helperText, setHelperText] = React.useState(" ");
-  const status = useSelector(getStatus);
-
-  // Early return for SSR/prerendering when state is not initialized
-  if (!instructionTreatment || !currentQuestion || !experiment) {
-    return <div>Loading...</div>;
-  }
+  const { isReady, spinner, status } = useScreenGuard({
+    expectedStatus: StatusType.MELQuestionInstructions,
+    isDataReady: Boolean(instructionTreatment && currentQuestion && experiment),
+  });
 
   useEffect(() => {
     dispatch(MCLInstructionsShown(dateToState(DateTime.now())));
@@ -109,6 +108,10 @@ const MELQuestionInstructions = () => {
     navigate(path);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status]);
+
+  if (!isReady) {
+    return spinner;
+  }
 
   const instructions = (description, tryLeftDesc, tryRightDesc, tryView) => {
     return (

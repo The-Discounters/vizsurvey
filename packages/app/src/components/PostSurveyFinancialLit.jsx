@@ -16,7 +16,6 @@ import {
   Box,
 } from "@mui/material";
 import {
-  getStatus,
   financialLitSurveyQuestionsShown,
   financialLitSurveyQuestionsCompleted,
   initFinancialLitSurveyQuestion,
@@ -27,12 +26,13 @@ import { dateToState } from "@the-discounters/util";
 import { POST_SURVEY_QUESTIONS } from "../features/postsurveyquestionsfinanciallit.js";
 import { styles, theme } from "./ScreenHelper.js";
 import { navigateFromStatus } from "./Navigate.js";
+import { StatusType } from "@the-discounters/types";
+import { useScreenGuard } from "../hooks/useScreenGuard.js";
 
 export function PostSurvey() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   let surveys = POST_SURVEY_QUESTIONS;
-  const status = useSelector(getStatus);
   const answers = useSelector(getFinancialLitSurveyAnswers);
 
   surveys.questions = surveys.questions.filter(({ question }) => {
@@ -45,6 +45,11 @@ export function PostSurvey() {
 
   // creates an array of answers to questions to use to check checked for each radio button
   let qList = surveys.questions.map((q) => answers[q.question.textShort]);
+
+  const { isReady, spinner, status } = useScreenGuard({
+    expectedStatus: StatusType.FinancialQuestionaire,
+    isDataReady: Boolean(answers),
+  });
 
   useEffect(() => {
     dispatch(financialLitSurveyQuestionsShown(dateToState(DateTime.now())));
@@ -65,6 +70,10 @@ export function PostSurvey() {
     navigate(path);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status]);
+
+  if (!isReady) {
+    return spinner;
+  }
 
   return (
     <StyledEngineProvider injectFirst>
